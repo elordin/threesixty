@@ -39,16 +39,12 @@ class DBSCANSpec extends FlatSpec {
                 Point(2,1)  -> Cluster(3), Point(10,9) -> Noise,
                 Point(3,5)  -> Noise,      Point(7,10) -> Noise)
         val dbscanResult = dbscan(dataset, manhattanDist)
+        val desiredByCluster:Map[Classification, Set[Point]] = byCluster[Point](desiredResult)
+        val dbscanByCluster:Map[Classification, Set[Point]]  = byCluster[Point](dbscanResult)
 
-        assert(dataset.forall(
-            point =>
-                (desiredResult get point, dbscanResult get point) match {
-                    case (Some(Cluster(_)), Some(Cluster(_))) => true
-                    case (Some(Noise), Some(Noise)) => true
-                    case _ => false
-                }
-
-        ))
+        assert(desiredByCluster.values.forall(dbscanByCluster.values.toSeq.contains))
+        assert(dbscanByCluster.values.forall(desiredByCluster.values.toSeq.contains))
+        assert(dbscanByCluster.getOrElse(Noise, Set[Point]()) == desiredByCluster.getOrElse(Noise, Set[Point]()))
     }
 
     it should  "return the correct clustering (epsilon = 1.1, min-pts = 4)" in {
@@ -68,16 +64,12 @@ class DBSCANSpec extends FlatSpec {
                 Point(7,10) -> Noise, Point(10,9) -> Noise
             )
         val dbscanResult = dbscan(dataset, manhattanDist)
+        val desiredByCluster:Map[Classification, Set[Point]] = byCluster[Point](desiredResult)
+        val dbscanByCluster:Map[Classification, Set[Point]]  = byCluster[Point](dbscanResult)
 
-        assert(dataset.forall(
-            point =>
-                (desiredResult get point, dbscanResult get point) match {
-                    case (Some(Cluster(_)), Some(Cluster(_))) => true
-                    case (Some(Noise), Some(Noise)) => true
-                    case _ => false
-                }
-
-        ))
+        assert(desiredByCluster.values.forall(dbscanByCluster.values.toSeq.contains))
+        assert(dbscanByCluster.values.forall(desiredByCluster.values.toSeq.contains))
+        assert(dbscanByCluster.getOrElse(Noise, Set[Point]()) == desiredByCluster.getOrElse(Noise, Set[Point]()))
     }
 
 
@@ -98,15 +90,12 @@ class DBSCANSpec extends FlatSpec {
                 Point(3,5)  -> Noise, Point(10,9) -> Noise
             )
         val dbscanResult = dbscan(dataset, manhattanDist)
-        assert(dataset.forall(
-            point =>
-                (desiredResult get point, dbscanResult get point) match {
-                    case (Some(Cluster(_)), Some(Cluster(_))) => true
-                    case (Some(Noise), Some(Noise)) => true
-                    case _ => false
-                }
+        val desiredByCluster:Map[Classification, Set[Point]] = byCluster[Point](desiredResult)
+        val dbscanByCluster:Map[Classification, Set[Point]]  = byCluster[Point](dbscanResult)
 
-        ))
+        assert(desiredByCluster.values.forall(dbscanByCluster.values.toSeq.contains))
+        assert(dbscanByCluster.values.forall(desiredByCluster.values.toSeq.contains))
+        assert(dbscanByCluster.getOrElse(Noise, Set[Point]()) == desiredByCluster.getOrElse(Noise, Set[Point]()))
     }
 
 }

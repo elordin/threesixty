@@ -2,6 +2,17 @@ package threesixty.algorithms
 
 object Clustering {
 
+    def byCluster[D](clustering:Map[D, Classification]):Map[Classification, Set[D]] = {
+        var result:Map[Classification, Set[D]] = Map()
+
+        def invert(kvp:(D, Classification)):Unit = {
+            result += (kvp._2 -> (result.getOrElse(kvp._2, Set()) + kvp._1))
+        }
+        clustering.foreach(invert)
+
+        result
+    }
+
     trait Classification
     case class Cluster(id: Int) extends Classification
     object     Noise            extends Classification
