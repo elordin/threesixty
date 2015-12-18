@@ -2,7 +2,7 @@ package threesixty.algorithms
 
 object Clustering {
 
-    trait ClusterType
+    protected trait ClusterType
     case class Cluster(id: Int) extends ClusterType
     object     Noise            extends ClusterType
 

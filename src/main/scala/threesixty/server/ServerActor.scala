@@ -18,10 +18,11 @@ class ServerActor extends Actor {
     val log = Logging(context.system, this)
 
     def receive = {
-        case Http.Connected =>
+        case _:Http.Connected =>
             // created and attach new handler for API calls
+            val peer = sender
             val apiHandler:ActorRef = context.actorOf(APIHandler.props)
-            sender ! Http.Register(apiHandler)
+            peer ! Http.Register(apiHandler)
 
         case msg => log.error("Unknown message: " + msg)
 

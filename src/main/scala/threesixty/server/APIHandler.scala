@@ -1,10 +1,12 @@
 package threesixty.server
 
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, Props}
 import akka.event.Logging
 import spray.http._
 import spray.can.Http
 
+import HttpMethods._
+import MediaTypes._
 
 object APIHandler {
     def props:Props = Props(new APIHandler )
@@ -19,16 +21,14 @@ object APIHandler {
 class APIHandler extends Actor {
     val log = Logging(context.system, this)
 
-    println("APIHandler created")
-
     def receive = {
-        case HttpRequest(method, uri, headers, entity, protocol) =>
-            // send request
-            log.info("Receive http request")
-            context stop self
+        case HttpRequest(POST, _, _, _, _) =>
+            // TODO parse body as json to Config
+            // TODO initialize data processing
+            // TODO await visualization response and send as response
+            sender ! HttpResponse(entity = HttpEntity(`application/json`, "{\"test\": 1}"))
 
-        case Http.ConfirmedClose =>
-            log.info("Shutting down")
+        case _:Http.ConnectionClosed =>
             context stop self
 
         case msg => log.error("Unknown message: " + msg)

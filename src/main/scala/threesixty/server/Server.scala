@@ -5,9 +5,12 @@ import akka.io.IO
 
 import spray.can.Http
 
-import com.typesafe.config.{Config, ConfigFactory}
+import com.typesafe.config.{Config, ConfigFactory, ConfigException}
 
-
+/**
+ *  Main application; creates server with configuration from config files.
+ *  @author Thomas Weber
+ */
 object Server extends App {
 
     val config = ConfigFactory.load
@@ -19,15 +22,14 @@ object Server extends App {
     val port:Int = try {
             config.getInt("server.port")
         } catch {
-            case _:Exception => 8080
+            case _:ConfigException => 8080
         }
 
     val interface:String = try {
             config.getString("server.interface")
         } catch {
-            case _:Exception => "localhost"
+            case _:ConfigException => "localhost"
         }
 
     IO(Http) ! Http.Bind(server, interface = interface, port = port)
-
 }
