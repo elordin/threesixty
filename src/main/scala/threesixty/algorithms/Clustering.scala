@@ -39,7 +39,7 @@ object Clustering {
                   distFunction:(D, D) => Double)
                  (implicit minPts:Int,
                            epsilon:Double):Map[D, Classification] =
-        DBSCAN.run(dataset,distFunction)
+        DBSCAN.run[D](dataset,distFunction)
 
 
     def hdbscan[D] = throw new NotImplementedError

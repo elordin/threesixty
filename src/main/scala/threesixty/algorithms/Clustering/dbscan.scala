@@ -2,13 +2,13 @@ package threesixty.algorithms.clustering
 
 import threesixty.algorithms.Clustering._
 
-object DBSCAN {
+private[algorithms] object DBSCAN {
     /**
      *  DBSCAN density-based clustering algorithm by Ester, Kriegel, Sander and Xu.
      *  http://www.dbs.ifi.lmu.de/Publikationen/Papers/KDD-96.final.frame.pdf
      *
      *  Note that behavior for datapoints D that might be in two clusters depends
-     *  on their order in the input Set
+     *  on their order in the input Set.
      *
      *  @author Thomas Weber
      *  @param dataset Set of datapoints to cluster
