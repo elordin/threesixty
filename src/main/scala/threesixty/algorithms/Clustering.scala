@@ -2,10 +2,10 @@ package threesixty.algorithms
 
 object Clustering {
 
-    protected trait ClusterType
-    case class Cluster(id: Int) extends ClusterType
-    object     Noise            extends ClusterType
-    object     Unclassified     extends ClusterType
+    trait Classification
+    case class Cluster(id: Int) extends Classification
+    object     Noise            extends Classification
+    object     Unclassified     extends Classification
 
     def pam[D] = throw new NotImplementedError
 
@@ -21,9 +21,14 @@ object Clustering {
 
     def snn[D] = throw new NotImplementedError
 
+
     /**
      *  DBSCAN density-based clustering algorithm by Ester, Kriegel, Sander and Xu.
-     *  http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.71.1980
+     *  http://www.dbs.ifi.lmu.de/Publikationen/Papers/KDD-96.final.frame.pdf
+     *
+     *  Note that behavior for datapoints D that might be in two clusters depends
+     *  on their order in the input Set
+     *
      *  @author Thomas Weber
      *  @param dataset Set of datapoints to cluster
      *  @param distFunction Distance function
@@ -34,11 +39,11 @@ object Clustering {
     def dbscan[D](dataset:Set[D],
                   distFunction:(D, D) => Double)
                  (implicit minPts:Int,
-                           epsilon:Double):Map[D, ClusterType] = {
+                           epsilon:Double):Map[D, Classification] = {
 
-        var dataMap:Map[T, (Boolean, Classification)] = (for (p <- dataset) yield (p -> (false, Unclassified))).toMap
+        var dataMap:Map[D, (Boolean, Classification)] = (for (p <- dataset) yield (p -> (false, Unclassified))).toMap
 
-        def expandCluster(point:T, ns:Set[T], cindex:Int) {
+        def expandCluster(point:D, ns:Set[D], cindex:Int) {
             var neighbours = ns
             dataMap += point -> (true, new Cluster(cindex))
             while (neighbours.size > 0) {
@@ -62,7 +67,7 @@ object Clustering {
             }
         }
 
-        def rangeQuery(point:T):Set[T] = {
+        def rangeQuery(point:D):Set[D] = {
             dataMap.keys.filter(distFunction(point, _) < epsilon).toSet
         }
 
@@ -85,7 +90,7 @@ object Clustering {
             )
         }
 
-        dataMap.map((kv:(T, (Boolean, Classification))) => {
+        dataMap.map((kv:(D, (Boolean, Classification))) => {
                 val (p, (_, c)) = kv
                 (p, c)
             })
@@ -98,7 +103,7 @@ object Clustering {
     def optics[D](db:List[D],
                   distFunction:(D, D) => Double)
                  (implicit minPts:Int,
-                           epsilon:Double):Map[D, ClusterType] = {
+                           epsilon:Double):Map[D, Classification] = {
         throw new NotImplementedError
     }
 }
