@@ -1,13 +1,12 @@
 package threesixty.processor
 
-import threesixty.config._
+import threesixty.config.Config
+import threesixty.data.ProcessedData
 
-trait ProcessedData
+sealed trait ProcessingMethod
 
-trait ProcessingMethod
-
-trait SingleProcessingMethod extends Function1[ProcessedData, Int]      with ProcessingMethod
-trait MultiProcessingMethod  extends Function1[Set[ProcessedData], Int] with ProcessingMethod
+trait SingleProcessingMethod extends Function1[ProcessedData, ProcessedData]      with ProcessingMethod
+trait MultiProcessingMethod  extends Function1[Set[ProcessedData], ProcessedData] with ProcessingMethod
 
 
 case class ProcessingStrategy(methods: ProcessingMethod*)
@@ -16,7 +15,7 @@ case class ProcessingStrategy(methods: ProcessingMethod*)
     /**
      *  Processes the input dataset based on the provided methods and config.
      *  @param data Datasets to be prosessed
-     *  @param config Configuration restraining the processing
+     *  @param config Configuration constraining the processing
      *  @returns Processed dataset
      */
     def apply(data:Set[ProcessedData], config:Config):Set[ProcessedData] =

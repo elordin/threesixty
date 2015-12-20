@@ -6,9 +6,8 @@ import spray.can.Http
 
 
 object ServerActor {
-    def props:Props = Props(new ServerActor )
+    def props:Props = Props(new ServerActor)
 }
-
 
 /**
  *  Primary dispatcher; receives HTTP Requests and dispatches
@@ -18,8 +17,9 @@ class ServerActor extends Actor {
     val log = Logging(context.system, this)
 
     def receive = {
-        case _:Http.Connected =>
+        case Http.Connected(remoteAddr, _) =>
             // created and attach new handler for API calls
+            log.info("Creating API handler for %s.".format(remoteAddr.toString))
             val peer = sender
             val apiHandler:ActorRef = context.actorOf(APIHandler.props)
             peer ! Http.Register(apiHandler)

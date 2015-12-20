@@ -7,6 +7,7 @@ import spray.can.Http
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigException}
 
+
 /**
  *  Main application; creates server with configuration from config files.
  *  @author Thomas Weber
@@ -17,8 +18,6 @@ object Server extends App {
 
     implicit lazy val system = ActorSystem()
 
-    val server:ActorRef = system.actorOf(ServerActor.props, "server")
-
     val port:Int = try {
             config.getInt("server.port")
         } catch {
@@ -28,8 +27,10 @@ object Server extends App {
     val interface:String = try {
             config.getString("server.interface")
         } catch {
-            case _:ConfigException => "localhost"
+            case _:ConfigException => "127.0.0.1"
         }
+
+    val server:ActorRef = system.actorOf(ServerActor.props, "server")
 
     IO(Http) ! Http.Bind(server, interface = interface, port = port)
 }

@@ -8,6 +8,7 @@ import spray.can.Http
 import HttpMethods._
 import MediaTypes._
 
+
 object APIHandler {
     def props:Props = Props(new APIHandler )
 }
@@ -26,12 +27,16 @@ class APIHandler extends Actor {
             // TODO parse body as json to Config
             // TODO initialize data processing
             // TODO await visualization response and send as response
-            sender ! HttpResponse(entity = HttpEntity(`application/json`, "{\"test\": 1}"))
+            sender ! HttpResponse(entity = HttpEntity(`application/json`,
+                "{\"test\": 1}"))
 
         case _:Http.ConnectionClosed =>
             context stop self
 
-        case msg => log.error("Unknown message: " + msg)
+        case msg =>
+            log.error("Unknown message: " + msg)
+            sender ! HttpResponse(entity = HttpEntity(`application/json`,
+                """{ "error" : "unknown message "}"""))
     }
 
 }
