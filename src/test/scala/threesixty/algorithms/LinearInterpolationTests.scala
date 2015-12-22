@@ -29,7 +29,9 @@ class LinearInterpolationSpec extends FunSpec {
                             TaggedDataPoint(5, 5.0, Set[Tag](Original))
                         ))
 
-                    assert(interpolator(sampleData).data == expectedResult.data)
+                    assertResult(expectedResult.data) {
+                        interpolator(sampleData).data
+                    }
                 }
             }
         }
@@ -55,7 +57,9 @@ class LinearInterpolationSpec extends FunSpec {
                             TaggedDataPoint(12, 12.0, Set[Tag](Original))
                         ))
 
-                    assert(interpolator(sampleData).data == expectedResult.data)
+                    assertResult(expectedResult.data) {
+                        interpolator(sampleData).data
+                    }
                 }
             }
         }
