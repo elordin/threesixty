@@ -5,8 +5,8 @@ import threesixty.data.ProcessedData
 
 sealed trait ProcessingMethod
 
-trait SingleProcessingMethod extends Function1[ProcessedData, ProcessedData]      with ProcessingMethod
-trait MultiProcessingMethod  extends Function1[Set[ProcessedData], ProcessedData] with ProcessingMethod
+trait SingleProcessingMethod extends ProcessingMethod with Function1[ProcessedData, ProcessedData]
+trait MultiProcessingMethod  extends ProcessingMethod with Function1[Set[ProcessedData], Set[ProcessedData]]
 
 
 case class ProcessingStrategy(methods: ProcessingMethod*)
