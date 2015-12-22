@@ -33,18 +33,24 @@ case class LinearInterpolation(resolution:Int) extends SingleProcessingMethod {
          */
         def linearInterpolated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
             case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
+
                 if (t2 - t1 > resolution) {
 
                     val m = ((v2 - v1) / (t2 - t1))
                     val b = v1 - m * t1
 
-                    def interpolFunc(x:Int):TaggedDataPoint = TaggedDataPoint(x, m * x + b, Set[Tag](Interpolated))
+                    def interpolFunc(x:Int):TaggedDataPoint =
+                        TaggedDataPoint(x, m * x + b, Set[Tag](Interpolated))
 
-                    TaggedDataPoint(t1, v1, tags1 + Original) :: Range(t1 + resolution, t2, resolution).map(interpolFunc).toList ++ linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
+                    TaggedDataPoint(t1, v1, tags1 + Original) ::
+                        Range(t1 + resolution, t2, resolution).map(interpolFunc).toList ++
+                        linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
 
                 } else {
-                    TaggedDataPoint(t1, v1, tags1 + Original) :: linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
+                    TaggedDataPoint(t1, v1, tags1 + Original) ::
+                        linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
                 }
+
             case otherwise => otherwise
         }
 
