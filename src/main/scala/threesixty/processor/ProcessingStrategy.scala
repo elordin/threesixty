@@ -15,11 +15,16 @@ case class ProcessingStrategy(methods: ProcessingMethod*)
     /**
      *  Processes the input dataset based on the provided methods and config.
      *  @param data Datasets to be prosessed
-     *  @param config Configuration constraining the processing
+     *  @param config Configuration constraining the processing CURRENTLY NOT USED
      *  @returns Processed dataset
      */
     def apply(data:Set[ProcessedData], config:Config):Set[ProcessedData] =
-        throw new NotImplementedError
+        methods.foldLeft(data) {
+            case (d:Set[ProcessedData], m:MultiProcessingMethod) =>
+                m(d)
+            case (d:Set[ProcessedData], m:SingleProcessingMethod) =>
+                d map m
+        }
 
     /**
      *  Alternative way of calling the processing strategy.
