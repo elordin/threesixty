@@ -35,8 +35,11 @@ class APIHandler extends Actor {
 
         case msg =>
             log.error("Unknown message: " + msg)
-            sender ! HttpResponse(entity = HttpEntity(`application/json`,
-                """{ "error" : "unknown message "}"""))
+            sender ! HttpResponse(
+                status = StatusCodes.MethodNotAllowed,
+                entity = HttpEntity(
+                    `application/json`,
+                    """{ "error" : "unknown message "}"""))
     }
 
 }
