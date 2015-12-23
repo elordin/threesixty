@@ -34,6 +34,30 @@ class LinearInterpolationSpec extends FunSpec {
                     }
                 }
             }
+
+            describe("from (0,0) to (5,5) with all intermedirary points") {
+                val sampleData = new ProcessedData(List(
+                    TaggedDataPoint(0, 0.0, Set[Tag]()),
+                    TaggedDataPoint(1, 1.0, Set[Tag]()),
+                    TaggedDataPoint(2, 2.0, Set[Tag]()),
+                    TaggedDataPoint(3, 3.0, Set[Tag]()),
+                    TaggedDataPoint(4, 4.0, Set[Tag]()),
+                    TaggedDataPoint(5, 5.0, Set[Tag]())
+                ))
+                it ("should only append the Original tag") {
+                    val expectedResult = new ProcessedData(List(
+                        TaggedDataPoint(0, 0.0, Set[Tag](Original)),
+                        TaggedDataPoint(1, 1.0, Set[Tag](Original)),
+                        TaggedDataPoint(2, 2.0, Set[Tag](Original)),
+                        TaggedDataPoint(3, 3.0, Set[Tag](Original)),
+                        TaggedDataPoint(4, 4.0, Set[Tag](Original)),
+                        TaggedDataPoint(5, 5.0, Set[Tag](Original))
+                    ))
+                    assertResult(expectedResult.data) {
+                        interpolator(sampleData).data
+                    }
+                }
+            }
         }
 
         describe("with resolution of 2") {

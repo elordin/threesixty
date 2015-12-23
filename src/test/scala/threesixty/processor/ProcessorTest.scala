@@ -21,7 +21,7 @@ class ProcessorTestSpec extends FunSpec {
                 )
                 it("should do proper linear interpolation.") {
                     assertResult(Set(LinearInterpolation(1)(sampleData))) {
-                        processingStrategy(Set(sampleData), Config())
+                        processingStrategy.process(Set(sampleData), Config())
                     }
                 }
             }
