@@ -1,4 +1,5 @@
-/target/
-/project/
+target/
+project/*
+!/project/plugins.sbt
 *~
 Thumbs.db

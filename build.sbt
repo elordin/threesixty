@@ -35,3 +35,15 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "io.spray" %% "spray-routing-shapeless2" % "1.3.3"
 )
+
+enablePlugins(JavaServerAppPackaging)
+
+packageSummary in Linux := "360° - My personal health and fitness monitor"
+packageSummary in Windows := "360° - My personal health and fitness monitor"
+packageDescription := "Visualization engine for fitness data"
+
+maintainer in Windows := "Heroes of SE"
+maintainer in Debian := "Heroes of SE <se@openinnovator.net>"
+
+wixProductId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+wixProductUpgradeId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
