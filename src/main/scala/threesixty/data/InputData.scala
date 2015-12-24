@@ -1,12 +1,14 @@
 package threesixty.data
 
-trait InputDataMetadata
 
-case class DataPoint(val timstamp:Int, val value:AnyVal)
+case class InputDataMetadata()
+
+
+case class DataPoint(val timstamp:Int, val value:Double)
 
 
 case class InputData(
-        val id:AnyVal,
+        val id:String,
         val data: List[DataPoint],
         val metadata:InputDataMetadata) {
 
