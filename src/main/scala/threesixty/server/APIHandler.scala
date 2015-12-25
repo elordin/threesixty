@@ -2,15 +2,15 @@ package threesixty.server
 
 import akka.actor.{Actor, Props}
 import akka.event.Logging
-import spray.http._
+import spray.http.{HttpMethods, MediaTypes, HttpEntity, HttpResponse, HttpRequest, StatusCodes}
 import spray.can.Http
 
-import HttpMethods._
-import MediaTypes._
+import HttpMethods.{GET, POST}
+import MediaTypes.`application/json`
 
 
 object APIHandler {
-    def props:Props = Props(new APIHandler )
+    def props: Props = Props(new APIHandler )
 }
 
 /**
@@ -27,10 +27,11 @@ class APIHandler extends Actor {
             // TODO parse body as json to Config
             // TODO initialize data processing
             // TODO await visualization response and send as response
-            sender ! HttpResponse(entity = HttpEntity(`application/json`,
+            sender ! HttpResponse(
+                entity = HttpEntity(`application/json`,
                 "{\"test\": 1}"))
 
-        case _:Http.ConnectionClosed =>
+        case _: Http.ConnectionClosed =>
             context stop self
 
         case msg =>

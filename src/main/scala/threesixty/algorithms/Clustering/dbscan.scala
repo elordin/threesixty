@@ -1,6 +1,6 @@
 package threesixty.algorithms.clustering
 
-import threesixty.algorithms.Clustering._
+import threesixty.algorithms.Clustering.{Classification, Cluster, Noise, Unclassified}
 
 private[algorithms] object DBSCAN {
     /**
@@ -17,43 +17,45 @@ private[algorithms] object DBSCAN {
      *  @param epsilon implicit epsilon environment size
      *  @returns Map of Datapoint -> ClusterType
      */
-    def run[D](dataset:Set[D],
-                  distFunction:(D, D) => Double)
-                 (implicit minPts:Int,
-                           epsilon:Double):Map[D, Classification] = {
+    def run[D](
+        dataset: Set[D],
+        distFunction: (D, D) => Double)
+        (implicit minPts: Int,
+        epsilon: Double): Map[D, Classification] = {
 
-        var dataMap:Map[D, (Boolean, Classification)] = (for (p <- dataset) yield (p -> (false, Unclassified))).toMap
+        var dataMap: Map[D, (Boolean, Classification)] = (for { p <- dataset } yield (p -> (false, Unclassified))).toMap
 
-        def expandCluster(point:D, ns:Set[D], cindex:Int) {
+        def expandCluster(point: D, ns: Set[D], cindex: Int):Unit = {
             var neighbours = ns
             dataMap += point -> (true, new Cluster(cindex))
             while (neighbours.size > 0) {
                 val n = neighbours.head
                 neighbours = neighbours.tail
                 (dataMap get n).foreach(
-                    (t:(Boolean, Classification)) => {
+                    (t: (Boolean, Classification)) => {
                         var (visited, c) = t
                         if (!visited) {
                             dataMap += (n -> (true, c))
                             val newNeighbours = rangeQuery(n)
-                            if (newNeighbours.size >= minPts)
+                            if (newNeighbours.size >= minPts) {
                                 neighbours |= newNeighbours
+                            }
                         }
                         c match {
                             case Cluster(_) => {}
-                            case _ => dataMap += (n -> (true, Cluster(cindex)))
+                            case _          => dataMap += (n -> (true, Cluster(cindex)))
                         }
                     }
                 )
             }
         }
 
-        def rangeQuery(point:D):Set[D] = {
+        def rangeQuery(point: D): Set[D] = {
             dataMap.keys.filter(distFunction(point, _) < epsilon).toSet
         }
 
-        var cindex:Int = 0
-        for ((point, _) <- dataMap) {
+        var cindex = 0
+        for { (point, _) <- dataMap } {
             (dataMap get point).foreach(
                 (_ match {
                     case (false, c) => {
@@ -71,10 +73,10 @@ private[algorithms] object DBSCAN {
             )
         }
 
-        dataMap.map((kv:(D, (Boolean, Classification))) => {
-                val (p, (_, c)) = kv
-                (p, c)
-            })
+        dataMap.map((kv: (D, (Boolean, Classification))) => {
+            val (p, (_, c)) = kv
+            (p, c)
+        })
     }
 
 }

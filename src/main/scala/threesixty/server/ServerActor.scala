@@ -6,7 +6,7 @@ import spray.can.Http
 
 
 object ServerActor {
-    def props:Props = Props(new ServerActor)
+    def props: Props = Props(new ServerActor)
 }
 
 /**
@@ -21,7 +21,7 @@ class ServerActor extends Actor {
             // created and attach new handler for API calls
             log.info("Creating API handler for %s.".format(remoteAddr.toString))
             val peer = sender
-            val apiHandler:ActorRef = context.actorOf(APIHandler.props)
+            val apiHandler: ActorRef = context.actorOf(APIHandler.props)
             peer ! Http.Register(apiHandler)
 
         case msg => log.error("Unknown message: " + msg)
