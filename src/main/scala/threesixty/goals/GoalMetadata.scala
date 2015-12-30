@@ -1,5 +1,7 @@
 package threesixty.goals
 
-import threesixty.data.metadata.Metadata
+import threesixty.metadata.Timeframe
 
-trait GoalMetadata extends Metadata
+case class GoalMetadata(timeframec: Timeframe) {
+    val timeframe: Timeframe = timeframec
+}
