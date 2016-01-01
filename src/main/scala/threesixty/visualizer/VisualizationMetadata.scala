@@ -5,10 +5,8 @@ import threesixty.metadata.Resolution
 /**
   * Created by Thomas on 30.12.2015.
   */
-case class VisualizationMetadata(resolutionsc: List[Resolution.type]) {
-    val resolutions: List[Resolution.type] = resolutionsc
+case class VisualizationMetadata(val dataRequirement: List[VisualizationMatchingTuple]) {
+    require(dataRequirement != null && dataRequirement.size > 0, "There must be at least one data required")
 
-    require(resolutions != null && resolutions.size > 0, "There must be at least one input required.")
-
-    def numberOfInputs(): Int = resolutions.size
+    def numberOfInputs(): Int = dataRequirement.size
 }
