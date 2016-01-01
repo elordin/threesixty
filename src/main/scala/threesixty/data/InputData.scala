@@ -1,6 +1,6 @@
 package threesixty.data
 
-trait InputDataMetadata
+import threesixty.data.metadata.InputMetadata
 
 case class DataPoint(val timstamp:Int, val value:AnyVal)
 
@@ -8,7 +8,7 @@ case class DataPoint(val timstamp:Int, val value:AnyVal)
 case class InputData(
         val id:AnyVal,
         val data: List[DataPoint],
-        val metadata:InputDataMetadata) {
+        val metadata:InputMetadata) {
 
     require(data.length > 0, "Emtpy dataset not allowed.")
 
