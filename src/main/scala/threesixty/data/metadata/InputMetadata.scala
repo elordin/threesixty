@@ -2,14 +2,41 @@ package threesixty.data.metadata
 
 import threesixty.metadata._
 
+trait InputMetadata
+
 /**
-  * Created by Thomas on 30.12.2015.
-  */
-case class InputMetadata(val timeframe: Timeframe,
-                         val reliability: Reliability.type,
-                         val resolution: Resolution.type,
-                         val scaling: Scaling.type,
-                         val activityType: ActivityType) {
+ *  @author Thomas Weber
+ */
+case class IncompleteInputMetadata(
+    val timeframe: Option[Timeframe] = None,
+    val reliability: Option[Reliability.type] = None,
+    val resolution: Option[Resolution.type] = None,
+    val scaling: Option[Scaling.type] = None,
+    val activityType: Option[ActivityType] = None
+) extends InputMetadata {
+
+    def complete(contextData: InputData): CompleteInputMetadata = {
+        CompleteInputMetadata(
+            timeframe.getOrElse(Timeframe.deduce(contextData)),
+            reliability.getOrElse(Reliability.deduce(contextData)),
+            resolution.getOrElse(Resolution.deduce(contextData)),
+            scaling.getOrElse(Scaling.deduce(contextData)),
+            activityType.getOrElse(ActivityType.deduce(contextData)),
+        )
+    }
+
+}
+
+/**
+ *  @author Thomas Engel
+ */
+case class CompleteInputMetadata(
+    val timeframe: Timeframe,
+    val reliability: Reliability.type,
+    val resolution: Resolution.type,
+    val scaling: Scaling.type,
+    val activityType: ActivityType
+) extends InputMetadata {
     require(timeframe != null, "Null value for timeframe not allowed")
     require(reliability != null, "Null value for reliability not allowed")
     require(resolution != null, "Null value for resolution not allowed")
