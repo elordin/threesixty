@@ -1,6 +1,13 @@
 package threesixty.metadata
 
+import threesixty.data.InputData
 import java.sql.Timestamp
+
+object Timeframe {
+    def deduce(contextData: InputData): Timeframe = {
+        throw new NotImplementedError
+    }
+}
 
 /**
   * Created by Thomas on 30.12.2015.

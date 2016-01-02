@@ -1,6 +1,7 @@
 package threesixty.data.metadata
 
 import threesixty.metadata._
+import threesixty.data.InputData
 
 trait InputMetadata
 
@@ -21,7 +22,7 @@ case class IncompleteInputMetadata(
             reliability.getOrElse(Reliability.deduce(contextData)),
             resolution.getOrElse(Resolution.deduce(contextData)),
             scaling.getOrElse(Scaling.deduce(contextData)),
-            activityType.getOrElse(ActivityType.deduce(contextData)),
+            activityType.getOrElse(ActivityType.deduce(contextData))
         )
     }
 

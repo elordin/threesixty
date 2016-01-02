@@ -1,5 +1,13 @@
 package threesixty.metadata
 
+import threesixty.data.InputData
+
+object ActivityType {
+    def deduce(contextData: InputData): ActivityType = {
+        throw new NotImplementedError
+    }
+}
+
 /**
   * Created by Thomas on 30.12.2015.
   */
