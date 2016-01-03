@@ -48,7 +48,7 @@ object StatisticalAnalysis {
         throw new NotImplementedError
     }
 
-    def correlation(data: ProcessedData): Double = {
+    def correlation(data1: ProcessedData, data2: ProcessedData): Double = {
         throw new NotImplementedError
     }
 
