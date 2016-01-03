@@ -1,8 +1,10 @@
 package threesixty.data
 
+import java.sql.Timestamp
+
 import threesixty.data.metadata.CompleteInputMetadata
 
-case class DataPoint(val timstamp:Int, val value:AnyVal)
+case class DataPoint(val timestamp:Timestamp, val value:AnyVal)
 
 
 case class InputData(

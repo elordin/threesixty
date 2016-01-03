@@ -10,9 +10,9 @@ trait InputMetadata
  */
 case class IncompleteInputMetadata(
     val timeframe: Option[Timeframe] = None,
-    val reliability: Option[Reliability.type] = None,
-    val resolution: Option[Resolution.type] = None,
-    val scaling: Option[Scaling.type] = None,
+    val reliability: Option[Reliability.Value] = None,
+    val resolution: Option[Resolution.Value] = None,
+    val scaling: Option[Scaling.Value] = None,
     val activityType: Option[ActivityType] = None
 ) extends InputMetadata {
 
@@ -33,9 +33,9 @@ case class IncompleteInputMetadata(
  */
 case class CompleteInputMetadata(
     val timeframe: Timeframe,
-    val reliability: Reliability.type,
-    val resolution: Resolution.type,
-    val scaling: Scaling.type,
+    val reliability: Reliability.Value,
+    val resolution: Resolution.Value,
+    val scaling: Scaling.Value,
     val activityType: ActivityType
 ) extends InputMetadata {
     require(timeframe != null, "Null value for timeframe not allowed")

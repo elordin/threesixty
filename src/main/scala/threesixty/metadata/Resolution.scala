@@ -3,14 +3,28 @@ package threesixty.metadata
 import threesixty.data.InputData
 
 /**
-  * Created by Thomas on 30.12.2015.
+  * @author Thomas Engel
   */
 object Resolution extends Enumeration{
     val High, Middle, Low = Value
 
-    type Resolution = Resolution.type
+    // TODO: Set proper values for boundaries
+    // TODO: Write Tests
+    val boundaryLow = 1
+    val boundaryHigh = 2
+
+    type Resolution = Resolution.Value
 
     def deduce(contextData: InputData): Resolution = {
-        throw new NotImplementedError
+        val avg = (1.0 * (contextData.data.last.timestamp.getTime - contextData.data.head.timestamp.getTime)) / contextData.data.size
+        val erg = 1.0 / avg
+
+        if (erg < boundaryLow) {
+            Resolution.Low
+        } else if (erg > boundaryHigh) {
+            Resolution.High
+        } else {
+            Resolution.Middle
+        }
     }
 }

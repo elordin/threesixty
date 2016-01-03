@@ -8,9 +8,9 @@ import threesixty.data.InputData
 object Scaling extends Enumeration {
     val Ordinal, Nominal = Value
 
-    type Scaling = Scaling.type
+    type Scaling = Scaling.Value
 
     def deduce(contextData: InputData): Scaling = {
-        throw new NotImplementedError
+        Scaling.Nominal
     }
 }
