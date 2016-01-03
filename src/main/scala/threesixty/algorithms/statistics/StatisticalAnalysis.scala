@@ -1,0 +1,55 @@
+package threesixty.algorithms.statistics
+
+import threesixty.data.{ProcessedData, TaggedDataPoint, Data}
+import Data.ValueType
+
+/**
+ *  Collection of various statistical analysis methods
+ *
+ *  @author Thomas Weber
+ */
+object StatisticalAnalysis {
+
+    /**
+     *  @param data Dataset to calculate the median of
+     *  @returns Median of input dataset
+     */
+    def median(data: ProcessedData): ValueType = {
+        data.data.map(_.value).apply(data.data.length / 2)
+    }
+
+    /**
+     *  @param data Dataset to calculate the median of
+     *  @returns Mean of input dataset
+     */
+    def mean(data: ProcessedData): ValueType = {
+        data.data.map(_.value).sum / data.data.length
+    }
+
+    /**
+     *  @param data Dataset to calculate the median of
+     *  @returns Standard deviation of input dataset
+     */
+    def stdDeviation(data: ProcessedData): ValueType = {
+        math.sqrt(variance(data))
+    }
+
+    /**
+     *  @param data Dataset to calculate the median of
+     *  @returns Variance of input dataset
+     */
+    def variance(data: ProcessedData): ValueType = {
+        val e = mean(data)
+        mean(ProcessedData( data.data.map { d:TaggedDataPoint =>
+            TaggedDataPoint(d.timestamp, math.pow(e - d.value, 2), d.tags) }) )
+    }
+
+    def covariance(data1: ProcessedData, data2: ProcessedData): Double = {
+        throw new NotImplementedError
+    }
+
+    def correlation(data1: ProcessedData, data2: ProcessedData): Double = {
+        throw new NotImplementedError
+    }
+
+}
