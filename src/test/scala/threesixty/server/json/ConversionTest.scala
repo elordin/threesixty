@@ -2,17 +2,9 @@ package threesixty.server.json
 
 import org.scalatest._
 
-// import spray.json.JsonParser.ParsingException
-
+/**
+ *  Tests the conversions of API Requests from JSON Strings to the proper objects.
+ */
 class JsonConversionSpec extends FlatSpec {
-    // "Converting \" \" to JSON" should "throw a ParsingException" {
-    //     intercept[ParsingException] {
-    //         " ".toJson
-    //     }
-    // }
-    "Head of an empty list" should "throw a NoSuchElementException" in {
-        intercept[NoSuchElementException] {
-            Nil.head
-        }
-    }
+
 }

@@ -23,7 +23,7 @@ object StatisticalAnalysis {
      *  @returns Mean of input dataset
      */
     def mean(data: ProcessedData): ValueType = {
-        data.data.map(_.value).sum / data.data.length
+        data.data.map(_.value.value).sum / data.data.length
     }
 
     /**
@@ -31,7 +31,7 @@ object StatisticalAnalysis {
      *  @returns Standard deviation of input dataset
      */
     def stdDeviation(data: ProcessedData): ValueType = {
-        math.sqrt(variance(data))
+        math.sqrt(variance(data).value)
     }
 
     /**
@@ -41,7 +41,7 @@ object StatisticalAnalysis {
     def variance(data: ProcessedData): ValueType = {
         val e = mean(data)
         mean(ProcessedData( data.data.map { d:TaggedDataPoint =>
-            TaggedDataPoint(d.timestamp, math.pow(e - d.value, 2), d.tags) }) )
+            TaggedDataPoint(d.timestamp, math.pow(e.value - d.value.value, 2), d.tags) }) )
     }
 
     def covariance(data1: ProcessedData, data2: ProcessedData): Double = {

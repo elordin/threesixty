@@ -4,7 +4,16 @@ version := "1.0"
 
 scalaVersion := "2.11.7"
 
-scalacOptions ++= Seq("-unchecked", "-deprecation", "-feature")
+scalacOptions ++= Seq(
+  "-feature",
+  "-unchecked",
+  "-deprecation",
+  "-Xlint",
+  "-Ywarn-dead-code",
+  "-language:_",
+  "-encoding", "UTF-8"
+)
+
 
 libraryDependencies ++= Seq(
     "com.typesafe.akka"             %% "akka-actor"         % "2.4.1",

@@ -17,19 +17,19 @@ class DBSCANSpec extends FunSpec {
         ))
 
         it("should have a median of 5.1") {
-            assert( median(sampleData) == 7.2 )
+            assert( median(sampleData).value == 7.2 )
         }
 
         it("should have a mean of 6.0") {
-            assert( mean(sampleData) == 6.0 )
+            assert( mean(sampleData).value == 6.0 )
         }
 
         it("should have a variance of about 16.043") {
-            assert( math.round(variance(sampleData) * 1000) ==  16043 )
+            assert( math.round(variance(sampleData).value * 1000) ==  16043 )
         }
 
         it("should have a standard deviation of about 4.005") {
-            assert( math.round(stdDeviation(sampleData) * 1000) == 4005)
+            assert( math.round(stdDeviation(sampleData).value * 1000) == 4005)
         }
     }
 

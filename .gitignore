@@ -3,3 +3,4 @@ project/*
 !/project/plugins.sbt
 *~
 Thumbs.db
+.idea
