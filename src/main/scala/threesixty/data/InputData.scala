@@ -7,7 +7,7 @@ import Data.ValueType
 case class DataPoint(val timstamp:Int, val value: ValueType)
 
 case class InputData(
-        val id: ValueType,
+        val id: String,
         val data: List[DataPoint],
         val metadata: InputMetadata) {
 
