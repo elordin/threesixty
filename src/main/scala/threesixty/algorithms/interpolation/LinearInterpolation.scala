@@ -36,8 +36,8 @@ case class LinearInterpolation(resolution:Int) extends SingleProcessingMethod {
 
                 if (t2 - t1 > resolution) {
 
-                    val m = ((v2 - v1) / (t2 - t1))
-                    val b = v1 - m * t1
+                    val m = ((v2.value - v1.value) / (t2 - t1))
+                    val b = v1.value - m * t1
 
                     def interpolFunc(x:Int):TaggedDataPoint =
                         TaggedDataPoint(x, m * x + b, Set[Tag](Interpolated))

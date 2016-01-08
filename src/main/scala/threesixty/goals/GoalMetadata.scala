@@ -1,5 +1,7 @@
 package threesixty.goals
 
-import threesixty.data.metadata.Metadata
+import threesixty.metadata.Timeframe
 
-trait GoalMetadata extends Metadata
+case class GoalMetadata(val timeframe: Timeframe) {
+    require(timeframe != null, "Null value for timeframe not allowed")
+}
