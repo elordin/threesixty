@@ -6,9 +6,9 @@ import threesixty.metadata._
   * Created by Thomas on 30.12.2015.
   */
 case class InputMetadata(val timeframe: Timeframe,
-                         val reliability: Reliability.type,
-                         val resolution: Resolution.type,
-                         val scaling: Scaling.type,
+                         val reliability: Reliability.Value,
+                         val resolution: Resolution.Value,
+                         val scaling: Scaling.Value,
                          val activityType: ActivityType) {
     require(timeframe != null, "Null value for timeframe not allowed")
     require(reliability != null, "Null value for reliability not allowed")

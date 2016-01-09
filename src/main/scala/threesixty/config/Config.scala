@@ -4,6 +4,8 @@ import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
 import threesixty.data.Implicits.input2ProcessedData
 
+import threesixty.persistence.DatabaseAdapter
+
 import scala.collection.immutable.{Map => ImmutableMap}
 
 object Implicits {
@@ -28,14 +30,23 @@ object Implicits {
  *  Some values may be required, some may be optional.
  *
  *  @param dataIDs Set of IDs of datasets that will be processed.
+ *  @param databaseAdapter DatabaseAdapter
  */
 @throws[NoSuchElementException]("if an id was given, for which no InputData exists.")
-class Config(val dataIDs: Set[Identifier]) {
+class Config(
+    val dataIDs: Set[Identifier],
+
+    implicit val databaseAdapter: DatabaseAdapter
+) {
 
     require(dataIDs.size > 0, "Empty ID Set is not allowed.")
 
     // get data from db
-    val inputDatasets: Set[InputData] = Set.empty // dataIDs.map(getFromDB)
+    val inputDatasets: Set[InputData] =
+        dataIDs.map(databaseAdapter.getDataset(_) match {
+            case Right(data) => data
+            case Left(error) => throw new NoSuchElementException(error)
+        })
 
     // convert input data to processed data
     var processedDatasets: Map[Identifier, ProcessedData] =

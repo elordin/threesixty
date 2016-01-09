@@ -2,11 +2,16 @@ package threesixty.processor
 
 import org.scalatest.FunSpec
 
-import threesixty.data.{ProcessedData, TaggedDataPoint, InputData}
+import threesixty.data.{ProcessedData, DataPoint, InputData}
 import threesixty.data.Data.Identifier
 import threesixty.data.tags.Tag
+import threesixty.data.metadata.InputMetadata
 import threesixty.config.Config
+import threesixty.persistence.DatabaseAdapter
 import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.metadata.{Timeframe, Reliability, Resolution, Scaling, ActivityType}
+import java.sql.Timestamp
+import threesixty.data.Implicits.input2ProcessedData
 
 
 class ProcessorTestSpec extends FunSpec {
@@ -15,9 +20,15 @@ class ProcessorTestSpec extends FunSpec {
         describe("that only does linear interpolation with resolution 1 and " +
                  "whose ID mapping does not override the original data") {
             describe("on the dataset (0,0), (5,5)") {
-                val sampleData = ProcessedData("SomeId", List(
-                    TaggedDataPoint(0, 0.0, Set[Tag]()),
-                    TaggedDataPoint(5, 5.0, Set[Tag]())
+                val sampleData = InputData("SomeId", List(
+                        DataPoint(0, 0.0),
+                        DataPoint(5, 5.0)
+                    ), InputMetadata(
+                        Timeframe(new Timestamp(0), new Timestamp(1)),
+                        Reliability.Unknown,
+                        Resolution.Low,
+                        Scaling.Ordinal,
+                        ActivityType("something")
                     )
                 )
 
@@ -27,8 +38,13 @@ class ProcessorTestSpec extends FunSpec {
                     ProcessingStep(interpolator, Set("SomeId"))
                 )
 
-                val config = new Config(Set("SomeId"))
-                config.pushData(Set(sampleData))
+                val config = new Config(Set("SomeId"), new DatabaseAdapter {
+                        def getDataset(id:Identifier):Either[String, InputData] = Right(sampleData)
+                        def insertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
+                        def appendData(data:InputData, id:Identifier):Either[String, Identifier] = throw new NotImplementedError
+                        def appendOrInsertData(data:InputData, id:Identifier):Either[String, Identifier] = throw new NotImplementedError
+                    })
+                config.pushData(Set[ProcessedData](sampleData))
 
                 val expectedResult = interpolator(sampleData)
 
@@ -41,7 +57,7 @@ class ProcessorTestSpec extends FunSpec {
 
                 it("should not remove the original data") {
                     assert(config.datasets.contains("SomeId"))
-                    assert(config.datasets("SomeId") == sampleData)
+                    assert(config.datasets("SomeId") == input2ProcessedData(sampleData))
                 }
             }
         }

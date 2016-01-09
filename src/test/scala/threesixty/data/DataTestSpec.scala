@@ -2,6 +2,8 @@ package threesixty.data
 
 import threesixty.data.tags._
 import threesixty.data.metadata.InputMetadata
+import threesixty.metadata.{Timeframe, Reliability, Resolution, Scaling, ActivityType}
+import java.sql.Timestamp
 
 import org.scalatest._
 
@@ -12,7 +14,14 @@ class DataTestSpec extends FunSpec {
         describe("when created without data") {
             it("should throw an IllegalArgumentException") {
                 intercept[IllegalArgumentException] {
-                    val data = InputData("", Nil, InputMetadata(null, null, null, null, null))
+                    val data = InputData("", Nil,  InputMetadata(
+                            Timeframe(new Timestamp(0), new Timestamp(1)),
+                            Reliability.Unknown,
+                            Resolution.Low,
+                            Scaling.Ordinal,
+                            ActivityType("something")
+                        )
+                    )
                 }
             }
         }
@@ -34,7 +43,14 @@ class DataTestSpec extends FunSpec {
             val inputData:InputData = InputData("", List(
                 DataPoint(0, 0.0),
                 DataPoint(5, 5.0)
-            ),  InputMetadata(null, null, null, null, null))
+            ),  InputMetadata(
+                    Timeframe(new Timestamp(0), new Timestamp(1)),
+                    Reliability.Unknown,
+                    Resolution.Low,
+                    Scaling.Ordinal,
+                    ActivityType("something")
+                )
+            )
 
             val processedData:ProcessedData = inputData
 
