@@ -5,6 +5,13 @@
       <option name="deprecationWarnings" value="true" />
       <option name="uncheckedWarnings" value="true" />
       <option name="featureWarnings" value="true" />
+      <parameters>
+        <parameter value="-Xlint" />
+        <parameter value="-Ywarn-dead-code" />
+        <parameter value="-language:_" />
+        <parameter value="-encoding" />
+        <parameter value="UTF-8" />
+      </parameters>
     </profile>
   </component>
 </project>

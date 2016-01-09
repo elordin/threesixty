@@ -22,7 +22,7 @@ case class ProcessedData(val data:List[TaggedDataPoint]) {
 object Implicits {
 
     implicit def inputToProcessedData:(InputData) => ProcessedData = {
-        case input@InputData(_, data:List[DataPoint], metadata) =>
+        case input@InputData(_, _, data:List[DataPoint], metadata) =>
             ProcessedData(data.map {
                 case DataPoint(timestamp, value) =>
                     TaggedDataPoint(timestamp, value, Set(InputOrigin(input)))
