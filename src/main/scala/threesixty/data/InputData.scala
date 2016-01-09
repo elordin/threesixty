@@ -9,7 +9,7 @@ case class DataPoint(val timstamp:Int, val value: ValueType)
 case class InputData(
         val id: String,
         val measurement: String, //heartrate, temperature etc
-        val data: List[DataPoint],
+        val dataPoints: List[DataPoint],
         val metadata: InputMetadata) {
 
 

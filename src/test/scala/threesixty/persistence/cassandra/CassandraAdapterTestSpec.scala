@@ -14,41 +14,28 @@ import threesixty.metadata._
   */
 class CassandraAdapterTestSpec extends FunSpec with Matchers{
 
+    val timeframe = new Timeframe(new Timestamp(1452349667052L), new Timestamp(1452349667060L))
+    val reliabilty = Reliability.User
+    val resolution = Resolution.Low
+    val scaling = Scaling.Ordinal
+    val activityType = new ActivityType("Running")
+    activityType.setDescription("Short run in the morning")
 
-    describe("Inserting input data into a Cassandra database") {
-        it("should work") {
+    val metaData = new InputMetadata(timeframe, Reliability.User, Resolution.Low, Scaling.Ordinal, activityType)
+    val dataPoint = new DataPoint(1452343334, 200)
 
-            var timestamp = 1452343334
-            var value = 33.3
-            val dataPoint = new DataPoint(timestamp, value)
-
-
-
-            val activityType = new ActivityType("Running")
-            activityType.setDescription("Mountain Running")
-
-
-
-
-            var startTime = new Timestamp(1452349667052L)
-            var endTime = new Timestamp(1452349667060L)
-            var timeframe = new Timeframe(startTime, endTime)
-
-
-            var reliabilty = Reliability.User
-            var resolution = Resolution.Low
-            var scaling = Scaling.Ordinal
+    val id = UUID.randomUUID().toString
+    val inputData = new InputData(id, "Heart Rate", List(dataPoint), metaData)
 
 
 
-            val metaData = new InputMetadata(timeframe, reliabilty, resolution, scaling, activityType)
 
-            val id = UUID.randomUUID().toString
-            var inputData = new InputData(id, "Velocity", List(dataPoint), metaData)
+    describe("Inserting input data into the Cassandra database") {
+        it("should contain the input data") {
 
             CassandraAdapter.insertData(inputData)
+            CassandraAdapter.containsDataPointWithId(id) should be (true)
         }
-
     }
 
 }

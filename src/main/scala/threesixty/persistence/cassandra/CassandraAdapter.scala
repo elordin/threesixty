@@ -5,6 +5,8 @@ import java.util.UUID
 import threesixty.data.{DataPoint, InputData}
 import threesixty.persistence.DatabaseAdapter
 
+import scala.Option
+
 /**
   * Created by Stefan Cimander on 09.01.16.
   */
@@ -13,18 +15,9 @@ object CassandraAdapter extends DatabaseAdapter {
     val uri = CassandraConnectionUri("cassandra://localhost:9042/test")
     val session = CassandraConnector.createSessionAndInitKeyspace(uri)
 
+    createTables()
 
     def createTables() = {
-
-        /*
-        session.execute("DROP TABLE ActivityType")
-        session.execute("DROP TABLE Timeframe")
-        session.execute("DROP TABLE InputMetaData")
-        session.execute("DROP TABLE DataPoint")
-        session.execute("DROP TABLE InputData")
-        */
-
-
         session.execute("CREATE TABLE IF NOT EXISTS ActivityType " +
             "(id text, name text, description text, PRIMARY KEY(id))")
 
@@ -42,7 +35,6 @@ object CassandraAdapter extends DatabaseAdapter {
     }
 
 
-
     /**
       * Appends data to a dataset of give id
       * @param inputData Data to insert into the database
@@ -50,25 +42,14 @@ object CassandraAdapter extends DatabaseAdapter {
       */
     override def insertData(inputData: InputData): Either[String, String] = {
 
-
-        createTables()
-
-
-
-        val inputDataID = inputData.id
         val activityTypeID = UUID.randomUUID().toString
         val timeframeID = UUID.randomUUID().toString
         val metaDataID = UUID.randomUUID().toString
-
-
 
         val metaData = inputData.metadata
         val activityType = metaData.activityType
         val timeframe = metaData.timeframe
 
-
-
-        //ActivityType
         session.execute("INSERT INTO ActivityType " +
             "(id, name, description) " +
             s"VALUES ('$activityTypeID', '${activityType.name}', '${activityType.description}')")
@@ -87,33 +68,32 @@ object CassandraAdapter extends DatabaseAdapter {
 
         session.execute("INSERT INTO InputData " +
             "(id, measurement, metaDataID) " +
-            s"VALUES ('$inputDataID', '${inputData.measurement}', '$metaDataID')")
+            s"VALUES ('${inputData.id}', '${inputData.measurement}', '$metaDataID')")
 
-
-        var dataPoints = inputData.data
-
-        // Insert each point into the DataPoint table
-        dataPoints foreach (dataPoint => insertDataPoint(dataPoint, inputDataID))
-
+        inputData.dataPoints foreach (dataPoint => insertDataPoint(dataPoint, inputData.id))
 
         Right(inputDataID)
     }
 
 
     def insertDataPoint(dataPoint: DataPoint, inputDataUUId: String) = {
-
         val uuid = UUID.randomUUID().toString
 
         session.execute("INSERT INTO DataPoint " +
             "(id, inputDataID, value, timestamp) " +
             s"VALUES ('$uuid', '$inputDataUUId', ${dataPoint.value.value}, ${dataPoint.timstamp})")
-
     }
 
 
 
 
-
+    def containsDataPointWithId(id: String): Boolean = {
+        val resultSet = session.execute(s"SELECT * FROM InputData WHERE id = '${id}'")
+        Option(resultSet.one()) match {
+            case Some(r) => true
+            case None => false
+        }
+    }
 
 
 
