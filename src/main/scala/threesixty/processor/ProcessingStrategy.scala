@@ -9,7 +9,7 @@ trait SingleProcessingMethod extends ProcessingMethod with Function1[ProcessedDa
 trait MultiProcessingMethod  extends ProcessingMethod with Function1[Set[ProcessedData], Set[ProcessedData]]
 
 
-case class ProcessingStrategy(methods: ProcessingMethod*)
+case class ProcessingStrategy(steps: ProcessingStep*)
         extends Function2[Set[ProcessedData], Config, Set[ProcessedData]] {
 
     /**
@@ -18,13 +18,8 @@ case class ProcessingStrategy(methods: ProcessingMethod*)
      *  @param config Configuration constraining the processing CURRENTLY NOT USED
      *  @returns Processed dataset
      */
-    def apply(data:Set[ProcessedData], config:Config):Set[ProcessedData] =
-        methods.foldLeft(data) {
-            case (d:Set[ProcessedData], m:MultiProcessingMethod) =>
-                m(d)
-            case (d:Set[ProcessedData], m:SingleProcessingMethod) =>
-                d map m
-        }
+    def apply(data:Set[ProcessedData], config:Config):Set[ProcessedData] = throw new NotImplementedError
+
 
     /**
      *  Alternative way of calling the processing strategy.
