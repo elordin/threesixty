@@ -40,8 +40,8 @@ object StatisticalAnalysis {
      */
     def variance(data: ProcessedData): ValueType = {
         val e = mean(data)
-        mean(ProcessedData( data.data.map { d:TaggedDataPoint =>
-            TaggedDataPoint(d.timestamp, math.pow(e.value - d.value.value, 2), d.tags) }) )
+        mean(ProcessedData(data.id, data.data.map { d:TaggedDataPoint =>
+            TaggedDataPoint(d.timestamp, math.pow(e.value - d.value.value, 2), d.tags) }))
     }
 
     def covariance(data1: ProcessedData, data2: ProcessedData): Double = {

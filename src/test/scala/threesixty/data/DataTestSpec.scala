@@ -22,7 +22,7 @@ class DataTestSpec extends FunSpec {
         describe("when created without data") {
             it("should throw an IllegalArgumentException") {
                 intercept[IllegalArgumentException] {
-                    val data = ProcessedData(Nil)
+                    val data = ProcessedData("", Nil)
                 }
             }
         }
@@ -42,7 +42,7 @@ class DataTestSpec extends FunSpec {
 
 
                 assertResult(processedData) {
-                    ProcessedData(List(
+                    ProcessedData("", List(
                         TaggedDataPoint(0, 0.0, Set(InputOrigin(inputData))),
                         TaggedDataPoint(5, 5.0, Set(InputOrigin(inputData)))
                     ))

@@ -1,6 +1,7 @@
 package threesixty.algorithms.interpolation
 
 import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.Identifier
 import threesixty.data.tags.{Tag, Interpolated, Original}
 import threesixty.processor.SingleProcessingMethod
 
@@ -10,15 +11,20 @@ import threesixty.processor.SingleProcessingMethod
  *  @author Thomas Weber
  *  @param resolution Desired max. time-distance between datapoints.
  */
-case class LinearInterpolation(resolution:Int) extends SingleProcessingMethod {
+case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identifier])
+    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
-     *  Inserts interpolated values into the dataset and adds tags
-     *  to identify interpolated and original values.
+     *  Created a new dataset with ID as specified in idMapping.
+     *  Inserts interpolated values along the original ones into
+     *  this new dataset and adds tags to identify interpolated
+     *  and original values.
      *
      *  @param data Data to interpolate
+     *  @return One element Set containing the new dataset
      */
-    def apply(data: ProcessedData):ProcessedData = {
+    @throws[NoSuchElementException]("if data.id can not be found in idMapping")
+    def apply(data: ProcessedData): Set[ProcessedData] = {
 
         /**
          *  Interpolation function.
@@ -56,7 +62,9 @@ case class LinearInterpolation(resolution:Int) extends SingleProcessingMethod {
 
         val orderedDataPoints = data.data.sortBy(_.timestamp)
 
-        data.copy(data = linearInterpolated(orderedDataPoints))
+        val newID = idMapping(data.id)
+
+        Set(data.copy(id = newID, data = linearInterpolated(orderedDataPoints)))
     }
 
 }

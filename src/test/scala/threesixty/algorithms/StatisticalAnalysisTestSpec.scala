@@ -7,7 +7,7 @@ import StatisticalAnalysis._
 class DBSCANSpec extends FunSpec {
 
     describe("The dataset [0.1, 2.4, 5.1, 7.2, 9.2, 12.0]") {
-        val sampleData = ProcessedData(List(
+        val sampleData = ProcessedData("", List(
             TaggedDataPoint(0,  0.1, Set()),
             TaggedDataPoint(0,  2.4, Set()),
             TaggedDataPoint(0,  5.1, Set()),
