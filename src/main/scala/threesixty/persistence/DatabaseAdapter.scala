@@ -15,9 +15,9 @@ trait DatabaseAdapter {
     /**
      *  Appends data to a dataset of give id
      *  @param data Data to insert into the database
-     *  @returns Either Right(id), new id of inserted data, or Left(errormsg) on error
+     *  @returns Either Right(uuid), new id of inserted data, or Left(errormsg) on error
      */
-    def insertData(data:InputData):Either[String, Int]
+    def insertData(data:InputData):Either[String, String]
 
     /**
      *  Appends data to a data set of give id
