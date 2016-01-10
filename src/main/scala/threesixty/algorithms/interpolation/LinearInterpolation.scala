@@ -1,11 +1,10 @@
 package threesixty.algorithms.interpolation
 
 import threesixty.data.{ProcessedData, TaggedDataPoint}
-import threesixty.data.Data.Identifier
+import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
 import threesixty.processor.SingleProcessingMethod
-import java.sql.Timestamp
 
 /**
  *  Linear interpolator

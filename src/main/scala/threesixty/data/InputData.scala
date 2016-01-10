@@ -1,8 +1,7 @@
 package threesixty.data
 
 import threesixty.data.metadata.InputMetadata
-import Data.{ValueType, Identifier}
-import java.sql.Timestamp
+import Data.{Timestamp, ValueType, Identifier}
 
 
 case class DataPoint(val timestamp:Timestamp, val value:ValueType)

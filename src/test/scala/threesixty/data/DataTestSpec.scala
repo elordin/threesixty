@@ -1,8 +1,8 @@
 package threesixty.data
 
 import threesixty.data.tags._
+import threesixty.data.Data.Timestamp
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
-import java.sql.Timestamp
 
 import org.scalatest._
 

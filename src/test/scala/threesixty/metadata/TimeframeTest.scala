@@ -1,10 +1,10 @@
 package threesixty.data.metadata
 
 import threesixty.data.{DataPoint, InputData}
+import threesixty.data.Data.Timestamp
 
 import org.scalatest.FlatSpec
 
-import java.sql.Timestamp
 
 
 /**

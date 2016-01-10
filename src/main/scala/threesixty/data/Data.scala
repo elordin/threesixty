@@ -1,11 +1,12 @@
 package threesixty.data
 
 import threesixty.data.tags.{InputOrigin}
-import java.sql.Timestamp
+import java.sql.{Timestamp => JSQLTimestamp}
 
 object Data {
 
     type Identifier = String
+    type Timestamp  = JSQLTimestamp
 
     trait ValueType {
         def value: Double
@@ -57,7 +58,7 @@ object Data {
 
 
 object Implicits {
-    import Data.Identifier
+    import Data.{Timestamp, Identifier}
 
     implicit def input2ProcessedData:(InputData) => ProcessedData = {
         case input@InputData(id: Identifier, data:List[DataPoint], metadata) =>

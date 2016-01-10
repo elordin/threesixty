@@ -4,9 +4,9 @@ import org.scalatest.FunSpec
 
 import threesixty.algorithms.interpolation.LinearInterpolation
 import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.Timestamp
 import threesixty.data.tags.{Tag, Original, Interpolated}
 
-import java.sql.Timestamp
 
 
 class LinearInterpolationSpec extends FunSpec {

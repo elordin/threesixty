@@ -3,13 +3,12 @@ package threesixty.processor
 import org.scalatest.FunSpec
 
 import threesixty.data.{ProcessedData, DataPoint, InputData}
-import threesixty.data.Data.Identifier
+import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.tags.Tag
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 import threesixty.config.Config
 import threesixty.persistence.DatabaseAdapter
 import threesixty.algorithms.interpolation.LinearInterpolation
-import java.sql.Timestamp
 import threesixty.data.Implicits.input2ProcessedData
 
 

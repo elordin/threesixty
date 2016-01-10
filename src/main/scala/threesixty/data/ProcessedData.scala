@@ -1,8 +1,7 @@
 package threesixty.data
 
 import threesixty.data.tags.{Tag}
-import Data.{ValueType, Identifier}
-import java.sql.Timestamp
+import Data.{Timestamp, ValueType, Identifier}
 
 case class TaggedDataPoint(
     val timestamp: Timestamp,

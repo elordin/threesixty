@@ -2,9 +2,9 @@ package threesixty.algorithms.statistics
 
 import org.scalatest._
 import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.Timestamp
 import StatisticalAnalysis._
 
-import java.sql.Timestamp
 
 class DBSCANSpec extends FunSpec {
 

@@ -1,7 +1,7 @@
 package threesixty.data.metadata
 
 import threesixty.data.{DataPoint, InputData}
-import java.sql.Timestamp
+import threesixty.data.Data.Timestamp
 
 object Timeframe {
     def deduce(contextData: InputData): Timeframe = {
