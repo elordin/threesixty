@@ -1,5 +1,8 @@
 package threesixty.data
 
+import threesixty.data.tags.{InputOrigin}
+import java.sql.Timestamp
+
 object Data {
 
     type Identifier = String
@@ -48,5 +51,25 @@ object Data {
         implicit def double2EnumValue(value: Double): EnumValue
         // throw new NoSuchElementException(s"No value found for '$value'"))
     }
+
+}
+
+
+
+object Implicits {
+    import Data.Identifier
+
+    implicit def input2ProcessedData:(InputData) => ProcessedData = {
+        case input@InputData(id: Identifier, data:List[DataPoint], metadata) =>
+            // error free
+            // sanitized
+            // metadata is complete
+            ProcessedData(id, data.map {
+                case DataPoint(timestamp, value) =>
+                    TaggedDataPoint(timestamp, value, Set(InputOrigin(input)))
+                })
+    }
+
+    implicit def timestamp2Long(timestamp: Timestamp): Long = timestamp.getTime()
 
 }

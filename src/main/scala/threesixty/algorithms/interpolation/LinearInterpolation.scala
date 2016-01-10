@@ -2,8 +2,10 @@ package threesixty.algorithms.interpolation
 
 import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Identifier
+import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
 import threesixty.processor.SingleProcessingMethod
+import java.sql.Timestamp
 
 /**
  *  Linear interpolator
@@ -46,10 +48,10 @@ case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identi
                     val b = v1.value - m * t1
 
                     def interpolFunc(x:Int):TaggedDataPoint =
-                        TaggedDataPoint(x, m * x + b, Set[Tag](Interpolated))
+                        TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
 
                     TaggedDataPoint(t1, v1, tags1 + Original) ::
-                        Range(t1 + resolution, t2, resolution).map(interpolFunc).toList ++
+                        Range(t1.toInt + resolution, t2.toInt, resolution).map(interpolFunc).toList ++
                         linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
 
                 } else {
@@ -60,7 +62,7 @@ case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identi
             case otherwise => otherwise
         }
 
-        val orderedDataPoints = data.data.sortBy(_.timestamp)
+        val orderedDataPoints = data.data.sortBy(d => timestamp2Long(d.timestamp))
 
         val newID = idMapping(data.id)
 

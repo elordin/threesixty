@@ -1,7 +1,7 @@
 package threesixty.goals
 
 import threesixty.data.InputData
-import threesixty.metadata.Timeframe
+import threesixty.data.metadata.Timeframe
 
 trait GoalMetadata
 

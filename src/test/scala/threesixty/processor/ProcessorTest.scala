@@ -5,11 +5,10 @@ import org.scalatest.FunSpec
 import threesixty.data.{ProcessedData, DataPoint, InputData}
 import threesixty.data.Data.Identifier
 import threesixty.data.tags.Tag
-import threesixty.data.metadata.InputMetadata
+import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 import threesixty.config.Config
 import threesixty.persistence.DatabaseAdapter
 import threesixty.algorithms.interpolation.LinearInterpolation
-import threesixty.metadata.{Timeframe, Reliability, Resolution, Scaling, ActivityType}
 import java.sql.Timestamp
 import threesixty.data.Implicits.input2ProcessedData
 
@@ -21,9 +20,9 @@ class ProcessorTestSpec extends FunSpec {
                  "whose ID mapping does not override the original data") {
             describe("on the dataset (0,0), (5,5)") {
                 val sampleData = InputData("SomeId", List(
-                        DataPoint(0, 0.0),
-                        DataPoint(5, 5.0)
-                    ), InputMetadata(
+                        DataPoint(new Timestamp(0), 0.0),
+                        DataPoint(new Timestamp(5), 5.0)
+                    ), CompleteInputMetadata(
                         Timeframe(new Timestamp(0), new Timestamp(1)),
                         Reliability.Unknown,
                         Resolution.Low,

@@ -1,8 +1,7 @@
 package threesixty.data
 
 import threesixty.data.tags._
-import threesixty.data.metadata.InputMetadata
-import threesixty.metadata.{Timeframe, Reliability, Resolution, Scaling, ActivityType}
+import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 import java.sql.Timestamp
 
 import org.scalatest._
@@ -14,7 +13,7 @@ class DataTestSpec extends FunSpec {
         describe("when created without data") {
             it("should throw an IllegalArgumentException") {
                 intercept[IllegalArgumentException] {
-                    val data = InputData("", Nil,  InputMetadata(
+                    val data = InputData("", Nil, CompleteInputMetadata(
                             Timeframe(new Timestamp(0), new Timestamp(1)),
                             Reliability.Unknown,
                             Resolution.Low,
@@ -41,9 +40,9 @@ class DataTestSpec extends FunSpec {
         import threesixty.data.Implicits._
         describe("of InputData with data (0,0), (5,5) to ProcessedData") {
             val inputData:InputData = InputData("", List(
-                DataPoint(0, 0.0),
-                DataPoint(5, 5.0)
-            ),  InputMetadata(
+                DataPoint(new Timestamp(0), 0.0),
+                DataPoint(new Timestamp(5), 5.0)
+            ), CompleteInputMetadata(
                     Timeframe(new Timestamp(0), new Timestamp(1)),
                     Reliability.Unknown,
                     Resolution.Low,
@@ -59,8 +58,8 @@ class DataTestSpec extends FunSpec {
 
                 assertResult(processedData) {
                     ProcessedData("", List(
-                        TaggedDataPoint(0, 0.0, Set(InputOrigin(inputData))),
-                        TaggedDataPoint(5, 5.0, Set(InputOrigin(inputData)))
+                        TaggedDataPoint(new Timestamp(0), 0.0, Set(InputOrigin(inputData))),
+                        TaggedDataPoint(new Timestamp(5), 5.0, Set(InputOrigin(inputData)))
                     ))
                 }
             }

@@ -1,3 +1,5 @@
+/* Commented because purpose is unclear and causes compile errors
+
 package threesixty.visualizer
 
 import threesixty.data.InputData
@@ -14,3 +16,5 @@ case class VisualizationMatchingTuple(val resolution: Resolution.type, val scali
         data.metadata.resolution == resolution && data.metadata.scaling == scaling
     }
 }
+
+*/

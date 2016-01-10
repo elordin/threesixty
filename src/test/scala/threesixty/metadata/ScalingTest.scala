@@ -1,4 +1,4 @@
-package threesixty.metadata
+package threesixty.data.metadata
 
 import org.scalatest.FlatSpec
 

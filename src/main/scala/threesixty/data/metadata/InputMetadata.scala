@@ -1,6 +1,5 @@
 package threesixty.data.metadata
 
-import threesixty.metadata._
 import threesixty.data.InputData
 
 trait InputMetadata

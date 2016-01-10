@@ -1,4 +1,4 @@
-package threesixty.metadata
+package threesixty.data.metadata
 
 import threesixty.data.{DataPoint, InputData}
 import java.sql.Timestamp

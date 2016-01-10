@@ -1,9 +1,11 @@
-package threesixty.metadata
+package threesixty.data.metadata
+
+import threesixty.data.{DataPoint, InputData}
+
+import org.scalatest.FlatSpec
 
 import java.sql.Timestamp
 
-import org.scalatest.FlatSpec
-import threesixty.data.{DataPoint, InputData}
 
 /**
   * @author Thomas Engel
@@ -18,7 +20,7 @@ class TimeframeTestSpec extends FlatSpec{
             DataPoint(min, 1),
             DataPoint(new Timestamp(600), 2),
             DataPoint(max, 3))
-        val inputdata = InputData(1, datapoints, null)
+        val inputdata = InputData("Data1", datapoints, null)
 
         val timeframe = Timeframe.deduce(inputdata)
 
@@ -35,9 +37,9 @@ class TimeframeTestSpec extends FlatSpec{
         val datapoints3 = List(DataPoint(new Timestamp(900), 1), DataPoint(max, 2))
 
         val inputdata = List(
-            InputData(1, datapoints1, null),
-            InputData(2, datapoints2, null),
-            InputData(3, datapoints3, null))
+            InputData("Data1", datapoints1, null),
+            InputData("Data2", datapoints2, null),
+            InputData("Data3", datapoints3, null))
 
         val timeframe = Timeframe.deduce(inputdata)
 
