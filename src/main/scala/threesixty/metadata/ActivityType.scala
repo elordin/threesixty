@@ -1,7 +1,17 @@
 package threesixty.metadata
 
+import threesixty.data.InputData
+
+object ActivityType {
+    def deduce(contextData: InputData): ActivityType = {
+        val a = new ActivityType("Unknown")
+        a.setDescription("This ActivityType was automatically deduced")
+        a
+    }
+}
+
 /**
-  * Created by Thomas on 30.12.2015.
+  * @author Thomas Engel
   */
 case class ActivityType(var name: String) {
     var description: String = null

@@ -1,9 +1,23 @@
 package threesixty.metadata
 
+import threesixty.data.{DataPoint, InputData}
 import java.sql.Timestamp
 
+object Timeframe {
+    def deduce(contextData: InputData): Timeframe = {
+        Timeframe(contextData.data.head.timestamp, contextData.data.last.timestamp)
+    }
+
+    def deduce(contextData: List[InputData]): Timeframe = {
+        val frames = contextData.map(deduce)
+        val min = frames.reduceLeft((l,r) => if(l.start.before(r.start)) l else r)
+        val max = frames.reduceLeft((l,r) => if(l.end.before(r.end)) r else l)
+        Timeframe(min.start, max.end)
+    }
+}
+
 /**
-  * Created by Thomas on 30.12.2015.
+  * @author Thomas Engel
   */
 case class Timeframe(val start: Timestamp, val end: Timestamp) {
     require(start != null, "Null value for start not allowed")
