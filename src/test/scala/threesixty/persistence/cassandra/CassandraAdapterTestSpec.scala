@@ -28,13 +28,14 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers{
     val inputData = new InputData(id, "Heart Rate", List(dataPoint), metaData)
 
 
-
-
     describe("Inserting input data into the Cassandra database") {
         it("should contain the input data") {
 
-            CassandraAdapter.insertData(inputData)
-            CassandraAdapter.containsDataPointWithId(id) should be (true)
+            val uri = CassandraConnectionUri("cassandra://localhost:9042/test")
+            val cassandraAdapter = new CassandraAdapter(uri)
+
+            cassandraAdapter.insertData(inputData)
+            cassandraAdapter.containsDataPointWithId(id) should be (true)
         }
     }
 

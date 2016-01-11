@@ -13,6 +13,6 @@ case class InputData(
         val metadata: InputMetadata) {
 
 
-    require(data.length > 0, "Emtpy dataset not allowed.")
+    require(dataPoints.length > 0, "Emtpy dataset not allowed.")
 
 }

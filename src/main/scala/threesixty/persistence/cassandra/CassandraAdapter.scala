@@ -10,9 +10,8 @@ import scala.Option
 /**
   * Created by Stefan Cimander on 09.01.16.
   */
-object CassandraAdapter extends DatabaseAdapter {
+class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
 
-    val uri = CassandraConnectionUri("cassandra://localhost:9042/test")
     val session = CassandraConnector.createSessionAndInitKeyspace(uri)
 
     createTables()
@@ -72,7 +71,7 @@ object CassandraAdapter extends DatabaseAdapter {
 
         inputData.dataPoints foreach (dataPoint => insertDataPoint(dataPoint, inputData.id))
 
-        Right(inputDataID)
+        Right(inputData.id)
     }
 
 
