@@ -41,6 +41,6 @@ case class LineChartConfig private (
     title: String = ""
 ) extends VisualizationConfig {
 
-    def apply(data: Set[ProcessedData]): Visualization = LineChartConfig.LineChart(this)
+    def apply(data: Set[ProcessedData]): LineChartConfig.LineChart = LineChartConfig.LineChart(this)
 
 }
