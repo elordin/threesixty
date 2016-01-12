@@ -1,27 +1,38 @@
 package threesixty.visualizer
 
 import threesixty.data.ProcessedData
-import threesixty.config.Config
 
 
-case class Visualizer[V <: Visualization]()
-    extends Function2[Set[ProcessedData], Config, V] {
+trait VisualizationConfig extends Function1[Set[ProcessedData], Visualization] {}
 
-    /**
-     *  Visualizes the processed data.
-     *  @param data Dataset to be viusalized
-     *  @param config Configuration constraining the visualization
-     *  @returns Visualization
-     */
-    def apply(data:Set[ProcessedData], config:Config):V =
-        throw new NotImplementedError
 
-    /**
-     *  Alternative way of calling the visualizer.
-     *  @see apply
-     */
-    // def process = apply(_,_)
-    def visualize(data:Set[ProcessedData], config:Config) = apply(data, config)
+trait withVisualizationConversions {
+    def visualizationConversions: Map[String, (String) => VisualizationConfig] = Map.empty
+}
 
+
+/**
+ *  Visualizer allows to convert a definition of a desired output
+ *  visualization into a fitting VisualizationConfig.
+ *
+ *  Stack traits derived from withVisualizationConversions to add
+ *  further possible visualizations.
+ *
+ *  @author Thomas Weber
+ *
+ *  @example {{{
+ *      val visualizer = new Visualizer with LineChartConfig.Conversion with HeatMapConfig.Conversion
+ *  }}}
+ */
+class Visualizer extends withVisualizationConversions {
+
+    @throws[NoSuchElementException]("if the json specifies a type that has no conversion")
+    def toVisualizationConfig(json: String): VisualizationConfig = {
+        val vizType: String = ??? // get type from visualization
+        val args: String = ???    // get args from visualization
+        val conversion = visualizationConversions.getOrElse(vizType,
+            throw new NoSuchElementException(s"No conversion for type $vizType found."))
+        conversion(args)
+    }
 
 }

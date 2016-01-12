@@ -14,10 +14,7 @@ object APIHandler {
 }
 
 /**
- *  Handles all interaction with the API, including
- *   - Reading and parsing of the request body
- *   - Conversion to Config object
- *   - Starting the processing job
+ *  Reads the HTTP request and dispatches it to an EngineActor
  */
 class APIHandler extends Actor {
     val log = Logging(context.system, this)

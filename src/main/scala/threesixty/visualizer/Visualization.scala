@@ -4,10 +4,6 @@ import scala.xml.{Elem => XMLElem}
 
 trait Visualization {
 
-    val width:Int
-
-    val height:Int
-
     def toSVG:XMLElem
 
     // def toPNG:PNGImage
