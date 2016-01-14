@@ -1,6 +1,8 @@
 package threesixty.algorithms.interpolation
 
 import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.{Identifier, Timestamp}
+import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
 import threesixty.processor.SingleProcessingMethod
 
@@ -10,15 +12,20 @@ import threesixty.processor.SingleProcessingMethod
  *  @author Thomas Weber
  *  @param resolution Desired max. time-distance between datapoints.
  */
-case class LinearInterpolation(resolution:Int) extends SingleProcessingMethod {
+case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identifier])
+    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
-     *  Inserts interpolated values into the dataset and adds tags
-     *  to identify interpolated and original values.
+     *  Created a new dataset with ID as specified in idMapping.
+     *  Inserts interpolated values along the original ones into
+     *  this new dataset and adds tags to identify interpolated
+     *  and original values.
      *
      *  @param data Data to interpolate
+     *  @return One element Set containing the new dataset
      */
-    def apply(data: ProcessedData):ProcessedData = {
+    @throws[NoSuchElementException]("if data.id can not be found in idMapping")
+    def apply(data: ProcessedData): Set[ProcessedData] = {
 
         /**
          *  Interpolation function.
@@ -40,10 +47,10 @@ case class LinearInterpolation(resolution:Int) extends SingleProcessingMethod {
                     val b = v1.value - m * t1
 
                     def interpolFunc(x:Int):TaggedDataPoint =
-                        TaggedDataPoint(x, m * x + b, Set[Tag](Interpolated))
+                        TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
 
                     TaggedDataPoint(t1, v1, tags1 + Original) ::
-                        Range(t1 + resolution, t2, resolution).map(interpolFunc).toList ++
+                        Range(t1.toInt + resolution, t2.toInt, resolution).map(interpolFunc).toList ++
                         linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
 
                 } else {
@@ -54,9 +61,11 @@ case class LinearInterpolation(resolution:Int) extends SingleProcessingMethod {
             case otherwise => otherwise
         }
 
-        val orderedDataPoints = data.data.sortBy(_.timestamp)
+        val orderedDataPoints = data.data.sortBy(d => timestamp2Long(d.timestamp))
 
-        data.copy(data = linearInterpolated(orderedDataPoints))
+        val newID = idMapping(data.id)
+
+        Set(data.copy(id = newID, data = linearInterpolated(orderedDataPoints)))
     }
 
 }

@@ -1,5 +1,7 @@
 package threesixty.algorithms
 
+import threesixty.data.TaggedDataPoint
+
 import clustering._
 
 object Clustering {
@@ -20,13 +22,37 @@ object Clustering {
     object     Noise            extends Classification
     object     Unclassified     extends Classification
 
-    def pam[D] = throw new NotImplementedError
+
+    type DistanceFunctionSelector[D, V] = ((D => V)*) => DistanceFunction[D]
+
+    type DistanceFunction[D] = (D, D) => Double
 
 
-    def clarans[D] = throw new NotImplementedError
+    def genericManhattanDistance[D, V <% Double]: DistanceFunctionSelector[D, V] = {
+        selectors => {
+            (d1, d2) => {
+                (selectors.map {
+                  s => math.abs(s(d1) - s(d2))
+                }).sum
+            }
+        }
+    }
 
+    def manhattanDistance = genericManhattanDistance[TaggedDataPoint, Double]
 
-    def em[D] = throw new NotImplementedError
+    def genericEuclidianDistance[D, V <% Double]: DistanceFunctionSelector[D, V] = {
+        selectors => {
+            (d1, d2) => {
+                math.sqrt(
+                    (selectors.map {
+                        s => math.pow(s(d1) - s(d2), 2)
+                    }).sum
+                )
+            }
+        }
+    }
+
+    def euclidianDistanceS = genericEuclidianDistance[TaggedDataPoint, Double]
 
 
     def kModes[D] = throw new NotImplementedError
@@ -35,20 +61,11 @@ object Clustering {
     def snn[D] = throw new NotImplementedError
 
 
-    def dbscan[D](dataset:Set[D],
-                  distFunction:(D, D) => Double)
-                 (implicit minPts:Int,
-                           epsilon:Double):Map[D, Classification] =
+    def dbscan[D](dataset: Set[D],
+                  distFunction: DistanceFunction[D])
+                 (implicit minPts: Int,
+                           epsilon: Double): Map[D, Classification] =
         DBSCAN.run[D](dataset,distFunction)
 
 
-    def hdbscan[D] = throw new NotImplementedError
-
-
-    def optics[D](db:List[D],
-                  distFunction:(D, D) => Double)
-                 (implicit minPts:Int,
-                           epsilon:Double):Map[D, Classification] = {
-        throw new NotImplementedError
-    }
 }

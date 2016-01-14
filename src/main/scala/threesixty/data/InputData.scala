@@ -1,19 +1,36 @@
 package threesixty.data
 
-import threesixty.data.metadata.InputMetadata
-import Data.ValueType
-import java.sql.Timestamp
+import threesixty.data.metadata.{CompleteInputMetadata, IncompleteInputMetadata}
+import Data.{Timestamp, ValueType, Identifier}
 
-
+/*
 case class DataPoint(val timstamp: Timestamp, val value: ValueType)
 
 case class InputData(
         val id: String,
-        val measurement: String, //heartrate, temperature etc
         val dataPoints: List[DataPoint],
-        val metadata: InputMetadata) {
+=======
+*/
 
 
-    require(dataPoints.length > 0, "Emtpy dataset not allowed.")
+case class DataPoint(val timestamp:Timestamp, val value:ValueType)
+
+
+case class UnsafeInputData(
+    val id: Identifier,
+    val measurement: String, //heartrate, temperature etc
+    val data: List[DataPoint],
+    val metadata: IncompleteInputMetadata
+)
+
+
+case class InputData(
+    val id: Identifier,
+    val measurement: String, //heartrate, temperature etc
+    val data: List[DataPoint],
+    val metadata: CompleteInputMetadata
+) {
+
+    require(data.length > 0, "Emtpy dataset not allowed.")
 
 }

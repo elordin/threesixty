@@ -2,18 +2,20 @@ package threesixty.algorithms.statistics
 
 import org.scalatest._
 import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.Timestamp
 import StatisticalAnalysis._
+
 
 class DBSCANSpec extends FunSpec {
 
     describe("The dataset [0.1, 2.4, 5.1, 7.2, 9.2, 12.0]") {
-        val sampleData = ProcessedData(List(
-            TaggedDataPoint(0,  0.1, Set()),
-            TaggedDataPoint(0,  2.4, Set()),
-            TaggedDataPoint(0,  5.1, Set()),
-            TaggedDataPoint(0,  7.2, Set()),
-            TaggedDataPoint(0,  9.2, Set()),
-            TaggedDataPoint(0, 12.0, Set())
+        val sampleData = ProcessedData("", List(
+            TaggedDataPoint(new Timestamp(0),  0.1, Set()),
+            TaggedDataPoint(new Timestamp(0),  2.4, Set()),
+            TaggedDataPoint(new Timestamp(0),  5.1, Set()),
+            TaggedDataPoint(new Timestamp(0),  7.2, Set()),
+            TaggedDataPoint(new Timestamp(0),  9.2, Set()),
+            TaggedDataPoint(new Timestamp(0), 12.0, Set())
         ))
 
         it("should have a median of 5.1") {

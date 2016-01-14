@@ -1,12 +1,10 @@
 package threesixty.visualizer
 
+import scala.xml.{Elem => XMLElem}
+
 trait Visualization {
 
-    val width:Int
-
-    val height:Int
-
-    // def toSVG:SVGImage
+    def toSVG:XMLElem
 
     // def toPNG:PNGImage
 
