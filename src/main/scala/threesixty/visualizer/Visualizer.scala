@@ -100,17 +100,28 @@ trait withVisualizationInfos {
  */
 class Visualizer extends withVisualizationInfos {
 
+    @throws[IllegalArgumentException]("if the json specifies a type that has no conversion")
     @throws[NoSuchElementException]("if the json specifies a type that has no conversion")
     def toVisualizationConfig(jsonString: String): VisualizationConfig = {
         val json: JsObject = jsonString.parseJson.asJsObject
-        val vizType = json.getFields("type")(0).convertTo[String]
+        val vizType = try {
+            json.getFields("type")(0).convertTo[String]
+        } catch {
+            case e:IndexOutOfBoundsException =>
+                throw new IllegalArgumentException("parameter \"type\" missing for visualization")
+        }
 
         val conversion: (String) => VisualizationConfig =
             this.visualizationInfos.getOrElse(vizType,
-                throw new DeserializationException(s"Unknown visualization type $vizType")
+                throw new NoSuchElementException(s"Unknown visualization type $vizType")
             ).conversion
 
-        val args: String = ???    // get args from visualization
+        val args: String = try {
+            json.getFields("args")(0).convertTo[String] // get args from visualization
+        } catch {
+            case e:IndexOutOfBoundsException =>
+                throw new IllegalArgumentException("parameter \"args\" missing for visualization")
+        }
 
         conversion(args)
     }
