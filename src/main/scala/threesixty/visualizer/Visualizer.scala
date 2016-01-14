@@ -1,13 +1,24 @@
 package threesixty.visualizer
 
 import threesixty.data.ProcessedData
+import threesixty.config.Config
+
+import spray.json._
+import DefaultJsonProtocol._
 
 
-trait VisualizationConfig extends Function1[Set[ProcessedData], Visualization] {}
+case class VisualizationInfo(
+    val name: String,
+    val conversion: (String) => VisualizationConfig,
+    val usage: String
+)
 
 
-trait withVisualizationConversions {
-    def visualizationConversions: Map[String, (String) => VisualizationConfig] = Map.empty
+trait VisualizationConfig extends Function1[Config, Visualization]
+
+
+trait withVisualizationInfos {
+    def visualizationInfos: Map[String, VisualizationInfo] = Map.empty
 }
 
 
@@ -24,14 +35,20 @@ trait withVisualizationConversions {
  *      val visualizer = new Visualizer with LineChartConfig.Conversion with HeatMapConfig.Conversion
  *  }}}
  */
-class Visualizer extends withVisualizationConversions {
+class Visualizer extends withVisualizationInfos {
 
     @throws[NoSuchElementException]("if the json specifies a type that has no conversion")
-    def toVisualizationConfig(json: String): VisualizationConfig = {
-        val vizType: String = ??? // get type from visualization
+    def toVisualizationConfig(jsonString: String): VisualizationConfig = {
+        val json: JsObject = jsonString.parseJson.asJsObject
+        val vizType = json.getFields("type")(0).convertTo[String]
+
+        val conversion: (String) => VisualizationConfig =
+            this.visualizationInfos.getOrElse(vizType,
+                throw new DeserializationException(s"Unknown visualization type $vizType")
+            ).conversion
+
         val args: String = ???    // get args from visualization
-        val conversion = visualizationConversions.getOrElse(vizType,
-            throw new NoSuchElementException(s"No conversion for type $vizType found."))
+
         conversion(args)
     }
 

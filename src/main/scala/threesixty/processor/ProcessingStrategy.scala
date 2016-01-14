@@ -36,4 +36,3 @@ case class ProcessingStrategy(steps: ProcessingStep*)
     def process(config:Config): Unit = apply(config)
 
 }
-

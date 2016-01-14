@@ -2,18 +2,31 @@ package threesixty.visualizer.visualizations
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp}
-import threesixty.visualizer.{Visualization, VisualizationConfig, withVisualizationConversions}
+import threesixty.visualizer.{Visualization, VisualizationConfig, withVisualizationInfos, VisualizationInfo}
+import threesixty.config.Config
 
 
 object LineChartConfig {
-    trait Conversion extends withVisualizationConversions {
-        abstract override def visualizationConversions: Map[String, (String) => VisualizationConfig] =
-            super.visualizationConversions + (LineChartConfig.name -> {
-                json:String => LineChartConfig.apply(json)
-            })
+    trait Info extends withVisualizationInfos {
+        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+            super.visualizationInfos + ("linechart" ->
+                VisualizationInfo(
+                    "LineChart",
+                    { json:String => LineChartConfig.apply(json) },
+                    "Parameters: \n" +
+                    "    height: Int    - Height of the diagram in px\n" +
+                    "    width:  Int    - Width of the diagram in px\n" +
+                    "    xMin:   Int    - Minimum value of the x-axis\n" +
+                    "    xMax:   Int    - Maximum value of the x-axis\n" +
+                    "    yMin:   Int    - Minimum value of the y-axis\n" +
+                    "    yMax:   Int    - Maximum value of the y-axis\n" +
+                    "    xLabel: String - Label for the x-axis\n" +
+                    "    yLabel: String - Label for the y-axis\n" +
+                    "    title:  String - Diagram title\n"
+                )
+            )
     }
 
-    val name = "LineChart"
 
     /**
      *  Public constructor that parses JSON into a configuration
@@ -41,6 +54,6 @@ case class LineChartConfig private (
     title: String = ""
 ) extends VisualizationConfig {
 
-    def apply(data: Set[ProcessedData]): LineChartConfig.LineChart = LineChartConfig.LineChart(this)
+    def apply(config: Config): LineChartConfig.LineChart = LineChartConfig.LineChart(this)
 
 }
