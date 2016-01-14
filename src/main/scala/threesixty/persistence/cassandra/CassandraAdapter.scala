@@ -3,6 +3,7 @@ package threesixty.persistence.cassandra
 import java.sql.Timestamp
 import java.util.UUID
 
+import com.datastax.driver.core.Row
 import threesixty.data.metadata.InputMetadata
 import threesixty.data.{DataPoint, InputData}
 import threesixty.metadata.Reliability
@@ -113,23 +114,24 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
       */
     override def getDataSet(id: String): Either[String, InputData] = {
 
-        val measurement = session.execute(s"SELECT measurement FROM InputData WHERE id = '${id}'").toString()
+        val measurement = session.execute(s"SELECT measurement FROM InputData WHERE id = '${id}'").one().getString("measurement")
 
-        val metaDataId = session.execute(s"SELECT MetaDataID FROM InputData Where id = '${id}'").toString
+        val metaDataId = session.execute(s"SELECT MetaDataID FROM InputData Where id = '${id}'").one().getString(("MetaDataID"))
+
         val metadata = getInputMetaData(metaDataId)
 
-        var meta = metadata match {
+        val meta = metadata match {
             case Left(errormsg) => return Left(errormsg)
             case Right(x) => x
         }
 
         val dataPoints = getDataPointForInputData(id)
-        var points = dataPoints match {
+        val points = dataPoints match {
             case Left(errormsg) => return Left(errormsg)
             case Right(x) => x
         }
 
-        var output =  new InputData(id, measurement, points, meta)
+        val output =  new InputData(id, measurement, points, meta)
         Right(output)
 
     }
@@ -141,19 +143,30 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
     */
     def getInputMetaData(InputMetaDataId : String) : Either[String,InputMetadata] = {
 
-      val timeframeID = session.execute((s"SELECT timeframeID FROM InputMetaData Where id = '${InputMetaDataId}'"))
-        .one().getString("timeframeID").toString
-      val start = session.execute((s"SELECT startTime FROM Timeframe Where id = '${timeframeID}'")).one()
-      val end = session.execute((s"SELECT endTime FROM Timeframe Where id = '${timeframeID}'")).one()
+      //val timeframeID = "93857940-9c35-45f1-aa15-a08d9c5f4202"
+ //   val InputMetaDataId = "bb80626b-f301-4945-bc35-40b37e4ff06a"
+    val timeframeID_SET = session.execute("SELECT timeframeId FROM InputMetaData Where id = '" + InputMetaDataId + "'")
+    val activityTypeID_SET = session.execute("SELECT activityTypeID FROM InputMetaData Where id = '" + InputMetaDataId + "'")
 
-      val startTime = new Timestamp(start.getTimestamp("startTime").getTime())
-      val endTime = new Timestamp(end.getTimestamp("endTime").getTime())
+    //Sending ErrorMessage
+    if (timeframeID_SET == null || activityTypeID_SET == null)
+      return Left("Something went wrong while fetching metadata from the Database. ")
 
-      val timeframe = new Timeframe(startTime, endTime)
+  //timeframe
+    var timeframeID= timeframeID_SET.one().getString("timeframeID").toString()
+    val start = session.execute("SELECT startTime FROM Timeframe Where id = '"+timeframeID+"'").one()
+    val end = session.execute((s"SELECT endTime FROM Timeframe Where id = '"+timeframeID+"'")).one()
+    val startTime = new Timestamp(start.getTimestamp("startTime").getTime())
+    val endTime = new Timestamp(end.getTimestamp("endTime").getTime())
+    val timeframe = new Timeframe(startTime, endTime)
 
+  //activity
+    val activityTypeID = activityTypeID_SET.one().getString("activityTypeID")
+    val activity_name = session.execute("SELECT name FROM activityType Where id = '" + activityTypeID + "'" ).one().getString("name")
+    val activity_desc = session.execute("SELECT description FROM activityType Where id = '" + activityTypeID + "'" ).one().getString("description")
+     var activity = new ActivityType("name")
+    activity.setDescription(activity_desc)
 
-
-      var activity = null
 
 
 
@@ -163,7 +176,7 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
       val resolutionName = session.execute(s"SELECT resolution FROM InputMetaData WHERE id = '${InputMetaDataId}'").one().getString("resolution")
       var resolution = Resolution.withName(resolutionName)
 
-      val scalingName = session.execute(s"SELECT resolution FROM InputMetaData WHERE id = '${InputMetaDataId}'").one().getString("scaling")
+      val scalingName = session.execute(s"SELECT scaling FROM InputMetaData WHERE id = '${InputMetaDataId}'").one().getString("scaling")
       var scaling = Scaling.withName(scalingName)
 
       var output = new InputMetadata(timeframe, reliability, resolution, scaling, activity)
@@ -177,8 +190,10 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
 */
 def getDataPointForInputData(id : String) : Either[String, List[DataPoint]] = {
 
+  //timestamp + valuetype
+ Right( List(new DataPoint(234234234,value = 0.2)))
 //selecting datapoints which have the InputData Id as "Foreign Key". Make List, return
-???
+
 }
 
 
