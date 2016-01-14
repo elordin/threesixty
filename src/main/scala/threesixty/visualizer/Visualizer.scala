@@ -2,6 +2,7 @@ package threesixty.visualizer
 
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.config.Config
+import threesixty.engine.UsageInfo
 
 import spray.json._
 import DefaultJsonProtocol._
@@ -76,7 +77,7 @@ case class VisualizationInfo(
     val name: String,
     val conversion: (String) => VisualizationConfig,
     val usage: String
-)
+) extends UsageInfo
 
 
 trait withVisualizationInfos {
@@ -94,7 +95,7 @@ trait withVisualizationInfos {
  *  @author Thomas Weber
  *
  *  @example {{{
- *      val visualizer = new Visualizer with LineChartConfig.Conversion with HeatMapConfig.Conversion
+ *      val visualizer = new Visualizer with LineChartConfig.Info with PieChartConfig.Info
  *  }}}
  */
 class Visualizer extends withVisualizationInfos {

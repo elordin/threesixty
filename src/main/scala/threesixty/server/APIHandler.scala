@@ -5,7 +5,7 @@ import threesixty.visualizer.Visualizer
 import threesixty.engine.Engine
 import threesixty.persistence.DatabaseAdapter
 
-import threesixty.visualizer.visualizations.LineChartConfig
+import threesixty.visualizer.visualizations._
 
 import threesixty.data.Data.Identifier
 import threesixty.data.InputData
@@ -22,7 +22,12 @@ import MediaTypes.`application/json`
 object APIHandler {
     val engine = Engine(
         new Processor {},
-        new Visualizer with LineChartConfig.Info,
+
+        new Visualizer
+            with LineChartConfig.Info
+            with BarChartConfig.Info
+            with PieChartConfig.Info,
+
         new DatabaseAdapter {
             def getDataset(id:Identifier):Either[String, InputData] = ???
             def insertData(data:InputData):Either[String, Identifier] = ???
@@ -47,7 +52,7 @@ class APIHandler extends Actor {
     def receive = {
         case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
             var response = APIHandler.engine.processRequest(body.asString)
-            sender ! response
+            sender ! response.toHttpResponse
 
         case _: Http.ConnectionClosed =>
             context stop self

@@ -12,6 +12,11 @@ import spray.json._
 import DefaultJsonProtocol._
 
 
+trait UsageInfo {
+    def usage: String
+}
+
+
 trait EngineResponse {
     def toHttpResponse: HttpResponse
 }
@@ -40,7 +45,7 @@ case class HelpResponse(val msg: String, val status: StatusCode = StatusCodes.OK
 
 case class Engine(processor: Processor, visualizer: Visualizer, dbAdapter: DatabaseAdapter) {
 
-    def processRequest(jsonString: String): HttpResponse = {
+    def processRequest(jsonString: String): EngineResponse = {
         val json = jsonString.parseJson.asJsObject
 
         val requestType: String = json.getFields("type")(0).convertTo[String]
@@ -52,12 +57,39 @@ case class Engine(processor: Processor, visualizer: Visualizer, dbAdapter: Datab
                 case _               => ErrorResponse(s"Unknown command: $requestType")
             }
 
-        result.toHttpResponse
+        result
     }
 
 
     def processHelpRequest(json: JsObject): HelpResponse = {
-        HelpResponse("Help Text")
+        // TODO: Maybe add another param to switch between processor and visualizer help
+        try {
+            val helpFor = json.getFields("for")(0).convertTo[String]
+            helpFor.toLowerCase match {
+                case "list" =>
+                    val availablevisualizations = visualizer.visualizationInfos.keys
+                    HelpResponse(availablevisualizations.foldLeft(
+                        "Available visualizations:\n")(_ + "    " + _ + "\n"))
+                case _ =>
+                    val helper: UsageInfo = visualizer.visualizationInfos.getOrElse(
+                        helpFor, ??? // get from processor
+                    )
+                    HelpResponse(helper.usage)
+            }
+        } catch {
+            case _:Exception => HelpResponse(
+                // get processor
+                "Threesixty Engine\n" +
+                "    use\n" +
+                "       {\n" +
+                "           \"type\" : \"help\",\n" +
+                "           \"for\" : KEYWORD\n" +
+                "       }\n" +
+                "    where KEYWORD is either a visualization, " +
+                "a processing method to get usage information " +
+                "or \"list\" to show a list of available visualizations " +
+                "and processing methods  \n")
+        }
     }
 
 
