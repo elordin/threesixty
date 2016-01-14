@@ -190,9 +190,25 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
 */
 def getDataPointForInputData(id : String) : Either[String, List[DataPoint]] = {
 
-  //timestamp + valuetype
- Right( List(new DataPoint(234234234,value = 0.2)))
-//selecting datapoints which have the InputData Id as "Foreign Key". Make List, return
+  //fetching timestamp + values
+  val resultSet_timestamp = session.execute("SELECT timestamp FROM datapoint Where InputdataId = '"+ id +"'" )
+  val resultSet_value= session.execute(" SELECT value FROM datapoint Where InputdataId = '" + id + "'")
+
+  //Sending ErrorMessage
+  if (resultSet_timestamp == null || resultSet_value == null)
+    return Left("Something went wrong while fetching metadata from the Database. ")
+
+  val output = List()
+
+  while ((!resultSet_timestamp.isExhausted) && (!resultSet_value.isExhausted))
+    {
+      var timestamp = new Timestamp(resultSet_timestamp.one().getTimestamp("timestamp").getTime())
+      var value0 = resultSet_value.one().getDouble("value")
+      var point = new DataPoint(timestamp,value = value0)
+     output.++:(List(point))
+    }
+
+ Right( output)
 
 }
 

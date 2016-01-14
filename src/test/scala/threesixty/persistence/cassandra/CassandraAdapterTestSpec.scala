@@ -61,7 +61,7 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers{
                     data.metadata.reliability should be (reliabilty)
                     data.metadata.resolution should be (resolution)
                     data.metadata.scaling should be (scaling)
-         
+                    data.dataPoints should be (List(dataPoint))
 
                 }
             }
