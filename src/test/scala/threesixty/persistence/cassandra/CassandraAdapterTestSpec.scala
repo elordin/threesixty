@@ -27,15 +27,23 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers{
     val id = UUID.randomUUID().toString
     val inputData = new InputData(id, "Heart Rate", List(dataPoint), metaData)
 
+    val uri = CassandraConnectionUri("cassandra://localhost:9042/test")
+    val cassandraAdapter = new CassandraAdapter(uri)
+
 
     describe("Inserting input data into the Cassandra database") {
         it("should contain the input data") {
 
-            val uri = CassandraConnectionUri("cassandra://localhost:9042/test")
-            val cassandraAdapter = new CassandraAdapter(uri)
-
             cassandraAdapter.insertData(inputData)
             cassandraAdapter.containsDataPointWithId(id) should be (true)
+        }
+    }
+    describe("Reading from the database"){
+        it("should read the inserted metadata related to a given input"){
+
+            val metaDataId = session.execute(s"SELECT MetaDataID FROM InputData Where id = '${id}'").toString
+
+
         }
     }
 
