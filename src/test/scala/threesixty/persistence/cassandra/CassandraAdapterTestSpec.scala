@@ -38,11 +38,13 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers{
             cassandraAdapter.containsDataPointWithId(id) should be (true)
         }
     }
-
     describe("Reading from the database"){
         it("should read the inserted metadata related to a given input"){
 
-
+           //inserted in above test
+            println("\n")
+            println("output of cassandraAdapter.getDataSet(id): ")
+            println( cassandraAdapter.getDataSet(id).toString);
 
         }
     }
