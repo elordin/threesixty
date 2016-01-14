@@ -2,7 +2,15 @@ package threesixty.visualizer.visualizations
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp}
-import threesixty.visualizer.{Visualization, VisualizationConfig, withVisualizationInfos, VisualizationInfo}
+import threesixty.visualizer.{
+        Visualization,
+        VisualizationConfig,
+        withVisualizationInfos,
+        VisualizationInfo,
+        DataRequirement,
+        VisualizationMetadata
+    }
+import threesixty.data.metadata.Scaling
 import threesixty.config.Config
 
 
@@ -30,7 +38,7 @@ object LineChartConfig {
 
     /**
      *  Public constructor that parses JSON into a configuration
-     *  @param JSON representation of the config
+     *  @param json representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
     def apply(json: String): LineChartConfig = new LineChartConfig(100, 200) // TODO actually read JSON
@@ -53,6 +61,8 @@ case class LineChartConfig private (
     yLabel: String = "",
     title: String = ""
 ) extends VisualizationConfig {
+    val metadata = new VisualizationMetadata(
+            List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
 
     def apply(config: Config): LineChartConfig.LineChart = LineChartConfig.LineChart(this)
 
