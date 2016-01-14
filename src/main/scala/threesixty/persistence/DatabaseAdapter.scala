@@ -10,7 +10,7 @@ trait DatabaseAdapter {
      *  @param id Id of the data to retrieve
      *  @returns Either the data set (Left) or Left(errormsg) on error
      */
-    def getDataSet(id:Int):Either[String, InputData]
+    def getDataSet(id:String):Either[String, InputData]
 
     /**
      *  Appends data to a dataset of give id

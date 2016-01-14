@@ -1,13 +1,16 @@
 package threesixty.persistence.cassandra
 
+import java.sql.Timestamp
 import java.util.UUID
 
 import threesixty.data.metadata.InputMetadata
 import threesixty.data.{DataPoint, InputData}
+import threesixty.metadata.Reliability
 import threesixty.metadata.Reliability._
+import threesixty.metadata.Resolution
 import threesixty.metadata.Resolution._
 import threesixty.metadata.Scaling._
-import threesixty.metadata.{ActivityType, Timeframe}
+import threesixty.metadata._
 import threesixty.persistence.DatabaseAdapter
 
 import scala.Option
@@ -61,7 +64,7 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
 
         session.execute("INSERT INTO Timeframe " +
             "(id, startTime, endTime) " +
-            s"VALUES ('$timeframeID', '${timeframe.start}', '${timeframe.end}')")
+            s"VALUES ('$timeframeID', '${timeframe.startTime}', '${timeframe.endTime}')")
 
 
         session.execute("INSERT INTO InputMetaData " +
@@ -115,9 +118,18 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
         val metaDataId = session.execute(s"SELECT MetaDataID FROM InputData Where id = '${id}'").toString
         val metadata = getInputMetaData(metaDataId)
 
-        val dataPoints = getDataPointForInputData(id)
+        var meta = metadata match {
+            case Left(errormsg) => return Left(errormsg)
+            case Right(x) => x
+        }
 
-        var output =  new InputData(id, measurement, dataPoints, metadata)
+        val dataPoints = getDataPointForInputData(id)
+        var points = dataPoints match {
+            case Left(errormsg) => return Left(errormsg)
+            case Right(x) => x
+        }
+
+        var output =  new InputData(id, measurement, points, meta)
         Right(output)
 
     }
@@ -131,25 +143,30 @@ class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
 
       val timeframeID = session.execute((s"SELECT timeframeID FROM InputMetaData Where id = '${InputMetaDataId}'"))
         .one().getString("timeframeID").toString
-      val tmstmp_start = session.execute((s"SELECT startTime FROM Timeframe Where id = '${timeframeID}'"))
-      val tmstmp_end = session.execute((s"SELECT endTime FROM Timeframe Where id = '${timeframeID}'"))
-      var timeframe = null
-      //val timeframe = new Timeframe(tmstmp_start.one().getTime("startTime"),tmstmp_end.one().getTimestamp("endTime"))
-    /**Problem: how to get data of type Timestamp from the resultset? => getTimestamp(attribute) deliveres Data, not Timestamp*/
-        var activity = null
-    //activity analog zu timeframe
+      val start = session.execute((s"SELECT startTime FROM Timeframe Where id = '${timeframeID}'")).one()
+      val end = session.execute((s"SELECT endTime FROM Timeframe Where id = '${timeframeID}'")).one()
 
-      var rel = null
-      val reliabilityString = session.execute(s"SELECT reliability FROM InputMetaData Where id = '${InputMetaDataId}'")
-      .one().getString("reliability")
-      /* switch case o.ä. on reliabilityString. "Device" => rel = reliability.Device etc */
-      ///**wie geht das mit dem zugriff auf die Aufzählungstypen?
+      val startTime = new Timestamp(start.getTimestamp("startTime").getTime())
+      val endTime = new Timestamp(end.getTimestamp("endTime").getTime())
 
-      // resolution & scaling analog zu reliability
-      var res = null
-      var scal = null
+      val timeframe = new Timeframe(startTime, endTime)
 
-      var output = new InputMetadata(timeframe,rel,res,scal,activity)
+
+
+      var activity = null
+
+
+
+      val reliabilityName = session.execute(s"SELECT reliability FROM InputMetaData WHERE id = '${InputMetaDataId}'").one().getString("reliability")
+      val reliability = Reliability.withName(reliabilityName)
+
+      val resolutionName = session.execute(s"SELECT resolution FROM InputMetaData WHERE id = '${InputMetaDataId}'").one().getString("resolution")
+      var resolution = Resolution.withName(resolutionName)
+
+      val scalingName = session.execute(s"SELECT resolution FROM InputMetaData WHERE id = '${InputMetaDataId}'").one().getString("scaling")
+      var scaling = Scaling.withName(scalingName)
+
+      var output = new InputMetadata(timeframe, reliability, resolution, scaling, activity)
       Right(output)
 }
 

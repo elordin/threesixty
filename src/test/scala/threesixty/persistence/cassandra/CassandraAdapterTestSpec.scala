@@ -38,10 +38,10 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers{
             cassandraAdapter.containsDataPointWithId(id) should be (true)
         }
     }
+
     describe("Reading from the database"){
         it("should read the inserted metadata related to a given input"){
 
-            val metaDataId = session.execute(s"SELECT MetaDataID FROM InputData Where id = '${id}'").toString
 
 
         }
