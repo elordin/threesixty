@@ -2,8 +2,8 @@ package threesixty.server
 
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
-import threesixty.engine.Engine
-import threesixty.persistence.DatabaseAdapter
+import threesixty.engine.VisualizationEngine
+import threesixty.persistence.cassandra.{CassandraAdapter, CassandraConnectionUri}
 
 import threesixty.visualizer.visualizations._
 
@@ -18,22 +18,24 @@ import spray.can.Http
 import HttpMethods.{GET, POST}
 import MediaTypes.`application/json`
 
+import com.typesafe.config.{Config, ConfigFactory, ConfigException}
+
 
 object APIHandler {
-    val engine = Engine(
+
+    val config: Config = ConfigFactory.load
+    // throws ConfigException
+    val dbURI: String = config.getString("database.uri")
+
+
+    lazy val engine = VisualizationEngine(
         new Processor {},
 
         new Visualizer
             with LineChartConfig.Info
             with BarChartConfig.Info
             with PieChartConfig.Info,
-
-        new DatabaseAdapter {
-            def getDataset(id:Identifier):Either[String, InputData] = ???
-            def insertData(data:InputData):Either[String, Identifier] = ???
-            def appendData(data:InputData, id:Identifier):Either[String, Identifier] = ???
-            def appendOrInsertData(data:InputData, id:Identifier):Either[String, Identifier] = ???
-        }
+        new CassandraAdapter(dbURI)
     )
 
     def props: Props = Props(new APIHandler )
@@ -50,8 +52,8 @@ class APIHandler extends Actor {
     }
 
     def receive = {
-        case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
-            var response = APIHandler.engine.processRequest(body.asString)
+        case request@HttpRequest(POST, _, _, _: HttpEntity.NonEmpty, _) =>
+            var response = APIHandler.engine.processRequest(request)
             sender ! response.toHttpResponse
 
         case _: Http.ConnectionClosed =>
