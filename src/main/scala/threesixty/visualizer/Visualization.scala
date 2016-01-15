@@ -1,10 +1,11 @@
 package threesixty.visualizer
 
-import scala.xml.{Elem => XMLElem}
+import threesixty.data.ProcessedData
+import scala.xml.Elem
 
-trait Visualization {
+abstract class Visualization(data: Set[ProcessedData]) {
 
-    def toSVG:XMLElem
+    def toSVG:Elem
 
     // def toPNG:PNGImage
 

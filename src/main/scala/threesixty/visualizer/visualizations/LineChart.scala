@@ -1,7 +1,7 @@
 package threesixty.visualizer.visualizations
 
 import threesixty.data.ProcessedData
-import threesixty.data.Data.{ValueType, Timestamp}
+import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.visualizer.{
         Visualization,
         VisualizationConfig,
@@ -42,10 +42,10 @@ object LineChartConfig {
      *  @param json representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
-    def apply(json: String): LineChartConfig = new LineChartConfig(100, 200) // TODO actually read JSON
+    def apply(json: String): LineChartConfig = new LineChartConfig(Set(), 100, 200) // TODO actually read JSON
 
 
-    case class LineChart(config: LineChartConfig) extends Visualization {
+    case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         def toSVG: Elem =
             // TODO: Base size on config
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 768" xml:space="preserve">
@@ -79,41 +79,43 @@ object LineChartConfig {
                     <line fill="none" stroke="#000000" x1="120" y1="256.5" x2="128" y2="256.5"/>
                     <line fill="none" stroke="#000000" x1="120" y1="192.5" x2="128" y2="192.5"/>
                 </g>
-                <g id="data">
-                    // TODO: Generate dynamically based on datapoints
-                    <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,450 384,475 512,350 640,375 768,300 896,325"/>
-                    <g id="datapoints">
-                        // TODO: Generate dynamically based on datapoints
-                        <circle fill="#333333" stroke="#000000" cx="256" cy="450" r="4"/>
-                        <circle fill="#333333" stroke="#000000" cx="384" cy="475" r="4"/>
-                        <circle fill="#333333" stroke="#000000" cx="512" cy="350" r="4"/>
-                        <circle fill="#333333" stroke="#000000" cx="640" cy="375" r="4"/>
-                        <circle fill="#333333" stroke="#000000" cx="768" cy="300" r="4"/>
+
+                // TODO: Generate dynamically based on datapoints
+                { for (dataset <- data) yield
+                    <g id="{dataset.id}">
+                        // TODO: Line coordinates, color etc.
+                        <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,450 384,475 512,350 640,375 768,300 896,325"/>
+                        <g id="datapoints">
+                            { for (datapoint <- dataset.data) yield
+                                // TODO: Coordinates, color etc.
+                                <circle fill="#333333" stroke="#000000" cx="256" cy="450" r="4"/>
+                            }
+                        </g>
                     </g>
-                </g>
-                // TODO: Use text from config
-                <text transform="matrix(1 0 0 1 468.8481 78.0879)" font-family="Robot, Segoe UI" font-weight="100" font-size="48">Title</text>
-                <text transform="matrix(1 0 0 1 492.2236 708.6963)" font-family="Roboto, Segoe UI" font-size="16">x-Axis</text>
-                <text transform="matrix(0 -1 1 0 68.6958 403.8643)" font-family="Roboto, Segoe UI" font-size="16">y-Axis</text>
+                }
+                <text transform="matrix(1 0 0 1 468.8481 78.0879)" font-family="Roboto, Segoe UI" font-weight="100" font-size="48">{ config.title }</text>
+                <text transform="matrix(1 0 0 1 492.2236 708.6963)" font-family="Roboto, Segoe UI" font-size="16">{ config.xLabel }</text>
+                <text transform="matrix(0 -1 1 0 68.6958 403.8643)" font-family="Roboto, Segoe UI" font-size="16">{ config.yLabel }</text>
             </svg>
     }
 }
 
 
 case class LineChartConfig private (
-    height: Int,
-    width: Int,
-    xMin: Option[Timestamp] = None,
-    xMax: Option[Timestamp] = None,
-    yMin: Option[ValueType] = None,
-    yMax: Option[ValueType] = None,
-    xLabel: String = "",
-    yLabel: String = "",
-    title: String = ""
-) extends VisualizationConfig {
+    val ids: Set[Identifier],
+    val height: Int,
+    val width: Int,
+    val xMin: Option[Timestamp] = None,
+    val xMax: Option[Timestamp] = None,
+    val yMin: Option[ValueType] = None,
+    val yMax: Option[ValueType] = None,
+    val xLabel: String = "",
+    val yLabel: String = "",
+    val title: String = ""
+) extends VisualizationConfig(ids: Set[Identifier]) {
     val metadata = new VisualizationMetadata(
             List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
 
-    def apply(config: Config): LineChartConfig.LineChart = LineChartConfig.LineChart(this)
+    def apply(config: Config): LineChartConfig.LineChart = LineChartConfig.LineChart(this, config.getDatasets(ids))
 
 }

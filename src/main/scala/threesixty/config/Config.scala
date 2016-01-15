@@ -68,5 +68,9 @@ class Config(
      */
     def datasets: ImmutableMap[Identifier, ProcessedData] = processedDatasets
 
+
+    @throws[NoSuchElementException]("if a dataset was requested that is not in processedDatasets")
+    def getDatasets(ids: Set[Identifier]): Set[ProcessedData] =
+        ids.map(processedDatasets(_))
 }
 

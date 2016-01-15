@@ -1,6 +1,7 @@
 package threesixty.visualizer
 
 import threesixty.data.{InputData, ProcessedData}
+import threesixty.data.Data.Identifier
 import threesixty.config.Config
 import threesixty.engine.UsageInfo
 
@@ -8,7 +9,7 @@ import spray.json._
 import DefaultJsonProtocol._
 
 
-trait VisualizationConfig extends Function1[Config, Visualization] {
+abstract class VisualizationConfig(ids: Set[Identifier]) extends Function1[Config, Visualization] {
     val metadata: VisualizationMetadata
 
     /**

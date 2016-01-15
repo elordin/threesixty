@@ -1,7 +1,7 @@
 package threesixty.visualizer.visualizations
 
 import threesixty.data.ProcessedData
-import threesixty.data.Data.{ValueType, Timestamp}
+import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.visualizer._
 import threesixty.config.Config
@@ -25,16 +25,17 @@ object HeatLineChartConfig {
       *  @param json representation of the config
       *  @return LineChartConfig with all arguments from the JSON set
       */
-    def apply(json: String): HeatLineChartConfig = new HeatLineChartConfig(100, 200) // TODO actually read JSON
+    def apply(json: String): HeatLineChartConfig = new HeatLineChartConfig(Set(), 100, 200) // TODO actually read JSON
 
 
-    case class HeatLineChart(config: HeatLineChartConfig) extends Visualization {
+    case class HeatLineChart(config: HeatLineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         def toSVG: xml.Elem = <svg></svg>
     }
 }
 
 
 case class HeatLineChartConfig private (
+    val ids: Set[Identifier],
     height: Int,
     width: Int,
     xMin: Option[Timestamp] = None,
@@ -44,7 +45,7 @@ case class HeatLineChartConfig private (
     xLabel: String = "",
     yLabel: String = "",
     title: String = ""
-) extends VisualizationConfig {
+) extends VisualizationConfig(ids: Set[Identifier]) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             scaling = Some(Scaling.Ordinal)
@@ -52,6 +53,6 @@ case class HeatLineChartConfig private (
             resolution = Some(Resolution.High)
         )))
 
-    def apply(config: Config): HeatLineChartConfig.HeatLineChart = HeatLineChartConfig.HeatLineChart(this)
+    def apply(config: Config): HeatLineChartConfig.HeatLineChart = HeatLineChartConfig.HeatLineChart(this, config.getDatasets(ids))
 
 }

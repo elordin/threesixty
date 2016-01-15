@@ -1,6 +1,7 @@
 package threesixty.visualizer.visualizations
 
 import threesixty.data.ProcessedData
+import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
 import threesixty.config.Config
@@ -23,20 +24,21 @@ object ProgressChartConfig {
       *  @param json representation of the config
       *  @return LineChartConfig with all arguments from the JSON set
       */
-    def apply(json: String): ProgressChartConfig = new ProgressChartConfig(100, 200) // TODO actually read JSON
+    def apply(json: String): ProgressChartConfig = new ProgressChartConfig(Set(), 100, 200) // TODO actually read JSON
 
 
-    case class ProgressChart(config: ProgressChartConfig) extends Visualization {
+    case class ProgressChart(config: ProgressChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         def toSVG: xml.Elem = <svg></svg>
     }
 }
 
 
 case class ProgressChartConfig private (
+    val ids: Set[Identifier],
     height: Int,
     width: Int,
     title: String = ""
-) extends VisualizationConfig {
+) extends VisualizationConfig(ids: Set[Identifier]) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             scaling = Some(Scaling.Ordinal),
@@ -44,6 +46,6 @@ case class ProgressChartConfig private (
             requiredGoal = None //TODO SingleValueGoal
         )))
 
-    def apply(config: Config): ProgressChartConfig.ProgressChart = ProgressChartConfig.ProgressChart(this)
+    def apply(config: Config): ProgressChartConfig.ProgressChart = ProgressChartConfig.ProgressChart(this, config.getDatasets(ids))
 
 }

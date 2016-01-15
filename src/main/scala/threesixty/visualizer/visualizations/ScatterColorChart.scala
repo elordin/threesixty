@@ -1,7 +1,7 @@
 package threesixty.visualizer.visualizations
 
 import threesixty.data.ProcessedData
-import threesixty.data.Data.{ValueType, Timestamp}
+import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
 import threesixty.config.Config
@@ -24,16 +24,17 @@ object ScatterColorChartConfig {
       *  @param json representation of the config
       *  @return LineChartConfig with all arguments from the JSON set
       */
-    def apply(json: String): ScatterColorChartConfig = new ScatterColorChartConfig(100, 200) // TODO actually read JSON
+    def apply(json: String): ScatterColorChartConfig = new ScatterColorChartConfig(Set(), 100, 200) // TODO actually read JSON
 
 
-    case class ScatterColorChart(config: ScatterColorChartConfig) extends Visualization {
+    case class ScatterColorChart(config: ScatterColorChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         def toSVG: xml.Elem = <svg></svg>
     }
 }
 
 
 case class ScatterColorChartConfig private (
+    val ids: Set[Identifier],
     height: Int,
     width: Int,
     xMin: Option[Timestamp] = None,
@@ -43,7 +44,7 @@ case class ScatterColorChartConfig private (
     xLabel: String = "",
     yLabel: String = "",
     title: String = ""
-) extends VisualizationConfig {
+) extends VisualizationConfig(ids: Set[Identifier]) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             scaling = Some(Scaling.Ordinal)
@@ -55,6 +56,6 @@ case class ScatterColorChartConfig private (
         )))
 
     def apply(config: Config): ScatterColorChartConfig.ScatterColorChart =
-        ScatterColorChartConfig.ScatterColorChart(this)
+        ScatterColorChartConfig.ScatterColorChart(this, config.getDatasets(ids))
 
 }
