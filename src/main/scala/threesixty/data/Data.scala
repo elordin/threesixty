@@ -15,15 +15,14 @@ object Data {
     case class IntValue(_value: Int) extends ValueType {
         def value: Double = _value
     }
-
     implicit def intValue2Double(iValue: IntValue): Double = iValue.value
     implicit def int2IntValue(value: Int): IntValue = IntValue(value)
 
 
     case class DoubleValue(val value: Double) extends ValueType
-
     implicit def doubleValue2Double(dValue: DoubleValue): Double = dValue.value
     implicit def double2DoubleValue(value: Double): DoubleValue = DoubleValue(value)
+
 
     /**
      *  Parent for all Enumeration Values
@@ -58,7 +57,7 @@ object Data {
 
 
 object Implicits {
-    import Data.{Timestamp, Identifier}
+    import Data.{Timestamp, Identifier, DoubleValue, IntValue}
 
     implicit def input2ProcessedData:(InputData) => ProcessedData = {
         case input@InputData(id: Identifier, _, data:List[DataPoint], metadata) =>
@@ -82,5 +81,4 @@ object Implicits {
     implicit def timestamp2Long(timestamp: Timestamp): Long = timestamp.getTime()
 
     implicit def long2timestamp(t: Long): Timestamp = new Timestamp(t)
-
 }

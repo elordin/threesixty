@@ -42,7 +42,7 @@ object LineChartConfig {
      *  @param json representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
-    def apply(json: String): LineChartConfig = new LineChartConfig(Set(), 100, 200) // TODO actually read JSON
+    def apply(json: String): LineChartConfig = new LineChartConfig(Set("data1i", "data2i", "data3i"), 768, 1024, title="Test Chart") // TODO actually read JSON
 
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
@@ -82,12 +82,12 @@ object LineChartConfig {
 
                 // TODO: Generate dynamically based on datapoints
                 { for (dataset <- data) yield
-                    <g id="{dataset.id}">
+                    <g id={dataset.id}>
                         // TODO: Line coordinates, color etc.
                         <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,418 384,458 512,378 640,375 768,300 896,325"/>
                         <g id="datapoints">
                             { for (datapoint <- dataset.data) yield
-                                <circle fill="#333333" stroke="#000000" cx={ (datapoint.timestamp.getTime * 128 + 128).toString } cy={ (578 - datapoint.value.value * 8).toString } r="4"/>
+                                <circle fill="#333333" stroke="#000000" cx={ (datapoint.timestamp.getTime * 16 + 128).toString } cy={ (578 - datapoint.value.value * 2).toString } r="4"/>
                             }
                         </g>
                     </g>

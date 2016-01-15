@@ -3,7 +3,7 @@ package threesixty.server
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.Engine
-import threesixty.persistence.DatabaseAdapter
+import threesixty.persistence.FakeDatabaseAdapter
 
 import threesixty.visualizer.visualizations._
 
@@ -28,12 +28,7 @@ object APIHandler {
             with BarChartConfig.Info
             with PieChartConfig.Info,
 
-        new DatabaseAdapter {
-            def getDataset(id:Identifier):Either[String, InputData] = ???
-            def insertData(data:InputData):Either[String, Identifier] = ???
-            def appendData(data:InputData, id:Identifier):Either[String, Identifier] = ???
-            def appendOrInsertData(data:InputData, id:Identifier):Either[String, Identifier] = ???
-        }
+        FakeDatabaseAdapter
     )
 
     def props: Props = Props(new APIHandler )
@@ -43,6 +38,7 @@ object APIHandler {
  *  Reads the HTTP request and dispatches it to an EngineActor
  */
 class APIHandler extends Actor {
+
     val log = Logging(context.system, this)
 
     override def postRestart(reason: Throwable): Unit = {
@@ -55,17 +51,8 @@ class APIHandler extends Actor {
             sender ! response.toHttpResponse
 
         case HttpRequest(GET, _, _, _, _) =>
-            import threesixty.data.{ProcessedData, TaggedDataPoint}
-            import threesixty.data.Data.Timestamp
-
-            val data = ProcessedData("data", List(
-                TaggedDataPoint(new Timestamp(0), 10, Set()),
-                TaggedDataPoint(new Timestamp(1), 20, Set()),
-                TaggedDataPoint(new Timestamp(2), 15, Set()),
-                TaggedDataPoint(new Timestamp(3), 25, Set())
-            ))
-            val visualization = new LineChartConfig.LineChart(LineChartConfig(Set("data"), 768, 1024, title="Test"), Set(data))
-            sender ! threesixty.engine.VisualizationResponse(visualization).toHttpResponse
+            var response = APIHandler.engine.processRequest("""{"type": "visualization", "visualization": { "type": "linechart", "args": "" }, "data": ["data1", "data2", "data3"] }""")
+            sender ! response.toHttpResponse
 
         case _: Http.ConnectionClosed =>
             context stop self

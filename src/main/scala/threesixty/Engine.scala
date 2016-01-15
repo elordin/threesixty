@@ -5,6 +5,9 @@ import threesixty.visualizer.{Visualizer, Visualization, VisualizationConfig}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.config.Config
 
+import threesixty.data.Data.Identifier
+import threesixty.algorithms.interpolation.LinearInterpolation
+
 import spray.http.{HttpResponse, StatusCodes, ContentTypes, MediaTypes, HttpEntity, StatusCode}
 import ContentTypes.`text/plain(UTF-8)`
 import MediaTypes.`image/svg+xml`
@@ -100,13 +103,24 @@ case class Engine(val processor: Processor, val visualizer: Visualizer, val dbAd
     def processVisualizationRequest(json: JsObject): VisualizationResponse = {
 
         val vizConfigOption: Option[VisualizationConfig] = try {
-            val vizConfigS: String = json.getFields("visualization")(0).convertTo[String]
+            val vizConfigS: String = json.getFields("visualization")(0).toString
             Some(visualizer.toVisualizationConfig(vizConfigS))
         } catch {
             case _:Exception => // TODO limit
                 None
         }
 
+        val procStratOption:Option[ProcessingStrategy] = Some(ProcessingStrategy(
+            ProcessingStep(LinearInterpolation(3,
+                Map("data1" -> "data1i", "data2" -> "data2i")),
+                Set[Identifier]("data1", "data2")
+            ),
+            ProcessingStep(LinearInterpolation(1,
+                Map("data3" -> "data3i")),
+                Set[Identifier]("data3")
+            )
+        ))
+        /*
         val procStratOption: Option[ProcessingStrategy] = try {
             val processingSteps: Seq[ProcessingStep] = ???
                 // json.getFields("processor")(0).convertTo[Seq[ProcessingStep]]
@@ -115,7 +129,7 @@ case class Engine(val processor: Processor, val visualizer: Visualizer, val dbAd
         } catch {
             case _: Exception => // TODO limit
                 None
-        }
+        } */
 
         // TODO throws DeserializationException
         // TODO throws IndexOutOfBoundsException
@@ -124,7 +138,7 @@ case class Engine(val processor: Processor, val visualizer: Visualizer, val dbAd
 
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
-                case (Some(procStrat), Some(vizConfig)) => (procStrat, vizConfig)
+                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) => (procStrat, vizConfig)
                 case (Some(procStrat), None)            => ???
                 case (None, Some(vizConfig))            => ???
                 case (None, None)                       => ???
