@@ -14,6 +14,18 @@ scalacOptions ++= Seq(
   "-encoding", "UTF-8"
 )
 
+// taken from: http://github.com/scala/scala-module-dependency-sample
+libraryDependencies := {
+  CrossVersion.partialVersion(scalaVersion.value) match {
+    // if scala 2.11+ is used, add dependency on scala-xml module
+    case Some((2, scalaMajor)) if scalaMajor >= 11 =>
+      libraryDependencies.value ++ Seq(
+        "org.scala-lang.modules" %% "scala-xml" % "1.0.3"
+      )
+    case _ =>
+      libraryDependencies.value
+  }
+}
 
 libraryDependencies ++= Seq(
     "com.typesafe.akka"             %% "akka-actor"         % "2.4.1",
