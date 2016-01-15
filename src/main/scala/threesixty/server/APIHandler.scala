@@ -54,6 +54,19 @@ class APIHandler extends Actor {
             var response = APIHandler.engine.processRequest(body.asString)
             sender ! response.toHttpResponse
 
+        case HttpRequest(GET, _, _, _, _) =>
+            import threesixty.data.{ProcessedData, TaggedDataPoint}
+            import threesixty.data.Data.Timestamp
+
+            val data = ProcessedData("data", List(
+                TaggedDataPoint(new Timestamp(0), 10, Set()),
+                TaggedDataPoint(new Timestamp(1), 20, Set()),
+                TaggedDataPoint(new Timestamp(2), 15, Set()),
+                TaggedDataPoint(new Timestamp(3), 25, Set())
+            ))
+            val visualization = new LineChartConfig.LineChart(LineChartConfig(Set("data"), 768, 1024, title="Test"), Set(data))
+            sender ! threesixty.engine.VisualizationResponse(visualization).toHttpResponse
+
         case _: Http.ConnectionClosed =>
             context stop self
 

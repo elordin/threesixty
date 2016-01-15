@@ -84,11 +84,10 @@ object LineChartConfig {
                 { for (dataset <- data) yield
                     <g id="{dataset.id}">
                         // TODO: Line coordinates, color etc.
-                        <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,450 384,475 512,350 640,375 768,300 896,325"/>
+                        <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,418 384,458 512,378 640,375 768,300 896,325"/>
                         <g id="datapoints">
                             { for (datapoint <- dataset.data) yield
-                                // TODO: Coordinates, color etc.
-                                <circle fill="#333333" stroke="#000000" cx="256" cy="450" r="4"/>
+                                <circle fill="#333333" stroke="#000000" cx={ (datapoint.timestamp.getTime * 128 + 128).toString } cy={ (578 - datapoint.value.value * 8).toString } r="4"/>
                             }
                         </g>
                     </g>
@@ -101,7 +100,7 @@ object LineChartConfig {
 }
 
 
-case class LineChartConfig private (
+case class LineChartConfig(
     val ids: Set[Identifier],
     val height: Int,
     val width: Int,

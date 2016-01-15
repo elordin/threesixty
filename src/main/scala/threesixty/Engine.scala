@@ -5,8 +5,9 @@ import threesixty.visualizer.{Visualizer, Visualization, VisualizationConfig}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.config.Config
 
-import spray.http.{HttpResponse, StatusCodes, ContentTypes, HttpEntity, StatusCode}
+import spray.http.{HttpResponse, StatusCodes, ContentTypes, MediaTypes, HttpEntity, StatusCode}
 import ContentTypes.`text/plain(UTF-8)`
+import MediaTypes.`image/svg+xml`
 
 import spray.json._
 import DefaultJsonProtocol._
@@ -23,7 +24,10 @@ trait EngineResponse {
 
 
 case class VisualizationResponse(val visualization: Visualization) extends EngineResponse {
-    def toHttpResponse: HttpResponse = ???
+    def toHttpResponse: HttpResponse = HttpResponse(
+        status = StatusCodes.OK,
+        entity = HttpEntity(`image/svg+xml`, visualization.toString)
+    )
 }
 
 
@@ -43,7 +47,7 @@ case class HelpResponse(val msg: String, val status: StatusCode = StatusCodes.OK
 }
 
 
-case class Engine(processor: Processor, visualizer: Visualizer, dbAdapter: DatabaseAdapter) {
+case class Engine(val processor: Processor, val visualizer: Visualizer, val dbAdapter: DatabaseAdapter) {
 
     def processRequest(jsonString: String): EngineResponse = {
         val json = jsonString.parseJson.asJsObject

@@ -5,6 +5,8 @@ import scala.xml.Elem
 
 abstract class Visualization(data: Set[ProcessedData]) {
 
+    override def toString(): String = toSVG.toString
+
     def toSVG:Elem
 
     // def toPNG:PNGImage
