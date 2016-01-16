@@ -45,11 +45,23 @@ object StatisticalAnalysis {
     }
 
     def covariance(data1: ProcessedData, data2: ProcessedData): Double = {
-        throw new NotImplementedError
+        // easy idea with perfect dataset  //
+        if( data1.data.length == data2.data.length ) {
+            val cov = 1/(data1.data.length)
+            val sum = 0
+            for( i <- 0 until data1.data.length ) {
+                sum += (data1.data(i) - mean(data1))*(data2.data(i) - mean(data2))
+            }
+            cov*sum
+        } else {
+            // Need to be of equal length or roughly equal time frame //
+            val duration1 = data1.data.last.timestamp - data2.data.head.timestamp
+            val duration2 = data2.data.last.timestamp - data2.data.head.timestamp
+        }
     }
 
     def correlation(data1: ProcessedData, data2: ProcessedData): Double = {
-        throw new NotImplementedError
+        covariance(data1, data2)/stdDeviation(data1)/stdDeviation(data2)
     }
 
 }
