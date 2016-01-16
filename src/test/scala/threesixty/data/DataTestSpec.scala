@@ -1,7 +1,8 @@
 package threesixty.data
 
 import threesixty.data.tags._
-import threesixty.data.Data.Timestamp
+import threesixty.data.Implicits._
+import threesixty.data.Data._
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 
 import org.scalatest._
@@ -37,7 +38,6 @@ class DataTestSpec extends FunSpec {
     }
 
     describe("The implicit conversion") {
-        import threesixty.data.Implicits._
         describe("of InputData with data (0,0), (5,5) to ProcessedData") {
             val inputData:InputData = InputData("", "", List(
                 DataPoint(new Timestamp(0), 0.0),
@@ -65,6 +65,36 @@ class DataTestSpec extends FunSpec {
             }
         }
 
+        describe("between a Double and a DoubleValue") {
+            val d: Double = 13.37d
+            val dv: DoubleValue = DoubleValue(13.37d)
+
+            it("should turn a Double into a DoubleValue") {
+                assert(double2DoubleValue(d) == dv)
+            }
+            it("should turn a DoubleValue into a Double") {
+                assert(d == doubleValue2Double(dv))
+            }
+            it("should be invertable") {
+                val d2dv: DoubleValue = double2DoubleValue(d)
+                val dv2d: Double = doubleValue2Double(dv)
+                assert(double2DoubleValue(dv2d) == dv)
+                assert(doubleValue2Double(d2dv) == d)
+            }
+        }
+
+        describe("between Int, Double and IntValue") {
+            val i: Int = 1337
+            val d: Double = 1337d
+            val iv: IntValue = IntValue(1337)
+
+            it("should turn an Int into an IntValue") {
+                assert(int2IntValue(i) == iv)
+            }
+            it("should turn an IntValue into a Double") {
+                assert(d == intValue2Double(iv))
+            }
+        }
     }
 
 }

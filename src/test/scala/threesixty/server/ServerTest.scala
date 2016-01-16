@@ -22,8 +22,8 @@ class ServerTestSpec(_system:ActorSystem) extends TestKit(_system)
         val apiHandler = system.actorOf(APIHandler.props)
         describe("when receiving a HttpRequest using POST") {
 
-            it("must respond with a HttpResponse") {
-                apiHandler ! HttpRequest(method = POST)
+            it("must respond with a HttpResponse with non-empty body") {
+                apiHandler ! HttpRequest(method = POST, entity = HttpEntity(`application/json`, "{}"))
                 expectMsgClass[HttpResponse](1.seconds, classOf[HttpResponse])
             }
         }

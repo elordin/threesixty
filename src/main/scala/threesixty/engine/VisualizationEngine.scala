@@ -64,7 +64,7 @@ VISUALIZATION
             (requestType) match {
                 case "visualization" => processVisualizationRequest(json)
                 case "help"          => processHelpRequest(json)
-                case _               => ErrorResponse(s"Unknown command: $requestType")
+                case _               => ErrorResponse(s"Unknown command: $requestType\n\n" ++ usage)
             }
 
         result
@@ -72,7 +72,6 @@ VISUALIZATION
 
 
     def processHelpRequest(json: JsObject): HelpResponse = {
-        // TODO: Maybe add another param to switch between processor and visualizer help
         try {
             val helpFor = json.getFields("for")(0).convertTo[String]
             helpFor.toLowerCase match {
@@ -89,18 +88,7 @@ VISUALIZATION
                     HelpResponse(helper.usage)
             }
         } catch {
-            case _:Exception => HelpResponse(
-                // get processor
-                "Threesixty Engine\n" +
-                "    use\n" +
-                "       {\n" +
-                "           \"type\" : \"help\",\n" +
-                "           \"for\" : KEYWORD\n" +
-                "       }\n" +
-                "    where KEYWORD is either a visualization, " +
-                "a processing method to get usage information " +
-                "or \"list\" to show a list of available visualizations " +
-                "and processing methods  \n")
+            case _:Exception => HelpResponse(usage)
         }
     }
 
