@@ -6,7 +6,7 @@ import Data.ValueType
 /**
  *  Collection of various statistical analysis methods
  *
- *  @author Thomas Weber
+ *  @author Thomas Weber, Jens Woehrle
  */
 object StatisticalAnalysis {
 
