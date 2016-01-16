@@ -1,56 +1,23 @@
 package threesixty.engine
 
 import threesixty.processor.{Processor, ProcessingStrategy, ProcessingStep}
-import threesixty.visualizer.{Visualizer, Visualization, VisualizationConfig}
+import threesixty.visualizer.{Visualizer, VisualizationConfig}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.config.Config
 
 import threesixty.data.Data.Identifier
 import threesixty.algorithms.interpolation.LinearInterpolation
 
-import spray.http.{HttpResponse, StatusCodes, ContentTypes, MediaTypes, HttpEntity, StatusCode}
-import ContentTypes.`text/plain(UTF-8)`
-import MediaTypes.`image/svg+xml`
-
+import spray.http.HttpResponse
 import spray.json._
 import DefaultJsonProtocol._
 
 
-trait UsageInfo {
-    def usage: String
-}
-
-
-trait EngineResponse {
-    def toHttpResponse: HttpResponse
-}
-
-
-case class VisualizationResponse(val visualization: Visualization) extends EngineResponse {
-    def toHttpResponse: HttpResponse = HttpResponse(
-        status = StatusCodes.OK,
-        entity = HttpEntity(`image/svg+xml`, visualization.toString)
-    )
-}
-
-
-case class ErrorResponse(val msg: String) extends EngineResponse {
-    def toHttpResponse: HttpResponse = HttpResponse(
-            status = StatusCodes.BadRequest,
-            entity = HttpEntity(`text/plain(UTF-8)`, msg)
-        )
-}
-
-
-case class HelpResponse(val msg: String, val status: StatusCode = StatusCodes.OK) extends EngineResponse {
-    def toHttpResponse: HttpResponse = HttpResponse(
-            status = status,
-            entity = HttpEntity(`text/plain(UTF-8)`, msg)
-        )
-}
-
-
-case class Engine(val processor: Processor, val visualizer: Visualizer, val dbAdapter: DatabaseAdapter) {
+case class VisualizationEngine(
+    processor: Processor,
+    visualizer: Visualizer,
+    dbAdapter: DatabaseAdapter
+) extends Engine with HttpRequestProcessor {
 
     def processRequest(jsonString: String): EngineResponse = {
         val json = jsonString.parseJson.asJsObject
@@ -73,10 +40,12 @@ case class Engine(val processor: Processor, val visualizer: Visualizer, val dbAd
         try {
             val helpFor = json.getFields("for")(0).convertTo[String]
             helpFor.toLowerCase match {
-                case "list" =>
+                case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
                     HelpResponse(availablevisualizations.foldLeft(
-                        "Available visualizations:\n")(_ + "    " + _ + "\n"))
+                        "{ \"visualizations\": [\n")(_ + "    \"" + _ + "\",\n") + "}")
+                case "processingmethods" | "p" =>
+                    ???
                 case _ =>
                     val helper: UsageInfo = visualizer.visualizationInfos.getOrElse(
                         helpFor, ??? // get from processor

@@ -22,9 +22,12 @@ import scala.Option
   */
 class CassandraAdapter(uri: CassandraConnectionUri) extends DatabaseAdapter {
 
-    val session = CassandraConnector.createSessionAndInitKeyspace(uri)
+    def this(uriString: String) = this(CassandraConnectionUri(uriString))
 
-    createTables()
+
+    lazy val session = CassandraConnector.createSessionAndInitKeyspace(uri)
+
+    // createTables()
 
     def createTables() = {
         session.execute("CREATE TABLE IF NOT EXISTS ActivityType " +

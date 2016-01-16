@@ -2,7 +2,7 @@ package threesixty.server
 
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
-import threesixty.engine.Engine
+import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
 
 import threesixty.visualizer.visualizations._
@@ -18,16 +18,23 @@ import spray.can.Http
 import HttpMethods.{GET, POST}
 import MediaTypes.`application/json`
 
+import com.typesafe.config.{Config, ConfigFactory, ConfigException}
+
 
 object APIHandler {
-    val engine = Engine(
+
+    val config: Config = ConfigFactory.load
+    // throws ConfigException
+    val dbURI: String = config.getString("database.uri")
+
+
+    lazy val engine = VisualizationEngine(
         new Processor {},
 
         new Visualizer
             with LineChartConfig.Info
             with BarChartConfig.Info
             with PieChartConfig.Info,
-
         FakeDatabaseAdapter
     )
 
@@ -46,8 +53,8 @@ class APIHandler extends Actor {
     }
 
     def receive = {
-        case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
-            var response = APIHandler.engine.processRequest(body.asString)
+        case request@HttpRequest(POST, _, _, _: HttpEntity.NonEmpty, _) =>
+            var response = APIHandler.engine.processRequest(request)
             sender ! response.toHttpResponse
 
         case HttpRequest(GET, _, _, _, _) =>
