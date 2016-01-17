@@ -118,7 +118,7 @@ class Visualizer extends withVisualizationInfos {
             ).conversion
 
         val args: String = try {
-            json.getFields("args")(0).convertTo[String] // get args from visualization
+            json.getFields("args")(0).toString // get args from visualization
         } catch {
             case e:IndexOutOfBoundsException =>
                 throw new IllegalArgumentException("parameter \"args\" missing for visualization")

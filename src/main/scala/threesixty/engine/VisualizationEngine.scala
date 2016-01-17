@@ -99,8 +99,8 @@ VISUALIZATION
             val vizConfigS: String = json.getFields("visualization")(0).toString
             Some(visualizer.toVisualizationConfig(vizConfigS))
         } catch {
-            case _:Exception => // TODO limit
-                None
+            case e:Exception => // TODO limit
+                println(e.getMessage); None
         }
 
         val procStratOption:Option[ProcessingStrategy] = Some(ProcessingStrategy(
@@ -132,9 +132,9 @@ VISUALIZATION
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
                 case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) => (procStrat, vizConfig)
-                case (Some(procStrat), None)            => ???
-                case (None, Some(vizConfig))            => ???
-                case (None, None)                       => ???
+                case (Some(procStrat), None)            => println("1"); ???
+                case (None, Some(vizConfig))            => println("2"); ???
+                case (None, None)                       => println("3"); ???
             }
 
         val config: Config = new Config(dataIDs, dbAdapter)
