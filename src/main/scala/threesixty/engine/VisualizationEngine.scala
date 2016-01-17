@@ -63,6 +63,7 @@ VISUALIZATION
         val result: EngineResponse =
             (requestType) match {
                 case "visualization" => processVisualizationRequest(json)
+                // TODO case "data" => processInsertData
                 case "help"          => processHelpRequest(json)
                 case _               => ErrorResponse(s"Unknown command: $requestType\n\n" ++ usage)
             }
@@ -78,14 +79,11 @@ VISUALIZATION
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
                     HelpResponse(availablevisualizations.foldLeft(
-                        "{ \"visualizations\": [\n")(_ + "    \"" + _ + "\",\n") + "}")
+                        "{\n    \"visualizations\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
                 case "processingmethods" | "p" =>
                     ???
                 case _ =>
-                    val helper: UsageInfo = visualizer.visualizationInfos.getOrElse(
-                        helpFor, ??? // get from processor
-                    )
-                    HelpResponse(helper.usage)
+                    HelpResponse(usage)
             }
         } catch {
             case _:Exception => HelpResponse(usage)
@@ -108,7 +106,7 @@ VISUALIZATION
                 Map("data1" -> "data1i", "data2" -> "data2i")),
                 Set[Identifier]("data1", "data2")
             ),
-            ProcessingStep(LinearInterpolation(1,
+            ProcessingStep(LinearInterpolation(5,
                 Map("data3" -> "data3i")),
                 Set[Identifier]("data3")
             )
