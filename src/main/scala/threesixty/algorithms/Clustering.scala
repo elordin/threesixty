@@ -23,6 +23,8 @@ object Clustering {
     object     Unclassified     extends Classification
 
 
+    // TODO: Review distance functions
+
     type DistanceFunctionSelector[D, V] = ((D => V)*) => DistanceFunction[D]
 
     type DistanceFunction[D] = (D, D) => Double
@@ -55,17 +57,17 @@ object Clustering {
     def euclidianDistanceS = genericEuclidianDistance[TaggedDataPoint, Double]
 
 
-    def kModes[D] = throw new NotImplementedError
-
-
-    def snn[D] = throw new NotImplementedError
-
-
     def dbscan[D](dataset: Set[D],
                   distFunction: DistanceFunction[D])
                  (implicit minPts: Int,
                            epsilon: Double): Map[D, Classification] =
         DBSCAN.run[D](dataset,distFunction)
 
+}
+
+case class Clustering(idMapping: Map[Identifier, Identifier])
+    extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+
+    def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ??? // TODO implement
 
 }

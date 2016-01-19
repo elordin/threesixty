@@ -74,18 +74,21 @@ VISUALIZATION
 
     def processHelpRequest(json: JsObject): HelpResponse = {
         try {
+            // TODO
             val helpFor = json.getFields("for")(0).convertTo[String]
+            // TODO
             helpFor.toLowerCase match {
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
                     HelpResponse(availablevisualizations.foldLeft(
                         "{\n    \"visualizations\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
                 case "processingmethods" | "p" =>
-                    ???
+                    ??? // TODO
                 case _ =>
                     HelpResponse(usage)
             }
         } catch {
+            // TODO
             case _:Exception => HelpResponse(usage)
         }
     }
@@ -93,6 +96,7 @@ VISUALIZATION
 
     def processVisualizationRequest(json: JsObject): VisualizationResponse = {
 
+        // TODO
         val vizConfigOption: Option[VisualizationConfig] = try {
             val vizConfigS: String = json.getFields("visualization")(0).toString
             Some(visualizer.toVisualizationConfig(vizConfigS))
@@ -101,6 +105,7 @@ VISUALIZATION
                 println(e.getMessage); None
         }
 
+        // TODO
         val procStratOption:Option[ProcessingStrategy] = Some(ProcessingStrategy(
             ProcessingStep(LinearInterpolation(3,
                 Map("data1" -> "data1i", "data2" -> "data2i")),
@@ -130,9 +135,9 @@ VISUALIZATION
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
                 case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) => (procStrat, vizConfig)
-                case (Some(procStrat), None)            => println("1"); ???
-                case (None, Some(vizConfig))            => println("2"); ???
-                case (None, None)                       => println("3"); ???
+                case (Some(procStrat), None)            => println("1"); ??? // TODO
+                case (None, Some(vizConfig))            => println("2"); ??? // TODO
+                case (None, None)                       => println("3"); ??? // TODO)
             }
 
         val config: Config = new Config(dataIDs, dbAdapter)
