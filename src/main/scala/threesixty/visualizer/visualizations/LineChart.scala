@@ -115,7 +115,7 @@ object LineChartConfig {
                                 (lowerBound - (datapoint.value.value - yMin) * stepY).toString + " "}).fold("")(_ + _) } />
                         <g id="datapoints">
                             { for (datapoint <- dataset.data) yield
-                                <circle fill="#333333" stroke="#000000" cx={ ((datapoint.timestamp.getTime - xMin) * stepX + leftOffset).toString } cy={ (lowerBound - (datapoint.value.value - yMin) * stepY).toString } r="4"/>
+                                <circle fill="#333333" stroke="#000000" cx={ ((datapoint.timestamp.getTime - xMin) * stepX + leftOffset).toString } cy={ (lowerBound - (datapoint.value.value - yMin) * stepY).toString } class={ (datapoint.tags.fold("")(_ + " " + _)).toString } r="4"/>
                             }
                         </g>
                     </g>

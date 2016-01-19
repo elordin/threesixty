@@ -106,7 +106,7 @@ VISUALIZATION
                 Map("data1" -> "data1i", "data2" -> "data2i")),
                 Set[Identifier]("data1", "data2")
             ),
-            ProcessingStep(LinearInterpolation(5,
+            ProcessingStep(LinearInterpolation(1,
                 Map("data3" -> "data3i")),
                 Set[Identifier]("data3")
             )
