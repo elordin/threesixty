@@ -1,5 +1,7 @@
 package threesixty.data
 
+import java.util.UUID
+
 import threesixty.data.tags._
 import threesixty.data.Implicits._
 import threesixty.data.Data._
