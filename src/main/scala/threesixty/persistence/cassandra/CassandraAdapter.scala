@@ -5,7 +5,7 @@ import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
 import threesixty.data.InputData
 import threesixty.persistence.DatabaseAdapter
-import threesixty.persistence.cassandra.tables.{InputDatasets, Timeframes, ActivityTypes, DataPoints}
+import threesixty.persistence.cassandra.tables._
 
 /**
   * Created by Stefan Cimander on 14.01.16.
@@ -16,6 +16,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
     object activityTypes extends ActivityTypes with keyspace.Connector
     object timeframes extends Timeframes with keyspace.Connector
     object inputDatasets extends InputDatasets with keyspace.Connector
+    object inputMetadataSets extends InputMetadataSets with keyspace.Connector
 
     /**
       *  Retrieves a data set from the storage

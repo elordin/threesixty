@@ -9,8 +9,6 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterAll, Matchers, FunSpec}
 import threesixty.data.metadata.Timeframe
 
-
-
 import com.websudos.phantom.dsl._
 
 /**
@@ -23,7 +21,7 @@ class TimeframesTableTestSpec extends FunSpec with Matchers with ScalaFutures
         super.beforeAll()
         Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
     }
-    
+
     override def afterAll(): Unit = {
         super.afterAll()
         Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)

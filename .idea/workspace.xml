@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5c011ca-2a04-4eb7-bd44-7c8a0db214d5" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/TimeframesTable.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TimeframesTableTestSpec.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/InputMetadataTable.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/InputMetadataTableTestSpec.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TimeframesTableTestSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TimeframesTableTestSpec.scala" />
     </list>
     <ignored path="Threesixty.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -93,11 +93,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TimeframesTableTestSpec.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TimeframesTableTestSpec.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TimeframesTableTestSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2595978">
-              <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
               <folding>
                 <element signature="e#42#67#0" expanded="true" />
               </folding>
@@ -105,23 +105,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DataPointTable.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/DataPointTable.scala">
+      <file leaf-file-name="InputMetadataTable.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/InputMetadataTable.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="42" column="21" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="21" />
-              <folding />
+              <caret line="26" column="48" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
+              <folding>
+                <element signature="e#49#74#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CassandraAdapter.scala" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala">
+      <file leaf-file-name="InputMetadataTableTestSpec.scala" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/InputMetadataTableTestSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
+            <state vertical-scroll-proportion="0.86288846">
+              <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
               <folding>
-                <element signature="e#42#92#0" expanded="true" />
+                <element signature="e#42#67#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -163,8 +165,10 @@
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/ActivityTypesTableTestSpec.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/DataPointsTableTestSpec.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/TimeframesTable.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TimeframesTableTestSpec.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/InputMetadataTable.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/InputMetadataTableTestSpec.scala" />
       </list>
     </option>
   </component>
@@ -501,26 +505,11 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="FullScreen" value="true" />
   </component>
-  <component name="RunManager" selected="ScalaTest.TimeframesTableTestSpec">
+  <component name="RunManager" selected="ScalaTest.InputMetadataTableTestSpec">
     <configuration default="false" name="DataPointsTableTestSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <module name="threesixty" />
       <setting name="path" value="threesixty.persistence.cassandra.DataPointsTableTestSpec" />
-      <setting name="package" value="" />
-      <setting name="vmparams" value="" />
-      <setting name="params" value="" />
-      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <setting name="searchForTest" value="Across module dependencies" />
-      <setting name="testName" value="" />
-      <setting name="testKind" value="Class" />
-      <setting name="showProgressMessages" value="true" />
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="false" name="ActivityTypesTableTestSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
-      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
-      <module name="threesixty" />
-      <setting name="path" value="threesixty.persistence.cassandra.ActivityTypesTableTestSpec" />
       <setting name="package" value="" />
       <setting name="vmparams" value="" />
       <setting name="params" value="" />
@@ -573,6 +562,21 @@
       <setting name="searchForTest" value="Across module dependencies" />
       <setting name="testName" value="" />
       <setting name="testKind" value="All in package" />
+      <setting name="showProgressMessages" value="true" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="InputMetadataTableTestSpec" type="ScalaTestRunConfiguration" factoryName="ScalaTest" temporary="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="threesixty" />
+      <setting name="path" value="threesixty.persistence.cassandra.InputMetadataTableTestSpec" />
+      <setting name="package" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <setting name="searchForTest" value="Across module dependencies" />
+      <setting name="testName" value="" />
+      <setting name="testKind" value="Class" />
       <setting name="showProgressMessages" value="true" />
       <envs />
       <method />
@@ -868,18 +872,18 @@
     </configuration>
     <list size="5">
       <item index="0" class="java.lang.String" itemvalue="ScalaTest.DataPointsTableTestSpec" />
-      <item index="1" class="java.lang.String" itemvalue="ScalaTest.ActivityTypesTableTestSpec" />
-      <item index="2" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'scala'" />
-      <item index="3" class="java.lang.String" itemvalue="ScalaTest.TimeframesTableTestSpec" />
-      <item index="4" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'cassandra'" />
+      <item index="1" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'scala'" />
+      <item index="2" class="java.lang.String" itemvalue="ScalaTest.TimeframesTableTestSpec" />
+      <item index="3" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'cassandra'" />
+      <item index="4" class="java.lang.String" itemvalue="ScalaTest.InputMetadataTableTestSpec" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="ScalaTest.TimeframesTableTestSpec" />
-        <item index="1" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'cassandra'" />
-        <item index="2" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'scala'" />
-        <item index="3" class="java.lang.String" itemvalue="ScalaTest.DataPointsTableTestSpec" />
-        <item index="4" class="java.lang.String" itemvalue="ScalaTest.ActivityTypesTableTestSpec" />
+        <item index="0" class="java.lang.String" itemvalue="ScalaTest.InputMetadataTableTestSpec" />
+        <item index="1" class="java.lang.String" itemvalue="ScalaTest.TimeframesTableTestSpec" />
+        <item index="2" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'cassandra'" />
+        <item index="3" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'scala'" />
+        <item index="4" class="java.lang.String" itemvalue="ScalaTest.DataPointsTableTestSpec" />
       </list>
     </recent_temporary>
   </component>
@@ -928,34 +932,34 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ActivityTypesTableTestSpec - 2016.01.19 at 16h 42m 22s.xml">
-      <configuration name="ActivityTypesTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="InputMetadataTableTestSpec - 2016.01.19 at 18h 22m 43s.xml">
+      <configuration name="InputMetadataTableTestSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.01.19 at 16h 37m 34s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="InputMetadataTableTestSpec - 2016.01.19 at 18h 25m 17s.xml">
+      <configuration name="InputMetadataTableTestSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.01.19 at 16h 47m 11s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="InputMetadataTableTestSpec - 2016.01.19 at 18h 28m 40s.xml">
+      <configuration name="InputMetadataTableTestSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.01.19 at 16h 47m 34s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="InputMetadataTableTestSpec - 2016.01.19 at 18h 30m 14s.xml">
+      <configuration name="InputMetadataTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="InputMetadataTableTestSpec - 2016.01.19 at 18h 31m 24s.xml">
+      <configuration name="InputMetadataTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="InputMetadataTableTestSpec - 2016.01.19 at 18h 31m 59s.xml">
+      <configuration name="InputMetadataTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="InputMetadataTableTestSpec - 2016.01.19 at 18h 32m 37s.xml">
+      <configuration name="InputMetadataTableTestSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
     <history-entry file="ScalaTests_in__cassandra_ - 2016.01.19 at 17h 16m 44s.xml">
       <configuration name="ScalaTests in 'cassandra'" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="ScalaTests_in__scala_ - 2016.01.19 at 16h 49m 15s.xml">
-      <configuration name="ScalaTests in 'scala'" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TimeframesTableTestSpec - 2016.01.19 at 17h 14m 21s.xml">
-      <configuration name="TimeframesTableTestSpec" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TimeframesTableTestSpec - 2016.01.19 at 17h 15m 22s.xml">
-      <configuration name="TimeframesTableTestSpec" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TimeframesTableTestSpec - 2016.01.19 at 17h 16m 23s.xml">
-      <configuration name="TimeframesTableTestSpec" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
     <history-entry file="TimeframesTableTestSpec - 2016.01.19 at 17h 17m 33s.xml">
+      <configuration name="TimeframesTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TimeframesTableTestSpec - 2016.01.19 at 18h 05m 33s.xml">
       <configuration name="TimeframesTableTestSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
   </component>
@@ -1260,30 +1264,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="4" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="4" />
-          <folding>
-            <element signature="e#42#92#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/DataPointTable.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="21" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/ActivityTypesTableTestSpec.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.054844607">
           <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
           <folding>
-            <element signature="e#42#63#0" expanded="true" />
+            <element signature="e#42#63#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1296,10 +1282,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/DataPointTable.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="42" column="21" selection-start-line="42" selection-start-column="21" selection-end-line="42" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="18" column="78" selection-start-line="18" selection-start-column="78" selection-end-line="18" selection-end-column="78" />
+          <folding>
+            <element signature="e#42#92#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TimeframesTableTestSpec.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2595978">
-          <caret line="25" column="4" selection-start-line="25" selection-start-column="4" selection-end-line="25" selection-end-column="4" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="44" column="13" selection-start-line="44" selection-start-column="13" selection-end-line="44" selection-end-column="13" />
+          <folding>
+            <element signature="e#42#67#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/InputMetadataTable.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="26" column="48" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
+          <folding>
+            <element signature="e#49#74#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/InputMetadataTableTestSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.86288846">
+          <caret line="55" column="4" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
           <folding>
             <element signature="e#42#67#0" expanded="true" />
           </folding>
