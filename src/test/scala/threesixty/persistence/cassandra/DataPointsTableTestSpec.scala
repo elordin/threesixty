@@ -16,7 +16,7 @@ import scala.util.{Failure, Success}
 /**
   * Created by Stefan Cimander on 14.01.16.
   */
-class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
+class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
     with BeforeAndAfterAll with CassandraConnector.connector.Connector {
 
     override def beforeAll(): Unit = {
@@ -24,12 +24,12 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
     }
 
-    /*
+
     override def afterAll(): Unit = {
         super.afterAll()
         Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)
     }
-    */
+
 
     describe("Asking for data points with a specific inputDataId") {
         it("should load an empty sequence if there are no appropriate data points") {
@@ -83,5 +83,5 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
             }
         }
     }
-    
+
 }
