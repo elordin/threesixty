@@ -49,9 +49,9 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
                     result.scaling should be (scaling)
                     result.timeframe should be (timeframe)
                     result.activityType should be (activityType)
-                case None => fail("Did not receive a input metadata result from the database.")
+                case None => fail("Did not receive an input metadata result from the database.")
             }
         }
     }
-    
+
 }

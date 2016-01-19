@@ -78,18 +78,18 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
 
 
     def insertData(data:InputData):Either[String, Identifier] =
-        if (database.contains(data.id)) {
-            Left(s"Dataset with id ${data.id} exists already.")
+        if (database.contains(data.identifier)) {
+            Left(s"Dataset with id ${data.identifier} exists already.")
         } else {
-            database += (data.id -> data)
-            Right(data.id)
+            database += (data.identifier -> data)
+            Right(data.identifier)
         }
 
 
     def appendData(inData:InputData, id:Identifier):Either[String, Identifier] = {
         database.get(id) match {
             case Some(InputData(_, _, olddata, _)) =>
-                database += (id -> inData.copy(data = olddata ++ inData.data))
+                database += (id -> inData.copy(dataPoints = olddata ++ inData.dataPoints))
                 Right(id)
             case None =>
                 Left(s"No data with id $id found")

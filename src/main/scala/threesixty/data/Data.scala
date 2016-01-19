@@ -72,9 +72,9 @@ object Implicits {
 
     implicit def unsafe2safeInputData(unsafe: UnsafeInputData)(implicit context: InputData): InputData =
         InputData(
-            unsafe.id,
+            unsafe.identifier,
             unsafe.measurement,
-            unsafe.data,
+            unsafe.dataPoints,
             unsafe.metadata.complete(context)
         )
 

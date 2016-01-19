@@ -50,7 +50,7 @@ class Config(
 
     // convert input data to processed data
     var processedDatasets: Map[Identifier, ProcessedData] =
-        (for { data <- inputDatasets} yield (data.id, input2ProcessedData(data))).toMap
+        (for { data <- inputDatasets} yield (data.identifier, input2ProcessedData(data))).toMap
 
     /**
      *  Inserts data into the processedDatasets Map
