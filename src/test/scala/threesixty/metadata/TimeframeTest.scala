@@ -1,5 +1,7 @@
 package threesixty.data.metadata
 
+import java.util.UUID
+
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.Data.Timestamp
 

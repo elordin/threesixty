@@ -1,5 +1,6 @@
 package threesixty.data
 
+import com.websudos.phantom.dsl.UUID
 import threesixty.data.metadata.{CompleteInputMetadata, IncompleteInputMetadata}
 import Data.{Timestamp, ValueType, Identifier}
 

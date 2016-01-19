@@ -1,5 +1,7 @@
 package threesixty.persistence
 
+import java.util.UUID
+
 import threesixty.data.{InputData, DataPoint}
 import threesixty.data.Data._
 import threesixty.data.Implicits._
