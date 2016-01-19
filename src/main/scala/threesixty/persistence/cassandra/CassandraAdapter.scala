@@ -1,11 +1,11 @@
 package threesixty.persistence.cassandra
 
-import com.websudos.phantom.connectors.{KeySpace, ContactPoints, KeySpaceDef}
+import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
 import threesixty.data.InputData
 import threesixty.persistence.DatabaseAdapter
-import threesixty.persistence.cassandra.tables.{DataPoints, Activities}
+import threesixty.persistence.cassandra.tables.{ActivityTypes, DataPoints}
 
 /**
   * Created by Stefan Cimander on 14.01.16.
@@ -14,7 +14,9 @@ import threesixty.persistence.cassandra.tables.{DataPoints, Activities}
 
 
 class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace) with DatabaseAdapter {
+
     object dataPoints extends DataPoints with keyspace.Connector
+    object activityTypes extends ActivityTypes with keyspace.Connector
 
     /**
       *  Retrieves a data set from the storage
@@ -53,7 +55,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
 
 }
 
-object CassandraAdapter extends CassandraAdapter(CassandraConnector.connector)
+object CassandraAdapter extends CassandraAdapter(CassandraConnector.keyspace)
 
 
 

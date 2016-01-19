@@ -38,7 +38,8 @@ abstract class DataPoints extends DataPointsTable with RootConnector {
         insert.value(_.identifier, identifier)
             .value(_.timestamp, dateTime)
             .value(_.inputDataId, inputDataId)
-            .value(_.value, dataPoint.value.value).consistencyLevel_=(ConsistencyLevel.ALL)
+            .value(_.value, dataPoint.value.value)
+            .consistencyLevel_=(ConsistencyLevel.ALL)
             .future()
     }
 

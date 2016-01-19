@@ -11,5 +11,5 @@ trait CassandraKeyspace {
 
 object CassandraConnector extends CassandraKeyspace {
     val hosts = Seq("localhost")
-    val connector = ContactPoints(hosts).keySpace("threesixty")
+    val keyspace = ContactPoints(hosts).keySpace("threesixty")
 }

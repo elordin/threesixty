@@ -11,13 +11,11 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 import com.websudos.phantom.dsl._
 
-import scala.util.{Failure, Success}
-
 /**
   * Created by Stefan Cimander on 14.01.16.
   */
 class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
-    with BeforeAndAfterAll with CassandraConnector.connector.Connector {
+    with BeforeAndAfterAll with CassandraConnector.keyspace.Connector {
 
     override def beforeAll(): Unit = {
         super.beforeAll()
@@ -55,7 +53,7 @@ class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             whenReady(CassandraAdapter.dataPoints.getDataPointWithIdentifier(identifier)) {
                 case Some(result) => result should be (dataPoint)
-                case None => true should be (false)
+                case None => fail("Received no result from the database.")
             }
         }
     }

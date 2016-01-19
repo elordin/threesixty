@@ -1,17 +1,7 @@
 package threesixty.data
 
-import com.websudos.phantom.dsl.UUID
 import threesixty.data.metadata.{CompleteInputMetadata, IncompleteInputMetadata}
 import Data.{Timestamp, ValueType, Identifier}
-
-/*
-case class DataPoint(val timstamp: Timestamp, val value: ValueType)
-
-case class InputData(
-        val id: String,
-        val dataPoints: List[DataPoint],
-=======
-*/
 
 
 case class DataPoint(val timestamp:Timestamp, val value:ValueType)
