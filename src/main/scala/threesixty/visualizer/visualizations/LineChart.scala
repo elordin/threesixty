@@ -46,7 +46,32 @@ object LineChartConfig {
 
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: Elem =
+        def toSVG: Elem = {
+            val width      = config.width * 0.8
+            val leftOffset = config.width * 0.1
+            val height     = config.height * 0.7
+            val lowerBound = config.height * 0.85
+
+            val xMin = config.xMin match {
+                case None => data.map(_.data.map(_.timestamp.getTime).min).min
+                case Some(v) => v.getTime
+            }
+            val xMax = config.xMax match {
+                case None => data.map(_.data.map(_.timestamp.getTime).max).max
+                case Some(v) => v.getTime
+            }
+            val yMin = config.yMin match {
+                case None => data.map(_.data.map(_.value.value).min).min
+                case Some(v) => v.value
+            }
+            val yMax = config.yMax match {
+                case None => data.map(_.data.map(_.value.value).max).max
+                case Some(v) => v.value
+            }
+
+            val stepX =  width / (xMax - xMin)
+            val stepY =  height / (yMax - yMin)
+
             // TODO: Base size on config
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 768" xml:space="preserve">
                 <g id="grid">
@@ -84,10 +109,13 @@ object LineChartConfig {
                 { for (dataset <- data) yield
                     <g id={dataset.id}>
                         // TODO: Line coordinates, color etc.
-                        <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,418 384,458 512,378 640,375 768,300 896,325"/>
+                        <polyline fill="none" stroke="#cc0000" stroke-width="2px" points={
+                            (for (datapoint <- dataset.data) yield {
+                                ((datapoint.timestamp.getTime - xMin) * stepX + leftOffset).toString + "," +
+                                (lowerBound - (datapoint.value.value - yMin) * stepY).toString + " "}).fold("")(_ + _) } />
                         <g id="datapoints">
                             { for (datapoint <- dataset.data) yield
-                                <circle fill="#333333" stroke="#000000" cx={ (datapoint.timestamp.getTime * 16 + 128).toString } cy={ (578 - datapoint.value.value * 2).toString } r="4"/>
+                                <circle fill="#333333" stroke="#000000" cx={ ((datapoint.timestamp.getTime - xMin) * stepX + leftOffset).toString } cy={ (lowerBound - (datapoint.value.value - yMin) * stepY).toString } class={ (datapoint.tags.fold("")(_ + " " + _)).toString } r="4"/>
                             }
                         </g>
                     </g>
@@ -96,6 +124,7 @@ object LineChartConfig {
                 <text transform="matrix(1 0 0 1 492.2236 708.6963)" font-family="Roboto, Segoe UI" font-size="16">{ config.xLabel }</text>
                 <text transform="matrix(0 -1 1 0 68.6958 403.8643)" font-family="Roboto, Segoe UI" font-size="16">{ config.yLabel }</text>
             </svg>
+        }
     }
 }
 
