@@ -6,6 +6,8 @@ import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
 
 import threesixty.visualizer.visualizations._
+import threesixty.algorithms.interpolation.LinearInterpolation
+
 
 import threesixty.data.Data.Identifier
 import threesixty.data.InputData
@@ -29,8 +31,8 @@ object APIHandler {
 
 
     lazy val engine = VisualizationEngine(
-        new Processor {}, // TODO
-
+        new Processor
+            with LinearInterpolation.Info,
         new Visualizer
             with LineChartConfig.Info
             with BarChartConfig.Info

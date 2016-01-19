@@ -1,6 +1,8 @@
 package threesixty.algorithms
 
-import threesixty.data.TaggedDataPoint
+import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.Identifier
+import threesixty.processor.MultiProcessingMethod
 
 import clustering._
 

@@ -66,10 +66,10 @@ class Config(
     def getDataset(id: Identifier): ProcessedData =
         processedDatasets(id)
 
-    def getDatasets(ids: Set[Identifier]): Set[Option[ProcessedData]] =
-        ids.map(processedDatasets.get(_))
+    // def getDatasets(ids: Set[Identifier]): Set[Option[ProcessedData]] =
+    //     ids.map(processedDatasets.get(_))
 
-    def getDataset(id: Identifier): Option[ProcessedData] =
-        processedDatasets.get(id)
+    // def getDataset(id: Identifier): Option[ProcessedData] =
+    //     processedDatasets.get(id)
 }
 
