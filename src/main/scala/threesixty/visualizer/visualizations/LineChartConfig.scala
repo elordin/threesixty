@@ -1,6 +1,6 @@
 package threesixty.visualizer.visualizations
 
-import threesixty.data.ProcessedData
+import threesixty.data.{TaggedDataPoint, ProcessedData}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.visualizer.{
         Visualization,
@@ -10,7 +10,7 @@ import threesixty.visualizer.{
         DataRequirement,
         VisualizationMetadata
     }
-import threesixty.data.metadata.Scaling
+import threesixty.data.metadata.{Timeframe, Scaling}
 import threesixty.config.Config
 import scala.xml.Elem
 
@@ -48,7 +48,7 @@ object LineChartConfig {
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         def toSVG: Elem =
             // TODO: Base size on config
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 768" xml:space="preserve">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={config.calculateViewBoxString()} xml:space="preserve">
                 <g id="grid">
                     // background-grid
                     <line fill="none" stroke="#CCCCCC" x1="128" y1="512.5" x2="896" y2="512.5"/>
@@ -104,17 +104,143 @@ case class LineChartConfig(
     val ids: Set[Identifier],
     val height: Int,
     val width: Int,
-    val xMin: Option[Timestamp] = None,
-    val xMax: Option[Timestamp] = None,
-    val yMin: Option[ValueType] = None,
-    val yMax: Option[ValueType] = None,
+    val optXMin: Option[Timestamp] = None,
+    val optXMax: Option[Timestamp] = None,
+    val optYMin: Option[ValueType] = None,
+    val optYMax: Option[ValueType] = None,
     val xLabel: String = "",
     val yLabel: String = "",
-    val title: String = ""
+    val title: String = "",
+    val borderTop: Int = 50,
+    val borderBottom: Int = 50,
+    val borderLeft: Int = 50,
+    val borderRight: Int = 50,
+    val minDistanceX: Int = 50,
+    val minDistanceY: Int = 50,
+    val optUnitY: Option[Double] = None
 ) extends VisualizationConfig(ids: Set[Identifier]) {
+    require(borderTop >= 0, "Negative value for borderTop is not allowed.")
+    require(borderBottom >= 0, "Negative value for borderBottom is not allowed.")
+    require(borderLeft >= 0, "Negative value for borderLeft is not allowed.")
+    require(borderRight >= 0, "Negative value for borderRight is not allowed.")
+
+    require(minDistanceX > 0, "Value for minDistanceX must be positive.")
+    require(minDistanceY > 0, "Value for minDistanceY must be positive.")
+
+    // calculate the available height and width for the chart
+    val heightChart = height - borderTop - borderBottom
+    require(heightChart > 0, "The available height for the chart must be greater than 0.")
+    val widthChart = width - borderLeft - borderRight
+    require(widthChart > 0, "The available width for the chart must be greater than 0.")
+
     val metadata = new VisualizationMetadata(
             List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
 
-    def apply(config: Config): LineChartConfig.LineChart = LineChartConfig.LineChart(this, config.getDatasets(ids))
+    var xMin: Long = 0
+    var xMax: Long = 0
+    var unitX: Double = 0
+    var stepX: Double = 0
+    var amountXPoints: Int = 0
+
+    var yMin: Double = 0
+    var yMax: Double = 0
+    var unitY: Double = 0
+    var stepY: Double = 0
+    var amountYPoints: Int = 0
+
+    def preProcessing(config: Config): Unit = {
+        // get x/y min/max
+        if (!optXMin.isDefined || !optXMax.isDefined) {
+            val xframe = Timeframe.deduceProcessedData(config.getDatasets(ids))
+            xMin = xframe.start.getTime
+            xMax = xframe.end.getTime
+        } else {
+            xMin = optXMin.get.getTime
+            xMax = optXMax.get.getTime
+        }
+
+        yMin = optYMin.getOrElse(calculateYMinMulti(config.getDatasets(ids))).value
+        yMax = optYMax.getOrElse(calculateYMaxMulti(config.getDatasets(ids))).value
+
+        // calculate the distance between two control points on the y-axis
+        unitY = optUnitY.getOrElse(-1.0)
+        if(unitY <= 0) {
+            unitY = calculateUnitY()
+        }
+        amountYPoints = math.ceil((yMax - yMin) / unitY).toInt
+        stepY = (1.0*heightChart) / amountYPoints
+
+        // calculate yMin and yMax for the min/max displayed value
+        yMin = math.ceil(yMin / unitY) * unitY
+        yMax = math.ceil(yMax / unitY) * unitY
+
+        // calculate the distance between two control points on the x-axis
+        unitX = calculateUnitX()
+        amountXPoints = math.ceil((xMax - xMin) / unitX).toInt
+        stepX = (1.0*widthChart) / amountXPoints
+
+        // calculate xMax for the max displayed value
+        xMax = (math.ceil(xMax / unitX) * unitX).toLong
+    }
+
+    def calculateYMin(data: Iterable[Double]): Double = {
+        data.reduceLeft((l,r) => if (l < r) l else r)
+    }
+
+    def calculateYMinMulti(data: Iterable[ProcessedData]): ValueType = {
+        val mins = data.map((d: ProcessedData) => calculateYMin(d.data.map((x: TaggedDataPoint) => x.value.value)))
+        calculateYMin(mins)
+    }
+
+    def calculateYMax(data: Iterable[Double]): Double = {
+        data.reduceLeft((l,r) => if (l > r) l else r)
+    }
+
+    def calculateYMaxMulti(data: Iterable[ProcessedData]): ValueType = {
+        val maxs = data.map((d: ProcessedData) => calculateYMax(d.data.map((x: TaggedDataPoint) => x.value.value)))
+        calculateYMax(maxs)
+    }
+
+    def calculateUnitY(): Double = {
+        val maxAmountPoints = heightChart / minDistanceY
+        val deltaY = yMax - yMin
+        var unit = 1.0
+
+        var result = deltaY / unit
+
+        // reduce amount until number of points is higher than the max allowed number of points
+        while(result < maxAmountPoints) {
+            unit /= 10
+            result = deltaY / unit
+        }
+
+        // increase amount until number of points is lower than the max allowed number of points
+        while(result > maxAmountPoints) {
+            unit *= 10
+            result = deltaY / unit
+        }
+
+        // the unit leads now to the number of points that is as close as possible
+        // but smaller than the max allowed number of points
+        unit
+    }
+
+    def calculateUnitX(): Long = {
+        ???
+    }
+
+    def calculateViewBoxString(): String = {
+        val x = - borderLeft
+        val y = - borderTop - yMax
+        val w = width + x
+        val h = height + y
+
+        "" + x + " " + y + " " + w + " " + h
+    }
+
+    def apply(config: Config): LineChartConfig.LineChart = {
+        preProcessing(config)
+        LineChartConfig.LineChart(this, config.getDatasets(ids))
+    }
 
 }
