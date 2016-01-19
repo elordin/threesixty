@@ -8,6 +8,7 @@ import MediaTypes.`image/svg+xml`
 import HttpMethods.{GET, POST}
 import HttpHeaders.`Access-Control-Allow-Origin`
 
+
 trait UsageInfo {
     def usage: String
 }
@@ -55,7 +56,7 @@ trait HttpRequestProcessor extends Engine {
         case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
             this.processRequest(body.asString)
         case HttpRequest(POST, _, _, HttpEntity.Empty, _) =>
-            ErrorResponse("empty body")
-        case _ => ErrorResponse("Bad Request")
+            ErrorResponse("""{ "error": "Empty request body." }""")
+        case _ => ErrorResponse("""{ "error": "Bad Request" }""")
     }
 }

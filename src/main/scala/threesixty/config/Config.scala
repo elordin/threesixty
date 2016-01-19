@@ -11,18 +11,8 @@ import scala.collection.immutable.{Map => ImmutableMap}
 object Implicits {
     import spray.json._
 
-    /**
-     *  Implicit conversion to parse a JSON Object to Config
-     */
-    // since Config is a case class, easier conversions might be available.
-    // Check the spray-json docs at https://github.com/spray/spray-json
-    implicit object ConfigJsonFormat extends RootJsonFormat[Config] {
+    // TODO: Implicit conversion from JSON
 
-        def write(c: Config) = throw new NotImplementedError
-
-        def read(value: JsValue) = throw new NotImplementedError
-
-    }
 }
 
 /**
@@ -35,7 +25,6 @@ object Implicits {
 @throws[NoSuchElementException]("if an id was given, for which no InputData exists.")
 class Config(
     val dataIDs: Set[Identifier],
-
     implicit val databaseAdapter: DatabaseAdapter
 ) {
 
@@ -72,5 +61,15 @@ class Config(
     @throws[NoSuchElementException]("if a dataset was requested that is not in processedDatasets")
     def getDatasets(ids: Set[Identifier]): Set[ProcessedData] =
         ids.map(processedDatasets(_))
+
+    @throws[NoSuchElementException]("if a dataset was requested that is not in processedDatasets")
+    def getDataset(id: Identifier): ProcessedData =
+        processedDatasets(id)
+
+    def getDatasets(ids: Set[Identifier]): Set[Option[ProcessedData]] =
+        ids.map(processedDatasets.get(_))
+
+    def getDataset(id: Identifier): Option[ProcessedData] =
+        processedDatasets.get(id)
 }
 

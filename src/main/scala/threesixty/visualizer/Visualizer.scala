@@ -100,6 +100,7 @@ trait withVisualizationInfos {
  *  }}}
  */
 class Visualizer extends withVisualizationInfos {
+    // TODO Exception catching and proper access
 
     @throws[IllegalArgumentException]("if the json specifies a type that has no conversion")
     @throws[NoSuchElementException]("if the json specifies a type that has no conversion")

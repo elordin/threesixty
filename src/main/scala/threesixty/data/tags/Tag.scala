@@ -2,6 +2,7 @@ package threesixty.data.tags
 
 import threesixty.data.InputData
 
+// TODO: CSS classes
 
 trait Tag
 

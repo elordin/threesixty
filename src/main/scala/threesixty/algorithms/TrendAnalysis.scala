@@ -12,4 +12,6 @@ object TrendAnalysis {
         require(strength < 0, "A rising trend cannot be an downward trend.")
     }
 
+
+    // TODO ProcessingMethod
 }
