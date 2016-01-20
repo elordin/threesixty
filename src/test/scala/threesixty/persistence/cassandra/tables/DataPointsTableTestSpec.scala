@@ -1,15 +1,17 @@
-package threesixty.persistence.cassandra
+package threesixty.persistence.cassandra.tables
 
 import java.sql.Timestamp
 import java.util.UUID
 
+import com.websudos.phantom.dsl._
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterAll, FunSpec, Matchers}
 import threesixty.data.Data.DoubleValue
 import threesixty.data.DataPoint
+import threesixty.persistence.cassandra.{CassandraAdapter, CassandraConnector}
+
 import scala.concurrent.Await
 import scala.concurrent.duration._
-import com.websudos.phantom.dsl._
 
 /**
   * Created by Stefan Cimander on 14.01.16.

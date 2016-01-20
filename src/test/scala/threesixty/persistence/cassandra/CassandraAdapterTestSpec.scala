@@ -3,8 +3,8 @@ package threesixty.persistence.cassandra
 import java.sql.Timestamp
 import java.util.UUID
 
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterAll, Matchers, FunSpec}
+import org.scalatest.concurrent.ScalaFutures
 import threesixty.data.Data.DoubleValue
 import threesixty.data.{InputData, DataPoint}
 import threesixty.data.metadata._
@@ -15,9 +15,9 @@ import scala.concurrent.duration._
 import com.websudos.phantom.dsl._
 
 /**
-  * Created by Stefan Cimander on 19.01.16.
+  * Created by Stefan Cimander on 20.01.16.
   */
-class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
+class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
     with BeforeAndAfterAll with CassandraConnector.keyspace.Connector {
 
     override def beforeAll(): Unit = {
@@ -30,7 +30,7 @@ class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)
     }
 
-    describe("Inserting an input data set") {
+    describe("Inserting a input data set") {
         it("should store and load the input data set correctly") {
 
             val identifier = UUID.randomUUID()
@@ -52,16 +52,10 @@ class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             val inputDataSet = InputData(identifier.toString, measurement, dataPoints, inputMetadta)
 
-            Await.result(CassandraAdapter.inputDatasets.store(inputDataSet), Duration.Inf)
-
-            whenReady(CassandraAdapter.inputDatasets.getInputDataByIdentifier(identifier)) {
-                case Some(result) => result should be (inputDataSet)
-                    result.measurement should be (measurement)
-                    result.dataPoints should be (dataPoints)
-                    result.metadata should be (inputMetadta)
-                case None => fail("Did not receive an input data result from the database.")
-            }
+            CassandraAdapter.insertData(inputDataSet) should be (Right(identifier.toString))
+            CassandraAdapter.getDataset(identifier.toString) should be (Right(inputDataSet))
         }
     }
+
 
 }
