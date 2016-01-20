@@ -36,64 +36,29 @@ object LineChartConfig {
      *  @param json representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
-    def apply(json: String): LineChartConfig = new LineChartConfig(Set("data1i", "data2i", "data3i"), 768, 1024, title="Test Chart") // TODO actually read JSON
+    def apply(json: String): LineChartConfig = new LineChartConfig(Set("lineTest"), 900, 1100, title="Test Chart") // TODO actually read JSON
 
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         def toSVG: Elem = {
-            val (x,y,width,height) = config.calculateViewBox()
-            val viewBoxString = "" + x + " " + y + " " + width + " " + height
+            val (vbX, vbY, vbWidth, vbHeight) = config.calculateViewBox()
+            val viewBoxString = "" + vbX + " " + vbY + " " + vbWidth + " " + vbHeight
+
+            val lowerLimit = vbHeight - config.borderBottom + vbY
+            val upperLimit = vbY + config.borderTop
+
+            val leftLimit = 0
+            val rightLimit = vbWidth - config.borderLeft - config.borderRight
 
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={viewBoxString} xml:space="preserve">
                 <g id="grid">
-                    // background-grid
-                    <line fill="none" stroke="#CCCCCC" x1="128" y1="512.5" x2="896" y2="512.5"/>
-                    <line fill="none" stroke="#CCCCCC" x1="128" y1="576.5" x2="896" y2="576.5"/>
-                    <line fill="none" stroke="#CCCCCC" x1="128" y1="448.5" x2="896" y2="448.5"/>
-                    <line fill="none" stroke="#CCCCCC" x1="128" y1="384.5" x2="896" y2="384.5"/>
-                    <line fill="none" stroke="#CCCCCC" x1="128" y1="320.5" x2="896" y2="320.5"/>
-                    <line fill="none" stroke="#CCCCCC" x1="128" y1="256.5" x2="896" y2="256.5"/>
-                    <line fill="none" stroke="#CCCCCC" x1="128" y1="192.5" x2="896" y2="192.5"/>
+                    // background-grid y-axis
+                    {for (i <- config.yMin to config.yMax by config.unitY) yield
+                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={leftLimit.toString} y1={config.convertYPoint(i).toString} x2={rightLimit.toString} y2={config.convertYPoint(i).toString} />}
+                    // background-grid x-axis
+                    {for (i <- 0 to config.amountXPoints) yield
+                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={(i*config.stepX).toString} y1={lowerLimit.toString} x2={(i*config.stepX).toString} y2={upperLimit.toString} />}
                 </g>
-                <line id="X-Axis" fill="none" stroke="#000000" x1="128" y1="640.5" x2="896" y2="640.5"/>
-                <line id="Y-Axis" fill="none" stroke="#000000" x1="127.5" y1="641" x2="127.5" y2="129"/>
-                <g id="x-ArrowHead">
-                    <line fill="none" stroke="#000000" x1="896" y1="640.5" x2="884.687" y2="629.187"/>
-                    <line fill="none" stroke="#000000" x1="896" y1="640.5" x2="884.687" y2="651.813"/>
-                </g>
-                <g id="y-ArrowHead">
-                    <line fill="none" stroke="#000000" x1="127.5" y1="129" x2="116.187" y2="140.313"/>
-                    <line fill="none" stroke="#000000" x1="127.5" y1="129" x2="138.813" y2="140.313"/>
-                </g>
-                <g id="yValueIndicators">
-                    // TODO: Generate dynamically based on axis range and splitting
-                    <line fill="none" stroke="#000000" x1="120" y1="512.5" x2="128" y2="512.5"/>
-                    <line fill="none" stroke="#000000" x1="128" y1="576.5" x2="120" y2="576.5"/>
-                    <line fill="none" stroke="#000000" x1="120" y1="448.5" x2="128" y2="448.5"/>
-                    <line fill="none" stroke="#000000" x1="120" y1="384.5" x2="128" y2="384.5"/>
-                    <line fill="none" stroke="#000000" x1="120" y1="320.5" x2="128" y2="320.5"/>
-                    <line fill="none" stroke="#000000" x1="120" y1="256.5" x2="128" y2="256.5"/>
-                    <line fill="none" stroke="#000000" x1="120" y1="192.5" x2="128" y2="192.5"/>
-                </g>
-
-                // TODO: Generate dynamically based on datapoints
-                {for (dataset <- data) yield
-                <g id={dataset.id}>
-                    // TODO: Line coordinates, color etc.
-                    <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,418 384,458 512,378 640,375 768,300 896,325"/>
-                    <g id="datapoints">
-                        {for (datapoint <- dataset.data) yield
-                            <circle fill="#333333" stroke="#000000" cx={(datapoint.timestamp.getTime * 16 + 128).toString} cy={(578 - datapoint.value.value * 2).toString} r="4"/>}
-                    </g>
-                </g>}<text transform="matrix(1 0 0 1 468.8481 78.0879)" font-family="Roboto, Segoe UI" font-weight="100" font-size="48">
-                {config.title}
-            </text>
-                <text transform="matrix(1 0 0 1 492.2236 708.6963)" font-family="Roboto, Segoe UI" font-size="16">
-                    {config.xLabel}
-                </text>
-                <text transform="matrix(0 -1 1 0 68.6958 403.8643)" font-family="Roboto, Segoe UI" font-size="16">
-                    {config.yLabel}
-                </text>
             </svg>
         }
     }
@@ -171,12 +136,14 @@ case class LineChartConfig(
         stepY = (1.0*heightChart) / amountYPoints
 
         // calculate yMin and yMax for the min/max displayed value
-        yMin = math.ceil(yMin / unitY) * unitY
-        yMax = math.ceil(yMax / unitY) * unitY
+        val vzMin = yMin / math.abs(yMin)
+        yMin = vzMin * math.ceil(math.abs(yMin) / unitY) * unitY
+        val vzMax = yMax / math.abs(yMax)
+        yMax = vzMax * math.ceil(math.abs(yMax) / unitY) * unitY
 
         // calculate the distance between two control points on the x-axis
         unitX = calculateUnitX()
-        amountXPoints = math.ceil((xMax - xMin) / unitX.getTotalMillis).toInt
+        amountXPoints = math.ceil((1.0*(xMax - xMin)) / unitX.getTotalMillis).toInt
         stepX = (1.0*widthChart) / amountXPoints
 
         // calculate xMax for the max displayed value
@@ -242,7 +209,7 @@ case class LineChartConfig(
         for (unit <- possibleUnits) {
             val result = (1.0*deltaX) / unit.getTotalMillis
             if(result <= maxAmountPoints) {
-                unit
+                return unit
             }
         }
 
@@ -251,11 +218,19 @@ case class LineChartConfig(
 
     def calculateViewBox(): (Int, Int, Int, Int) = {
         val x = - borderLeft
-        val y = - borderTop - math.ceil(yMax).toInt
-        val w = width + x
-        val h = height + y
+        val y = - borderTop + math.ceil(convertYPoint(yMax)).toInt
+        val w = width
+        val h = height
 
         (x,y,w,h)
+    }
+
+    def convertYPoint(y: Double): Double = {
+        - (y / (yMax - yMin)) * heightChart
+    }
+
+    def convertXPoint(x: Double): Double = {
+        ((x - xMin) / (xMax - xMin)) * widthChart
     }
 
     def apply(config: Config): LineChartConfig.LineChart = {
