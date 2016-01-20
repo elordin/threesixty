@@ -36,6 +36,11 @@
                 font-weight: 100;
             }
 
+            svg {
+                max-width: 100%;
+                max-height: 100%;
+            }
+
             #result {
                 display: block;
                 position: absolute;
@@ -48,6 +53,7 @@
                 font-family: Source Code Pro;
                 font-size: .8em;
                 margin: 0;
+                overflow: auto;
             }
 
             #submitBtn {
@@ -146,7 +152,8 @@
     "data": [
         "data1",
         "data2",
-        "data3"
+        "data3",
+        "lineTest"
     ]
 }</textarea>
             <button id="submitBtn">Senden</button>
