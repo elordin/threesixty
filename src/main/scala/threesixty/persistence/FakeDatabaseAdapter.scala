@@ -66,6 +66,17 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Scaling.Ordinal,
                 ActivityType("something")
             )
+        ),
+        "lineTest" -> InputData (
+            "lineTest", "demodata",
+            List(new DataPoint(new Timestamp(100), new DoubleValue(-263)), new DataPoint(new Timestamp(5000), new DoubleValue(875))),
+            CompleteInputMetadata(
+                Timeframe(new Timestamp(100), new Timestamp(5000)),
+                Reliability.Unknown,
+                Resolution.Low,
+                Scaling.Ordinal,
+                ActivityType("something new")
+            )
         )
     )
 
