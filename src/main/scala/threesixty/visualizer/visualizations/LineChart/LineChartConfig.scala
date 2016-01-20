@@ -1,17 +1,11 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.LineChart
 
-import threesixty.data.{TaggedDataPoint, ProcessedData}
-import threesixty.data.Data.{ValueType, Timestamp, Identifier}
-import threesixty.visualizer.{
-        Visualization,
-        VisualizationConfig,
-        withVisualizationInfos,
-        VisualizationInfo,
-        DataRequirement,
-        VisualizationMetadata
-    }
-import threesixty.data.metadata.{Timeframe, Scaling}
 import threesixty.config.Config
+import threesixty.data.Data.{Identifier, Timestamp, ValueType}
+import threesixty.data.metadata.{Scaling, Timeframe}
+import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationInfo, VisualizationMetadata, withVisualizationInfos}
+
 import scala.xml.Elem
 
 
@@ -46,9 +40,11 @@ object LineChartConfig {
 
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: Elem =
-            // TODO: Base size on config
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={config.calculateViewBoxString()} xml:space="preserve">
+        def toSVG: Elem = {
+            val (x,y,width,height) = config.calculateViewBox()
+            val viewBoxString = "" + x + " " + y + " " + width + " " + height
+
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={viewBoxString} xml:space="preserve">
                 <g id="grid">
                     // background-grid
                     <line fill="none" stroke="#CCCCCC" x1="128" y1="512.5" x2="896" y2="512.5"/>
@@ -81,21 +77,25 @@ object LineChartConfig {
                 </g>
 
                 // TODO: Generate dynamically based on datapoints
-                { for (dataset <- data) yield
-                    <g id={dataset.id}>
-                        // TODO: Line coordinates, color etc.
-                        <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,418 384,458 512,378 640,375 768,300 896,325"/>
-                        <g id="datapoints">
-                            { for (datapoint <- dataset.data) yield
-                                <circle fill="#333333" stroke="#000000" cx={ (datapoint.timestamp.getTime * 16 + 128).toString } cy={ (578 - datapoint.value.value * 2).toString } r="4"/>
-                            }
-                        </g>
+                {for (dataset <- data) yield
+                <g id={dataset.id}>
+                    // TODO: Line coordinates, color etc.
+                    <polyline fill="none" stroke="#cc0000" stroke-width="2px" points="127.5,500 256,418 384,458 512,378 640,375 768,300 896,325"/>
+                    <g id="datapoints">
+                        {for (datapoint <- dataset.data) yield
+                            <circle fill="#333333" stroke="#000000" cx={(datapoint.timestamp.getTime * 16 + 128).toString} cy={(578 - datapoint.value.value * 2).toString} r="4"/>}
                     </g>
-                }
-                <text transform="matrix(1 0 0 1 468.8481 78.0879)" font-family="Roboto, Segoe UI" font-weight="100" font-size="48">{ config.title }</text>
-                <text transform="matrix(1 0 0 1 492.2236 708.6963)" font-family="Roboto, Segoe UI" font-size="16">{ config.xLabel }</text>
-                <text transform="matrix(0 -1 1 0 68.6958 403.8643)" font-family="Roboto, Segoe UI" font-size="16">{ config.yLabel }</text>
+                </g>}<text transform="matrix(1 0 0 1 468.8481 78.0879)" font-family="Roboto, Segoe UI" font-weight="100" font-size="48">
+                {config.title}
+            </text>
+                <text transform="matrix(1 0 0 1 492.2236 708.6963)" font-family="Roboto, Segoe UI" font-size="16">
+                    {config.xLabel}
+                </text>
+                <text transform="matrix(0 -1 1 0 68.6958 403.8643)" font-family="Roboto, Segoe UI" font-size="16">
+                    {config.yLabel}
+                </text>
             </svg>
+        }
     }
 }
 
@@ -138,7 +138,7 @@ case class LineChartConfig(
 
     var xMin: Long = 0
     var xMax: Long = 0
-    var unitX: Double = 0
+    var unitX: XScaling = null
     var stepX: Double = 0
     var amountXPoints: Int = 0
 
@@ -152,8 +152,8 @@ case class LineChartConfig(
         // get x/y min/max
         if (!optXMin.isDefined || !optXMax.isDefined) {
             val xframe = Timeframe.deduceProcessedData(config.getDatasets(ids))
-            xMin = xframe.start.getTime
-            xMax = xframe.end.getTime
+            xMin = if (optXMin.isDefined) math.min(xframe.start.getTime, math.max(0, optXMin.get.getTime)) else xframe.start.getTime
+            xMax = if (optXMax.isDefined) math.max(xframe.end.getTime, optXMax.get.getTime) else xframe.end.getTime
         } else {
             xMin = optXMin.get.getTime
             xMax = optXMax.get.getTime
@@ -176,11 +176,11 @@ case class LineChartConfig(
 
         // calculate the distance between two control points on the x-axis
         unitX = calculateUnitX()
-        amountXPoints = math.ceil((xMax - xMin) / unitX).toInt
+        amountXPoints = math.ceil((xMax - xMin) / unitX.getTotalMillis).toInt
         stepX = (1.0*widthChart) / amountXPoints
 
         // calculate xMax for the max displayed value
-        xMax = (math.ceil(xMax / unitX) * unitX).toLong
+        xMax = (math.ceil(xMax / unitX.getTotalMillis) * unitX.getTotalMillis).toLong
     }
 
     def calculateYMin(data: Iterable[Double]): Double = {
@@ -225,17 +225,37 @@ case class LineChartConfig(
         unit
     }
 
-    def calculateUnitX(): Long = {
-        ???
+    def calculateUnitX(): XScaling = {
+        val maxAmountPoints = widthChart / minDistanceX
+        val deltaX = xMax - xMin
+
+        val possibleUnits = List(
+            new XScalingMillis1, new XScalingMillis10, new XScalingMillis100,
+            new XScalingSeconds1, new XScalingSeconds10, new XScalingSeconds30,
+            new XScalingMinutes1, new XScalingMinutes10, new XScalingMinutes30,
+            new XScalingHours1, new XScalingHours3, new XScalingHours6, new XScalingHours12,
+            new XScalingDays1, new XScalingDays7,
+            new XScalingMonths1, new XScalingMonths3, new XScalingMonths6,
+            new XScalingYears1, new XScalingYears5, new XScalingYears10
+        )
+
+        for (unit <- possibleUnits) {
+            val result = (1.0*deltaX) / unit.getTotalMillis
+            if(result <= maxAmountPoints) {
+                unit
+            }
+        }
+
+        throw new UnsupportedOperationException("No scaling for the x-axis could be found.")
     }
 
-    def calculateViewBoxString(): String = {
+    def calculateViewBox(): (Int, Int, Int, Int) = {
         val x = - borderLeft
-        val y = - borderTop - yMax
+        val y = - borderTop - math.ceil(yMax).toInt
         val w = width + x
         val h = height + y
 
-        "" + x + " " + y + " " + w + " " + h
+        (x,y,w,h)
     }
 
     def apply(config: Config): LineChartConfig.LineChart = {

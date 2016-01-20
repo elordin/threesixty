@@ -17,7 +17,7 @@ case class IncompleteInputMetadata(
 
     def complete(contextData: InputData): CompleteInputMetadata = {
         CompleteInputMetadata(
-            timeframe.getOrElse(Timeframe.deduce(contextData)),
+            timeframe.getOrElse(Timeframe.deduceInputData(contextData)),
             reliability.getOrElse(Reliability.deduce(contextData)),
             resolution.getOrElse(Resolution.deduce(contextData)),
             scaling.getOrElse(Scaling.deduce(contextData)),

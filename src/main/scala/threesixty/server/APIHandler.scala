@@ -4,6 +4,7 @@ import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig
 
 import threesixty.visualizer.visualizations._
 
