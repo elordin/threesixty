@@ -15,7 +15,7 @@ object StatisticalAnalysis {
      *  @returns Median of input dataset
      */
     def median(data: ProcessedData): ValueType = {
-        data.data.map(_.value).apply(data.data.length / 2)
+        data.dataPoints.map(_.value).apply(data.dataPoints.length / 2)
     }
 
     /**
@@ -23,7 +23,7 @@ object StatisticalAnalysis {
      *  @returns Mean of input dataset
      */
     def mean(data: ProcessedData): ValueType = {
-        data.data.map(_.value.value).sum / data.data.length
+        data.dataPoints.map(_.value.value).sum / data.dataPoints.length
     }
 
     /**
@@ -40,7 +40,7 @@ object StatisticalAnalysis {
      */
     def variance(data: ProcessedData): ValueType = {
         val e = mean(data)
-        mean(ProcessedData(data.id, data.data.map { d:TaggedDataPoint =>
+        mean(ProcessedData(data.id, data.dataPoints.map { d:TaggedDataPoint =>
             TaggedDataPoint(d.timestamp, math.pow(e.value - d.value.value, 2), d.tags) }))
     }
 

@@ -4,6 +4,7 @@ import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig
 
 import threesixty.visualizer.visualizations._
 
@@ -58,7 +59,7 @@ class APIHandler extends Actor {
             sender ! response.toHttpResponse
 
         case HttpRequest(GET, _, _, _, _) =>
-            var response = APIHandler.engine.processRequest("""{"type": "visualization", "visualization": { "type": "linechart", "args": "" }, "data": ["data1", "data2", "data3"] }""")
+            var response = APIHandler.engine.processRequest("""{"type": "visualization", "visualization": { "type": "linechart", "args": "" }, "data": ["data1", "data2", "data3", "lineTest"] }""")
             sender ! response.toHttpResponse
 
         case _: Http.ConnectionClosed =>

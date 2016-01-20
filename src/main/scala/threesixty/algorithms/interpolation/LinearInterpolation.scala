@@ -61,11 +61,11 @@ case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identi
             case otherwise => otherwise
         }
 
-        val orderedDataPoints = data.data.sortBy(d => timestamp2Long(d.timestamp))
+        val orderedDataPoints = data.dataPoints.sortBy(d => timestamp2Long(d.timestamp))
 
         val newID = idMapping(data.id)
 
-        Set(data.copy(id = newID, data = linearInterpolated(orderedDataPoints)))
+        Set(data.copy(id = newID, dataPoints = linearInterpolated(orderedDataPoints)))
     }
 
 }
