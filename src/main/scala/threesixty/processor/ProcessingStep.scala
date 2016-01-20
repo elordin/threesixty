@@ -9,6 +9,7 @@ import scala.collection.parallel._
 
 sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier])
 
+
 /**
  *  ProcessingMethod that works only on one single dataset.
  *  It may however create datasets, and thus returns a Set of ProcessedData.
@@ -21,6 +22,7 @@ sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier])
 abstract class SingleProcessingMethod(idMapping: Map[Identifier, Identifier])
     extends ProcessingMethod(idMapping: Map[Identifier, Identifier])
     with Function1[ProcessedData, Set[ProcessedData]]
+
 
 /**
  *  ProcessingMethod that requires multiple datasets to process.

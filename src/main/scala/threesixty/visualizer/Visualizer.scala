@@ -102,7 +102,7 @@ trait withVisualizationInfos {
 class Visualizer extends withVisualizationInfos {
     // TODO Exception catching and proper access
 
-    @throws[IllegalArgumentException]("if the json specifies a type that has no conversion")
+    @throws[IllegalArgumentException]("if a parameter is missing")
     @throws[NoSuchElementException]("if the json specifies a type that has no conversion")
     def toVisualizationConfig(jsonString: String): VisualizationConfig = {
         val json: JsObject = jsonString.parseJson.asJsObject
