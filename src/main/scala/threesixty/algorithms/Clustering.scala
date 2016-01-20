@@ -1,6 +1,8 @@
 package threesixty.algorithms
 
-import threesixty.data.TaggedDataPoint
+import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.Identifier
+import threesixty.processor.MultiProcessingMethod
 
 import clustering._
 
@@ -22,6 +24,8 @@ object Clustering {
     object     Noise            extends Classification
     object     Unclassified     extends Classification
 
+
+    // TODO: Review distance functions
 
     type DistanceFunctionSelector[D, V] = ((D => V)*) => DistanceFunction[D]
 
@@ -55,17 +59,17 @@ object Clustering {
     def euclidianDistanceS = genericEuclidianDistance[TaggedDataPoint, Double]
 
 
-    def kModes[D] = throw new NotImplementedError
-
-
-    def snn[D] = throw new NotImplementedError
-
-
     def dbscan[D](dataset: Set[D],
                   distFunction: DistanceFunction[D])
                  (implicit minPts: Int,
                            epsilon: Double): Map[D, Classification] =
         DBSCAN.run[D](dataset,distFunction)
 
+}
+
+case class Clustering(idMapping: Map[Identifier, Identifier])
+    extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+
+    def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ??? // TODO implement
 
 }

@@ -8,20 +8,20 @@ case class DataPoint(val timestamp:Timestamp, val value:ValueType)
 
 
 case class UnsafeInputData(
-	val identifier: Identifier,
+	val id: Identifier,
 	val measurement: String, //heartrate, temperature etc
 	val dataPoints: List[DataPoint],
 	val metadata: IncompleteInputMetadata
-)
+) {
+    require(dataPoints.length > 0, "Emtpy dataset not allowed.")
+}
 
 
 case class InputData(
-	val identifier: Identifier,
+	val id: Identifier,
 	val measurement: String, //heartrate, temperature etc
 	val dataPoints: List[DataPoint],
 	val metadata: CompleteInputMetadata
 ) {
-
     require(dataPoints.length > 0, "Emtpy dataset not allowed.")
-
 }

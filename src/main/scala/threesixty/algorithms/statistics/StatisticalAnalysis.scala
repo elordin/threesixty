@@ -44,10 +44,12 @@ object StatisticalAnalysis {
             TaggedDataPoint(d.timestamp, math.pow(e.value - d.value.value, 2), d.tags) }))
     }
 
+    // TODO
     def covariance(data1: ProcessedData, data2: ProcessedData): Double = {
         throw new NotImplementedError
     }
 
+    // TODO
     def correlation(data1: ProcessedData, data2: ProcessedData): Double = {
         throw new NotImplementedError
     }

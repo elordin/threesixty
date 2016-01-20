@@ -93,11 +93,11 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
 
 
     def insertData(data:InputData):Either[String, Identifier] =
-        if (database.contains(data.identifier)) {
-            Left(s"Dataset with id ${data.identifier} exists already.")
+        if (database.contains(data.id)) {
+            Left(s"Dataset with id ${data.id} exists already.")
         } else {
-            database += (data.identifier -> data)
-            Right(data.identifier)
+            database += (data.id -> data)
+            Right(data.id)
         }
 
 

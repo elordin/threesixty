@@ -45,7 +45,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       */
     def insertData(data:InputData):Either[String, Identifier] = {
         Await.result(CassandraAdapter.inputDatasets.store(data), Duration.Inf)
-        Right(data.identifier)
+        Right(data.id)
     }
 
     /**

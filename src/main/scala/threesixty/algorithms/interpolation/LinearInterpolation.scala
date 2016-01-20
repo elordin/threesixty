@@ -4,7 +4,20 @@ import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
-import threesixty.processor.SingleProcessingMethod
+import threesixty.processor.{withProcessingInfos, SingleProcessingMethod, ProcessingMethodInfo, ProcessingStep}
+
+
+object LinearInterpolation {
+
+    trait Info extends withProcessingInfos {
+        abstract override def processingInfos: Map[String, ProcessingMethodInfo] =
+            super.processingInfos + ("linearinterpolation" -> ProcessingMethodInfo(
+                "Linear Interpolation",
+                { json: String => ??? }: (String) => ProcessingStep, // TODO
+                """ Use responsibly """ // TODO
+            ))
+    }
+}
 
 /**
  *  Linear interpolator

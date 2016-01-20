@@ -10,9 +10,20 @@ import threesixty.algorithms.interpolation.LinearInterpolation
 
 import spray.http.HttpResponse
 import spray.json._
+
 import DefaultJsonProtocol._
 
 
+/**
+ *  Core Visualization engine. Processes a string (usually from a HTTP request)
+ *  and return the requested resource, usually a visualization.
+ *
+ *  @author Thomas Weber
+ *
+ *  @param processor A processor object with available processing methods mixed in.
+ *  @param visualizer A visualizer object with available visualizations mixed in.
+ *  @param dbAdapter The adapter to the database holding all data.
+ */
 case class VisualizationEngine(
     processor: Processor,
     visualizer: Visualizer,
@@ -50,59 +61,98 @@ VISUALIZATION
                                         PROCESSING_METHOD_ARGS are the parameters for that method
                                         DATA_IDS is a list of IDs of datasets this method is applied to
                                         ID_MAPPING allows renaming the output dataset. Doing this allows
-                                        continue using both the original dataset unchanged and the
-                                        processed one.
-
+                                        to continue using both the original dataset unchanged and the
+                                        processed one using their now different ids.
+                                        If a dataset is processed whose ID is not in ID_MAPPING, it will
+                                        be overridden with the processed result.
 """
 
+
+    /**
+     *  Processes an arbitrary request. Checks type parameter and delegates.
+     *
+     *  @author Thomas Weber
+     *
+     *  @param jsonString RequestBody, assumes JSON
+     *  @return EngineResponse depending on type parameter
+     */
     def processRequest(jsonString: String): EngineResponse = {
-        val json = jsonString.parseJson.asJsObject
+        try {
+            val json = jsonString.parseJson.asJsObject
 
-        val requestType: String = json.getFields("type")(0).convertTo[String]
+            val requestType: String = json.getFields("type")(0).convertTo[String]
 
-        val result: EngineResponse =
-            (requestType) match {
-                case "visualization" => processVisualizationRequest(json)
-                case "help"          => processHelpRequest(json)
-                case _               => ErrorResponse(s"Unknown command: $requestType\n\n" ++ usage)
-            }
+            val result: EngineResponse =
+                (requestType) match {
+                    case "visualization" => processVisualizationRequest(json)
+                    // TODO case "data" => processInsertData
+                    case "help"          => processHelpRequest(json)
+                    case _               => ErrorResponse(s"""{ "error": "Unknown type: $requestType" }""")
+                }
 
-        result
+            result
+        } catch {
+            case e:DeserializationException => ErrorResponse("""{ "error": "Invalid JSON" }""")
+            case e:IndexOutOfBoundsException => ErrorResponse("""{ "error": "type parameter missing" }""")
+        }
     }
 
 
-    def processHelpRequest(json: JsObject): HelpResponse = {
+    /**
+     *  Processes a requests of type: help. Assumes "for" parameter
+     *  to distinguish between help messages.
+     *
+     *  @author Thomas Weber
+     *
+     *  @return HelpResponse with requested help or generic help if "for" was missing.
+     */
+    def processHelpRequest(json: JsObject): EngineResponse = {
         try {
             val helpFor = json.getFields("for")(0).convertTo[String]
             helpFor.toLowerCase match {
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
                     HelpResponse(availablevisualizations.foldLeft(
-                        "{ \"visualizations\": [\n")(_ + "    \"" + _ + "\",\n") + "}")
+                        "{\n    \"visualizations\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
                 case "processingmethods" | "p" =>
-                    ???
+                    ??? // TODO
                 case _ =>
-                    val helper: UsageInfo = visualizer.visualizationInfos.getOrElse(
-                        helpFor, ??? // get from processor
-                    )
-                    HelpResponse(helper.usage)
+                    ErrorResponse("""{ "error": "Unknown help-for parameter."}""")
             }
         } catch {
-            case _:Exception => HelpResponse(usage)
+            // No "for" given
+            case e:IndexOutOfBoundsException => HelpResponse(usage)
         }
     }
 
 
-    def processVisualizationRequest(json: JsObject): VisualizationResponse = {
-
+    /**
+     *  Processes the request into a visualization.
+     *  Reads the visualization parameter as VisualizationConfig or
+     *  deduces one if none is given.
+     *  Reads the processor parameter as ProcessingStrategy or
+     *  deduces one if none is given.
+     *  Assumes a list of data IDs at "data".
+     *
+     *  @author Thomas Weber
+     *
+     *  @param json JsObject parsed from the initial request.
+     *  @return VisualizationResponse on success, ErrorResponse with error message on failure.
+     */
+    def processVisualizationRequest(json: JsObject): EngineResponse = {
         val vizConfigOption: Option[VisualizationConfig] = try {
             val vizConfigS: String = json.getFields("visualization")(0).toString
             Some(visualizer.toVisualizationConfig(vizConfigS))
         } catch {
-            case e:Exception => // TODO limit
-                println(e.getMessage); None
+            case e:NoSuchElementException =>
+                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Unknown visualization
+            case e:IllegalArgumentException =>
+                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Parameter missing
+            case e:IndexOutOfBoundsException =>
+                None // No "visualization" given
         }
 
+        // TODO get processing strategy from json
         val procStratOption:Option[ProcessingStrategy] = Some(ProcessingStrategy(
             ProcessingStep(LinearInterpolation(3,
                 Map("data1" -> "data1i", "data2" -> "data2i")),
@@ -113,6 +163,7 @@ VISUALIZATION
                 Set[Identifier]("data3")
             )
         ))
+
         /*
         val procStratOption: Option[ProcessingStrategy] = try {
             val processingSteps: Seq[ProcessingStep] = ???
@@ -124,22 +175,28 @@ VISUALIZATION
                 None
         } */
 
-        // TODO throws DeserializationException
-        // TODO throws IndexOutOfBoundsException
-        val dataIDs:Set[String] = json.getFields("data")(0).convertTo[Set[String]]
+        val dataIDs:Set[Identifier] = try {
+            json.getFields("data")(0).convertTo[Set[String]]
+        } catch {
+            case e: IndexOutOfBoundsException =>
+                return ErrorResponse("""{ "error": "data parameter missing."}""")
+        }
 
 
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
                 case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) => (procStrat, vizConfig)
-                case (Some(procStrat), None)            => println("1"); ???
-                case (None, Some(vizConfig))            => println("2"); ???
-                case (None, None)                       => println("3"); ???
+                case (Some(procStrat), None)            => (procStrat, ???) // TODO deduction
+                case (None, Some(vizConfig))            => (???, vizConfig) // TODO deduction
+                case (None, None)                       => (???, ???)       // TODO deduction
             }
 
         val config: Config = new Config(dataIDs, dbAdapter)
 
+        // Apply processing Methods
         processingStrategy(config)
+
+        // return Visualization
         VisualizationResponse(visualizationConfig(config))
     }
 }

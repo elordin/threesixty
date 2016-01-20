@@ -30,7 +30,7 @@ object Data {
      *  @example {{{
      *    object MoodEnum extends DataEnum {
      *        val HAPPY = new EnumValue(0, "Happy", 5.0)
-     *        val SAD   = new EnumValue(0, "Sad", 1.0)
+     *        val SAD   = new EnumValue(1, "Sad", 1.0)
      *    }
      *  }}}
      */
@@ -49,7 +49,7 @@ object Data {
 
         @throws[NoSuchElementException]("if not corresponding enum exists")
         implicit def double2EnumValue(value: Double): EnumValue
-        // throw new NoSuchElementException(s"No value found for '$value'"))
+
     }
 
 }
@@ -61,9 +61,6 @@ object Implicits {
 
     implicit def input2ProcessedData:(InputData) => ProcessedData = {
         case input@InputData(id: Identifier, _, data:List[DataPoint], metadata) =>
-            // error free
-            // sanitized
-            // metadata is complete
             ProcessedData(id, data.map {
                 case DataPoint(timestamp, value) =>
                     TaggedDataPoint(timestamp, value, Set(InputOrigin(input)))
@@ -72,13 +69,12 @@ object Implicits {
 
     implicit def unsafe2safeInputData(unsafe: UnsafeInputData)(implicit context: InputData): InputData =
         InputData(
-            unsafe.identifier,
+            unsafe.id,
             unsafe.measurement,
             unsafe.dataPoints,
             unsafe.metadata.complete(context)
         )
 
     implicit def timestamp2Long(timestamp: Timestamp): Long = timestamp.getTime()
-
     implicit def long2timestamp(t: Long): Timestamp = new Timestamp(t)
 }

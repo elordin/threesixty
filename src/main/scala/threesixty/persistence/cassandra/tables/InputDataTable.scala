@@ -55,10 +55,10 @@ abstract class InputDatasets extends InputDataTable with RootConnector {
 
         for (dataPoint <- inputData.dataPoints) {
             Await.result(CassandraAdapter.dataPoints
-                .store(dataPoint, UUID.fromString(inputData.identifier)), Duration.Inf)
+                .store(dataPoint, UUID.fromString(inputData.id)), Duration.Inf)
         }
 
-        insert.value(_.identifier, UUID.fromString(inputData.identifier))
+        insert.value(_.identifier, UUID.fromString(inputData.id))
             .value(_.measurement, inputData.measurement)
             .value(_.inputMetadataId, inputMetadataId)
             .consistencyLevel_=(ConsistencyLevel.ALL)
