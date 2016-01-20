@@ -3,6 +3,7 @@ package threesixty.processor
 import threesixty.config.Config
 import threesixty.data.ProcessedData
 
+
 /**
  *  Aggregation of multiple ProcessingSteps.
  *  Acts as a function that is applied to a configuration, processing

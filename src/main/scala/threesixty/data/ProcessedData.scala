@@ -11,8 +11,8 @@ case class TaggedDataPoint(
 )
 
 
-case class ProcessedData(val id: Identifier, val data:List[TaggedDataPoint]) {
+case class ProcessedData(val id: Identifier, val dataPoints: List[TaggedDataPoint]) {
 
-    require(data.length > 0, "Empty dataset not allowed.")
+    require(dataPoints.length > 0, "Empty dataset not allowed.")
 
 }

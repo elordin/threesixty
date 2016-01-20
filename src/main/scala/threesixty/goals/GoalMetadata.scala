@@ -12,7 +12,7 @@ case class IncompleteGoalMetadata(val timeframe: Option[Timeframe] = None)
     extends GoalMetadata {
 
     def complete(contextData: List[InputData]): CompleteGoalMetadata = {
-        CompleteGoalMetadata(timeframe.getOrElse(Timeframe.deduce(contextData)))
+        CompleteGoalMetadata(timeframe.getOrElse(Timeframe.deduceInputData(contextData)))
     }
 }
 

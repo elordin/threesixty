@@ -71,7 +71,7 @@ object Implicits {
         InputData(
             unsafe.id,
             unsafe.measurement,
-            unsafe.data,
+            unsafe.dataPoints,
             unsafe.metadata.complete(context)
         )
 

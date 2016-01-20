@@ -16,7 +16,7 @@ object Resolution extends Enumeration{
     type Resolution = Resolution.Value
 
     def deduce(contextData: InputData): Resolution = {
-        val avg = (1.0 * (contextData.data.last.timestamp.getTime - contextData.data.head.timestamp.getTime)) / contextData.data.size
+        val avg = (1.0 * (contextData.dataPoints.last.timestamp.getTime - contextData.dataPoints.head.timestamp.getTime)) / contextData.dataPoints.size
         val erg = 1.0 / avg
 
         if (erg < boundaryLow) {

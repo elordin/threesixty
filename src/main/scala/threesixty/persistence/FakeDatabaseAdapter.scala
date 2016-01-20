@@ -66,6 +66,21 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Scaling.Ordinal,
                 ActivityType("something")
             )
+        ),
+        "lineTest" -> InputData (
+            "lineTest", "demodata",
+            List(
+                new DataPoint(new Timestamp(10), new DoubleValue(150)),
+                new DataPoint(new Timestamp(50), new DoubleValue(375)),
+                new DataPoint(new Timestamp(80), new DoubleValue(225)),
+                new DataPoint(new Timestamp(85), new DoubleValue(550))),
+            CompleteInputMetadata(
+                Timeframe(new Timestamp(10), new Timestamp(85)),
+                Reliability.Unknown,
+                Resolution.Low,
+                Scaling.Ordinal,
+                ActivityType("something new")
+            )
         )
     )
 
@@ -89,7 +104,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
     def appendData(inData:InputData, id:Identifier):Either[String, Identifier] = {
         database.get(id) match {
             case Some(InputData(_, _, olddata, _)) =>
-                database += (id -> inData.copy(data = olddata ++ inData.data))
+                database += (id -> inData.copy(dataPoints = olddata ++ inData.dataPoints))
                 Right(id)
             case None =>
                 Left(s"No data with id $id found")

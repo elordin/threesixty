@@ -1,3 +1,4 @@
+/*
 package threesixty.visualizer.visualizations
 
 import threesixty.data.ProcessedData
@@ -147,3 +148,4 @@ case class LineChartConfig(
     def apply(config: Config): LineChartConfig.LineChart = LineChartConfig.LineChart(this, config.getDatasets(ids))
 
 }
+*/
