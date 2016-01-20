@@ -5,7 +5,7 @@ import threesixty.data.Data.Timestamp
 
 object Timeframe {
     def deduce(contextData: InputData): Timeframe = {
-        Timeframe(contextData.data.head.timestamp, contextData.data.last.timestamp)
+        Timeframe(contextData.dataPoints.head.timestamp, contextData.dataPoints.last.timestamp)
     }
 
     def deduce(contextData: List[InputData]): Timeframe = {
