@@ -69,9 +69,13 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         ),
         "lineTest" -> InputData (
             "lineTest", "demodata",
-            List(new DataPoint(new Timestamp(100), new DoubleValue(-263)), new DataPoint(new Timestamp(5000), new DoubleValue(875))),
+            List(
+                new DataPoint(new Timestamp(10), new DoubleValue(150)),
+                new DataPoint(new Timestamp(50), new DoubleValue(375)),
+                new DataPoint(new Timestamp(80), new DoubleValue(225)),
+                new DataPoint(new Timestamp(85), new DoubleValue(550))),
             CompleteInputMetadata(
-                Timeframe(new Timestamp(100), new Timestamp(5000)),
+                Timeframe(new Timestamp(10), new Timestamp(85)),
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,

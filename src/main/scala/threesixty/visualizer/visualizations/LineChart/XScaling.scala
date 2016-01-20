@@ -11,6 +11,8 @@ abstract class XScaling(val name: String, val baseMillis: Long, val factor: Int 
     def getTotalMillis: Long = baseMillis * factor
 
     def getLabel(index: Int, millis: Long): String
+
+    def getUnit: String = ""
 }
 
 
@@ -18,6 +20,8 @@ abstract class XScalingMillis(name: String, factor: Int) extends XScaling(name, 
     def getLabel(index: Int, millis: Long) = {
         "" + (index * factor)
     }
+
+    override def getUnit = "ms"
 }
 case class XScalingMillis1() extends XScalingMillis("millis1", 1)
 case class XScalingMillis10() extends XScalingMillis("millis10", 10)
@@ -28,6 +32,8 @@ abstract class XScalingSeconds(name: String, factor: Int) extends XScaling(name,
     def getLabel(index: Int, millis: Long) = {
         "" + (index * factor)
     }
+
+    override def getUnit = "sek"
 }
 case class XScalingSeconds1() extends XScalingSeconds("seconds1", 1)
 case class XScalingSeconds10() extends XScalingSeconds("seconds10", 10)
@@ -60,7 +66,7 @@ case class XScalingHours12() extends XScalingHours("hours12", 12)
 abstract class XScalingDays(name: String, factor: Int) extends XScaling(name, 86400000L, factor) {
     def getLabel(index: Int, millis: Long) = {
         val timestamp = new Timestamp(millis)
-        "" + timestamp.getDay + "." + timestamp.getMonth
+        "" + timestamp.getDate + "." + (timestamp.getMonth + 1)
     }
 }
 case class XScalingDays1() extends XScalingDays("days1", 1)
@@ -69,6 +75,7 @@ case class XScalingDays7() extends XScalingDays("days7", 7)
 
 abstract class XScalingMonths(name: String, factor: Int) extends XScaling(name, 2628000000L, factor) {
     def getLabel(index: Int, millis: Long) = {
+        //TODO: Bug because of variable month lengths
         val timestamp = new Timestamp(millis)
         timestamp.getMonth match {
             case 0 => "Jan"
@@ -94,8 +101,9 @@ case class XScalingMonths6() extends XScalingMonths("months6", 6)
 
 abstract class XScalingYears(name: String, factor: Int) extends XScaling(name, 31540000000L, factor) {
     def getLabel(index: Int, millis: Long) = {
+        // TODO: Bug because of variable year lenghts
         val timestamp = new Timestamp(millis)
-        "" + timestamp.getYear
+        "" + (timestamp.getYear + 1900)
     }
 }
 case class XScalingYears1() extends XScalingYears("years1", 1)

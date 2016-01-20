@@ -17,15 +17,23 @@ object LineChartConfig {
                     "LineChart",
                     { json:String => LineChartConfig.apply(json) },
                     "Parameters: \n" +
-                    "    height: Int    - Height of the diagram in px\n" +
-                    "    width:  Int    - Width of the diagram in px\n" +
-                    "    xMin:   Int    - Minimum value of the x-axis\n" +
-                    "    xMax:   Int    - Maximum value of the x-axis\n" +
-                    "    yMin:   Int    - Minimum value of the y-axis\n" +
-                    "    yMax:   Int    - Maximum value of the y-axis\n" +
-                    "    xLabel: String - Label for the x-axis\n" +
-                    "    yLabel: String - Label for the y-axis\n" +
-                    "    title:  String - Diagram title\n"
+                    "    height:        Int                 - Height of the diagram in px\n" +
+                    "    width:         Int                 - Width of the diagram in px\n" +
+                    "    optXMin:       Option[Timestamp]   - Minimum value of the x-axis\n" +
+                    "    optXMax:       Option[Timestamp]   - Maximum value of the x-axis\n" +
+                    "    optYMin:       Option[ValueType]   - Minimum value of the y-axis\n" +
+                    "    optYMax:       Option[ValueType]   - Maximum value of the y-axis\n" +
+                    "    xLabel:        String              - Label for the x-axis\n" +
+                    "    yLabel:        String              - Label for the y-axis\n" +
+                    "    title:         String              - Diagram title\n" +
+                    "    borderTop:     Int                 - Border to the top in px\n" +
+                    "    borderBottom:  Int                 - Border to the bottom in px\n" +
+                    "    borderLeft:    Int                 - Border to the left in px\n" +
+                    "    borderRight:   Int                 - Border to the right in px\n" +
+                    "    minDistanceX   Int                 - Minimum number of px between two control points on the x-axis\n" +
+                    "    minDistanceY   Int                 - Minimum number of px between two control points on the y-axis\n" +
+                    "    optUnitX       Option[String]      - Name of the desired unit on the x-axis\n" +
+                    "    optUnitY       Option[Double]      - Value of the desired unit on the y-axis\n"
                 )
             )
     }
@@ -36,13 +44,43 @@ object LineChartConfig {
      *  @param json representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
-    def apply(json: String): LineChartConfig = new LineChartConfig(Set("lineTest"), 900, 1100, title="Test Chart") // TODO actually read JSON
+    def apply(json: String): LineChartConfig = new LineChartConfig(
+        Set("lineTest", "data1", "data2"),
+        950, 1100,
+        title="Test Chart mit etwas mehr Text", yLabel = "Werte", xLabel = "Zeit") // TODO actually read JSON
 
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+        private def calculateTextYOffset(value: String): Int = {
+            - value.size * 8
+        }
+
+        private def yCoordTextToString(value: Double): String = {
+            if(value == 0) {
+                value.toInt.toString
+            } else if (math.abs(value) < 1) {
+                value.toString
+            } else {
+                value.toInt.toString
+            }
+        }
+
+        private def calculatePath(config: LineChartConfig, data: ProcessedData): String = {
+            var path = ""
+
+            for(d <- data.data) {
+                if(path.isEmpty) {
+                    path += "M " + config.convertXPoint(d.timestamp.getTime) + " " + config.convertYPoint(d.value.value)
+                } else {
+                    path += " L " + config.convertXPoint(d.timestamp.getTime) + " " + config.convertYPoint(d.value.value)
+                }
+            }
+
+            path
+        }
+
         def toSVG: Elem = {
             val (vbX, vbY, vbWidth, vbHeight) = config.calculateViewBox()
-            val viewBoxString = "" + vbX + " " + vbY + " " + vbWidth + " " + vbHeight
 
             val lowerLimit = vbHeight - config.borderBottom + vbY
             val upperLimit = vbY + config.borderTop
@@ -50,15 +88,58 @@ object LineChartConfig {
             val leftLimit = 0
             val rightLimit = vbWidth - config.borderLeft - config.borderRight
 
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={viewBoxString} xml:space="preserve">
+            val textVerticalOffsetY = 5
+            val textHorizontalOffsetY = -100
+
+            val textVerticalOffsetX = 20
+            val textHorizontalOffsetX = -140
+
+            val unitXAxis = config.unitX.getUnit
+
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={vbX + " " + vbY + " " + vbWidth + " " + vbHeight} xml:space="preserve">
                 <g id="grid">
                     // background-grid y-axis
                     {for (i <- config.yMin to config.yMax by config.unitY) yield
-                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={leftLimit.toString} y1={config.convertYPoint(i).toString} x2={rightLimit.toString} y2={config.convertYPoint(i).toString} />}
+                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={leftLimit.toString} y1={config.convertYPoint(i).toString} x2={rightLimit.toString} y2={config.convertYPoint(i).toString} />
+                        <text x={(vbX + textHorizontalOffsetY + calculateTextYOffset(yCoordTextToString(i))).toString} y={(config.convertYPoint(i) + textVerticalOffsetY).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="16">
+                            {yCoordTextToString(i)}
+                        </text>
+                    }
                     // background-grid x-axis
                     {for (i <- 0 to config.amountXPoints) yield
-                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={(i*config.stepX).toString} y1={lowerLimit.toString} x2={(i*config.stepX).toString} y2={upperLimit.toString} />}
+                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={(i*config.stepX).toString} y1={lowerLimit.toString} x2={(i*config.stepX).toString} y2={upperLimit.toString} />
+                        <text x={(i*config.stepX + textHorizontalOffsetX).toString} y={(lowerLimit + textVerticalOffsetX).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="16">
+                            {config.unitX.getLabel(i, config.xMin + i*config.unitX.getTotalMillis)}
+                        </text>
+                    }
                 </g>
+                // data
+                {for (dataset <- data) yield
+                <g id={dataset.id}>
+                    <g id="datapoints">
+                        {for (datapoint <- dataset.data) yield
+                            <circle fill="#00008B" stroke="#00008B" cx={config.convertXPoint(datapoint.timestamp.getTime).toString} cy={config.convertYPoint(datapoint.value.value).toString} r="4"/>}
+                    </g>
+                    <path stroke="#6495ED" fill="none" stroke-width="2" d={calculatePath(config, dataset)}/>
+                </g>}
+                // chart title
+                <text x={(vbX - 320 + (config.width - config.title.size * 20) / 2).toString} y={(vbY + 60).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="48">
+                    {config.title}
+                </text>
+                // y-label
+                <text x={(vbX + textHorizontalOffsetY + 20 + calculateTextYOffset(config.yLabel) / 2).toString} y={(vbY + 75).toString} font-family="Roboto, Segoe UI" font-size="20">
+                    {config.yLabel}
+                </text>
+                // x-label
+                <text x={(rightLimit - 85).toString} y={(lowerLimit + textVerticalOffsetX - 15).toString} font-family="Roboto, Segoe UI" font-size="20">
+                    {config.xLabel}
+                    {if (!unitXAxis.isEmpty)
+                    {
+                        <tspan x={(rightLimit - 140).toString} y={(lowerLimit + textVerticalOffsetX + 5).toString}>
+                            {"(in " + unitXAxis + ")"}
+                        </tspan>
+                    }}
+                </text>
             </svg>
         }
     }
@@ -76,12 +157,13 @@ case class LineChartConfig(
     val xLabel: String = "",
     val yLabel: String = "",
     val title: String = "",
-    val borderTop: Int = 50,
+    val borderTop: Int = 100,
     val borderBottom: Int = 50,
     val borderLeft: Int = 50,
     val borderRight: Int = 50,
     val minDistanceX: Int = 50,
     val minDistanceY: Int = 50,
+    val optUnitX: Option[String] = None,
     val optUnitY: Option[Double] = None
 ) extends VisualizationConfig(ids: Set[Identifier]) {
     require(borderTop >= 0, "Negative value for borderTop is not allowed.")
@@ -136,18 +218,19 @@ case class LineChartConfig(
         stepY = (1.0*heightChart) / amountYPoints
 
         // calculate yMin and yMax for the min/max displayed value
-        val vzMin = yMin / math.abs(yMin)
-        yMin = vzMin * math.ceil(math.abs(yMin) / unitY) * unitY
-        val vzMax = yMax / math.abs(yMax)
-        yMax = vzMax * math.ceil(math.abs(yMax) / unitY) * unitY
+        yMin = math.floor(yMin / unitY) * unitY
+        yMax = math.ceil(yMax / unitY) * unitY
 
         // calculate the distance between two control points on the x-axis
-        unitX = calculateUnitX()
+        unitX = optUnitX match {
+            case None => calculateUnitX()
+            case Some(name) => getUnitX(name)
+        }
         amountXPoints = math.ceil((1.0*(xMax - xMin)) / unitX.getTotalMillis).toInt
         stepX = (1.0*widthChart) / amountXPoints
 
         // calculate xMax for the max displayed value
-        xMax = (math.ceil(xMax / unitX.getTotalMillis) * unitX.getTotalMillis).toLong
+        xMax = (math.ceil((1.0*xMax) / unitX.getTotalMillis) * unitX.getTotalMillis).toLong
     }
 
     def calculateYMin(data: Iterable[Double]): Double = {
@@ -192,21 +275,21 @@ case class LineChartConfig(
         unit
     }
 
+    def getPossibleXScaling: List[XScaling] = List(
+        new XScalingMillis1, new XScalingMillis10, new XScalingMillis100,
+        new XScalingSeconds1, new XScalingSeconds10, new XScalingSeconds30,
+        new XScalingMinutes1, new XScalingMinutes10, new XScalingMinutes30,
+        new XScalingHours1, new XScalingHours3, new XScalingHours6, new XScalingHours12,
+        new XScalingDays1, new XScalingDays7,
+        new XScalingMonths1, new XScalingMonths3, new XScalingMonths6,
+        new XScalingYears1, new XScalingYears5, new XScalingYears10
+    )
+
     def calculateUnitX(): XScaling = {
         val maxAmountPoints = widthChart / minDistanceX
         val deltaX = xMax - xMin
 
-        val possibleUnits = List(
-            new XScalingMillis1, new XScalingMillis10, new XScalingMillis100,
-            new XScalingSeconds1, new XScalingSeconds10, new XScalingSeconds30,
-            new XScalingMinutes1, new XScalingMinutes10, new XScalingMinutes30,
-            new XScalingHours1, new XScalingHours3, new XScalingHours6, new XScalingHours12,
-            new XScalingDays1, new XScalingDays7,
-            new XScalingMonths1, new XScalingMonths3, new XScalingMonths6,
-            new XScalingYears1, new XScalingYears5, new XScalingYears10
-        )
-
-        for (unit <- possibleUnits) {
+        for (unit <- getPossibleXScaling) {
             val result = (1.0*deltaX) / unit.getTotalMillis
             if(result <= maxAmountPoints) {
                 return unit
@@ -214,6 +297,15 @@ case class LineChartConfig(
         }
 
         throw new UnsupportedOperationException("No scaling for the x-axis could be found.")
+    }
+
+    def getUnitX(name: String): XScaling = {
+        val possible = getPossibleXScaling.filter((x: XScaling) => x.name.equals(name))
+        if(possible.size > 0) {
+            possible.head
+        } else {
+            throw new NoSuchElementException("No unit with the name '" + name + "' could be found.")
+        }
     }
 
     def calculateViewBox(): (Int, Int, Int, Int) = {
