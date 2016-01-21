@@ -4,7 +4,7 @@ import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.visualizer.visualizations.LineChart.LineChartConfig
+import threesixty.visualizer.visualizations._
 
 import threesixty.visualizer.visualizations._
 import threesixty.algorithms.interpolation.LinearInterpolation
@@ -38,7 +38,7 @@ object APIHandler {
         new Processor
             with LinearInterpolation.Info,
         new Visualizer
-            with LineChartConfig.Info,
+            with LineChart.Mixin,
         FakeDatabaseAdapter
     )
 

@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.ProgressChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -7,17 +7,19 @@ import threesixty.visualizer._
 import threesixty.config.Config
 
 
-object ProgressChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("progresschart" ->
-                VisualizationInfo(
-                    "ProgressChart",
-                    { json:String => ProgressChartConfig.apply(json) },
-                    "Parameters: \n" // TODO
-                )
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+        super.visualizationInfos + ("progresschart" ->
+            VisualizationInfo(
+                "ProgressChart",
+                { json:String => ProgressChartConfig.apply(json) },
+                "Parameters: \n" // TODO
             )
-    }
+        )
+}
+
+
+object ProgressChartConfig {
 
     /**
       *  Public constructor that parses JSON into a configuration

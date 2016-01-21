@@ -4,7 +4,7 @@ import threesixty.config.Config
 import threesixty.data.Data.{Identifier, Timestamp, ValueType}
 import threesixty.data.metadata.{Scaling, Timeframe}
 import threesixty.data.{ProcessedData, TaggedDataPoint}
-import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationInfo, VisualizationMetadata, withVisualizationInfos}
+import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationInfo, VisualizationMetadata, VisualizationMixins}
 
 import spray.json._
 import threesixty.data.TimestampJsonProtocol._
@@ -12,35 +12,37 @@ import threesixty.data.TimestampJsonProtocol._
 import scala.xml.Elem
 
 
-object LineChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("linechart" ->
-                VisualizationInfo(
-                    "LineChart",
-                    { json:String => LineChartConfig.apply(json) },
-                    "LineChart\n" +
-                    "  Parameters: \n" +
-                    "    height:        Int                  - Height of the diagram in px\n" +
-                    "    width:         Int                  - Width of the diagram in px\n" +
-                    "    optXMin:       Timestamp (optional) - Minimum value of the x-axis\n" +
-                    "    optXMax:       Timestamp (optinmal) - Maximum value of the x-axis\n" +
-                    "    optYMin:       Double    (optional) - Minimum value of the y-axis\n" +
-                    "    optYMax:       Double    (optional) - Maximum value of the y-axis\n" +
-                    "    xLabel:        String    (optional) - Label for the x-axis\n" +
-                    "    yLabel:        String    (optional) - Label for the y-axis\n" +
-                    "    title:         String    (optional) - Diagram title\n" +
-                    "    borderTop:     Int       (optional) - Border to the top in px\n" +
-                    "    borderBottom:  Int       (optional) - Border to the bottom in px\n" +
-                    "    borderLeft:    Int       (optional) - Border to the left in px\n" +
-                    "    borderRight:   Int       (optional) - Border to the right in px\n" +
-                    "    minDistanceX   Int       (optional) - Minimum number of px between two control points on the x-axis\n" +
-                    "    minDistanceY   Int       (optional) - Minimum number of px between two control points on the y-axis\n" +
-                    "    optUnitX       String    (optional) - Name of the desired unit on the x-axis\n" +
-                    "    optUnitY       Double    (optional) - Value of the desired unit on the y-axis\n"
-                )
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+        super.visualizationInfos + ("linechart" ->
+            VisualizationInfo(
+                "LineChart",
+                { json:String => LineChartConfig.apply(json) },
+                "LineChart\n" +
+                "  Parameters: \n" +
+                "    height:        Int                  - Height of the diagram in px\n" +
+                "    width:         Int                  - Width of the diagram in px\n" +
+                "    optXMin:       Timestamp (optional) - Minimum value of the x-axis\n" +
+                "    optXMax:       Timestamp (optinmal) - Maximum value of the x-axis\n" +
+                "    optYMin:       Double    (optional) - Minimum value of the y-axis\n" +
+                "    optYMax:       Double    (optional) - Maximum value of the y-axis\n" +
+                "    xLabel:        String    (optional) - Label for the x-axis\n" +
+                "    yLabel:        String    (optional) - Label for the y-axis\n" +
+                "    title:         String    (optional) - Diagram title\n" +
+                "    borderTop:     Int       (optional) - Border to the top in px\n" +
+                "    borderBottom:  Int       (optional) - Border to the bottom in px\n" +
+                "    borderLeft:    Int       (optional) - Border to the left in px\n" +
+                "    borderRight:   Int       (optional) - Border to the right in px\n" +
+                "    minDistanceX   Int       (optional) - Minimum number of px between two control points on the x-axis\n" +
+                "    minDistanceY   Int       (optional) - Minimum number of px between two control points on the y-axis\n" +
+                "    optUnitX       String    (optional) - Name of the desired unit on the x-axis\n" +
+                "    optUnitY       Double    (optional) - Value of the desired unit on the y-axis\n"
             )
-    }
+        )
+}
+
+
+object LineChartConfig {
 
 
     /**

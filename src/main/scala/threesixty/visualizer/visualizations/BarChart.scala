@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.BarChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -6,22 +6,24 @@ import threesixty.visualizer._
 import threesixty.config.Config
 
 
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+        super.visualizationInfos + ("barchart" ->
+            VisualizationInfo(
+                "BarChart",
+                { json:String => BarChartConfig.apply(json) },
+                "Parameters: \n"
+                // TODO
+            )
+        )
+}
+
+
+
 /**
  * @author Thomas Engel
  */
 object BarChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("barchart" ->
-                VisualizationInfo(
-                    "BarChart",
-                    { json:String => BarChartConfig.apply(json) },
-                    "Parameters: \n"
-                    // TODO
-                )
-            )
-    }
-
 
     /**
       *  Public constructor that parses JSON into a configuration

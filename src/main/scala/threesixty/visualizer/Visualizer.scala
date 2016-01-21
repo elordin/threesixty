@@ -81,7 +81,7 @@ case class VisualizationInfo(
 ) extends UsageInfo
 
 
-trait withVisualizationInfos {
+trait VisualizationMixins {
     def visualizationInfos: Map[String, VisualizationInfo] = Map.empty
 }
 
@@ -99,7 +99,7 @@ trait withVisualizationInfos {
  *      val visualizer = new Visualizer with LineChartConfig.Info with PieChartConfig.Info
  *  }}}
  */
-class Visualizer extends withVisualizationInfos {
+class Visualizer extends VisualizationMixins {
     // TODO Exception catching and proper access
 
     @throws[IllegalArgumentException]("if a parameter is missing")

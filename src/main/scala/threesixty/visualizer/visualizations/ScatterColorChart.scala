@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.ScatterColorChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -7,17 +7,19 @@ import threesixty.visualizer._
 import threesixty.config.Config
 
 
-object ScatterColorChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("scattercolorchart" ->
-                VisualizationInfo(
-                    "ScatterColorChart",
-                    { json:String => ScatterColorChartConfig.apply(json) },
-                    "Parameters: \n" // TODO
-                )
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+        super.visualizationInfos + ("scattercolorchart" ->
+            VisualizationInfo(
+                "ScatterColorChart",
+                { json:String => ScatterColorChartConfig.apply(json) },
+                "Parameters: \n" // TODO
             )
-    }
+        )
+}
+
+
+object ScatterColorChartConfig {
 
     /**
       *  Public constructor that parses JSON into a configuration

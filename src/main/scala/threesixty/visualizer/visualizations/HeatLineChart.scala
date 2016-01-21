@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.HeatLineChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -7,17 +7,19 @@ import threesixty.visualizer._
 import threesixty.config.Config
 
 
-object HeatLineChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("heatlinechart" ->
-                VisualizationInfo(
-                    "HeatLineChart",
-                    { json:String => HeatLineChartConfig.apply(json) },
-                    "Parameters: \n" // TODO
-                )
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+        super.visualizationInfos + ("heatlinechart" ->
+            VisualizationInfo(
+                "HeatLineChart",
+                { json:String => HeatLineChartConfig.apply(json) },
+                "Parameters: \n" // TODO
             )
-    }
+        )
+}
+
+
+object HeatLineChartConfig {
 
 
     /**
