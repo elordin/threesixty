@@ -253,8 +253,9 @@ case class LineChartConfig(
         amountXPoints = math.ceil((1.0*(xMax - xMin)) / unitX.getTotalMillis).toInt
         stepX = (1.0*widthChart) / amountXPoints
 
-        // calculate xMax for the max displayed value
+        // calculate xMin and xMax for the min/max displayed value
         xMax = (math.ceil((1.0*xMax) / unitX.getTotalMillis) * unitX.getTotalMillis).toLong
+        xMin = unitX.getXMin(xMin)
     }
 
     def calculateYMin(data: Iterable[Double]): Double = {
