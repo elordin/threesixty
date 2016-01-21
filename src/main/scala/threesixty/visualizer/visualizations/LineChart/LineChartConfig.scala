@@ -46,7 +46,7 @@ object LineChartConfig {
      */
     def apply(json: String): LineChartConfig = new LineChartConfig(
         Set("lineTest", "data1", "data2"),
-        950, 1100,
+        950, 1200, borderRight = 150,
         title="Test Chart mit etwas mehr Text", yLabel = "Werte", xLabel = "Zeit") // TODO actually read JSON
 
 
