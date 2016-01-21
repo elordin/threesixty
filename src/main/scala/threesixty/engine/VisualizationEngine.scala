@@ -92,7 +92,7 @@ VISUALIZATION
 
             result
         } catch {
-            case e:DeserializationException => ErrorResponse("""{ "error": "Invalid JSON" }""")
+            case e:JsonParser.ParsingException => ErrorResponse("""{ "error": "Invalid JSON" }""")
             case e:IndexOutOfBoundsException => ErrorResponse("""{ "error": "type parameter missing" }""")
         }
     }
