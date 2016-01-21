@@ -6,6 +6,9 @@ import threesixty.data.metadata.{Scaling, Timeframe}
 import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationInfo, VisualizationMetadata, withVisualizationInfos}
 
+import spray.json._
+import threesixty.data.TimestampJsonProtocol._
+
 import scala.xml.Elem
 
 
@@ -16,39 +19,48 @@ object LineChartConfig {
                 VisualizationInfo(
                     "LineChart",
                     { json:String => LineChartConfig.apply(json) },
-                    "Parameters: \n" +
-                    "    height:        Int                 - Height of the diagram in px\n" +
-                    "    width:         Int                 - Width of the diagram in px\n" +
-                    "    optXMin:       Option[Timestamp]   - Minimum value of the x-axis\n" +
-                    "    optXMax:       Option[Timestamp]   - Maximum value of the x-axis\n" +
-                    "    optYMin:       Option[ValueType]   - Minimum value of the y-axis\n" +
-                    "    optYMax:       Option[ValueType]   - Maximum value of the y-axis\n" +
-                    "    xLabel:        String              - Label for the x-axis\n" +
-                    "    yLabel:        String              - Label for the y-axis\n" +
-                    "    title:         String              - Diagram title\n" +
-                    "    borderTop:     Int                 - Border to the top in px\n" +
-                    "    borderBottom:  Int                 - Border to the bottom in px\n" +
-                    "    borderLeft:    Int                 - Border to the left in px\n" +
-                    "    borderRight:   Int                 - Border to the right in px\n" +
-                    "    minDistanceX   Int                 - Minimum number of px between two control points on the x-axis\n" +
-                    "    minDistanceY   Int                 - Minimum number of px between two control points on the y-axis\n" +
-                    "    optUnitX       Option[String]      - Name of the desired unit on the x-axis\n" +
-                    "    optUnitY       Option[Double]      - Value of the desired unit on the y-axis\n"
+                    "LineChart\n" +
+                    "  Parameters: \n" +
+                    "    height:        Int                  - Height of the diagram in px\n" +
+                    "    width:         Int                  - Width of the diagram in px\n" +
+                    "    optXMin:       Timestamp (optional) - Minimum value of the x-axis\n" +
+                    "    optXMax:       Timestamp (optinmal) - Maximum value of the x-axis\n" +
+                    "    optYMin:       Double    (optional) - Minimum value of the y-axis\n" +
+                    "    optYMax:       Double    (optional) - Maximum value of the y-axis\n" +
+                    "    xLabel:        String    (optional) - Label for the x-axis\n" +
+                    "    yLabel:        String    (optional) - Label for the y-axis\n" +
+                    "    title:         String    (optional) - Diagram title\n" +
+                    "    borderTop:     Int       (optional) - Border to the top in px\n" +
+                    "    borderBottom:  Int       (optional) - Border to the bottom in px\n" +
+                    "    borderLeft:    Int       (optional) - Border to the left in px\n" +
+                    "    borderRight:   Int       (optional) - Border to the right in px\n" +
+                    "    minDistanceX   Int       (optional) - Minimum number of px between two control points on the x-axis\n" +
+                    "    minDistanceY   Int       (optional) - Minimum number of px between two control points on the y-axis\n" +
+                    "    optUnitX       String    (optional) - Name of the desired unit on the x-axis\n" +
+                    "    optUnitY       Double    (optional) - Value of the desired unit on the y-axis\n"
                 )
             )
     }
 
 
     /**
-     *  Public constructor that parses JSON into a configuration
+     *  Public constructor that parses JSON into a LineChartConfig
      *  @param json representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
-    def apply(json: String): LineChartConfig = new LineChartConfig(
+    def apply(jsonString: String): LineChartConfig = {
+        implicit val lineChartConfigFormat = jsonFormat(LineChartConfig.apply,
+            "ids", "height", "width", "optXMin", "optXMax", "optYMin", "optYMax",
+            "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
+            "borderRight", "minDistanceX", "minDistanceY", "optUnitX", "optUnitY")
+        jsonString.parseJson.convertTo[LineChartConfig]
+    }
+
+    /* new LineChartConfig(
         Set("lineTest", "data1", "data2"),
         950, 1200, borderRight = 150,
         title="Test Chart mit etwas mehr Text", yLabel = "Werte", xLabel = "Zeit") // TODO actually read JSON
-
+    */
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         private def calculateTextYOffset(value: String): Int = {
@@ -152,8 +164,8 @@ case class LineChartConfig(
     val width: Int,
     val optXMin: Option[Timestamp] = None,
     val optXMax: Option[Timestamp] = None,
-    val optYMin: Option[ValueType] = None,
-    val optYMax: Option[ValueType] = None,
+    val optYMin: Option[Double] = None,
+    val optYMax: Option[Double] = None,
     val xLabel: String = "",
     val yLabel: String = "",
     val title: String = "",
@@ -206,8 +218,8 @@ case class LineChartConfig(
             xMax = optXMax.get.getTime
         }
 
-        yMin = optYMin.getOrElse(calculateYMinMulti(config.getDatasets(ids))).value
-        yMax = optYMax.getOrElse(calculateYMaxMulti(config.getDatasets(ids))).value
+        yMin = optYMin.getOrElse(calculateYMinMulti(config.getDatasets(ids)).value)
+        yMax = optYMax.getOrElse(calculateYMaxMulti(config.getDatasets(ids)).value)
 
         // calculate the distance between two control points on the y-axis
         unitY = optUnitY.getOrElse(-1.0)
