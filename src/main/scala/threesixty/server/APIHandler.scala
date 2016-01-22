@@ -1,13 +1,10 @@
 package threesixty.server
 
-import threesixty.config
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationResponse, VisualizationEngine}
 import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.visualizer.visualizations.PieChart.PieChartConfig
-import threesixty.visualizer.visualizations._
-
 import threesixty.visualizer.visualizations._
 import threesixty.algorithms.interpolation.LinearInterpolation
 
@@ -39,7 +36,7 @@ object APIHandler {
         config.getString("database.uri")
 
 
-    lazy val engine = VisualizationEngine(
+    lazy val engine: Engine = VisualizationEngine(
         new Processor
             with LinearInterpolation.Mixin,
         new Visualizer

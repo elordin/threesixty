@@ -147,43 +147,42 @@ VISUALIZATION
      */
     def processVisualizationRequest(json: JsObject): EngineResponse = {
         val vizConfigOption: Option[VisualizationConfig] = try {
-            val vizConfigS: String = json.getFields("visualization")(0).toString
-            Some(visualizer.toVisualizationConfig(vizConfigS))
+            json.fields.get("visualization").map {
+                viz: JsValue => visualizer.toVisualizationConfig(viz.toString)
+            }
         } catch {
             case e:NoSuchElementException =>
                 return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Unknown visualization
             case e:IllegalArgumentException =>
                 return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Parameter missing
-            case e:IndexOutOfBoundsException =>
-                None // No "visualization" given
         }
 
         val procStratOption: Option[ProcessingStrategy] = try {
-            val processorConfigJsonString: String = json.getFields("processor")(0).toString
-            Some(processor.toProcessingStrategy(processorConfigJsonString))
+            json.fields.get("processor").map {
+                proc: JsValue => processor.toProcessingStrategy(proc.toString)
+            }
         } catch {
             case e:NoSuchElementException =>
                 return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Unknown method
             case e:IllegalArgumentException =>
                 return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Parameter missing
-            case e:IndexOutOfBoundsException =>
-                None // No "processor" given
         }
 
-        val dataIDs:Set[Identifier] = try {
-            json.getFields("data")(0).convertTo[Set[String]]
-        } catch {
-            case e: IndexOutOfBoundsException =>
+        val dataIDs:Set[Identifier] = json.fields.getOrElse("data",
                 return ErrorResponse("""{ "error": "data parameter missing."}""")
-        }
+            ).convertTo[Set[Identifier]]
 
 
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
-                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) => (procStrat, vizConfig)
-                case (Some(procStrat), None)            => (procStrat, ???) // TODO deduction
-                case (None, Some(vizConfig))            => (???, vizConfig) // TODO deduction
-                case (None, None)                       => (???, ???)       // TODO deduction
+                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) =>
+                    (procStrat, vizConfig)
+                case (Some(procStrat), None) =>
+                    println("Viz missing"); (procStrat, ???) // TODO deduction
+                case (None, Some(vizConfig)) =>
+                    println("ProcStrat missing"); (???, vizConfig) // TODO deduction
+                case (None, None) =>
+                    println("Both missing"); (???, ???)       // TODO deduction
             }
 
         val config: Config = new Config(dataIDs, dbAdapter)
