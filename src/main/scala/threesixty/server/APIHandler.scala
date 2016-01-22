@@ -1,9 +1,11 @@
 package threesixty.server
 
+import threesixty.config
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
-import threesixty.engine.VisualizationEngine
+import threesixty.engine.{VisualizationResponse, VisualizationEngine}
 import threesixty.persistence.FakeDatabaseAdapter
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig
 import threesixty.visualizer.visualizations._
 
 import threesixty.visualizer.visualizations._
@@ -41,7 +43,8 @@ object APIHandler {
         new Processor
             with LinearInterpolation.Mixin,
         new Visualizer
-            with LineChart.Mixin,
+            with LineChart.Mixin
+            with PieChart.Mixin,
         FakeDatabaseAdapter
     )
 
