@@ -36,7 +36,7 @@ object APIHandler {
 
     lazy val engine = VisualizationEngine(
         new Processor
-            with LinearInterpolation.Info,
+            with LinearInterpolation.Mixin,
         new Visualizer
             with LineChartConfig.Info,
         FakeDatabaseAdapter

@@ -7,7 +7,9 @@ import threesixty.config.Config
 import scala.collection.parallel._
 
 
-sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier])
+sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    def asProcessingStep: ProcessingStep = ProcessingStep(this, idMapping.keys.toSet)
+}
 
 
 /**

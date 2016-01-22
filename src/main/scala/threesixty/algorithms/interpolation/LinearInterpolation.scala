@@ -4,28 +4,38 @@ import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
-import threesixty.processor.{withProcessingInfos, SingleProcessingMethod, ProcessingMethodInfo, ProcessingStep}
+import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodInfo, ProcessingStep}
 
+import spray.json._
+import DefaultJsonProtocol._
 
 object LinearInterpolation {
 
-    trait Info extends withProcessingInfos {
+    trait Mixin extends ProcessingMixins {
         abstract override def processingInfos: Map[String, ProcessingMethodInfo] =
             super.processingInfos + ("linearinterpolation" -> ProcessingMethodInfo(
                 "Linear Interpolation",
-                { json: String => ??? }: (String) => ProcessingStep, // TODO
+                { json: String => LinearInterpolation.apply(json).asProcessingStep }: (String) => ProcessingStep,
                 """ Use responsibly """ // TODO
             ))
     }
+
+
+    def apply(jsonString: String): LinearInterpolation = {
+        implicit val linearInterpolationFormat =
+            jsonFormat(LinearInterpolation.apply, "frequency", "idMapping")
+        jsonString.parseJson.convertTo[LinearInterpolation]
+    }
+
 }
 
 /**
  *  Linear interpolator
  *
  *  @author Thomas Weber
- *  @param resolution Desired max. time-distance between datapoints.
+ *  @param frequency Desired max. time-distance between datapoints.
  */
-case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identifier])
+case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
@@ -54,7 +64,7 @@ case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identi
         def linearInterpolated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
             case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
 
-                if (t2 - t1 > resolution) {
+                if (t2 - t1 > frequency) {
 
                     val m = ((v2.value - v1.value) / (t2 - t1))
                     val b = v1.value - m * t1
@@ -63,7 +73,7 @@ case class LinearInterpolation(resolution:Int, idMapping: Map[Identifier, Identi
                         TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
 
                     TaggedDataPoint(t1, v1, tags1 + Original) ::
-                        Range(t1.toInt + resolution, t2.toInt, resolution).map(interpolFunc).toList ++
+                        Range(t1.toInt + frequency, t2.toInt, frequency).map(interpolFunc).toList ++
                         linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
 
                 } else {
