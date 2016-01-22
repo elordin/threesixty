@@ -24,6 +24,9 @@ import HttpHeaders.`Access-Control-Allow-Origin`
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigException}
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 object APIHandler {
 
@@ -59,8 +62,25 @@ class APIHandler extends Actor {
 
     def receive = {
         case request@HttpRequest(POST, _, _, _: HttpEntity.NonEmpty, _) =>
-            var response = APIHandler.engine.processRequest(request)
-            sender ! response.toHttpResponse
+            val peer = sender
+
+            val processingFuture: Future[HttpResponse] = Future {
+                APIHandler.engine.processRequest(request).toHttpResponse
+            }
+
+            processingFuture onSuccess {
+                case response: HttpResponse => peer ! response
+            }
+
+            processingFuture onFailure {
+                case t: Throwable =>
+                    peer ! HttpResponse(
+                        status = StatusCodes.InternalServerError,
+                        entity = HttpEntity(`application/json`, s"""{ "error": "${t.getMessage}" }"""),
+                        headers = List(`Access-Control-Allow-Origin`(AllOrigins))
+                    )
+            }
+
 
         case HttpRequest(POST, _, _, HttpEntity.Empty, _) =>
             sender ! HttpResponse(
