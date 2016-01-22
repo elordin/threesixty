@@ -3,6 +3,9 @@ package threesixty.data
 import threesixty.data.tags.{InputOrigin}
 import java.sql.{Timestamp => JSQLTimestamp}
 
+import spray.json._
+
+
 object Data {
 
     type Identifier = String
@@ -55,7 +58,6 @@ object Data {
 }
 
 
-
 object Implicits {
     import Data.{Timestamp, Identifier, DoubleValue, IntValue}
 
@@ -77,4 +79,19 @@ object Implicits {
 
     implicit def timestamp2Long(timestamp: Timestamp): Long = timestamp.getTime()
     implicit def long2timestamp(t: Long): Timestamp = new Timestamp(t)
+}
+
+
+object TimestampJsonProtocol extends DefaultJsonProtocol {
+    import Data.Timestamp
+
+    implicit object TimestampJsonFormat extends JsonFormat[Timestamp] {
+        def write(t:Timestamp) = JsNumber(t.getTime)
+
+        def read(v: JsValue) = v match {
+            case JsNumber(n) => new Timestamp(n.toLong)
+            case _ => deserializationError("Timestamp expected")
+        }
+    }
+
 }

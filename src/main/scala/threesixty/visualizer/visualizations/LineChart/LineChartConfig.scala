@@ -4,51 +4,65 @@ import threesixty.config.Config
 import threesixty.data.Data.{Identifier, Timestamp, ValueType}
 import threesixty.data.metadata.{Scaling, Timeframe}
 import threesixty.data.{ProcessedData, TaggedDataPoint}
-import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationInfo, VisualizationMetadata, withVisualizationInfos}
+import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationInfo, VisualizationMetadata, VisualizationMixins}
+
+import spray.json._
+import threesixty.data.TimestampJsonProtocol._
 
 import scala.xml.Elem
 
 
-object LineChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("linechart" ->
-                VisualizationInfo(
-                    "LineChart",
-                    { json:String => LineChartConfig.apply(json) },
-                    "Parameters: \n" +
-                    "    height:        Int                 - Height of the diagram in px\n" +
-                    "    width:         Int                 - Width of the diagram in px\n" +
-                    "    optXMin:       Option[Timestamp]   - Minimum value of the x-axis\n" +
-                    "    optXMax:       Option[Timestamp]   - Maximum value of the x-axis\n" +
-                    "    optYMin:       Option[ValueType]   - Minimum value of the y-axis\n" +
-                    "    optYMax:       Option[ValueType]   - Maximum value of the y-axis\n" +
-                    "    xLabel:        String              - Label for the x-axis\n" +
-                    "    yLabel:        String              - Label for the y-axis\n" +
-                    "    title:         String              - Diagram title\n" +
-                    "    borderTop:     Int                 - Border to the top in px\n" +
-                    "    borderBottom:  Int                 - Border to the bottom in px\n" +
-                    "    borderLeft:    Int                 - Border to the left in px\n" +
-                    "    borderRight:   Int                 - Border to the right in px\n" +
-                    "    minDistanceX   Int                 - Minimum number of px between two control points on the x-axis\n" +
-                    "    minDistanceY   Int                 - Minimum number of px between two control points on the y-axis\n" +
-                    "    optUnitX       Option[String]      - Name of the desired unit on the x-axis\n" +
-                    "    optUnitY       Option[Double]      - Value of the desired unit on the y-axis\n"
-                )
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+        super.visualizationInfos + ("linechart" ->
+            VisualizationInfo(
+                "LineChart",
+                { json:String => LineChartConfig.apply(json) },
+                "LineChart\n" +
+                "  Parameters: \n" +
+                "    height:        Int                  - Height of the diagram in px\n" +
+                "    width:         Int                  - Width of the diagram in px\n" +
+                "    optXMin:       Timestamp (optional) - Minimum value of the x-axis\n" +
+                "    optXMax:       Timestamp (optinmal) - Maximum value of the x-axis\n" +
+                "    optYMin:       Double    (optional) - Minimum value of the y-axis\n" +
+                "    optYMax:       Double    (optional) - Maximum value of the y-axis\n" +
+                "    xLabel:        String    (optional) - Label for the x-axis\n" +
+                "    yLabel:        String    (optional) - Label for the y-axis\n" +
+                "    title:         String    (optional) - Diagram title\n" +
+                "    borderTop:     Int       (optional) - Border to the top in px\n" +
+                "    borderBottom:  Int       (optional) - Border to the bottom in px\n" +
+                "    borderLeft:    Int       (optional) - Border to the left in px\n" +
+                "    borderRight:   Int       (optional) - Border to the right in px\n" +
+                "    minDistanceX   Int       (optional) - Minimum number of px between two control points on the x-axis\n" +
+                "    minDistanceY   Int       (optional) - Minimum number of px between two control points on the y-axis\n" +
+                "    optUnitX       String    (optional) - Name of the desired unit on the x-axis\n" +
+                "    optUnitY       Double    (optional) - Value of the desired unit on the y-axis\n"
             )
-    }
+        )
+}
+
+
+object LineChartConfig {
 
 
     /**
-     *  Public constructor that parses JSON into a configuration
+     *  Public constructor that parses JSON into a LineChartConfig
      *  @param json representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
-    def apply(json: String): LineChartConfig = new LineChartConfig(
-        Set("lineTest", "data1", "data2"),
-        950, 1200, borderRight = 150,
-        title="Test Chart mit etwas mehr Text", yLabel = "Werte", xLabel = "Zeit") // TODO actually read JSON
+    def apply(jsonString: String): LineChartConfig = {
+        implicit val lineChartConfigFormat = jsonFormat(LineChartConfig.apply,
+            "ids", "height", "width", "optXMin", "optXMax", "optYMin", "optYMax",
+            "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
+            "borderRight", "minDistanceX", "minDistanceY", "optUnitX", "optUnitY")
+        jsonString.parseJson.convertTo[LineChartConfig]
+    }
 
+    /* new LineChartConfig(
+        Set("lineTest", "data1", "data2"),
+        950, 1200, _borderRight = 150,
+        title="Test Chart mit etwas mehr Text", yLabel = "Werte", xLabel = "Zeit") // TODO actually read JSON
+    */
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         private def calculateTextYOffset(value: String): Int = {
@@ -82,11 +96,11 @@ object LineChartConfig {
         def toSVG: Elem = {
             val (vbX, vbY, vbWidth, vbHeight) = config.calculateViewBox()
 
-            val lowerLimit = vbHeight - config.borderBottom + vbY
-            val upperLimit = vbY + config.borderTop
+            val lowerLimit = vbHeight - config._borderBottom + vbY
+            val upperLimit = vbY + config._borderTop
 
             val leftLimit = 0
-            val rightLimit = vbWidth - config.borderLeft - config.borderRight
+            val rightLimit = vbWidth - config._borderLeft - config._borderRight
 
             val textVerticalOffsetY = 5
             val textHorizontalOffsetY = -100
@@ -123,16 +137,16 @@ object LineChartConfig {
                     <path stroke="#6495ED" fill="none" stroke-width="2" d={calculatePath(config, dataset)}/>
                 </g>}
                 // chart title
-                <text x={(vbX - 320 + (config.width - config.title.size * 20) / 2).toString} y={(vbY + 60).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="48">
-                    {config.title}
+                <text x={(vbX - 320 + (config.width - config._title.size * 20) / 2).toString} y={(vbY + 60).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="48">
+                    {config._title}
                 </text>
                 // y-label
-                <text x={(vbX + textHorizontalOffsetY + 20 + calculateTextYOffset(config.yLabel) / 2).toString} y={(vbY + 75).toString} font-family="Roboto, Segoe UI" font-size="20">
-                    {config.yLabel}
+                <text x={(vbX + textHorizontalOffsetY + 20 + calculateTextYOffset(config._yLabel) / 2).toString} y={(vbY + 75).toString} font-family="Roboto, Segoe UI" font-size="20">
+                    {config._yLabel}
                 </text>
                 // x-label
                 <text x={(rightLimit - 85).toString} y={(lowerLimit + textVerticalOffsetX - 15).toString} font-family="Roboto, Segoe UI" font-size="20">
-                    {config.xLabel}
+                    {config._xLabel}
                     {if (!unitXAxis.isEmpty)
                     {
                         <tspan x={(rightLimit - 140).toString} y={(lowerLimit + textVerticalOffsetX + 5).toString}>
@@ -150,34 +164,46 @@ case class LineChartConfig(
     val ids: Set[Identifier],
     val height: Int,
     val width: Int,
-    val optXMin: Option[Timestamp] = None,
-    val optXMax: Option[Timestamp] = None,
-    val optYMin: Option[ValueType] = None,
-    val optYMax: Option[ValueType] = None,
-    val xLabel: String = "",
-    val yLabel: String = "",
-    val title: String = "",
-    val borderTop: Int = 100,
-    val borderBottom: Int = 50,
-    val borderLeft: Int = 50,
-    val borderRight: Int = 50,
-    val minDistanceX: Int = 50,
-    val minDistanceY: Int = 50,
-    val optUnitX: Option[String] = None,
-    val optUnitY: Option[Double] = None
+    val optXMin:      Option[Timestamp] = None,
+    val optXMax:      Option[Timestamp] = None,
+    val optYMin:      Option[Double]    = None,
+    val optYMax:      Option[Double]    = None,
+    val xLabel:       Option[String]    = None,
+    val yLabel:       Option[String]    = None,
+    val title:        Option[String]    = None,
+    val borderTop:    Option[Int]       = None,
+    val borderBottom: Option[Int]       = None,
+    val borderLeft:   Option[Int]       = None,
+    val borderRight:  Option[Int]       = None,
+    val minDistanceX: Option[Int]       = None,
+    val minDistanceY: Option[Int]       = None,
+    val optUnitX:     Option[String]    = None,
+    val optUnitY:     Option[Double]    = None
 ) extends VisualizationConfig(ids: Set[Identifier]) {
-    require(borderTop >= 0, "Negative value for borderTop is not allowed.")
-    require(borderBottom >= 0, "Negative value for borderBottom is not allowed.")
-    require(borderLeft >= 0, "Negative value for borderLeft is not allowed.")
-    require(borderRight >= 0, "Negative value for borderRight is not allowed.")
 
-    require(minDistanceX > 0, "Value for minDistanceX must be positive.")
-    require(minDistanceY > 0, "Value for minDistanceY must be positive.")
+    def _xLabel: String = xLabel.getOrElse("")
+    def _yLabel: String = yLabel.getOrElse("")
+    def _title: String = title.getOrElse("")
+    def _borderTop: Int = borderTop.getOrElse(100)
+    def _borderBottom: Int = borderBottom.getOrElse(50)
+    def _borderLeft: Int = borderLeft.getOrElse(50)
+    def _borderRight: Int = borderRight.getOrElse(50)
+    def _minDistanceX: Int = minDistanceX.getOrElse(50)
+    def _minDistanceY: Int = minDistanceY.getOrElse(50)
+
+    require(_borderTop >= 0, "Negative value for borderTop is not allowed.")
+    require(_borderBottom >= 0, "Negative value for borderBottom is not allowed.")
+    require(_borderLeft >= 0, "Negative value for borderLeft is not allowed.")
+    require(_borderRight >= 0, "Negative value for borderRight is not allowed.")
+
+    require(_minDistanceX > 0, "Value for minDistanceX must be positive.")
+    require(_minDistanceY > 0, "Value for minDistanceY must be positive.")
+
 
     // calculate the available height and width for the chart
-    val heightChart = height - borderTop - borderBottom
+    val heightChart = height - _borderTop - _borderBottom
     require(heightChart > 0, "The available height for the chart must be greater than 0.")
-    val widthChart = width - borderLeft - borderRight
+    val widthChart = width - _borderLeft - _borderRight
     require(widthChart > 0, "The available width for the chart must be greater than 0.")
 
     val metadata = new VisualizationMetadata(
@@ -206,8 +232,8 @@ case class LineChartConfig(
             xMax = optXMax.get.getTime
         }
 
-        yMin = optYMin.getOrElse(calculateYMinMulti(config.getDatasets(ids))).value
-        yMax = optYMax.getOrElse(calculateYMaxMulti(config.getDatasets(ids))).value
+        yMin = optYMin.getOrElse(calculateYMinMulti(config.getDatasets(ids)).value)
+        yMax = optYMax.getOrElse(calculateYMaxMulti(config.getDatasets(ids)).value)
 
         // calculate the distance between two control points on the y-axis
         unitY = optUnitY.getOrElse(-1.0)
@@ -229,8 +255,9 @@ case class LineChartConfig(
         amountXPoints = math.ceil((1.0*(xMax - xMin)) / unitX.getTotalMillis).toInt
         stepX = (1.0*widthChart) / amountXPoints
 
-        // calculate xMax for the max displayed value
+        // calculate xMin and xMax for the min/max displayed value
         xMax = (math.ceil((1.0*xMax) / unitX.getTotalMillis) * unitX.getTotalMillis).toLong
+        xMin = unitX.getXMin(xMin)
     }
 
     def calculateYMin(data: Iterable[Double]): Double = {
@@ -252,7 +279,7 @@ case class LineChartConfig(
     }
 
     def calculateUnitY(): Double = {
-        val maxAmountPoints = heightChart / minDistanceY
+        val maxAmountPoints = heightChart / _minDistanceY
         val deltaY = yMax - yMin
         var unit = 1.0
 
@@ -286,7 +313,7 @@ case class LineChartConfig(
     )
 
     def calculateUnitX(): XScaling = {
-        val maxAmountPoints = widthChart / minDistanceX
+        val maxAmountPoints = widthChart / _minDistanceX
         val deltaX = xMax - xMin
 
         for (unit <- getPossibleXScaling) {
@@ -309,8 +336,8 @@ case class LineChartConfig(
     }
 
     def calculateViewBox(): (Int, Int, Int, Int) = {
-        val x = - borderLeft
-        val y = - borderTop + math.ceil(convertYPoint(yMax)).toInt
+        val x = - _borderLeft
+        val y = - _borderTop + math.ceil(convertYPoint(yMax)).toInt
         val w = width
         val h = height
 

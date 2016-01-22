@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.PieChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -6,17 +6,19 @@ import threesixty.visualizer._
 import threesixty.config.Config
 
 
-object PieChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("piechart" ->
-                VisualizationInfo(
-                    "PieChart",
-                    { json:String => PieChartConfig.apply(json) },
-                    "Parameters: \n" // TODO
-                )
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
+        super.visualizationInfos + ("piechart" ->
+            VisualizationInfo(
+                "PieChart",
+                { json:String => PieChartConfig.apply(json) },
+                "Parameters: \n" // TODO
             )
-    }
+        )
+}
+
+
+object PieChartConfig {
 
 
     /**

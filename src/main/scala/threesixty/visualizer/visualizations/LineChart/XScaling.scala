@@ -1,6 +1,6 @@
 package threesixty.visualizer.visualizations.LineChart
 
-import java.sql.Timestamp
+import java.sql.{Date, Timestamp}
 
 /**
   * @author Thomas Engel
@@ -10,15 +10,21 @@ abstract class XScaling(val name: String, val baseMillis: Long, val factor: Int 
 
     def getTotalMillis: Long = baseMillis * factor
 
+    def getUnit: String = ""
+
     def getLabel(index: Int, millis: Long): String
 
-    def getUnit: String = ""
+    def getXMin(currentXMin: Long): Long
 }
 
 
 abstract class XScalingMillis(name: String, factor: Int) extends XScaling(name, 1L, factor) {
     def getLabel(index: Int, millis: Long) = {
         "" + (index * factor)
+    }
+
+    def getXMin(currentXMin: Long): Long = {
+        currentXMin
     }
 
     override def getUnit = "ms"
@@ -33,6 +39,10 @@ abstract class XScalingSeconds(name: String, factor: Int) extends XScaling(name,
         "" + (index * factor)
     }
 
+    def getXMin(currentXMin: Long): Long = {
+        currentXMin
+    }
+
     override def getUnit = "sek"
 }
 case class XScalingSeconds1() extends XScalingSeconds("seconds1", 1)
@@ -43,7 +53,18 @@ case class XScalingSeconds30() extends XScalingSeconds("seconds30", 30)
 abstract class XScalingMinutes(name: String, factor: Int) extends XScaling(name, 60000L, factor) {
     def getLabel(index: Int, millis: Long) = {
         val timestamp = new Timestamp(millis)
-        "" + timestamp.getHours + ":" + timestamp.getMinutes
+        "" + timestamp.getHours + ":" + (if(timestamp.getMinutes < 10) "0" else "") + timestamp.getMinutes
+    }
+
+    def getXMin(currentXMin: Long): Long = {
+        val timestamp = new Timestamp(currentXMin)
+        val minutes = timestamp.getMinutes
+        val hours = timestamp.getHours
+        val day = timestamp.getDate
+        val month = timestamp.getMonth
+        val year = timestamp.getYear
+        val date = new Date(year, month , day)
+        date.getTime + (minutes + 60 * hours) * baseMillis
     }
 }
 case class XScalingMinutes1() extends XScalingMinutes("minutes1", 1)
@@ -54,7 +75,17 @@ case class XScalingMinutes30() extends XScalingMinutes("minutes30", 30)
 abstract class XScalingHours(name: String, factor: Int) extends XScaling(name, 3600000L, factor) {
     def getLabel(index: Int, millis: Long) = {
         val timestamp = new Timestamp(millis)
-        "" + timestamp.getHours + ":" + timestamp.getMinutes
+        "" + timestamp.getHours + ":" + (if(timestamp.getMinutes < 10) "0" else "") + timestamp.getMinutes
+    }
+
+    def getXMin(currentXMin: Long): Long = {
+        val timestamp = new Timestamp(currentXMin)
+        val hours = timestamp.getHours
+        val day = timestamp.getDate
+        val month = timestamp.getMonth
+        val year = timestamp.getYear
+        val date = new Date(year, month , day)
+        date.getTime + hours * baseMillis
     }
 }
 case class XScalingHours1() extends XScalingHours("hours1", 1)
@@ -68,16 +99,29 @@ abstract class XScalingDays(name: String, factor: Int) extends XScaling(name, 86
         val timestamp = new Timestamp(millis)
         "" + timestamp.getDate + "." + (timestamp.getMonth + 1)
     }
+
+    def getXMin(currentXMin: Long): Long = {
+        val timestamp = new Timestamp(currentXMin)
+        val day = timestamp.getDate
+        val month = timestamp.getMonth
+        val year = timestamp.getYear
+        val date = new Date(year, month, day)
+        date.getTime
+    }
 }
 case class XScalingDays1() extends XScalingDays("days1", 1)
 case class XScalingDays7() extends XScalingDays("days7", 7)
 
 
 abstract class XScalingMonths(name: String, factor: Int) extends XScaling(name, 2628000000L, factor) {
+    var lastStartValue = new Timestamp(0)
+
     def getLabel(index: Int, millis: Long) = {
-        //TODO: Bug because of variable month lengths
-        val timestamp = new Timestamp(millis)
-        timestamp.getMonth match {
+        if(index == 0) {
+            lastStartValue = new Timestamp(millis)
+        }
+
+        (lastStartValue.getMonth + index * factor) % 12 match {
             case 0 => "Jan"
             case 1 => "Feb"
             case 2 => "Mrz"
@@ -93,6 +137,14 @@ abstract class XScalingMonths(name: String, factor: Int) extends XScaling(name, 
             case _ => "Unbek"
         }
     }
+
+    def getXMin(currentXMin: Long): Long = {
+        val timestamp = new Timestamp(currentXMin)
+        val month = timestamp.getMonth
+        val year = timestamp.getYear
+        val date = new Date(year, month, 1)
+        date.getTime
+    }
 }
 case class XScalingMonths1() extends XScalingMonths("months1", 1)
 case class XScalingMonths3() extends XScalingMonths("months3", 3)
@@ -100,10 +152,21 @@ case class XScalingMonths6() extends XScalingMonths("months6", 6)
 
 
 abstract class XScalingYears(name: String, factor: Int) extends XScaling(name, 31540000000L, factor) {
+    var lastStartValue = new Timestamp(0)
+
     def getLabel(index: Int, millis: Long) = {
-        // TODO: Bug because of variable year lenghts
-        val timestamp = new Timestamp(millis)
-        "" + (timestamp.getYear + 1900)
+        if(index == 0) {
+            lastStartValue = new Timestamp(millis)
+        }
+
+        "" + (lastStartValue.getYear + index * factor)
+    }
+
+    def getXMin(currentXMin: Long): Long = {
+        val timestamp = new Timestamp(currentXMin)
+        val year = timestamp.getYear
+        val date = new Date(year, 0, 1)
+        date.getTime
     }
 }
 case class XScalingYears1() extends XScalingYears("years1", 1)

@@ -9,6 +9,12 @@ import spray.json._
 import DefaultJsonProtocol._
 
 
+/**
+ *  Generic Configuration for a [[threesixty.visualizer.Visualization]].
+ *  Acts as a factory for creating [[threesixty.visualization.Visualization]]s.
+ *
+ *  @param ids Set of ids which are to be displayed in the visualization
+ */
 abstract class VisualizationConfig(ids: Set[Identifier]) extends Function1[Config, Visualization] {
     val metadata: VisualizationMetadata
 
@@ -74,6 +80,14 @@ abstract class VisualizationConfig(ids: Set[Identifier]) extends Function1[Confi
 }
 
 
+
+/**
+ *  Container describing a [[threesixty.visualizer.Visualization]].
+ *
+ *  @param name Verbose name of the visualization
+ *  @param conversion Function converting from String to [[threesixty.visualizer.VisualizationConfig]].
+ *  @param usage Help text describing how the visualization works and its parameters.
+ */
 case class VisualizationInfo(
     val name: String,
     val conversion: (String) => VisualizationConfig,
@@ -81,25 +95,44 @@ case class VisualizationInfo(
 ) extends UsageInfo
 
 
-trait withVisualizationInfos {
+/**
+ *  Mixin trait for layering [[threesixty.visualizer.Visualization]]s onto the [[threesixty.visualizer.Visualizer]]
+ */
+trait VisualizationMixins {
+    /**
+     *  Map containing all mixedin Visualizations.
+     *  Use an abstract override to extends this
+     *  @example {{{
+     *      trait FooVisualizationMixin extends VisualizationMixins {
+     *          abstract override def visualizationInfos =
+     *              super.visualizationInfos + ("foo" -> VisualizationInfo(
+     *                  "Foo",
+     *                  { json: String => FooVisualizationConfig.apply(json) },
+     *                  "Use Foo like so: ..."
+     *              ))
+     *      }
+     *
+     *      val visualizer = new Visualizer with FooVisualizationMixin
+     *
+     *  }}}
+     */
     def visualizationInfos: Map[String, VisualizationInfo] = Map.empty
 }
 
 
 /**
- *  Visualizer allows to convert a definition of a desired output
- *  visualization into a fitting VisualizationConfig.
+ *  Holds a list of available visualizations and some meta information,
+ *  including how to convert to [[threesixty.visualizer.VisualizationConfig]].
  *
- *  Stack traits derived from withVisualizationConversions to add
- *  further possible visualizations.
+ *  Stack traits inheriting from [[threesixty.visualizer.VisualizationMixins]] to add visualizations.
  *
  *  @author Thomas Weber
  *
  *  @example {{{
- *      val visualizer = new Visualizer with LineChartConfig.Info with PieChartConfig.Info
+ *      val visualizer = new Visualizer with FooVisualization.Mixin with BarVisualization.Mixin
  *  }}}
  */
-class Visualizer extends withVisualizationInfos {
+class Visualizer extends VisualizationMixins {
     // TODO Exception catching and proper access
 
     @throws[IllegalArgumentException]("if a parameter is missing")

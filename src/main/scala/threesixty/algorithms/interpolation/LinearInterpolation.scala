@@ -29,6 +29,7 @@ object LinearInterpolation {
 
 }
 
+
 /**
  *  Linear interpolator
  *
@@ -39,7 +40,7 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
-     *  Created a new dataset with ID as specified in idMapping.
+     *  Creates a new dataset with ID as specified in idMapping.
      *  Inserts interpolated values along the original ones into
      *  this new dataset and adds tags to identify interpolated
      *  and original values.
@@ -59,7 +60,7 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
          *  the list of datapoints.
          *
          *  @param list of datapoints
-         *  @returns list of datapoints with interpolated values and Tnterpolation-tags
+         *  @return list of datapoints with interpolated values and Tnterpolation-tags
          */
         def linearInterpolated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
             case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
