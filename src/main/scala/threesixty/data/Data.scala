@@ -13,6 +13,8 @@ object Data {
 
     trait ValueType {
         def value: Double
+
+        override def toString: String = value.toString
     }
 
     case class IntValue(_value: Int) extends ValueType {
