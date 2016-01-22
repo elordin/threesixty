@@ -58,12 +58,6 @@ object LineChartConfig {
         jsonString.parseJson.convertTo[LineChartConfig]
     }
 
-    /* new LineChartConfig(
-        Set("lineTest", "data1", "data2"),
-        950, 1200, _borderRight = 150,
-        title="Test Chart mit etwas mehr Text", yLabel = "Werte", xLabel = "Zeit") // TODO actually read JSON
-    */
-
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         private def calculateTextYOffset(value: String): Int = {
             - value.size * 8
@@ -179,32 +173,24 @@ case class LineChartConfig(
     val minDistanceY: Option[Int]       = None,
     val optUnitX:     Option[String]    = None,
     val optUnitY:     Option[Double]    = None
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(
+    ids: Set[Identifier],
+    height,
+    width,
+    title,
+    borderTop,
+    borderBottom,
+    borderLeft,
+    borderRight) {
 
     def _xLabel: String = xLabel.getOrElse("")
     def _yLabel: String = yLabel.getOrElse("")
-    def _title: String = title.getOrElse("")
-    def _borderTop: Int = borderTop.getOrElse(100)
-    def _borderBottom: Int = borderBottom.getOrElse(50)
-    def _borderLeft: Int = borderLeft.getOrElse(50)
-    def _borderRight: Int = borderRight.getOrElse(50)
+
     def _minDistanceX: Int = minDistanceX.getOrElse(50)
     def _minDistanceY: Int = minDistanceY.getOrElse(50)
 
-    require(_borderTop >= 0, "Negative value for borderTop is not allowed.")
-    require(_borderBottom >= 0, "Negative value for borderBottom is not allowed.")
-    require(_borderLeft >= 0, "Negative value for borderLeft is not allowed.")
-    require(_borderRight >= 0, "Negative value for borderRight is not allowed.")
-
     require(_minDistanceX > 0, "Value for minDistanceX must be positive.")
     require(_minDistanceY > 0, "Value for minDistanceY must be positive.")
-
-
-    // calculate the available height and width for the chart
-    val heightChart = height - _borderTop - _borderBottom
-    require(heightChart > 0, "The available height for the chart must be greater than 0.")
-    val widthChart = width - _borderLeft - _borderRight
-    require(widthChart > 0, "The available width for the chart must be greater than 0.")
 
     val metadata = new VisualizationMetadata(
             List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
@@ -335,13 +321,8 @@ case class LineChartConfig(
         }
     }
 
-    def calculateViewBox(): (Int, Int, Int, Int) = {
-        val x = - _borderLeft
-        val y = - _borderTop + math.ceil(convertYPoint(yMax)).toInt
-        val w = width
-        val h = height
-
-        (x,y,w,h)
+    override def calculateOrigin: (Int, Int) = {
+        (_borderLeft, _borderTop - math.ceil(convertYPoint(yMax)).toInt)
     }
 
     def convertYPoint(y: Double): Double = {
