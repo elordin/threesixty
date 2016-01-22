@@ -88,13 +88,7 @@ object LineChartConfig {
         }
 
         def toSVG: Elem = {
-            val (vbX, vbY, vbWidth, vbHeight) = config.calculateViewBox()
-
-            val lowerLimit = vbHeight - config._borderBottom + vbY
-            val upperLimit = vbY + config._borderTop
-
-            val leftLimit = 0
-            val rightLimit = vbWidth - config._borderLeft - config._borderRight
+            val (vbX, vbY, width, height) = config.calculateViewBox()
 
             val textVerticalOffsetY = 5
             val textHorizontalOffsetY = -100
@@ -104,19 +98,19 @@ object LineChartConfig {
 
             val unitXAxis = config.unitX.getUnit
 
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={vbX + " " + vbY + " " + vbWidth + " " + vbHeight} xml:space="preserve">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={vbX + " " + vbY + " " + width + " " + height} xml:space="preserve">
                 <g id="grid">
                     // background-grid y-axis
                     {for (i <- config.yMin to config.yMax by config.unitY) yield
-                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={leftLimit.toString} y1={config.convertYPoint(i).toString} x2={rightLimit.toString} y2={config.convertYPoint(i).toString} />
+                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={config.leftLimit.toString} y1={config.convertYPoint(i).toString} x2={config.rightLimit.toString} y2={config.convertYPoint(i).toString} />
                         <text x={(vbX + textHorizontalOffsetY + calculateTextYOffset(yCoordTextToString(i))).toString} y={(config.convertYPoint(i) + textVerticalOffsetY).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="16">
                             {yCoordTextToString(i)}
                         </text>
                     }
                     // background-grid x-axis
                     {for (i <- 0 to config.amountXPoints) yield
-                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={(i*config.stepX).toString} y1={lowerLimit.toString} x2={(i*config.stepX).toString} y2={upperLimit.toString} />
-                        <text x={(i*config.stepX + textHorizontalOffsetX).toString} y={(lowerLimit + textVerticalOffsetX).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="16">
+                        <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={(i*config.stepX).toString} y1={config.lowerLimit.toString} x2={(i*config.stepX).toString} y2={config.upperLimit.toString} />
+                        <text x={(i*config.stepX + textHorizontalOffsetX).toString} y={(config.lowerLimit + textVerticalOffsetX).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="16">
                             {config.unitX.getLabel(i, config.xMin + i*config.unitX.getTotalMillis)}
                         </text>
                     }
@@ -139,11 +133,11 @@ object LineChartConfig {
                     {config._yLabel}
                 </text>
                 // x-label
-                <text x={(rightLimit - 85).toString} y={(lowerLimit + textVerticalOffsetX - 15).toString} font-family="Roboto, Segoe UI" font-size="20">
+                <text x={(config.rightLimit - 85).toString} y={(config.lowerLimit + textVerticalOffsetX - 15).toString} font-family="Roboto, Segoe UI" font-size="20">
                     {config._xLabel}
                     {if (!unitXAxis.isEmpty)
                     {
-                        <tspan x={(rightLimit - 140).toString} y={(lowerLimit + textVerticalOffsetX + 5).toString}>
+                        <tspan x={(config.rightLimit - 140).toString} y={(config.lowerLimit + textVerticalOffsetX + 5).toString}>
                             {"(in " + unitXAxis + ")"}
                         </tspan>
                     }}
@@ -321,7 +315,7 @@ case class LineChartConfig(
         }
     }
 
-    override def calculateOrigin: (Int, Int) = {
+    override def calculateOrigin: (Double, Double) = {
         (_borderLeft, _borderTop - math.ceil(convertYPoint(yMax)).toInt)
     }
 
