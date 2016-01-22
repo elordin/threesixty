@@ -97,24 +97,26 @@ case class VisualizationInfo(
 
 /**
  *  Mixin trait for layering [[threesixty.visualizer.Visualization]]s onto the [[threesixty.visualizer.Visualizer]]
+ *
+ *  Extend this by abstract overriding the visualizationInfos value with super calls.
+ *  @example {{{
+ *      trait FooVisualizationMixin extends VisualizationMixins {
+ *          abstract override def visualizationInfos =
+ *              super.visualizationInfos + ("foo" -> VisualizationInfo(
+ *                  "Foo",
+ *                  { json: String => FooVisualizationConfig.apply(json) },
+ *                  "Use Foo like so: ..."
+ *              ))
+ *      }
+ *
+ *      val visualizer = new Visualizer with FooVisualizationMixin
+ *
+ *  }}}
  */
 trait VisualizationMixins {
     /**
      *  Map containing all mixedin Visualizations.
-     *  Use an abstract override to extends this
-     *  @example {{{
-     *      trait FooVisualizationMixin extends VisualizationMixins {
-     *          abstract override def visualizationInfos =
-     *              super.visualizationInfos + ("foo" -> VisualizationInfo(
-     *                  "Foo",
-     *                  { json: String => FooVisualizationConfig.apply(json) },
-     *                  "Use Foo like so: ..."
-     *              ))
-     *      }
-     *
-     *      val visualizer = new Visualizer with FooVisualizationMixin
-     *
-     *  }}}
+     *  Use an abstract override to extends this.
      */
     def visualizationInfos: Map[String, VisualizationInfo] = Map.empty
 }
@@ -139,6 +141,7 @@ class Visualizer extends VisualizationMixins {
     @throws[NoSuchElementException]("if the json specifies a type that has no conversion")
     def toVisualizationConfig(jsonString: String): VisualizationConfig = {
         val json: JsObject = jsonString.parseJson.asJsObject
+
         val vizType = try {
             json.getFields("type")(0).convertTo[String]
         } catch {

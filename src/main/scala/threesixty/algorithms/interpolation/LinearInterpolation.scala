@@ -9,6 +9,7 @@ import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, Processin
 import spray.json._
 import DefaultJsonProtocol._
 
+
 object LinearInterpolation {
 
     trait Mixin extends ProcessingMixins {

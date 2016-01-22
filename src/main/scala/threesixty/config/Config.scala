@@ -8,16 +8,9 @@ import threesixty.persistence.DatabaseAdapter
 
 import scala.collection.immutable.{Map => ImmutableMap}
 
-object Implicits {
-    import spray.json._
-
-    // TODO: Implicit conversion from JSON
-
-}
 
 /**
- *  Config potentially contains all options transmitted from the client.
- *  Some values may be required, some may be optional.
+ *  This contains all datasets requested by the client.
  *
  *  @param dataIDs Set of IDs of datasets that will be processed.
  *  @param databaseAdapter DatabaseAdapter
@@ -53,7 +46,7 @@ class Config(
 
     /**
      *  Accessor for processedDatasets
-     *  @return Immutable Map of Identifier -> ProcessedData
+     *  @return Immutable Map of [[threesixty.data.Data.Identifier]] -> [[threesixty.data.ProcessedData]]
      */
     def datasets: ImmutableMap[Identifier, ProcessedData] = processedDatasets
 
@@ -66,10 +59,5 @@ class Config(
     def getDataset(id: Identifier): ProcessedData =
         processedDatasets(id)
 
-    // def getDatasets(ids: Set[Identifier]): Set[Option[ProcessedData]] =
-    //     ids.map(processedDatasets.get(_))
-
-    // def getDataset(id: Identifier): Option[ProcessedData] =
-    //     processedDatasets.get(id)
 }
 

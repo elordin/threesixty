@@ -41,11 +41,12 @@ abstract class MultiProcessingMethod(idMapping: Map[Identifier, Identifier])
 
 /**
  *  Represents single step in the processing chain.
+ *
  *  Works on a subset of all data, namely all that data that is being subjected
  *  to this particular processing method.
  *
  *  Operations that run on each individual dataset without affecting the others
- *  are run in parallel.
+ *  are run in parallel using [[scala.collection.parallel.ParSet]].
  *
  *  @author Thomas Weber
  *

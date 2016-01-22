@@ -45,8 +45,9 @@ object APIHandler {
     def props: Props = Props(new APIHandler)
 }
 
+
 /**
- *  Reads the HTTP request and dispatches it to an EngineActor
+ *  Reads the HTTP requests from a client and passes them to the engine. Sends responses.
  */
 class APIHandler extends Actor {
 

@@ -32,6 +32,12 @@ object Server extends App {
         case _: ConfigException => DEFAULT_INTERFACE
     }
 
+    val dbURI: String = try {
+        config.getString("server.interface")
+    } catch {
+        case _: ConfigException => DEFAULT_INTERFACE
+    }
+
     val server: ActorRef = system.actorOf(ServerActor.props, "server")
 
     IO(Http) ! Http.Bind(server, interface = interface, port = port)
