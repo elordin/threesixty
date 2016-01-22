@@ -41,7 +41,7 @@ case class PolarAreaChartConfig private (
     height: Int,
     width: Int,
     title: String = ""
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(ids: Set[Identifier], height, width) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             requiredProcessingMethods = None, //TODO Aggregation

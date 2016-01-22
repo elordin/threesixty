@@ -50,7 +50,7 @@ case class BarChartConfig private (
        xLabel: String = "",
        yLabel: String = "",
        title: String = ""
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(ids: Set[Identifier], height, width) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             requiredProcessingMethods = None //TODO Aggregation
