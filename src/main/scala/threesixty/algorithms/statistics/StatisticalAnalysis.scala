@@ -12,7 +12,7 @@ object StatisticalAnalysis {
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Median of input dataset
+     *  @return Median of input dataset
      */
     def median(data: ProcessedData): ValueType = {
         data.dataPoints.map(_.value).apply(data.dataPoints.length / 2)
@@ -20,7 +20,7 @@ object StatisticalAnalysis {
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Mean of input dataset
+     *  @return Mean of input dataset
      */
     def mean(data: ProcessedData): ValueType = {
         data.dataPoints.map(_.value.value).sum / data.dataPoints.length
@@ -28,7 +28,7 @@ object StatisticalAnalysis {
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Standard deviation of input dataset
+     *  @return Standard deviation of input dataset
      */
     def stdDeviation(data: ProcessedData): ValueType = {
         math.sqrt(variance(data).value)
@@ -36,7 +36,7 @@ object StatisticalAnalysis {
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Variance of input dataset
+     *  @return Variance of input dataset
      */
     def variance(data: ProcessedData): ValueType = {
         val e = mean(data)

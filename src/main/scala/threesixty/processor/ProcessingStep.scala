@@ -46,7 +46,7 @@ abstract class MultiProcessingMethod(idMapping: Map[Identifier, Identifier])
  *  to this particular processing method.
  *
  *  Operations that run on each individual dataset without affecting the others
- *  are run in parallel using [[scala.collection.parallel.ParSet]].
+ *  are run in parallel using scala.collection.parallel.ParSet.
  *
  *  @author Thomas Weber
  *

@@ -11,7 +11,7 @@ import DefaultJsonProtocol._
 
 /**
  *  Generic Configuration for a [[threesixty.visualizer.Visualization]].
- *  Acts as a factory for creating [[threesixty.visualization.Visualization]]s.
+ *  Acts as a factory for creating [[threesixty.visualizer.Visualization]]s.
  *
  *  @param ids Set of ids which are to be displayed in the visualization
  */
