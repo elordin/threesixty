@@ -17,7 +17,7 @@ trait Mixin extends VisualizationMixins {
         super.visualizationInfos + ("linechart" ->
             VisualizationInfo(
                 "LineChart",
-                { json:String => LineChartConfig.apply(json) },
+                { json: String => LineChartConfig.apply(json) },
                 "LineChart\n" +
                 "  Parameters: \n" +
                 "    height:        Int                  - Height of the diagram in px\n" +
@@ -64,7 +64,7 @@ object LineChartConfig {
         }
 
         private def yCoordTextToString(value: Double): String = {
-            if(value == 0) {
+            if (value == 0) {
                 value.toInt.toString
             } else if (math.abs(value) < 1) {
                 value.toString
@@ -76,8 +76,8 @@ object LineChartConfig {
         private def calculatePath(config: LineChartConfig, data: ProcessedData): String = {
             var path = ""
 
-            for(d <- data.dataPoints) {
-                if(path.isEmpty) {
+            for {d <- data.dataPoints} {
+                if (path.isEmpty) {
                     path += "M " + config.convertXPoint(d.timestamp.getTime) + " " + config.convertYPoint(d.value.value)
                 } else {
                     path += " L " + config.convertXPoint(d.timestamp.getTime) + " " + config.convertYPoint(d.value.value)
@@ -101,14 +101,14 @@ object LineChartConfig {
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={vbX + " " + vbY + " " + width + " " + height} xml:space="preserve">
                 <g id="grid">
                     // background-grid y-axis
-                    {for (i <- config.yMin to config.yMax by config.unitY) yield
+                    {for {i <- config.yMin to config.yMax by config.unitY} yield
                         <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={config.leftLimit.toString} y1={config.convertYPoint(i).toString} x2={config.rightLimit.toString} y2={config.convertYPoint(i).toString} />
                         <text x={(vbX + textHorizontalOffsetY + calculateTextYOffset(yCoordTextToString(i))).toString} y={(config.convertYPoint(i) + textVerticalOffsetY).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="16">
                             {yCoordTextToString(i)}
                         </text>
                     }
                     // background-grid x-axis
-                    {for (i <- 0 to config.amountXPoints) yield
+                    {for {i <- 0 to config.amountXPoints} yield
                         <line fill="none" stroke={if(i==0) "#000000" else "#AAAAAA"} stroke-dasharray={if (i==0) "0,0" else "5,5"} x1={(i*config.stepX).toString} y1={config.lowerLimit.toString} x2={(i*config.stepX).toString} y2={config.upperLimit.toString} />
                         <text x={(i*config.stepX + textHorizontalOffsetX).toString} y={(config.lowerLimit + textVerticalOffsetX).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="16">
                             {config.unitX.getLabel(i, config.xMin + i*config.unitX.getTotalMillis)}
@@ -116,7 +116,7 @@ object LineChartConfig {
                     }
                 </g>
                 // data
-                {for (dataset <- data) yield
+                {for {dataset <- data} yield
                 <g id={dataset.id}>
                     <g id="datapoints">
                         {for (datapoint <- dataset.dataPoints) yield
@@ -296,7 +296,7 @@ case class LineChartConfig(
         val maxAmountPoints = widthChart / _minDistanceX
         val deltaX = xMax - xMin
 
-        for (unit <- getPossibleXScaling) {
+        for {unit <- getPossibleXScaling} {
             val result = (1.0*deltaX) / unit.getTotalMillis
             if(result <= maxAmountPoints) {
                 return unit

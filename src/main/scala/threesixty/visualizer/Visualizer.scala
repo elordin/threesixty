@@ -69,12 +69,12 @@ abstract class VisualizationConfig(
     val metadata: VisualizationMetadata
 
     /**
-      *  Method to determine if a list of input data fulfills the requirements of the visualization
-      *
-      *  @param inputData a list of input data
-      *  @param config the configuration
-      *  @return a maybe reordered list of input data that matches the visualization requirement
-      */
+     *  Method to determine if a list of input data fulfills the requirements of the visualization
+     *
+     *  @param inputData a list of input data
+     *  @param config the configuration
+     *  @return a maybe reordered list of input data that matches the visualization requirement
+     */
     def isMatching(inputData: List[InputData], config: Config): Option[List[InputData]] = {
         if(metadata.unlimitedData) {
             // Unlimited data that all have to match the same data requirement
@@ -184,8 +184,11 @@ trait VisualizationMixins {
  *      val visualizer = new Visualizer with FooVisualization.Mixin with BarVisualization.Mixin
  *  }}}
  */
-class Visualizer extends VisualizationMixins {
+class Visualizer extends VisualizationMixins with UsageInfo {
     // TODO Exception catching and proper access
+
+    def usage = " ... "
+
 
     @throws[IllegalArgumentException]("if a parameter is missing")
     @throws[NoSuchElementException]("if the json specifies a type that has no conversion")

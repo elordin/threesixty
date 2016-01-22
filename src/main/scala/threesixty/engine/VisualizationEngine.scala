@@ -110,12 +110,18 @@ VISUALIZATION
         try {
             val helpFor = json.getFields("for")(0).convertTo[String]
             helpFor.toLowerCase match {
+                case "visualizer" =>
+                    HelpResponse(visualizer.usage)
+                case "processor" =>
+                    HelpResponse(processor.usage)
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
                     HelpResponse(availablevisualizations.foldLeft(
                         "{\n    \"visualizations\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
                 case "processingmethods" | "p" =>
-                    ??? // TODO
+                    val availableMethods = processor.processingInfos.keys
+                    HelpResponse(availableMethods.foldLeft(
+                        "{\n    \"processingmethods\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
                 case _ =>
                     ErrorResponse("""{ "error": "Unknown help-for parameter."}""")
             }
@@ -152,28 +158,17 @@ VISUALIZATION
                 None // No "visualization" given
         }
 
-        // TODO get processing strategy from json
-        val procStratOption:Option[ProcessingStrategy] = Some(ProcessingStrategy(
-            ProcessingStep(LinearInterpolation(3,
-                Map("data1" -> "data1i", "data2" -> "data2i")),
-                Set[Identifier]("data1", "data2")
-            ),
-            ProcessingStep(LinearInterpolation(1,
-                Map("data3" -> "data3i")),
-                Set[Identifier]("data3")
-            )
-        ))
-
-        /*
         val procStratOption: Option[ProcessingStrategy] = try {
-            val processingSteps: Seq[ProcessingStep] = ???
-                // json.getFields("processor")(0).convertTo[Seq[ProcessingStep]]
-
-            Some(ProcessingStrategy(processingSteps: _* ))
+            val processorConfigJsonString: String = json.getFields("processor")(0).toString
+            Some(processor.toProcessingStrategy(processorConfigJsonString))
         } catch {
-            case _: Exception => // TODO limit
-                None
-        } */
+            case e:NoSuchElementException =>
+                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Unknown method
+            case e:IllegalArgumentException =>
+                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Parameter missing
+            case e:IndexOutOfBoundsException =>
+                None // No "processor" given
+        }
 
         val dataIDs:Set[Identifier] = try {
             json.getFields("data")(0).convertTo[Set[String]]
