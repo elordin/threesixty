@@ -108,8 +108,8 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
 
 
     def computeDegreeOfFit(inputData : InputData) : Double = {
-        var temp = 0.0
 
+        var temp = 0.0
         val meta = inputData.metadata
 
         if (meta.scaling == Scaling.Ordinal){
@@ -118,7 +118,6 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
             temp += 0.2 }
         if (inputData.dataPoints.length >= 50){
             temp += 0.2 }  //overall 0.4 because >= 50 includes >= 5
-
         if (meta.resolution == Resolution.High){
             temp += 0.2 }
         if (meta.resolution == Resolution.Middle){
@@ -142,7 +141,7 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
             case ProgressChart(_,_) => 0.1
             case PieChart(_,_) => 0.0
             //default
-            case _ => 0.1
+            case _ => 0.5
         }
 
 

@@ -12,7 +12,7 @@ import threesixty.visualizer.visualizations.PieChart.PieChartConfig.PieChart
 import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig.ScatterChart
 
 /**
-  * Created by Markus on 23.01.2016.
+  * Created by Markus Schnappinger on 23.01.2016.
   */
 class ProcessingStrategyDeductionTest extends FunSpec{
 
@@ -75,8 +75,8 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
 
 
-  //unfortunately, scala arithmethik causes standard implemenation to fail
-  // because of errors like "0.56 does not equal 0.5599999999999".
+  //unfortunately, scala arithmethic causes standard implemenation to fail
+  // because of errors like "0.56 does not equal 0.559999999999999".
   //this is why a wrapper is used and may look dirty
 
    describe("Linear interpolation"){
@@ -84,12 +84,15 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
          val testset = Set(inputData)
          val result = 0.4 + 0.2 + 0.1  //explaination: 0.4 <= ordinal scaling, 0.2 <= enough values to interpolate, 0.1 middle resolution
+
          assert((linInt.degreeOfFit(testset) == (result)))
      }
 
      it (" InputData SET, but same metadata"){
+
          val testset = Set(inputData,inputData1)
          val result = 0.4 + 0.2 + 0.1 //same as for one single set, as both has same metadata
+
          assert(0.0001 > math.abs(linInt.degreeOfFit(testset) - result))
      }
 
@@ -97,25 +100,29 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
        val testset = Set(inputData,inputData1,inputData2)
        val result = 0.6 //value for InputData with Resolution.Low
+
        assert(0.0001 > math.abs(linInt.degreeOfFit(testset) - result))
      }
 
    it ("InputData + given VisualizationType"){
-        val testset = Set(inputData)
 
+        val testset = Set(inputData)
 
         assert(0.0001 > math.abs(linInt.degreeOfFit(testset,barChart) - (0.7 * 0.8)))
         assert(0.0001 > math.abs(linInt.degreeOfFit(testset,pieChart) - (0.7 * 0.0)))
         assert(0.0001 > math.abs(linInt.degreeOfFit(testset,lineChart) - (0.7 * 1.0)))
+        assert(0.0001 > math.abs(linInt.degreeOfFit(testset,scatter) - (0.7 * 0.2)))
 
    }
 
      it("InputData SET + given VisualizationType"){
+
        val testset = Set(inputData, inputData1, inputData2)
 
        assert(0.0001 > math.abs(linInt.degreeOfFit(testset,barChart) - (0.6 * 0.8)))
        assert(0.0001 > math.abs(linInt.degreeOfFit(testset,pieChart) - (0.6 * 0.0)))
        assert(0.0001 > math.abs(linInt.degreeOfFit(testset,lineChart) - (0.6 * 1.0)))
+       assert(0.0001 > math.abs(linInt.degreeOfFit(testset,scatter) - (0.6 * 0.2)))
 
      }
 
@@ -123,19 +130,19 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
 
   describe("Clustering") {
-
-
-
     it("should compute the right value for a given Single InputData"){
 
       val testset = Set(inputData)
       val result = 0.1 + 0.1 + 0.1 + 0.2
+
       assert((clustering.degreeOfFit(testset) == (result)))
     }
 
     it (" InputData SET, but same metadata"){
+
       val testset = Set(inputData,inputData1)
       val result = 0.1 + 0.1 + 0.1 + 0.2 //same as for one single set, as both has same metadata
+
       assert(0.0001 > math.abs(clustering.degreeOfFit(testset) - result))
     }
 
@@ -143,12 +150,13 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
       val testset = Set(inputData,inputData1,inputData2)
       val result = 0.5 //value for InputData with Resolution.Middle | LOW => 0.65
+
       assert(0.0001 > math.abs(clustering.degreeOfFit(testset) - result))
   }
 
     it ("InputData + given VisualizationType"){
-      val testset = Set(inputData)
 
+      val testset = Set(inputData)
 
       assert(0.0001 > math.abs(clustering.degreeOfFit(testset,barChart) - (0.5 * 0.3)))
       assert(0.0001 > math.abs(clustering.degreeOfFit(testset,pieChart) - (0.5 * 0.2)))
@@ -159,7 +167,8 @@ class ProcessingStrategyDeductionTest extends FunSpec{
     }
 
     it("InputData SET + given VisualizationType"){
-    val testset = Set(inputData, inputData1, inputData2)
+
+      val testset = Set(inputData, inputData1, inputData2)
 
       assert(0.0001 > math.abs(clustering.degreeOfFit(testset,barChart) - (0.5 * 0.3)))
       assert(0.0001 > math.abs(clustering.degreeOfFit(testset,pieChart) - (0.5 * 0.2)))

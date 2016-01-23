@@ -111,7 +111,6 @@ case class Clustering(idMapping: Map[Identifier, Identifier])
         else if (inputData.dataPoints.length >= 5) {
             temp += 0.2}
 
-
         temp
     }
 
@@ -131,13 +130,13 @@ case class Clustering(idMapping: Map[Identifier, Identifier])
             //bad
             case ProgressChart(_,_) => 0
             //default
-            case _ => 0.1
+            case _ => 0.3
         }
 
 
+        // break option for ideal case
         if (visFactor == -1.0)
             1.0
-            //^^ break option for ideal case
         else {
             visFactor * computeDegreeOfFit(inputData)
         }

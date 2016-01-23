@@ -11,9 +11,11 @@ import scala.collection.parallel._
 sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier]) {
   def asProcessingStep: ProcessingStep = ProcessingStep(this, idMapping.keys.toSet)
 
-  /*decution methods.
-  return double[0;1] to indicate wether applying a ProcessingMethod
+  /**decution methods
+  returns double[0;1] to indicate wether applying a ProcessingMethod
    on a certain InputData Set is suitable(1) or nonsense(0)*/
+  //note: minimum dominates. => a set of InputData gets value of least suitable InputData within that set
+
   def degreeOfFit(inputData: Set[InputData]): Double = {
     if (inputData.size == 0) {
       throw new IllegalArgumentException("empty inputdataSet in Deduction of ProcessingStrategy")
@@ -26,9 +28,11 @@ sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier]) {
       val head = inputData.head
       math.min(computeDegreeOfFit(head), degreeOfFit(inputData - head))
     }
-
-
 }
+  /**decution method.
+  returns double[0;1] to indicate wether applying a ProcessingMethod
+   on a certain InputData Set is suitable(1) or nonsense(0)*/
+  //note: minimum dominates. => a set of InputData gets value of least suitable InputData within that set
 
   def degreeOfFit (inputData: Set[InputData], targetVisualization: Visualization): Double = {
 
