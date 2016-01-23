@@ -6,15 +6,14 @@ import spray.json._
 import DefaultJsonProtocol._
 
 
-case class ProcessingMethodInfo(
-    val name: String,
-    val conversion: (String) => ProcessingStep,
-    val usage: String
-) extends UsageInfo
+trait PrcessingMethodCompanion extends UsageInfo {
+    def name: String
+    def fromString: (String) => ProcessingStep
+}
 
 
 trait ProcessingMixins {
-    def processingInfos: Map[String, ProcessingMethodInfo] = Map.empty
+    def processingInfos: Map[String, PrcessingMethodCompanion] = Map.empty
 }
 
 
@@ -69,7 +68,7 @@ class Processor extends ProcessingMixins with UsageInfo {
         val conversion: (String) => ProcessingStep =
             this.processingInfos.getOrElse(method,
                 throw new NoSuchElementException(s"Unknown processing method $method")
-            ).conversion
+            ).fromString
 
         val args: String = try {
             json.getFields("args")(0).toString

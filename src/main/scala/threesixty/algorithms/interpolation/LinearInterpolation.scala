@@ -4,23 +4,24 @@ import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
-import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodInfo, ProcessingStep}
+import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, PrcessingMethodCompanion, ProcessingStep}
 
 import spray.json._
 import DefaultJsonProtocol._
 
 
-object LinearInterpolation {
+object LinearInterpolation extends PrcessingMethodCompanion {
 
     trait Mixin extends ProcessingMixins {
-        abstract override def processingInfos: Map[String, ProcessingMethodInfo] =
-            super.processingInfos + ("linearinterpolation" -> ProcessingMethodInfo(
-                "Linear Interpolation",
-                { json: String => LinearInterpolation.apply(json).asProcessingStep }: (String) => ProcessingStep,
-                """ Use responsibly """ // TODO
-            ))
+        abstract override def processingInfos: Map[String, PrcessingMethodCompanion] =
+            super.processingInfos + ("linearinterpolation" -> LinearInterpolation)
     }
 
+    def name = "Linear Interpolation"
+
+    def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
+
+    def usage = """ Use responsibly """ // TODO
 
     def apply(jsonString: String): LinearInterpolation = {
         implicit val linearInterpolationFormat =
