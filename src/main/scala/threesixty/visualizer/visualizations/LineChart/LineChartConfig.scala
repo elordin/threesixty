@@ -4,7 +4,7 @@ import threesixty.config.Config
 import threesixty.data.Data.{Identifier, Timestamp, ValueType}
 import threesixty.data.metadata.{Scaling, Timeframe}
 import threesixty.data.{ProcessedData, TaggedDataPoint}
-import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationInfo, VisualizationMetadata, VisualizationMixins}
+import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationCompanion, VisualizationMetadata, VisualizationMixins}
 
 import spray.json._
 import threesixty.data.TimestampJsonProtocol._
@@ -13,12 +13,16 @@ import scala.xml.Elem
 
 
 trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-        super.visualizationInfos + ("linechart" ->
-            VisualizationInfo(
-                "LineChart",
-                { json: String => LineChartConfig.apply(json) },
-                "LineChart\n" +
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("linechart" -> LineChartConfig)
+}
+
+
+object LineChartConfig extends VisualizationCompanion {
+
+    def name = "LineChart"
+
+    def usage = "LineChart\n" +
                 "  Parameters: \n" +
                 "    height:        Int                  - Height of the diagram in px\n" +
                 "    width:         Int                  - Width of the diagram in px\n" +
@@ -37,12 +41,8 @@ trait Mixin extends VisualizationMixins {
                 "    minDistanceY   Int       (optional) - Minimum number of px between two control points on the y-axis\n" +
                 "    optUnitX       String    (optional) - Name of the desired unit on the x-axis\n" +
                 "    optUnitY       Double    (optional) - Value of the desired unit on the y-axis\n"
-            )
-        )
-}
 
-
-object LineChartConfig {
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
 
     /**

@@ -8,18 +8,19 @@ import threesixty.config.Config
 
 
 trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-        super.visualizationInfos + ("polarareachart" ->
-            VisualizationInfo(
-                "PolarAreaChart",
-                { json:String => PolarAreaChartConfig.apply(json) },
-                "Parameters: \n" // TODO
-            )
-        )
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("polarareachart" -> PolarAreaChartConfig)
 }
 
 
-object PolarAreaChartConfig {
+object PolarAreaChartConfig extends VisualizationCompanion {
+
+    def name = "PolarAreaChart"
+
+    def usage = "PolarAreaChart\n" +
+                "  Parameters: \n" // TODO
+
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
 
     /**

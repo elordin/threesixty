@@ -2,7 +2,7 @@ package threesixty.server
 
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
-import threesixty.engine.{VisualizationResponse, VisualizationEngine}
+import threesixty.engine.{VisualizationEngine, Engine}
 import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.visualizer.visualizations.PieChart.PieChartConfig
 import threesixty.visualizer.visualizations._
@@ -61,11 +61,10 @@ class APIHandler extends Actor {
     }
 
     def receive = {
-        case request@HttpRequest(POST, _, _, _: HttpEntity.NonEmpty, _) =>
+        case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
             val peer = sender
-
             val processingFuture: Future[HttpResponse] = Future {
-                APIHandler.engine.processRequest(request).toHttpResponse
+                APIHandler.engine.processRequest(body.asString).toHttpResponse
             }
 
             processingFuture onSuccess {

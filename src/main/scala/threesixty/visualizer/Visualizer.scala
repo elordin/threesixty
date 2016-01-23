@@ -2,6 +2,7 @@ package threesixty.visualizer
 
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
+import threesixty.processor.ProcessingStrategy
 import threesixty.config.Config
 import threesixty.engine.UsageInfo
 
@@ -131,18 +132,14 @@ abstract class VisualizationConfig(
 
 
 
-/**
- *  Container describing a [[threesixty.visualizer.Visualization]].
- *
- *  @param name Verbose name of the visualization
- *  @param conversion Function converting from String to [[threesixty.visualizer.VisualizationConfig]].
- *  @param usage Help text describing how the visualization works and its parameters.
- */
-case class VisualizationInfo(
-    val name: String,
-    val conversion: (String) => VisualizationConfig,
-    val usage: String
-) extends UsageInfo
+/** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
+trait VisualizationCompanion extends UsageInfo {
+    /** Verbose name of the visualization */
+    def name: String
+
+    /** Conversion from String to [[threesixty.visualizer.VisualizationConfig]]. */
+    def fromString: (String) => VisualizationConfig
+}
 
 
 /**
@@ -150,17 +147,18 @@ case class VisualizationInfo(
  *
  *  Extend this by abstract overriding the visualizationInfos value with super calls.
  *  @example {{{
+ *      object FooVisualizationConfig extends VisualizationCompanion {
+ *          def name = "Foo"
+ *          def fromString(in: String) = ...
+ *          def usage = "Use responsibly!"
+ *      }
+ *
  *      trait FooVisualizationMixin extends VisualizationMixins {
  *          abstract override def visualizationInfos =
- *              super.visualizationInfos + ("foo" -> VisualizationInfo(
- *                  "Foo",
- *                  { json: String => FooVisualizationConfig.apply(json) },
- *                  "Use Foo like so: ..."
- *              ))
+ *              super.visualizationInfos + ("foo" -> FooVisualizationConfig)
  *      }
  *
  *      val visualizer = new Visualizer with FooVisualizationMixin
- *
  *  }}}
  */
 trait VisualizationMixins {
@@ -168,7 +166,7 @@ trait VisualizationMixins {
      *  Map containing all mixedin Visualizations.
      *  Use an abstract override to extends this.
      */
-    def visualizationInfos: Map[String, VisualizationInfo] = Map.empty
+    def visualizationInfos: Map[String, VisualizationCompanion] = Map.empty
 }
 
 
@@ -205,13 +203,11 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         val conversion: (String) => VisualizationConfig =
             this.visualizationInfos.getOrElse(vizType,
                 throw new NoSuchElementException(s"Unknown visualization type $vizType")
-            ).conversion
+            ).fromString
 
-        val args: String = try {
-            json.getFields("args")(0).toString // get args from visualization
-        } catch {
-            case e:IndexOutOfBoundsException =>
-                throw new IllegalArgumentException("parameter \"args\" missing for visualization")
+        val args: String = json.fields.get("args") match {
+            case Some(jsonVal) => jsonVal.toString // get args from visualization
+            case None          => throw new IllegalArgumentException("parameter \"args\" missing for visualization")
         }
 
         conversion(args)

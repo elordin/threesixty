@@ -10,12 +10,16 @@ import spray.json._
 
 
 trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-        super.visualizationInfos + ("piechart" ->
-            VisualizationInfo(
-                "PieChart",
-                { json:String => PieChartConfig.apply(json) },
-                "Parameters: \n" +
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("piechart" -> PieChartConfig)
+}
+
+
+object PieChartConfig extends VisualizationCompanion {
+
+    def name = "PieChart"
+
+    def usage = "Parameters: \n" +
                 "    height:        Int                  - Height of the diagram in px\n" +
                 "    width:         Int                  - Width of the diagram in px\n" +
                 "    title:         String    (optional) - Diagram title\n" +
@@ -28,12 +32,8 @@ trait Mixin extends VisualizationMixins {
                 "    radius         Double    (optional) - The radius\n" +
                 "    innerRadius    Double    (optional) - Radius for cutting out a circle\n" +
                 "    showValues     Boolean   (optional) - If values should be shown"
-            )
-        )
-}
 
-
-object PieChartConfig {
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
     /**
       *  Public constructor that parses JSON into a PieChartConfig

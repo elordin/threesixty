@@ -8,18 +8,19 @@ import threesixty.config.Config
 
 
 trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-        super.visualizationInfos + ("scatterchart" ->
-            VisualizationInfo(
-                "ScatterChart",
-                { json:String => ScatterChartConfig.apply(json) },
-                "Parameters: \n" // TODO
-            )
-        )
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("scatterchart" -> ScatterChartConfig)
 }
 
 
-object ScatterChartConfig {
+object ScatterChartConfig extends VisualizationCompanion {
+
+    def name = "ScatterChart"
+
+    def usage = "ScatterChart\n" +
+                "  Parameters: \n" // TODO
+
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
     /**
       *  Public constructor that parses JSON into a configuration
