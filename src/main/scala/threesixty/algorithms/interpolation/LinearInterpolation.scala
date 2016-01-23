@@ -1,5 +1,6 @@
 package threesixty.algorithms.interpolation
 
+import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
@@ -9,6 +10,14 @@ import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, Prcessing
 import spray.json._
 import DefaultJsonProtocol._
 import threesixty.visualizer.Visualization
+import threesixty.visualizer.visualizations.BarChart.BarChartConfig.BarChart
+import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig.HeatLineChart
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig.LineChart
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig.PieChart
+import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig.PolarAreaChart
+import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig.ProgressChart
+import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig.ScatterChart
+import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig.ScatterColorChart
 
 
 object LinearInterpolation extends PrcessingMethodCompanion {
@@ -99,11 +108,45 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
 
 
     def computeDegreeOfFit(inputData : InputData) : Double = {
-        inputData.metadata.
+        var temp = 0.0
+
+        val meta = inputData.metadata
+
+        if (meta.scaling == Scaling.Ordinal){
+            temp += 0.4}
+        if (inputData.dataPoints.length >= 5){
+            temp += 0.2 }
+        if (inputData.dataPoints.length >= 50){
+            temp += 0.2 }  //overall 0.4 because >= 50 includes >= 5
+
+        if (meta.resolution == Resolution.High){
+            temp += 0.2 }
+        if (meta.resolution == Resolution.Middle){
+            temp += 0.1 }
+
+            temp
     }
 
     def computeDegreeOfFit(inputData: InputData, targetVisualization : Visualization ) : Double = {
 
-        ???
+        val strategyFactor = computeDegreeOfFit(inputData)
+        val visFactor =  targetVisualization match {
+            //good
+            case LineChart(_,_) => 1.0
+            case  HeatLineChart(_,_) => 1.0
+            case BarChart(_,_) => 0.8
+            case  PolarAreaChart(_,_) => 0.8 //equal to BarChar
+            //bad
+            case ScatterChart(_,_) => 0.2
+            case ScatterColorChart(_,_) => 0.2
+            case ProgressChart(_,_) => 0.1
+            case PieChart(_,_) => 0.0
+            //default
+            case _ => 0.1
+        }
+
+
+        strategyFactor * visFactor
+
     }
 }

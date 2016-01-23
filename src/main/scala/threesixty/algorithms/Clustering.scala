@@ -1,11 +1,20 @@
 package threesixty.algorithms
 
+import threesixty.data.metadata.{Reliability, Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Identifier
 import threesixty.processor.MultiProcessingMethod
 
 import clustering._
 import threesixty.visualizer.Visualization
+import threesixty.visualizer.visualizations.BarChart.BarChartConfig.BarChart
+import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig.HeatLineChart
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig.LineChart
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig.PieChart
+import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig.PolarAreaChart
+import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig.ProgressChart
+import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig.ScatterChart
+import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig.ScatterColorChart
 
 object Clustering {
 
@@ -76,12 +85,62 @@ case class Clustering(idMapping: Map[Identifier, Identifier])
 
 
     def computeDegreeOfFit(inputData : InputData) : Double = {
-        ???
+        var temp = 0.0
+
+        val meta = inputData.metadata
+
+        if (meta.scaling == Scaling.Nominal){
+            temp += 0.2 }
+        else (temp += 0.1)
+
+
+        if (meta.resolution == Resolution.Low ){
+            temp+= 0.25}
+        else if (meta.resolution == Resolution.Middle){
+            temp+= 0.1}
+        else {
+            temp += 0.15}
+
+        if (meta.reliability == Reliability.User){
+            temp += 0.2}
+        else if (meta.reliability == Reliability.Device){
+            temp+= 0.1}
+
+        if (inputData.dataPoints.length > 25){
+            temp += 0.35 }
+        else if (inputData.dataPoints.length >= 5) {
+            temp += 0.2}
+
+
+        temp
     }
 
     def computeDegreeOfFit(inputData: InputData, targetVisualization : Visualization ) : Double = {
 
-        ???
+        val visFactor =  targetVisualization match {
+            //ideal
+            case ScatterChart(_,_) => -1.0
+            case ScatterColorChart(_,_) => -1.0
+            //medium
+            case BarChart(_,_) => 0.3
+            case  PolarAreaChart(_,_) => 0.3  //equal to BarChar
+            //maybe but rather bad
+            case LineChart(_,_) => 0.2
+            case  HeatLineChart(_,_) => 0.2
+            case PieChart(_,_) => 0.2
+            //bad
+            case ProgressChart(_,_) => 0
+            //default
+            case _ => 0.1
+        }
+
+
+        if (visFactor == -1.0)
+            1.0
+            //^^ break option for ideal case
+        else {
+            visFactor * computeDegreeOfFit(inputData)
+        }
     }
 
 
