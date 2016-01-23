@@ -1,10 +1,11 @@
 package threesixty.algorithms
 
-import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Identifier
 import threesixty.processor.MultiProcessingMethod
 
 import clustering._
+import threesixty.visualizer.Visualization
 
 object Clustering {
 
@@ -71,5 +72,17 @@ case class Clustering(idMapping: Map[Identifier, Identifier])
     extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ??? // TODO implement
+
+
+
+    def computeDegreeOfFit(inputData : InputData) : Double = {
+        ???
+    }
+
+    def computeDegreeOfFit(inputData: InputData, targetVisualization : Visualization ) : Double = {
+
+        ???
+    }
+
 
 }
