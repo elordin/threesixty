@@ -1,6 +1,7 @@
 package threesixty.algorithms.interpolation
 
-import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.metadata.{Resolution, Scaling}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
@@ -8,6 +9,15 @@ import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, Prcessing
 
 import spray.json._
 import DefaultJsonProtocol._
+import threesixty.visualizer.Visualization
+import threesixty.visualizer.visualizations.BarChart.BarChartConfig.BarChart
+import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig.HeatLineChart
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig.LineChart
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig.PieChart
+import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig.PolarAreaChart
+import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig.ProgressChart
+import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig.ScatterChart
+import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig.ScatterColorChart
 
 
 object LinearInterpolation extends PrcessingMethodCompanion {
@@ -42,28 +52,28 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
-     *  Creates a new dataset with ID as specified in idMapping.
-     *  Inserts interpolated values along the original ones into
-     *  this new dataset and adds tags to identify interpolated
-     *  and original values.
-     *
-     *  @param data Data to interpolate
-     *  @return One element Set containing the new dataset
-     */
+      * Creates a new dataset with ID as specified in idMapping.
+      * Inserts interpolated values along the original ones into
+      * this new dataset and adds tags to identify interpolated
+      * and original values.
+      *
+      * @param data Data to interpolate
+      * @return One element Set containing the new dataset
+      */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
 
         /**
-         *  Interpolation function.
-         *  For each combination of two points it creates the linear
-         *  equation paramters m (slope) and b (offset).
-         *  It the generates the appropriate number of intermediary points
-         *  with the corresponding values and tags and inserts them into
-         *  the list of datapoints.
-         *
-         *  @param list of datapoints
-         *  @return list of datapoints with interpolated values and Tnterpolation-tags
-         */
+          * Interpolation function.
+          * For each combination of two points it creates the linear
+          * equation paramters m (slope) and b (offset).
+          * It the generates the appropriate number of intermediary points
+          * with the corresponding values and tags and inserts them into
+          * the list of datapoints.
+          *
+          * @param list of datapoints
+          * @return list of datapoints with interpolated values and Tnterpolation-tags
+          */
         def linearInterpolated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
             case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
 
@@ -72,16 +82,16 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
                     val m = ((v2.value - v1.value) / (t2 - t1))
                     val b = v1.value - m * t1
 
-                    def interpolFunc(x:Int):TaggedDataPoint =
+                    def interpolFunc(x: Int): TaggedDataPoint =
                         TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
 
                     TaggedDataPoint(t1, v1, tags1 + Original) ::
-                        Range(t1.toInt + frequency, t2.toInt, frequency).map(interpolFunc).toList ++
-                        linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
+                      Range(t1.toInt + frequency, t2.toInt, frequency).map(interpolFunc).toList ++
+                        linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
 
                 } else {
                     TaggedDataPoint(t1, v1, tags1 + Original) ::
-                        linearInterpolated( TaggedDataPoint(t2, v2, tags2 + Original) :: ds )
+                      linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
                 }
 
             case otherwise => otherwise
@@ -94,4 +104,48 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
         Set(data.copy(id = newID, dataPoints = linearInterpolated(orderedDataPoints)))
     }
 
+
+
+
+    def computeDegreeOfFit(inputData : InputData) : Double = {
+
+        var temp = 0.0
+        val meta = inputData.metadata
+
+        if (meta.scaling == Scaling.Ordinal){
+            temp += 0.4}
+        if (inputData.dataPoints.length >= 5){
+            temp += 0.2 }
+        if (inputData.dataPoints.length >= 50){
+            temp += 0.2 }  //overall 0.4 because >= 50 includes >= 5
+        if (meta.resolution == Resolution.High){
+            temp += 0.2 }
+        if (meta.resolution == Resolution.Middle){
+            temp += 0.1 }
+
+            temp
+    }
+
+    def computeDegreeOfFit(inputData: InputData, targetVisualization : Visualization ) : Double = {
+
+        val strategyFactor = computeDegreeOfFit(inputData)
+        val visFactor =  targetVisualization match {
+            //good
+            case LineChart(_,_) => 1.0
+            case  HeatLineChart(_,_) => 1.0
+            case BarChart(_,_) => 0.8
+            case  PolarAreaChart(_,_) => 0.8 //equal to BarChar
+            //bad
+            case ScatterChart(_,_) => 0.2
+            case ScatterColorChart(_,_) => 0.2
+            case ProgressChart(_,_) => 0.1
+            case PieChart(_,_) => 0.0
+            //default
+            case _ => 0.5
+        }
+
+
+        strategyFactor * visFactor
+
+    }
 }
