@@ -180,7 +180,7 @@ object PieChartConfig extends VisualizationCompanion {
 }
 
 
-case class PieChartConfig private (
+case class PieChartConfig(
     val ids:            Set[Identifier],
     val height:         Int,
     val width:          Int,

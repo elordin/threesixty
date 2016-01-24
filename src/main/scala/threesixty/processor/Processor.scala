@@ -1,19 +1,93 @@
 package threesixty.processor
 
 import threesixty.engine.UsageInfo
+import threesixty.data.{InputData, ProcessedData}
+import threesixty.data.Data.Identifier
+import threesixty.visualizer.VisualizationConfig
 
 import spray.json._
 import DefaultJsonProtocol._
 
 
-trait PrcessingMethodCompanion extends UsageInfo {
+sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    def asProcessingStep: ProcessingStep = ProcessingStep(this, idMapping.keys.toSet)
+}
+
+
+/**
+  * ProcessingMethod that works only on one single dataset.
+  * It may however create datasets, and thus returns a Set of ProcessedData.
+  *
+  * @author Thomas Weber
+  *
+  * @param Single instance of ProcessedData it requires
+  * @return Set of ProcessedData, possibly including artificially created data
+  */
+abstract class SingleProcessingMethod(idMapping: Map[Identifier, Identifier])
+  extends ProcessingMethod(idMapping: Map[Identifier, Identifier])
+  with Function1[ProcessedData, Set[ProcessedData]]
+
+
+/**
+  * ProcessingMethod that requires multiple datasets to process.
+  *
+  * @author Thomas Weber
+  *
+  * @param Set of ProcessedData that is going to process
+  * @return Set of ProcessedData, possibly including artificially created data
+  */
+abstract class MultiProcessingMethod(idMapping: Map[Identifier, Identifier])
+  extends ProcessingMethod(idMapping: Map[Identifier, Identifier])
+  with Function1[Set[ProcessedData], Set[ProcessedData]]
+
+
+trait ProcessingMethodCompanion extends UsageInfo {
     def name: String
     def fromString: (String) => ProcessingStep
+
+    /**
+     *  Decution methods
+     *
+     *  Note: minimum dominates => a set of InputData gets value of least suitable InputData within that set
+     *
+     *  @return Double in the interval [0;1] to indicate wether applying a ProcessingMethod on a certain InputData Set is suitable (1) or nonsense (0)
+     */
+    def degreeOfFit(inputData: Set[InputData]): Double = {
+        require(inputData.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
+
+        if (inputData.size == 1) {
+            computeDegreeOfFit(inputData.head)
+        } else {
+            math.min(computeDegreeOfFit(inputData.head), degreeOfFit(inputData.tail))
+        }
+    }
+
+    /**
+     *  Decution method.
+     *
+     *  Note: minimum dominates. => a set of InputData gets value of least suitable InputData within that set.
+     *
+     *  @return Double in the interval [0;1] to indicate wether applying a ProcessingMethod on a certain InputData Set is suitable (1) or nonsense (0)
+     */
+    def degreeOfFit (inputData: Set[InputData], targetVisualization: VisualizationConfig): Double = {
+        require(inputData.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
+
+        if (inputData.size == 1) {
+            computeDegreeOfFit(inputData.head, targetVisualization)
+        } else {
+            math.min(computeDegreeOfFit(inputData.head, targetVisualization),
+                degreeOfFit(inputData.tail, targetVisualization))
+        }
+    }
+
+    //have to be overwritten in ProcessingMethods
+    def computeDegreeOfFit(inputData: InputData): Double
+    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig) : Double
 }
 
 
 trait ProcessingMixins {
-    def processingInfos: Map[String, PrcessingMethodCompanion] = Map.empty
+    def processingInfos: Map[String, ProcessingMethodCompanion] = Map.empty
 }
 
 

@@ -38,7 +38,7 @@ object BarChartConfig extends VisualizationCompanion {
 }
 
 
-case class BarChartConfig private (
+case class BarChartConfig(
     val ids: Set[Identifier],
        height: Int,
        width: Int,

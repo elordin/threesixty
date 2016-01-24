@@ -36,7 +36,7 @@ object ScatterChartConfig extends VisualizationCompanion {
 }
 
 
-case class ScatterChartConfig private (
+case class ScatterChartConfig(
     val ids: Set[Identifier],
     height: Int,
     width: Int,

@@ -3,20 +3,20 @@ package threesixty.algorithms
 import threesixty.data.metadata.{Reliability, Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Identifier
-import threesixty.processor.MultiProcessingMethod
+import threesixty.processor.{MultiProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
 
 import clustering._
-import threesixty.visualizer.Visualization
-import threesixty.visualizer.visualizations.BarChart.BarChartConfig.BarChart
-import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig.HeatLineChart
-import threesixty.visualizer.visualizations.LineChart.LineChartConfig.LineChart
-import threesixty.visualizer.visualizations.PieChart.PieChartConfig.PieChart
-import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig.PolarAreaChart
-import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig.ProgressChart
-import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig.ScatterChart
-import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig.ScatterColorChart
+import threesixty.visualizer.VisualizationConfig
+import threesixty.visualizer.visualizations.BarChart.BarChartConfig
+import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig
+import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig
+import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig
+import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig
+import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig
 
-object Clustering {
+object Clustering extends ProcessingMethodCompanion {
 
     def byCluster[D](clustering:Map[D, Classification]):Map[Classification, Set[D]] = {
         var result:Map[Classification, Set[D]] = Map()
@@ -75,62 +75,62 @@ object Clustering {
                            epsilon: Double): Map[D, Classification] =
         DBSCAN.run[D](dataset,distFunction)
 
-}
 
-case class Clustering(idMapping: Map[Identifier, Identifier])
-    extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    def name = "Clustering"
 
-    def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ??? // TODO implement
+    def usage = "Use responsibly..." // TODO
 
+    def fromString: (String) => ProcessingStep = ???
 
-
-    def computeDegreeOfFit(inputData : InputData) : Double = {
+    def computeDegreeOfFit(inputData: InputData): Double = {
         var temp = 0.0
 
         val meta = inputData.metadata
 
-        if (meta.scaling == Scaling.Nominal){
-            temp += 0.2 }
-        else (temp += 0.1)
+        if (meta.scaling == Scaling.Nominal) {
+            temp += 0.2
+        } else (temp += 0.1)
 
-
-        if (meta.resolution == Resolution.Low ){
-            temp+= 0.25}
-        else if (meta.resolution == Resolution.Middle){
-            temp+= 0.1}
-        else {
+        if (meta.resolution == Resolution.Low) {
+            temp+= 0.25
+        } else if (meta.resolution == Resolution.Middle) {
+            temp+= 0.1
+        } else {
             temp += 0.15}
 
-        if (meta.reliability == Reliability.User){
-            temp += 0.2}
-        else if (meta.reliability == Reliability.Device){
-            temp+= 0.1}
+        if (meta.reliability == Reliability.User) {
+            temp += 0.2
+        } else if (meta.reliability == Reliability.Device) {
+            temp+= 0.1
+        }
 
-        if (inputData.dataPoints.length > 25){
-            temp += 0.35 }
+        if (inputData.dataPoints.length > 25) {
+            temp += 0.35
+        }
         else if (inputData.dataPoints.length >= 5) {
-            temp += 0.2}
+            temp += 0.2
+        }
 
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization : Visualization ) : Double = {
+    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig): Double = {
 
         val visFactor =  targetVisualization match {
             //ideal
-            case ScatterChart(_,_) => -1.0
-            case ScatterColorChart(_,_) => -1.0
+            case _:ScatterChartConfig       => -1.0
+            case _:ScatterColorChartConfig  => -1.0
             //medium
-            case BarChart(_,_) => 0.3
-            case  PolarAreaChart(_,_) => 0.3  //equal to BarChar
+            case _:BarChartConfig           => 0.3
+            case _:PolarAreaChartConfig     => 0.3  //equal to BarChar
             //maybe but rather bad
-            case LineChart(_,_) => 0.2
-            case  HeatLineChart(_,_) => 0.2
-            case PieChart(_,_) => 0.2
+            case _:LineChartConfig          => 0.2
+            case _:HeatLineChartConfig      => 0.2
+            case _:PieChartConfig           => 0.2
             //bad
-            case ProgressChart(_,_) => 0
+            case _:ProgressChartConfig      => 0
             //default
-            case _ => 0.3
+            case _                          => 0.3
         }
 
 
@@ -141,6 +141,11 @@ case class Clustering(idMapping: Map[Identifier, Identifier])
             visFactor * computeDegreeOfFit(inputData)
         }
     }
+}
 
+case class Clustering(idMapping: Map[Identifier, Identifier])
+    extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+
+    def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ??? // TODO implement
 
 }
