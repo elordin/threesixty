@@ -1,6 +1,6 @@
 package threesixty.visualizer.visualizations.PieChart
 
-import threesixty.data.TimestampJsonProtocol._
+import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{Tag, AggregationTag}
 import threesixty.data.{TaggedDataPoint, ProcessedData}
 import threesixty.data.Data.{DoubleValue, Timestamp, Identifier}

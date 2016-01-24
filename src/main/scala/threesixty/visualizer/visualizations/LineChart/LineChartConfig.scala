@@ -7,7 +7,7 @@ import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.visualizer.{DataRequirement, Visualization, VisualizationConfig, VisualizationCompanion, VisualizationMetadata, VisualizationMixins}
 
 import spray.json._
-import threesixty.data.TimestampJsonProtocol._
+import threesixty.data.DataJsonProtocol._
 
 import scala.xml.Elem
 

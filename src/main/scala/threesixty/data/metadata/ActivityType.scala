@@ -13,7 +13,7 @@ object ActivityType {
 /**
   * @author Thomas Engel
   */
-case class ActivityType(var name: String) {
+case class ActivityType(val name: String) {
     var description: String = null
 
     require(name != null && name.length() > 0, "Null value or empty string is not allowed")

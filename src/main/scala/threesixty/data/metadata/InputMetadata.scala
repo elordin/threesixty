@@ -24,8 +24,8 @@ case class IncompleteInputMetadata(
             activityType.getOrElse(ActivityType.deduce(contextData))
         )
     }
-
 }
+
 
 /**
  *  @author Thomas Engel

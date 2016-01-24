@@ -8,6 +8,8 @@ import MediaTypes.`image/svg+xml`
 import HttpMethods.{GET, POST}
 import HttpHeaders.`Access-Control-Allow-Origin`
 
+import spray.json.{JsString, JsValue, JsObject}
+
 
 trait UsageInfo {
     def usage: String
@@ -46,6 +48,12 @@ case class HelpResponse(val msg: String, val status: StatusCode = StatusCodes.OK
 }
 
 
+object Engine {
+    def toErrorJson(errorMsg: String): JsValue = {
+        JsObject(Map[String, JsValue]("error" -> JsString(errorMsg)))
+    }
+}
+
 trait Engine {
     def processRequest(jsonString: String): EngineResponse
 }
@@ -56,7 +64,7 @@ trait HttpRequestProcessor extends Engine {
         case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
             this.processRequest(body.asString)
         case HttpRequest(POST, _, _, HttpEntity.Empty, _) =>
-            ErrorResponse("""{ "error": "Empty request body." }""")
-        case _ => ErrorResponse("""{ "error": "Bad Request" }""")
+            ErrorResponse(Engine.toErrorJson("Empty request body.").toString)
+        case _ => ErrorResponse(Engine.toErrorJson("Bad Request").toString)
     }
 }

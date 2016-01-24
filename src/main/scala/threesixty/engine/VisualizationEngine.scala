@@ -87,13 +87,13 @@ VISUALIZATION
                     case "visualization" => processVisualizationRequest(json)
                     // TODO case "data" => processInsertData
                     case "help"          => processHelpRequest(json)
-                    case _               => ErrorResponse(s"""{ "error": "Unknown type: $requestType" }""")
+                    case _               => ErrorResponse(Engine.toErrorJson(s"Unknown type: $requestType").toString)
                 }
 
             result
         } catch {
-            case e:JsonParser.ParsingException => ErrorResponse("""{ "error": "Invalid JSON" }""")
-            case e:IndexOutOfBoundsException => ErrorResponse("""{ "error": "type parameter missing" }""")
+            case e:JsonParser.ParsingException => println(jsonString); ErrorResponse(Engine.toErrorJson("Invalid JSON").toString)
+            case e:IndexOutOfBoundsException => ErrorResponse(Engine.toErrorJson("type parameter missing").toString)
         }
     }
 
@@ -116,14 +116,12 @@ VISUALIZATION
                     HelpResponse(processor.usage)
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
-                    HelpResponse(availablevisualizations.foldLeft(
-                        "{\n    \"visualizations\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
+                    HelpResponse(JsObject(Map[String, JsValue]("visualizations" -> availablevisualizations.toJson)).toString)
                 case "processingmethods" | "p" =>
                     val availableMethods = processor.processingInfos.keys
-                    HelpResponse(availableMethods.foldLeft(
-                        "{\n    \"processingmethods\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
+                    HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)).toString)
                 case _ =>
-                    ErrorResponse("""{ "error": "Unknown help-for parameter."}""")
+                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter.").toString)
             }
         } catch {
             // No "for" given
@@ -152,9 +150,9 @@ VISUALIZATION
             }
         } catch {
             case e:NoSuchElementException =>
-                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Unknown visualization
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Unknown visualization
             case e:IllegalArgumentException =>
-                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Parameter missing
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Parameter missing
         }
 
         val procStratOption: Option[ProcessingStrategy] = try {
@@ -163,13 +161,13 @@ VISUALIZATION
             }
         } catch {
             case e:NoSuchElementException =>
-                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Unknown method
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Unknown method
             case e:IllegalArgumentException =>
-                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Parameter missing
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Parameter missing
         }
 
         val dataIDs:Set[Identifier] = json.fields.getOrElse("data",
-                return ErrorResponse("""{ "error": "data parameter missing."}""")
+                return ErrorResponse(Engine.toErrorJson("data parameter missing.").toString)
             ).convertTo[Set[Identifier]]
 
 
