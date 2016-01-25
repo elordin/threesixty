@@ -1,6 +1,6 @@
 package threesixty.data.metadata
 
-import threesixty.data.InputData
+import threesixty.data.DataPoint
 
 trait InputMetadata
 
@@ -15,7 +15,7 @@ case class IncompleteInputMetadata(
     val activityType: Option[ActivityType] = None
 ) extends InputMetadata {
 
-    def complete(contextData: InputData): CompleteInputMetadata = {
+    def complete(contextData: List[DataPoint]): CompleteInputMetadata = {
         CompleteInputMetadata(
             timeframe.getOrElse(Timeframe.deduceInputData(contextData)),
             reliability.getOrElse(Reliability.deduce(contextData)),

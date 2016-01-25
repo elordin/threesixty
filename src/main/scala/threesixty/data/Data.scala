@@ -64,22 +64,6 @@ object Data {
 object Implicits {
     import Data.{Timestamp, Identifier, DoubleValue, IntValue}
 
-    implicit def input2ProcessedData:(InputData) => ProcessedData = {
-        case input@InputData(id: Identifier, _, data:List[DataPoint], metadata) =>
-            ProcessedData(id, data.map {
-                case DataPoint(timestamp, value) =>
-                    TaggedDataPoint(timestamp, value, Set(InputOrigin(input)))
-                })
-    }
-
-    implicit def unsafe2safeInputData(unsafe: UnsafeInputData)(implicit context: InputData): InputData =
-        InputData(
-            unsafe.id,
-            unsafe.measurement,
-            unsafe.dataPoints,
-            unsafe.metadata.complete(context)
-        )
-
     implicit def timestamp2Long(timestamp: Timestamp): Long = timestamp.getTime()
     implicit def long2timestamp(t: Long): Timestamp = new Timestamp(t)
 }
@@ -184,6 +168,13 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     implicit val incompleteInputMetadataFormat = jsonFormat(IncompleteInputMetadata.apply,
         "timeframe", "reliability", "resolution", "scaling", "activityType")
 
-    implicit val inputDataJsonFormat = jsonFormat(UnsafeInputData.apply,
+    implicit val completeInputMetadataFormat = jsonFormat(CompleteInputMetadata.apply,
+        "timeframe", "reliability", "resolution", "scaling", "activityType")
+
+    implicit val unsafeInputDataJsonFormat = jsonFormat(UnsafeInputData.apply,
         "id", "measurement", "dataPoints", "metadata")
+
+    implicit val inputDataJsonFormat = jsonFormat(InputData.apply,
+        "id", "measurement", "dataPoints", "metadata")
+
 }

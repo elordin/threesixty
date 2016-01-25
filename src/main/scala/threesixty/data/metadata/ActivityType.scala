@@ -1,9 +1,9 @@
 package threesixty.data.metadata
 
-import threesixty.data.InputData
+import threesixty.data.DataPoint
 
 object ActivityType {
-    def deduce(contextData: InputData): ActivityType = {
+    def deduce(contextData: List[DataPoint]): ActivityType = {
         val a = new ActivityType("Unknown")
         a.setDescription("This ActivityType was automatically deduced")
         a

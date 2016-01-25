@@ -101,19 +101,19 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
 
 
-    def appendData(inData:InputData, id:Identifier):Either[String, Identifier] = {
-        database.get(id) match {
+    def appendData(inData: InputData):Either[String, Identifier] = {
+        database.get(inData.id) match {
             case Some(InputData(_, _, olddata, _)) =>
-                database += (id -> inData.copy(dataPoints = olddata ++ inData.dataPoints))
-                Right(id)
+                database += (inData.id -> inData.copy(dataPoints = olddata ++ inData.dataPoints))
+                Right(inData.id)
             case None =>
-                Left(s"No data with id $id found")
+                Left(s"No data with id ${inData.id} found")
         }
     }
 
 
-    def appendOrInsertData(data:InputData, id:Identifier):Either[String, Identifier] =
-        appendData(data, id) match {
+    def appendOrInsertData(data: InputData):Either[String, Identifier] =
+        appendData(data) match {
             case Left(e) => insertData(data)
             case success => success
         }

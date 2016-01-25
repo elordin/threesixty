@@ -8,8 +8,9 @@ import scala.reflect.internal.util.Collections
 
 object Timeframe {
 
-    def deduceInputData(contextData: InputData): Timeframe = {
-        deduce(contextData.dataPoints.map((x: DataPoint) => x.timestamp))
+    // TODO changed from InputData -> List[DataPoint]. Might have impact on other deductions.
+    def deduceInputData(contextData: List[DataPoint]): Timeframe = {
+        deduce(contextData.map((x: DataPoint) => x.timestamp))
     }
 
     private def deduce(data: Iterable[Timestamp]) = {

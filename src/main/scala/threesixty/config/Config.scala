@@ -2,7 +2,6 @@ package threesixty.config
 
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
-import threesixty.data.Implicits.input2ProcessedData
 
 import threesixty.persistence.DatabaseAdapter
 
@@ -32,7 +31,7 @@ class Config(
 
     // convert input data to processed data
     var processedDatasets: Map[Identifier, ProcessedData] =
-        (for { data <- inputDatasets} yield (data.id, input2ProcessedData(data))).toMap
+        (for { data <- inputDatasets} yield (data.id, data: ProcessedData)).toMap
 
     /**
      *  Inserts data into the processedDatasets Map

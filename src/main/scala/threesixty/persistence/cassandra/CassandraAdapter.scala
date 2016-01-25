@@ -55,7 +55,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       *  @param id Id of existing data set to append to
       *  @return Either Right(id), id of appended data, or Left(errormsg) on error
       */
-    def appendData(data:InputData, id:Identifier):Either[String, Identifier] = ???
+    def appendData(data:InputData):Either[String, Identifier] = ???
 
     /**
       *  Attempts to append data to a data set of given id.
@@ -65,7 +65,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       *  @param id Id of data set to append to
       *  @return Either Right(id), new id of inserted data or dataset appended to, or Left(errormsg) on error
       */
-    def appendOrInsertData(data:InputData, id:Identifier):Either[String, Identifier] = ???
+    def appendOrInsertData(data:InputData):Either[String, Identifier] = ???
 
 }
 

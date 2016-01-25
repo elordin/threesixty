@@ -6,12 +6,13 @@ import threesixty.persistence.DatabaseAdapter
 import threesixty.config.Config
 
 import threesixty.data.Data.Identifier
+import threesixty.data.UnsafeInputData
 import threesixty.algorithms.interpolation.LinearInterpolation
 
 import spray.http.HttpResponse
 import spray.json._
 
-import DefaultJsonProtocol._
+import threesixty.data.DataJsonProtocol._
 
 
 /**
@@ -85,15 +86,67 @@ VISUALIZATION
             val result: EngineResponse =
                 (requestType) match {
                     case "visualization" => processVisualizationRequest(json)
-                    // TODO case "data" => processInsertData
+                    case "data"          => processDataRequest(json)
                     case "help"          => processHelpRequest(json)
-                    case _               => ErrorResponse(Engine.toErrorJson(s"Unknown type: $requestType").toString)
+                    case _               => ErrorResponse(Engine.toErrorJson(s"Unknown type: $requestType"))
                 }
 
             result
         } catch {
-            case e:JsonParser.ParsingException => println(jsonString); ErrorResponse(Engine.toErrorJson("Invalid JSON").toString)
-            case e:IndexOutOfBoundsException => ErrorResponse(Engine.toErrorJson("type parameter missing").toString)
+            case e:JsonParser.ParsingException => println(jsonString); ErrorResponse(Engine.toErrorJson("Invalid JSON"))
+            case e:IndexOutOfBoundsException => ErrorResponse(Engine.toErrorJson("type parameter missing"))
+        }
+    }
+
+
+    def processDataRequest(json: JsObject): EngineResponse = {
+        try {
+            val action =  json.fields("action").convertTo[String]
+            action match {
+                case "insert" => processDataInsertRequest(json)
+                case "get"    => processDataGetRequest(json)
+                case _        => ErrorResponse(Engine.toErrorJson("unknown action"))
+            }
+        } catch {
+            case e: DeserializationException => ErrorResponse(Engine.toErrorJson("invalid format"))
+            case e: NoSuchElementException   => ErrorResponse(Engine.toErrorJson("action parameter missing"))
+        }
+    }
+
+
+    def processDataInsertRequest(json: JsObject): EngineResponse = {
+        try {
+            val data = json.fields("data").convertTo[UnsafeInputData]
+            dbAdapter.appendOrInsertData(data) match {
+                case Right(id) => SuccessResponse(JsObject(Map[String, JsValue](
+                        "type" -> JsString("success"),
+                        "id" -> JsString(id)
+                    )))
+                case Left(error)    => ErrorResponse(Engine.toErrorJson(error))
+            }
+        } catch {
+            case e: DeserializationException =>
+                ErrorResponse(Engine.toErrorJson("invalid format: " + e.getMessage))
+            case e: NoSuchElementException   =>
+                ErrorResponse(Engine.toErrorJson("data parameter missing"))
+        }
+    }
+
+    def processDataGetRequest(json: JsObject): EngineResponse = {
+        try {
+            val id = json.fields("id").convertTo[Identifier]
+            dbAdapter.getDataset(id) match {
+                case Right(data) => SuccessResponse(JsObject(Map[String, JsValue](
+                        "type" -> JsString("success"),
+                        "data" -> data.toJson
+                    )))
+                case Left(error)    => ErrorResponse(Engine.toErrorJson(error))
+            }
+        } catch {
+            case e: DeserializationException =>
+                ErrorResponse(Engine.toErrorJson("invalid format"))
+            case e: NoSuchElementException   =>
+                ErrorResponse(Engine.toErrorJson("data parameter missing"))
         }
     }
 
@@ -108,7 +161,7 @@ VISUALIZATION
      */
     def processHelpRequest(json: JsObject): EngineResponse = {
         try {
-            val helpFor = json.getFields("for")(0).convertTo[String]
+            val helpFor = json.fields("for").convertTo[String]
             helpFor.toLowerCase match {
                 case "visualizer" =>
                     HelpResponse(visualizer.usage)
@@ -125,7 +178,7 @@ VISUALIZATION
             }
         } catch {
             // No "for" given
-            case e:IndexOutOfBoundsException => HelpResponse(usage)
+            case e: NoSuchElementException => HelpResponse(usage)
         }
     }
 
