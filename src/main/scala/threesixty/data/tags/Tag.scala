@@ -31,3 +31,12 @@ case class  MultiInputOrigin(origin:Set[InputData]) extends OriginTag {
 object      ArtificialOrigin                        extends OriginTag {
     override def toString() = "artificial"
 }
+
+/**
+  * Describes the name of the aggregation
+  *
+  * @param name name of the aggregated data
+  */
+case class AggregationTag(val name: String) extends Tag {
+    override def toString() = name
+}

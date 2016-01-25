@@ -1,6 +1,6 @@
 package threesixty.data.metadata
 
-import threesixty.data.InputData
+import threesixty.data.DataPoint
 
 /**
   * @author Thomas Engel
@@ -10,7 +10,7 @@ object Reliability extends Enumeration{
 
     type Reliability = Reliability.Value
 
-    def deduce(contextData: InputData): Reliability = {
+    def deduce(contextData: List[DataPoint]): Reliability = {
         Reliability.Unknown
     }
 }

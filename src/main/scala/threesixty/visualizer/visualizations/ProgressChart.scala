@@ -8,18 +8,19 @@ import threesixty.config.Config
 
 
 trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-        super.visualizationInfos + ("progresschart" ->
-            VisualizationInfo(
-                "ProgressChart",
-                { json:String => ProgressChartConfig.apply(json) },
-                "Parameters: \n" // TODO
-            )
-        )
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("progresschart" -> ProgressChartConfig)
 }
 
 
-object ProgressChartConfig {
+object ProgressChartConfig extends VisualizationCompanion {
+
+    def name = "ProgressChart"
+
+    def usage = "ProgressChart\n" +
+                "  Parameters: \n" // TODO
+
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
     /**
       *  Public constructor that parses JSON into a configuration
@@ -40,7 +41,7 @@ case class ProgressChartConfig private (
     height: Int,
     width: Int,
     title: String = ""
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(ids: Set[Identifier], height, width) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             scaling = Some(Scaling.Ordinal),

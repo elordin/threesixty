@@ -1,12 +1,22 @@
 package threesixty.algorithms
 
-import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.metadata.{Reliability, Resolution, Scaling}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Identifier
-import threesixty.processor.MultiProcessingMethod
+import threesixty.processor.{MultiProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
 
 import clustering._
+import threesixty.visualizer.VisualizationConfig
+import threesixty.visualizer.visualizations.BarChart.BarChartConfig
+import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig
+import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig
+import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig
+import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig
+import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig
 
-object Clustering {
+object Clustering extends ProcessingMethodCompanion {
 
     def byCluster[D](clustering:Map[D, Classification]):Map[Classification, Set[D]] = {
         var result:Map[Classification, Set[D]] = Map()
@@ -65,6 +75,72 @@ object Clustering {
                            epsilon: Double): Map[D, Classification] =
         DBSCAN.run[D](dataset,distFunction)
 
+
+    def name = "Clustering"
+
+    def usage = "Use responsibly..." // TODO
+
+    def fromString: (String) => ProcessingStep = ???
+
+    def computeDegreeOfFit(inputData: InputData): Double = {
+        var temp = 0.0
+
+        val meta = inputData.metadata
+
+        if (meta.scaling == Scaling.Nominal) {
+            temp += 0.2
+        } else (temp += 0.1)
+
+        if (meta.resolution == Resolution.Low) {
+            temp+= 0.25
+        } else if (meta.resolution == Resolution.Middle) {
+            temp+= 0.1
+        } else {
+            temp += 0.15}
+
+        if (meta.reliability == Reliability.User) {
+            temp += 0.2
+        } else if (meta.reliability == Reliability.Device) {
+            temp+= 0.1
+        }
+
+        if (inputData.dataPoints.length > 25) {
+            temp += 0.35
+        }
+        else if (inputData.dataPoints.length >= 5) {
+            temp += 0.2
+        }
+
+        temp
+    }
+
+    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig): Double = {
+
+        val visFactor =  targetVisualization match {
+            //ideal
+            case _:ScatterChartConfig       => -1.0
+            case _:ScatterColorChartConfig  => -1.0
+            //medium
+            case _:BarChartConfig           => 0.3
+            case _:PolarAreaChartConfig     => 0.3  //equal to BarChar
+            //maybe but rather bad
+            case _:LineChartConfig          => 0.2
+            case _:HeatLineChartConfig      => 0.2
+            case _:PieChartConfig           => 0.2
+            //bad
+            case _:ProgressChartConfig      => 0
+            //default
+            case _                          => 0.3
+        }
+
+
+        // break option for ideal case
+        if (visFactor == -1.0)
+            1.0
+        else {
+            visFactor * computeDegreeOfFit(inputData)
+        }
+    }
 }
 
 case class Clustering(idMapping: Map[Identifier, Identifier])

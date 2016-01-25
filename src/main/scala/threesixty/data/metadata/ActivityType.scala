@@ -1,9 +1,9 @@
 package threesixty.data.metadata
 
-import threesixty.data.InputData
+import threesixty.data.DataPoint
 
 object ActivityType {
-    def deduce(contextData: InputData): ActivityType = {
+    def deduce(contextData: List[DataPoint]): ActivityType = {
         val a = new ActivityType("Unknown")
         a.setDescription("This ActivityType was automatically deduced")
         a
@@ -13,7 +13,7 @@ object ActivityType {
 /**
   * @author Thomas Engel
   */
-case class ActivityType(var name: String) {
+case class ActivityType(val name: String) {
     var description: String = null
 
     require(name != null && name.length() > 0, "Null value or empty string is not allowed")

@@ -6,12 +6,13 @@ import threesixty.persistence.DatabaseAdapter
 import threesixty.config.Config
 
 import threesixty.data.Data.Identifier
+import threesixty.data.UnsafeInputData
 import threesixty.algorithms.interpolation.LinearInterpolation
 
 import spray.http.HttpResponse
 import spray.json._
 
-import DefaultJsonProtocol._
+import threesixty.data.DataJsonProtocol._
 
 
 /**
@@ -85,15 +86,67 @@ VISUALIZATION
             val result: EngineResponse =
                 (requestType) match {
                     case "visualization" => processVisualizationRequest(json)
-                    // TODO case "data" => processInsertData
+                    case "data"          => processDataRequest(json)
                     case "help"          => processHelpRequest(json)
-                    case _               => ErrorResponse(s"""{ "error": "Unknown type: $requestType" }""")
+                    case _               => ErrorResponse(Engine.toErrorJson(s"Unknown type: $requestType"))
                 }
 
             result
         } catch {
-            case e:JsonParser.ParsingException => ErrorResponse("""{ "error": "Invalid JSON" }""")
-            case e:IndexOutOfBoundsException => ErrorResponse("""{ "error": "type parameter missing" }""")
+            case e:JsonParser.ParsingException => println(jsonString); ErrorResponse(Engine.toErrorJson("Invalid JSON"))
+            case e:IndexOutOfBoundsException => ErrorResponse(Engine.toErrorJson("type parameter missing"))
+        }
+    }
+
+
+    def processDataRequest(json: JsObject): EngineResponse = {
+        try {
+            val action =  json.fields("action").convertTo[String]
+            action match {
+                case "insert" => processDataInsertRequest(json)
+                case "get"    => processDataGetRequest(json)
+                case _        => ErrorResponse(Engine.toErrorJson("unknown action"))
+            }
+        } catch {
+            case e: DeserializationException => ErrorResponse(Engine.toErrorJson("invalid format"))
+            case e: NoSuchElementException   => ErrorResponse(Engine.toErrorJson("action parameter missing"))
+        }
+    }
+
+
+    def processDataInsertRequest(json: JsObject): EngineResponse = {
+        try {
+            val data = json.fields("data").convertTo[UnsafeInputData]
+            dbAdapter.appendOrInsertData(data) match {
+                case Right(id) => SuccessResponse(JsObject(Map[String, JsValue](
+                        "type" -> JsString("success"),
+                        "id" -> JsString(id)
+                    )))
+                case Left(error)    => ErrorResponse(Engine.toErrorJson(error))
+            }
+        } catch {
+            case e: DeserializationException =>
+                ErrorResponse(Engine.toErrorJson("invalid format: " + e.getMessage))
+            case e: NoSuchElementException   =>
+                ErrorResponse(Engine.toErrorJson("data parameter missing"))
+        }
+    }
+
+    def processDataGetRequest(json: JsObject): EngineResponse = {
+        try {
+            val id = json.fields("id").convertTo[Identifier]
+            dbAdapter.getDataset(id) match {
+                case Right(data) => SuccessResponse(JsObject(Map[String, JsValue](
+                        "type" -> JsString("success"),
+                        "data" -> data.toJson
+                    )))
+                case Left(error)    => ErrorResponse(Engine.toErrorJson(error))
+            }
+        } catch {
+            case e: DeserializationException =>
+                ErrorResponse(Engine.toErrorJson("invalid format"))
+            case e: NoSuchElementException   =>
+                ErrorResponse(Engine.toErrorJson("data parameter missing"))
         }
     }
 
@@ -108,20 +161,24 @@ VISUALIZATION
      */
     def processHelpRequest(json: JsObject): EngineResponse = {
         try {
-            val helpFor = json.getFields("for")(0).convertTo[String]
+            val helpFor = json.fields("for").convertTo[String]
             helpFor.toLowerCase match {
+                case "visualizer" =>
+                    HelpResponse(visualizer.usage)
+                case "processor" =>
+                    HelpResponse(processor.usage)
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
-                    HelpResponse(availablevisualizations.foldLeft(
-                        "{\n    \"visualizations\": [\n")(_ + "        \"" + _ + "\",\n") + "    ]\n}")
+                    HelpResponse(JsObject(Map[String, JsValue]("visualizations" -> availablevisualizations.toJson)).toString)
                 case "processingmethods" | "p" =>
-                    ??? // TODO
+                    val availableMethods = processor.processingInfos.keys
+                    HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)).toString)
                 case _ =>
-                    ErrorResponse("""{ "error": "Unknown help-for parameter."}""")
+                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter.").toString)
             }
         } catch {
             // No "for" given
-            case e:IndexOutOfBoundsException => HelpResponse(usage)
+            case e: NoSuchElementException => HelpResponse(usage)
         }
     }
 
@@ -141,54 +198,42 @@ VISUALIZATION
      */
     def processVisualizationRequest(json: JsObject): EngineResponse = {
         val vizConfigOption: Option[VisualizationConfig] = try {
-            val vizConfigS: String = json.getFields("visualization")(0).toString
-            Some(visualizer.toVisualizationConfig(vizConfigS))
+            json.fields.get("visualization").map {
+                viz: JsValue => visualizer.toVisualizationConfig(viz.toString)
+            }
         } catch {
             case e:NoSuchElementException =>
-                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Unknown visualization
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Unknown visualization
             case e:IllegalArgumentException =>
-                return ErrorResponse(s"""{ "error": "${e.getMessage}" }""") // Should be: Parameter missing
-            case e:IndexOutOfBoundsException =>
-                None // No "visualization" given
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Parameter missing
         }
 
-        // TODO get processing strategy from json
-        val procStratOption:Option[ProcessingStrategy] = Some(ProcessingStrategy(
-            ProcessingStep(LinearInterpolation(3,
-                Map("data1" -> "data1i", "data2" -> "data2i")),
-                Set[Identifier]("data1", "data2")
-            ),
-            ProcessingStep(LinearInterpolation(1,
-                Map("data3" -> "data3i")),
-                Set[Identifier]("data3")
-            )
-        ))
-
-        /*
         val procStratOption: Option[ProcessingStrategy] = try {
-            val processingSteps: Seq[ProcessingStep] = ???
-                // json.getFields("processor")(0).convertTo[Seq[ProcessingStep]]
-
-            Some(ProcessingStrategy(processingSteps: _* ))
+            json.fields.get("processor").map {
+                proc: JsValue => processor.toProcessingStrategy(proc.toString)
+            }
         } catch {
-            case _: Exception => // TODO limit
-                None
-        } */
-
-        val dataIDs:Set[Identifier] = try {
-            json.getFields("data")(0).convertTo[Set[String]]
-        } catch {
-            case e: IndexOutOfBoundsException =>
-                return ErrorResponse("""{ "error": "data parameter missing."}""")
+            case e:NoSuchElementException =>
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Unknown method
+            case e:IllegalArgumentException =>
+                return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Parameter missing
         }
+
+        val dataIDs:Set[Identifier] = json.fields.getOrElse("data",
+                return ErrorResponse(Engine.toErrorJson("data parameter missing.").toString)
+            ).convertTo[Set[Identifier]]
 
 
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
-                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) => (procStrat, vizConfig)
-                case (Some(procStrat), None)            => (procStrat, ???) // TODO deduction
-                case (None, Some(vizConfig))            => (???, vizConfig) // TODO deduction
-                case (None, None)                       => (???, ???)       // TODO deduction
+                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) =>
+                    (procStrat, vizConfig)
+                case (Some(procStrat), None) =>
+                    println("Viz missing"); (procStrat, ???) // TODO deduction
+                case (None, Some(vizConfig)) =>
+                    println("ProcStrat missing"); (???, vizConfig) // TODO deduction
+                case (None, None) =>
+                    println("Both missing"); (???, ???)       // TODO deduction
             }
 
         val config: Config = new Config(dataIDs, dbAdapter)

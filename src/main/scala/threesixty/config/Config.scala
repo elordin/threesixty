@@ -2,22 +2,14 @@ package threesixty.config
 
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
-import threesixty.data.Implicits.input2ProcessedData
 
 import threesixty.persistence.DatabaseAdapter
 
 import scala.collection.immutable.{Map => ImmutableMap}
 
-object Implicits {
-    import spray.json._
-
-    // TODO: Implicit conversion from JSON
-
-}
 
 /**
- *  Config potentially contains all options transmitted from the client.
- *  Some values may be required, some may be optional.
+ *  This contains all datasets requested by the client.
  *
  *  @param dataIDs Set of IDs of datasets that will be processed.
  *  @param databaseAdapter DatabaseAdapter
@@ -39,7 +31,7 @@ class Config(
 
     // convert input data to processed data
     var processedDatasets: Map[Identifier, ProcessedData] =
-        (for { data <- inputDatasets} yield (data.id, input2ProcessedData(data))).toMap
+        (for { data <- inputDatasets} yield (data.id, data: ProcessedData)).toMap
 
     /**
      *  Inserts data into the processedDatasets Map
@@ -53,7 +45,7 @@ class Config(
 
     /**
      *  Accessor for processedDatasets
-     *  @return Immutable Map of Identifier -> ProcessedData
+     *  @return Immutable Map of [[threesixty.data.Data.Identifier]] -> [[threesixty.data.ProcessedData]]
      */
     def datasets: ImmutableMap[Identifier, ProcessedData] = processedDatasets
 
@@ -66,10 +58,5 @@ class Config(
     def getDataset(id: Identifier): ProcessedData =
         processedDatasets(id)
 
-    // def getDatasets(ids: Set[Identifier]): Set[Option[ProcessedData]] =
-    //     ids.map(processedDatasets.get(_))
-
-    // def getDataset(id: Identifier): Option[ProcessedData] =
-    //     processedDatasets.get(id)
 }
 

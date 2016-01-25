@@ -7,23 +7,22 @@ import threesixty.config.Config
 
 
 trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-        super.visualizationInfos + ("barchart" ->
-            VisualizationInfo(
-                "BarChart",
-                { json:String => BarChartConfig.apply(json) },
-                "Parameters: \n"
-                // TODO
-            )
-        )
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("barchart" -> BarChartConfig)
 }
-
 
 
 /**
  * @author Thomas Engel
  */
-object BarChartConfig {
+object BarChartConfig extends VisualizationCompanion {
+
+    def name = "BarChart"
+
+    def usage = "BarChart\n" +
+                "  Parameters: \n" // TODO
+
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
     /**
       *  Public constructor that parses JSON into a configuration
@@ -39,7 +38,7 @@ object BarChartConfig {
 }
 
 
-case class BarChartConfig private (
+case class BarChartConfig(
     val ids: Set[Identifier],
        height: Int,
        width: Int,
@@ -50,7 +49,7 @@ case class BarChartConfig private (
        xLabel: String = "",
        yLabel: String = "",
        title: String = ""
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(ids: Set[Identifier], height, width) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             requiredProcessingMethods = None //TODO Aggregation

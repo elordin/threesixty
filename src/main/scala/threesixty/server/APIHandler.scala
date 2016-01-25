@@ -2,10 +2,9 @@ package threesixty.server
 
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
-import threesixty.engine.VisualizationEngine
+import threesixty.engine.{VisualizationEngine, Engine}
 import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.visualizer.visualizations._
-
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig
 import threesixty.visualizer.visualizations._
 import threesixty.algorithms.interpolation.LinearInterpolation
 
@@ -24,6 +23,9 @@ import HttpHeaders.`Access-Control-Allow-Origin`
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigException}
 
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 object APIHandler {
 
@@ -34,19 +36,21 @@ object APIHandler {
         config.getString("database.uri")
 
 
-    lazy val engine = VisualizationEngine(
+    lazy val engine: Engine = VisualizationEngine(
         new Processor
-            with LinearInterpolation.Info,
+            with LinearInterpolation.Mixin,
         new Visualizer
-            with LineChart.Mixin,
+            with LineChart.Mixin
+            with PieChart.Mixin,
         FakeDatabaseAdapter
     )
 
     def props: Props = Props(new APIHandler)
 }
 
+
 /**
- *  Reads the HTTP request and dispatches it to an EngineActor
+ *  Reads the HTTP requests from a client and passes them to the engine. Sends responses.
  */
 class APIHandler extends Actor {
 
@@ -57,9 +61,25 @@ class APIHandler extends Actor {
     }
 
     def receive = {
-        case request@HttpRequest(POST, _, _, _: HttpEntity.NonEmpty, _) =>
-            var response = APIHandler.engine.processRequest(request)
-            sender ! response.toHttpResponse
+        case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
+            val peer = sender
+            val processingFuture: Future[HttpResponse] = Future {
+                APIHandler.engine.processRequest(body.asString).toHttpResponse
+            }
+
+            processingFuture onSuccess {
+                case response: HttpResponse => peer ! response
+            }
+
+            processingFuture onFailure {
+                case t: Throwable =>
+                    peer ! HttpResponse(
+                        status = StatusCodes.InternalServerError,
+                        entity = HttpEntity(`application/json`, s"""{ "error": "${t.getMessage}" }"""),
+                        headers = List(`Access-Control-Allow-Origin`(AllOrigins))
+                    )
+            }
+
 
         case HttpRequest(POST, _, _, HttpEntity.Empty, _) =>
             sender ! HttpResponse(

@@ -6,6 +6,8 @@ import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.persistence.FakeDatabaseAdapter
 
+import spray.json._
+import DefaultJsonProtocol._
 
 class EngineTestSpec extends FunSpec {
 
@@ -15,11 +17,10 @@ class EngineTestSpec extends FunSpec {
                 val engine = VisualizationEngine(new Processor {}, new Visualizer, FakeDatabaseAdapter)
                 describe("when receiving a request with unknown type") {
                     val request = """{"type": "help", "for": "bullshit"}"""
-                    it("should respond with an error") {
+                    it("should respond with an json encoded error") {
                         val response = engine.processRequest(request)
-                        assertResult(response) {
-                            ErrorResponse("""{ "error": "Unknown help-for parameter."}""")
-                        }
+                        val json = response.asInstanceOf[ErrorResponse].msg.parseJson.asJsObject
+                        assert(json.fields("error").convertTo[String] == "Unknown help-for parameter.")
                     }
                 }
 

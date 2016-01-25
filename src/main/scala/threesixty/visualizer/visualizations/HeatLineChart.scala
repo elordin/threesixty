@@ -8,18 +8,19 @@ import threesixty.config.Config
 
 
 trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-        super.visualizationInfos + ("heatlinechart" ->
-            VisualizationInfo(
-                "HeatLineChart",
-                { json:String => HeatLineChartConfig.apply(json) },
-                "Parameters: \n" // TODO
-            )
-        )
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("heatlinechart" -> HeatLineChartConfig)
 }
 
 
-object HeatLineChartConfig {
+object HeatLineChartConfig extends VisualizationCompanion {
+
+    def name = "HeatLineChart"
+
+    def usage = "HeatLineChart\n" +
+                "  Parameters: \n" // TODO
+
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
 
     /**
@@ -47,7 +48,7 @@ case class HeatLineChartConfig private (
     xLabel: String = "",
     yLabel: String = "",
     title: String = ""
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(ids: Set[Identifier], height, width) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             scaling = Some(Scaling.Ordinal)
