@@ -24,8 +24,14 @@ abstract class VisualizationConfig(
     borderTop: Option[Int] = None,
     borderBottom: Option[Int] = None,
     borderLeft: Option[Int] = None,
-    borderRight: Option[Int] = None
+    borderRight: Option[Int] = None,
+    distanceTitle: Option[Int] = None,
+    fontSizeTitle: Option[Int] = None,
+    fontSize: Option[Int] = None
 ) extends Function1[Config, Visualization] {
+
+    def _width: Int = width
+    def _height: Int = height
 
     require(height > 0, "Value for height must be greater than 0.")
     require(width > 0, "Value for width must be greater than 0.")
@@ -36,16 +42,27 @@ abstract class VisualizationConfig(
     def borderBottomDefault: Int = 50
     def borderLeftDefault: Int = 50
     def borderRightDefault: Int = 50
+    def distanceTitleDefault: Int = 10
 
     def _borderTop: Int = borderTop.getOrElse(borderTopDefault)
     def _borderBottom: Int = borderBottom.getOrElse(borderBottomDefault)
     def _borderLeft: Int = borderLeft.getOrElse(borderLeftDefault)
     def _borderRight: Int = borderRight.getOrElse(borderRightDefault)
+    def _distanceTitle: Int = distanceTitle.getOrElse(distanceTitleDefault)
 
     require(_borderTop >= 0, "Negative value for borderTop is not allowed.")
     require(_borderBottom >= 0, "Negative value for borderBottom is not allowed.")
     require(_borderLeft >= 0, "Negative value for borderLeft is not allowed.")
     require(_borderRight >= 0, "Negative value for borderRight is not allowed.")
+
+    def fontSizeDefault: Int = 16
+    def fontSizeTitleDefault: Int = 20
+
+    def _fontSize: Int = fontSize.getOrElse(fontSizeDefault)
+    def _fontSizeTitle: Int = fontSizeTitle.getOrElse(fontSizeTitleDefault)
+
+    require(_fontSize > 0, "Value for font size must be positive.")
+    require(_fontSizeTitle > 0, "Value for font size title must be positive.")
 
     // calculate the available height and width for the chart
     def heightChart: Int = height - _borderTop - _borderBottom
@@ -56,7 +73,7 @@ abstract class VisualizationConfig(
 
     def calculateOrigin: (Double, Double) = (0.0, 0.0)
 
-    def calculateViewBox(): (Double, Double, Int, Int) = {
+    def calculateViewBox: (Double, Double, Int, Int) = {
         val (x, y) = calculateOrigin
 
         (-x, -y, width, height)

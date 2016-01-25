@@ -5,7 +5,7 @@ import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.visualizer._
 import threesixty.config.Config
 
-
+/*
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("barchart" -> BarChartConfig)
@@ -58,3 +58,4 @@ case class BarChartConfig(
     def apply(config: Config): BarChartConfig.BarChart = BarChartConfig.BarChart(this, config.getDatasets(ids))
 
 }
+*/

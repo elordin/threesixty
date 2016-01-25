@@ -54,11 +54,13 @@ object LineChartConfig extends VisualizationCompanion {
         implicit val lineChartConfigFormat = jsonFormat(LineChartConfig.apply,
             "ids", "height", "width", "optXMin", "optXMax", "optYMin", "optYMax",
             "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
-            "borderRight", "minDistanceX", "minDistanceY", "optUnitX", "optUnitY")
+            "borderRight", "distanceTitle", "minDistanceX", "minDistanceY", "optUnitX", "optUnitY", "fontSizeTitle", "fontSize")
         jsonString.parseJson.convertTo[LineChartConfig]
     }
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+        def getConfig: LineChartConfig = config
+
         private def calculateTextYOffset(value: String): Int = {
             - value.size * 8
         }
@@ -87,8 +89,8 @@ object LineChartConfig extends VisualizationCompanion {
             path
         }
 
-        def toSVG: Elem = {
-            val (vbX, vbY, width, height) = config.calculateViewBox()
+        def getSVGElements: List[Elem] = {
+            val (vbX, vbY, width, height) = config.calculateViewBox
 
             val textVerticalOffsetY = 5
             val textHorizontalOffsetY = -100
@@ -98,7 +100,7 @@ object LineChartConfig extends VisualizationCompanion {
 
             val unitXAxis = config.unitX.getUnit
 
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={vbX + " " + vbY + " " + width + " " + height} xml:space="preserve">
+            List(
                 <g id="grid">
                     // background-grid y-axis
                     {for {i <- config.yMin to config.yMax by config.unitY} yield
@@ -114,24 +116,26 @@ object LineChartConfig extends VisualizationCompanion {
                             {config.unitX.getLabel(i, config.xMin + i*config.unitX.getTotalMillis)}
                         </text>
                     }
-                </g>
-                // data
-                {for {dataset <- data} yield
-                <g id={dataset.id}>
-                    <g id="datapoints">
-                        {for (datapoint <- dataset.dataPoints) yield
-                            <circle fill="#00008B" stroke="#00008B" cx={config.convertXPoint(datapoint.timestamp.getTime).toString} cy={config.convertYPoint(datapoint.value.value).toString} r="4"/>}
-                    </g>
-                    <path stroke="#6495ED" fill="none" stroke-width="2" d={calculatePath(config, dataset)}/>
-                </g>}
+                </g>,
+                <g>
+                    // data
+                    {for {dataset <- data} yield
+                    <g id={dataset.id}>
+                        <g id="datapoints">
+                            {for (datapoint <- dataset.dataPoints) yield
+                                <circle fill="#00008B" stroke="#00008B" cx={config.convertXPoint(datapoint.timestamp.getTime).toString} cy={config.convertYPoint(datapoint.value.value).toString} r="4"/>}
+                        </g>
+                        <path stroke="#6495ED" fill="none" stroke-width="2" d={calculatePath(config, dataset)}/>
+                    </g>}
+                </g>    ,
                 // chart title
                 <text x={(vbX - 320 + (config.width - config._title.size * 20) / 2).toString} y={(vbY + 60).toString} font-family="Roboto, Segoe UI" font-weight="100" font-size="48">
                     {config._title}
-                </text>
+                </text>,
                 // y-label
                 <text x={(vbX + textHorizontalOffsetY + 20 + calculateTextYOffset(config._yLabel) / 2).toString} y={(vbY + 75).toString} font-family="Roboto, Segoe UI" font-size="20">
                     {config._yLabel}
-                </text>
+                </text>,
                 // x-label
                 <text x={(config.rightLimit - 85).toString} y={(config.lowerLimit + textVerticalOffsetX - 15).toString} font-family="Roboto, Segoe UI" font-size="20">
                     {config._xLabel}
@@ -142,7 +146,7 @@ object LineChartConfig extends VisualizationCompanion {
                         </tspan>
                     }}
                 </text>
-            </svg>
+            )
         }
     }
 }
@@ -163,10 +167,13 @@ case class LineChartConfig(
     val borderBottom: Option[Int]       = None,
     val borderLeft:   Option[Int]       = None,
     val borderRight:  Option[Int]       = None,
+    val distanceTitle:Option[Int]       = None,
     val minDistanceX: Option[Int]       = None,
     val minDistanceY: Option[Int]       = None,
     val optUnitX:     Option[String]    = None,
-    val optUnitY:     Option[Double]    = None
+    val optUnitY:     Option[Double]    = None,
+    val fontSizeTitle:Option[Int]       = None,
+    val fontSize:     Option[Int]       = None
 ) extends VisualizationConfig(
     ids: Set[Identifier],
     height,
@@ -175,7 +182,10 @@ case class LineChartConfig(
     borderTop,
     borderBottom,
     borderLeft,
-    borderRight) {
+    borderRight,
+    distanceTitle,
+    fontSizeTitle,
+    fontSize) {
 
     def _xLabel: String = xLabel.getOrElse("")
     def _yLabel: String = yLabel.getOrElse("")

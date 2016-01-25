@@ -6,7 +6,7 @@ import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
 import threesixty.config.Config
 
-
+/*
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("polarareachart" -> PolarAreaChartConfig)
@@ -55,3 +55,4 @@ case class PolarAreaChartConfig private (
     def apply(config: Config): PolarAreaChartConfig.PolarAreaChart = PolarAreaChartConfig.PolarAreaChart(this, config.getDatasets(ids))
 
 }
+*/

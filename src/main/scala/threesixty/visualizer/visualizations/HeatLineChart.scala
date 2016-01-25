@@ -6,7 +6,7 @@ import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.visualizer._
 import threesixty.config.Config
 
-
+/*
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("heatlinechart" -> HeatLineChartConfig)
@@ -59,3 +59,4 @@ case class HeatLineChartConfig private (
     def apply(config: Config): HeatLineChartConfig.HeatLineChart = HeatLineChartConfig.HeatLineChart(this, config.getDatasets(ids))
 
 }
+*/

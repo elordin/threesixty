@@ -6,7 +6,7 @@ import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
 import threesixty.config.Config
 
-
+/*
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("progresschart" -> ProgressChartConfig)
@@ -52,3 +52,4 @@ case class ProgressChartConfig private (
     def apply(config: Config): ProgressChartConfig.ProgressChart = ProgressChartConfig.ProgressChart(this, config.getDatasets(ids))
 
 }
+*/

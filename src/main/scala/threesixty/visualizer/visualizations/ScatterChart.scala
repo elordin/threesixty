@@ -6,7 +6,7 @@ import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
 import threesixty.config.Config
 
-
+/*
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("scatterchart" -> ScatterChartConfig)
@@ -58,3 +58,4 @@ case class ScatterChartConfig(
     def apply(config: Config): ScatterChartConfig.ScatterChart = ScatterChartConfig.ScatterChart(this, config.getDatasets(ids))
 
 }
+*/
