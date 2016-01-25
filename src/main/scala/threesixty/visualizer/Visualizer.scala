@@ -55,7 +55,7 @@ abstract class VisualizationConfig(
     require(_borderLeft >= 0, "Negative value for borderLeft is not allowed.")
     require(_borderRight >= 0, "Negative value for borderRight is not allowed.")
 
-    def fontSizeDefault: Int = 16
+    def fontSizeDefault: Int = 12
     def fontSizeTitleDefault: Int = 20
 
     def _fontSize: Int = fontSize.getOrElse(fontSizeDefault)

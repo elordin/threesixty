@@ -80,10 +80,10 @@ object PieChartConfig extends VisualizationCompanion {
                               stroke-width="0"
                               fill={config.getSegments(i).getColor}/>
                         <text x={(config.rightLimit + 2*config._wLegendSymbol).toString}
-                              y={(config.upperLimit + config._distanceLegend + i * 2 * config._wLegendSymbol).toString}
+                              y={(config.upperLimit + config._distanceLegend + (2 * i + 1) * config._wLegendSymbol).toString}
                               font-family="Roboto, Segoe UI"
                               font-weight="100"
-                              font-size={config.getSegments}
+                              font-size={config.getSegments(i).getFontSize}
                               text-anchor="left">{config.getSegments(i).description}</text>
                     }
                 </g>
@@ -209,14 +209,14 @@ case class PieChartConfig(
         val (xleft, xright) = calculateXRange
         val maxXRange = math.max(math.abs(xleft), math.abs(xright))
 
-        width * (maxXRange / (xright - xleft))
+        widthChart * (maxXRange / (xright - xleft))
     }
 
     private def getMaxRadiusY: Double = {
         val (ytop, ybottom) = calculateYRange
         val maxYRange = math.max(math.abs(ytop), math.abs(ybottom))
 
-        height * (maxYRange / (ybottom - ytop))
+        heightChart * (maxYRange / (ybottom - ytop))
     }
 
     def calculateRadius: Double = {
@@ -224,7 +224,21 @@ case class PieChartConfig(
     }
 
     override def calculateOrigin: (Double, Double) = {
-        (getMaxRadiusX, getMaxRadiusY)
+        val maxRx = getMaxRadiusX
+        val maxRy = getMaxRadiusY
+
+        val (x1, x2) = calculateXRange
+        val dx = x2 - x1
+        val xradStart = if(math.abs(x2) < math.abs(x1)) -1 else 1
+
+        val (y1, y2) = calculateYRange
+        val dy = y2 - y1
+        val yradStart = if (math.abs(y2) < math.abs(y1)) -1 else 1
+
+        val ox = (if(xradStart < 0) _radius else - _radius + widthChart) - xradStart * (math.max(0, dx * (getMaxRadiusX - getMaxRadiusY))) / 2.0
+        val oy = (if(yradStart < 0) _radius else - _radius + heightChart) - yradStart * (math.max(0, dy * (getMaxRadiusY - getMaxRadiusX))) / 2.0
+
+        (_borderLeft + ox, _borderTop + oy)
     }
 
     def getDeltaAngles: Double = {
@@ -275,6 +289,7 @@ case class PieChartConfig(
         val deltaAngle = getDeltaAngles
 
         val percentMap = calculatePercentValues
+        val valueMap = getRealValues
 
         for(entry <- percentMap) {
             val dAngle = entry._2 * deltaAngle
@@ -282,7 +297,7 @@ case class PieChartConfig(
             sAngle += dAngle
             val end = sAngle
 
-            val value = ""
+            val value = if(_showValues) valueMap.get(entry._1).get else math.round(1000*entry._2)/10.0 + " %"
 
             val segment = new Segment(
                 entry._1,

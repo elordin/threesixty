@@ -19,7 +19,7 @@ object Segment {
     }
 
     def isAngleContained(query: Double, start: Double, end: Double): Boolean = {
-        start <= query && query <= end
+        (start <= query && query <= end) || (end <= query && query <= start)
     }
 }
 
