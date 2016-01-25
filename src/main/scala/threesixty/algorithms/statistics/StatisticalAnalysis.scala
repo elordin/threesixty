@@ -1,5 +1,6 @@
 package threesixty.algorithms.statistics
 
+import threesixty.data.Implicits._
 import threesixty.data.{ProcessedData, TaggedDataPoint, Data}
 import Data.ValueType
 
@@ -48,20 +49,21 @@ object StatisticalAnalysis {
         // easy idea with perfect dataset  //
         if( data1.data.length == data2.data.length ) {
             val cov = 1/(data1.data.length)
-            val sum = 0
+            var sum = 0
             for( i <- 0 until data1.data.length ) {
-                sum += (data1.data(i) - mean(data1))*(data2.data(i) - mean(data2))
+                sum += (data1.data(i).value.value - mean(data1).value) * (data2.data(i).value.value - mean(data2).value)
             }
             cov*sum
         } else {
             // Need to be of equal length or roughly equal time frame //
-            val duration1 = data1.data.last.timestamp - data2.data.head.timestamp
-            val duration2 = data2.data.last.timestamp - data2.data.head.timestamp
+            val duration1 = timestamp2Long( data1.data.last.timestamp) - timestamp2Long(data2.data.head.timestamp)
+            val duration2 = timestamp2Long(data2.data.last.timestamp) - timestamp2Long(data2.data.head.timestamp)
+            0.1
         }
     }
 
     def correlation(data1: ProcessedData, data2: ProcessedData): Double = {
-        covariance(data1, data2)/stdDeviation(data1)/stdDeviation(data2)
+        covariance(data1, data2)/stdDeviation(data1).value/stdDeviation(data2).value
     }
 
 }

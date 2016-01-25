@@ -39,10 +39,10 @@ case class SplineInterpolation(resolution: Int, idMapping: Map[Identifier, Ident
           */
         val odata = data.data.sortBy(d => timestamp2Long(d.timestamp))
         val x = new Array[Long](odata.length)
-        val y = new Array[ValueType](odata.length)
+        val y = new Array[Double](odata.length)
         for( j <- 0 until odata.length) {
             x(j) = timestamp2Long(odata(j).timestamp)
-            y(j) = odata(j).value
+            y(j) = odata(j).value.value
         }
 
         if (x.length < 3) {
@@ -56,7 +56,7 @@ case class SplineInterpolation(resolution: Int, idMapping: Map[Identifier, Ident
         val h = Array.tabulate(n)(i => x(i+1) - x(i))
 
         var mu: Array[Double] = Array.fill(n)(0)
-        var z: Array[ValueType] = Array.fill(n+1)(0)
+        var z: Array[Double] = Array.fill(n+1)(0)
         var i = 1
         while (i < n) {
             val g = 2.0 * (x(i+1) - x(i-1)) - h(i-1) * mu(i-1)
@@ -67,9 +67,9 @@ case class SplineInterpolation(resolution: Int, idMapping: Map[Identifier, Ident
         }
 
         // cubic spline coefficients --  b is linear, c quadratic, d is cubic (original y's are constants)
-        var b: Array[ValueType] = Array.fill(n)(0)
-        var c: Array[ValueType] = Array.fill(n+1)(0)
-        var d: Array[ValueType] = Array.fill(n)(0)
+        var b: Array[Double] = Array.fill(n)(0)
+        var c: Array[Double] = Array.fill(n+1)(0)
+        var d: Array[Double] = Array.fill(n)(0)
 
         var j = n-1
         while (j >= 0) {
@@ -82,10 +82,13 @@ case class SplineInterpolation(resolution: Int, idMapping: Map[Identifier, Ident
         // Now we start generating the Datasetpoints
 
         //Array.tabulate(n)(i => Polynomial(Array(y(i), b(i), c(i), d(i))))
-        var tp = x(0);
+        var tp = 0;
 
-        val dataPoints :  List[TaggedDataPoint] = new TaggedDataPoint(long2Timestamp(x(0)), y(0), data.data(0).tags)
-        while( tp <= x(x.length-1)) {
+        //val dataPoints :  List[TaggedDataPoint] = new TaggedDataPoint(new Timestamp(x(0)), y(0), data.data(0).tags)
+        var dataPoints = List[TaggedDataPoint]()
+        while( tp < n ) {
+            dataPoints += new TaggedDataPoint(new Timestamp(x(0)), y(0), data.data(0).tags)
+            tp += 1
             //einfügen dern andere...
         }
 
