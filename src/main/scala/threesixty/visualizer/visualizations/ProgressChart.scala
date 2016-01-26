@@ -1,10 +1,9 @@
 package threesixty.visualizer.visualizations.progressChart
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
-import threesixty.config.Config
 
 import scala.xml.Elem
 
@@ -51,6 +50,7 @@ case class ProgressChartConfig private (
             requiredGoal = None //TODO SingleValueGoal
         )))
 
-    def apply(config: Config): ProgressChartConfig.ProgressChart = ProgressChartConfig.ProgressChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): ProgressChartConfig.ProgressChart =
+        ProgressChartConfig.ProgressChart(this, pool.getDatasets(ids))
 
 }

@@ -1,10 +1,9 @@
 package threesixty.visualizer.visualizations.heatLineChart
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.visualizer._
-import threesixty.config.Config
 
 import scala.xml.Elem
 
@@ -58,6 +57,6 @@ case class HeatLineChartConfig private (
             resolution = Some(Resolution.High)
         )))
 
-    def apply(config: Config): HeatLineChartConfig.HeatLineChart = HeatLineChartConfig.HeatLineChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): HeatLineChartConfig.HeatLineChart = HeatLineChartConfig.HeatLineChart(this, pool.getDatasets(ids))
 
 }

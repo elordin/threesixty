@@ -2,11 +2,10 @@ package threesixty.processor
 
 import org.scalatest.FunSpec
 
-import threesixty.data.{ProcessedData, DataPoint, InputData}
+import threesixty.data.{ProcessedData, DataPoint, InputData, DataPool}
 import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.tags.Tag
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
-import threesixty.config.Config
 import threesixty.persistence.DatabaseAdapter
 import threesixty.algorithms.interpolation.LinearInterpolation
 
@@ -35,27 +34,27 @@ class ProcessorTestSpec extends FunSpec {
                     ProcessingStep(interpolator, Set("SomeId"))
                 )
 
-                val config = new Config(Set("SomeId"), new DatabaseAdapter {
+                val pool = new DataPool(Set("SomeId"), new DatabaseAdapter {
                         def getDataset(id:Identifier):Either[String, InputData] = Right(sampleData)
                         def insertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
                         def appendData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
                         def appendOrInsertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
                     })
 
-                config.pushData(Set[ProcessedData](sampleData))
+                pool.pushData(Set[ProcessedData](sampleData))
 
                 val expectedResult = interpolator(sampleData)
 
-                processingStrategy.process(config)
+                processingStrategy.process(pool)
 
-                it("should insert the resulting dataset into the config") {
-                    assert(config.datasets.contains("SomeId_interpolated"))
-                    assert(Set(config.datasets("SomeId_interpolated")) == expectedResult)
+                it("should insert the resulting dataset into the pool") {
+                    assert(pool.datasets.contains("SomeId_interpolated"))
+                    assert(Set(pool.datasets("SomeId_interpolated")) == expectedResult)
                 }
 
                 it("should not remove the original data") {
-                    assert(config.datasets.contains("SomeId"))
-                    assert(config.datasets("SomeId") == (sampleData: ProcessedData))
+                    assert(pool.datasets.contains("SomeId"))
+                    assert(pool.datasets("SomeId") == (sampleData: ProcessedData))
                 }
             }
         }

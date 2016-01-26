@@ -1,15 +1,15 @@
 package threesixty.visualizer.visualizations.lineChart
 
-import spray.json._
-import threesixty.config.Config
 import threesixty.data.Data.{Identifier, Timestamp, ValueType}
 import threesixty.data.DataJsonProtocol._
 import threesixty.data.metadata.{Scaling, Timeframe}
-import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer.visualizations.general._
 import threesixty.visualizer.{DataRequirement, Visualization, VisualizationCompanion, VisualizationConfig, VisualizationMetadata, VisualizationMixins}
 
 import scala.xml.Elem
+
+import spray.json._
 
 
 trait Mixin extends VisualizationMixins {
@@ -169,9 +169,9 @@ case class LineChartConfig(
         grid
     }
 
-    private def calculateXMinMax(config: Config): (Double, Double) = {
+    private def calculateXMinMax(pool: DataPool): (Double, Double) = {
         if (!optXMin.isDefined || !optXMax.isDefined) {
-            val xframe = Timeframe.deduceProcessedData(config.getDatasets(ids))
+            val xframe = Timeframe.deduceProcessedData(pool.getDatasets(ids))
             xMin = if (optXMin.isDefined) math.min(xframe.start.getTime, math.max(0, optXMin.get.getTime)) else xframe.start.getTime
             xMax = if (optXMax.isDefined) math.max(xframe.end.getTime, optXMax.get.getTime) else xframe.end.getTime
         } else {
@@ -204,13 +204,13 @@ case class LineChartConfig(
         (_borderLeft, _borderTop - math.ceil(grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue)).toInt)
     }
 
-    def apply(config: Config): LineChartConfig.LineChart = {
-        val (min, max) = calculateXMinMax(config)
+    def apply(pool: DataPool): LineChartConfig.LineChart = {
+        val (min, max) = calculateXMinMax(pool)
         xMin = min.toLong
         xMax = max.toLong
 
-        yMin = optYMin.getOrElse(calculateYMinMulti(config.getDatasets(ids)).value)
-        yMax = optYMax.getOrElse(calculateYMaxMulti(config.getDatasets(ids)).value)
+        yMin = optYMin.getOrElse(calculateYMinMulti(pool.getDatasets(ids)).value)
+        yMax = optYMax.getOrElse(calculateYMaxMulti(pool.getDatasets(ids)).value)
 
         val xAxis = AxisFactory.createAxis(AxisType.TimeAxis, AxisDimension.xAxis, widthChart, xMin, xMax, _xLabel, Some(_minDistanceX), optUnitX)
         val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY),
@@ -218,7 +218,7 @@ case class LineChartConfig(
 
         grid = new Grid(xAxis, yAxis, _fontSize)
 
-        LineChartConfig.LineChart(this, config.getDatasets(ids))
+        LineChartConfig.LineChart(this, pool.getDatasets(ids))
     }
 
 }

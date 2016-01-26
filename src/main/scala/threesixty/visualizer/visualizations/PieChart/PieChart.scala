@@ -1,11 +1,10 @@
 package threesixty.visualizer.visualizations.pieChart
 
 import spray.json._
-import threesixty.config.Config
 import threesixty.data.Data.{DoubleValue, Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{AggregationTag, Tag}
-import threesixty.data.{ProcessedData, TaggedDataPoint}
+import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
 import threesixty.visualizer.visualizations.general.{DefaultColorScheme, Segment}
 
@@ -316,8 +315,8 @@ case class PieChartConfig(
         segments
     }
 
-    def apply(config: Config): PieChartConfig.PieChart = {
-        PieChartConfig.PieChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): PieChartConfig.PieChart = {
+        PieChartConfig.PieChart(this, pool.getDatasets(ids))
     }
 
 }

@@ -1,9 +1,8 @@
 package threesixty.visualizer.visualizations.barChart
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.visualizer._
-import threesixty.config.Config
 
 import scala.xml.Elem
 
@@ -57,6 +56,6 @@ case class BarChartConfig(
             requiredProcessingMethods = None //TODO Aggregation
         )))
 
-    def apply(config: Config): BarChartConfig.BarChart = BarChartConfig.BarChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): BarChartConfig.BarChart = BarChartConfig.BarChart(this, pool.getDatasets(ids))
 
 }

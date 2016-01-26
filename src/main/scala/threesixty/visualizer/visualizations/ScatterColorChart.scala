@@ -1,10 +1,9 @@
 package threesixty.visualizer.visualizations.scatterColorChart
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
-import threesixty.config.Config
 
 import scala.xml.Elem
 
@@ -60,7 +59,7 @@ case class ScatterColorChartConfig private (
             requiredGoal = None //TODO NoGoal
         )))
 
-    def apply(config: Config): ScatterColorChartConfig.ScatterColorChart =
-        ScatterColorChartConfig.ScatterColorChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): ScatterColorChartConfig.ScatterColorChart =
+        ScatterColorChartConfig.ScatterColorChart(this, pool.getDatasets(ids))
 
 }

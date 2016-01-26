@@ -1,10 +1,9 @@
 package threesixty.visualizer.visualizations.polarAreaChart
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
-import threesixty.config.Config
 
 import scala.xml.Elem
 
@@ -54,6 +53,7 @@ case class PolarAreaChartConfig private (
             requiredGoal = None //TODO NoGoal
         )))
 
-    def apply(config: Config): PolarAreaChartConfig.PolarAreaChart = PolarAreaChartConfig.PolarAreaChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): PolarAreaChartConfig.PolarAreaChart =
+        PolarAreaChartConfig.PolarAreaChart(this, pool.getDatasets(ids))
 
 }

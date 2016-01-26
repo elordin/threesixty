@@ -3,10 +3,9 @@ package threesixty.engine
 import threesixty.processor.{Processor, ProcessingStrategy, ProcessingStep}
 import threesixty.visualizer.{Visualizer, VisualizationConfig}
 import threesixty.persistence.DatabaseAdapter
-import threesixty.config.Config
 
+import threesixty.data.{DataPool, UnsafeInputData}
 import threesixty.data.Data.Identifier
-import threesixty.data.UnsafeInputData
 import threesixty.algorithms.interpolation.LinearInterpolation
 
 import spray.http.HttpResponse
@@ -236,12 +235,12 @@ VISUALIZATION
                     println("Both missing"); (???, ???)       // TODO deduction
             }
 
-        val config: Config = new Config(dataIDs, dbAdapter)
+        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
 
         // Apply processing Methods
-        processingStrategy(config)
+        processingStrategy(dataPool)
 
         // return Visualization
-        VisualizationResponse(visualizationConfig(config))
+        VisualizationResponse(visualizationConfig(dataPool))
     }
 }
