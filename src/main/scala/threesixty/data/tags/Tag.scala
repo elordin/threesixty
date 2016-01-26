@@ -40,3 +40,8 @@ object      ArtificialOrigin                        extends OriginTag {
 case class AggregationTag(val name: String) extends Tag {
     override def toString() = name
 }
+
+trait       ChangedDataTag                        extends Tag
+object      Accumulated                            extends ChangedDataTag {
+    override def toString(): String = "accumulated"
+}
