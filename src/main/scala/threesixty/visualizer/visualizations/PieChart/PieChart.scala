@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations.PieChart
+package threesixty.visualizer.visualizations.pieChart
 
 import spray.json._
 import threesixty.config.Config
@@ -7,17 +7,15 @@ import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
+import threesixty.visualizer.visualizations.general.{DefaultColorScheme, Segment}
 
 import scala.xml.Elem
 
-
-trait Mixin extends VisualizationMixins {
-    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
-        super.visualizationInfos + ("piechart" -> PieChartConfig)
-}
-
-
 object PieChartConfig extends VisualizationCompanion {
+    trait Mixin extends VisualizationMixins {
+        abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+            super.visualizationInfos + ("piechart" -> PieChartConfig)
+    }
 
     def name = "PieChart"
 
@@ -29,7 +27,7 @@ object PieChartConfig extends VisualizationCompanion {
                 "    borderBottom:      Int       (optional) - Border to the bottom in px\n" +
                 "    borderLeft:        Int       (optional) - Border to the left in px\n" +
                 "    borderRight:       Int       (optional) - Border to the right in px\n" +
-                "    distanceTable      Int       (optional) - Distance between the title and the chart in px\n" +
+                "    distanceTitle      Int       (optional) - Distance between the title and the chart in px\n" +
                 "    angleStart         Int       (optional) - The start angle\n" +
                 "    angleEnd           Int       (optional) - The end angle\n" +
                 "    radius             Double    (optional) - The radius\n" +
@@ -60,7 +58,7 @@ object PieChartConfig extends VisualizationCompanion {
     case class PieChart(config: PieChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
         def getConfig: PieChartConfig = config
 
-        def calculateLegendRectangle(index: Int): String = {
+        private def calculateLegendRectangle(index: Int): String = {
             val wLegendSym = config._widthLegendSymbol
             val xLeft = config.rightLimit
             val yTop = config.upperLimit + config._distanceLegend + index * 2 * wLegendSym
@@ -156,9 +154,7 @@ case class PieChartConfig(
     def _distanceLegend: Int = distanceLegend.getOrElse(20)
     def _widthLegendSymbol: Int = widthLegendSymbol.getOrElse(10)
 
-    val strokes = List("#222222", "#444444", "#666666", "#888888", "#AAAAAA", "#CCCCCC")
-    var strokeIndex = -1
-    var strokeMap: Map[String, String] = Map.empty
+    val colorScheme = new DefaultColorScheme
 
     var segments = calculateSegments
 
@@ -181,7 +177,7 @@ case class PieChartConfig(
         angles
     }
 
-    def calculateXRange: (Double, Double) = {
+    private def calculateXRange: (Double, Double) = {
         var angles = getAllAngleCandidates
 
         val outerValues = angles.map((i: Int) => Segment.calculateXCoordinate(i, 1))
@@ -196,7 +192,7 @@ case class PieChartConfig(
         (math.min(outerMin, innerMin), math.max(outerMax, innerMax))
     }
 
-    def calculateYRange: (Double, Double) = {
+    private def calculateYRange: (Double, Double) = {
         var angles = getAllAngleCandidates
 
         val outerValues = angles.map((i: Int) => Segment.calculateYCoordinate(i, 1))
@@ -225,7 +221,7 @@ case class PieChartConfig(
         heightChart * (maxYRange / (ybottom - ytop))
     }
 
-    def calculateRadius: Double = {
+    private def calculateRadius: Double = {
         math.min(getMaxRadiusX, getMaxRadiusY)
     }
 
@@ -247,18 +243,18 @@ case class PieChartConfig(
         (_borderLeft + ox, _borderTop + oy)
     }
 
-    def getDeltaAngles: Double = {
+    private def getDeltaAngles: Double = {
         _angleEnd - _angleStart
     }
 
-    def calculateSumValues: Double = {
+    private def calculateSumValues: Double = {
         // val data = config.getDatasets(ids).head
         val data = dataTest
 
         data.dataPoints.map((p: TaggedDataPoint) => p.value.value).sum
     }
 
-    def getRealValues: Map[String, String] = {
+    private def getRealValues: Map[String, String] = {
         // val data = config.getDatasets(ids).head
         val data = dataTest
 
@@ -267,7 +263,7 @@ case class PieChartConfig(
                 p.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString -> p.value.toString) (collection.breakOut): Map[String, String]
     }
 
-    def calculatePercentValues: Map[String, Double] = {
+    private def calculatePercentValues: Map[String, Double] = {
         // val data = config.getDatasets(ids).head
         val data = dataTest
 
@@ -275,17 +271,6 @@ case class PieChartConfig(
         data.dataPoints.map(
             (p: TaggedDataPoint) =>
                 p.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString -> p.value.value / total) (collection.breakOut): Map[String, Double]
-    }
-
-    private def getStroke(name: String): String = {
-        if(strokeMap.contains(name)) {
-            strokeMap.get(name).get
-        } else {
-            strokeIndex = (strokeIndex + 1) % strokes.size
-            val color = strokes(strokeIndex)
-            strokeMap += name -> color
-            color
-        }
     }
 
     private def calculateSegments: List[Segment] = {
@@ -315,7 +300,7 @@ case class PieChartConfig(
                 _radius + 20,
                 value,
                 Some(_fontSize),
-                Some(getStroke(entry._1))
+                Some(colorScheme.getColor(entry._1))
                 )
 
             result = segment :: result
