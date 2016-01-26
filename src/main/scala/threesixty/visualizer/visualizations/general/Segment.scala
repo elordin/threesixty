@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations.PieChart
+package threesixty.visualizer.visualizations.general
 
 import scala.xml.Elem
 

@@ -2,6 +2,7 @@ package threesixty.visualizer.visualizations.LineChart
 
 import threesixty.data.Data.Timestamp
 import org.scalatest._
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 
 
 class LineChartConversionTestSpec extends FunSpec {
