@@ -1,18 +1,15 @@
 package threesixty.persistence.cassandra
 
-import com.datastax.driver.core._
+import com.websudos.phantom.connectors.{ContactPoints, KeySpace}
 
-object CassandraConnector {
+/**
+  * Created by Stefan Cimander on 19.01.16.
+  */
+trait CassandraKeyspace {
+    implicit val keySpace = KeySpace("threesixity")
+}
 
-    def createSessionAndInitKeyspace(uri: CassandraConnectionUri,
-                                     defaultConsistencyLevel: ConsistencyLevel = QueryOptions.DEFAULT_CONSISTENCY_LEVEL) = {
-        val cluster = new Cluster.Builder().
-            addContactPoints(uri.hosts.toArray: _*).
-            withPort(uri.port).
-            withQueryOptions(new QueryOptions().setConsistencyLevel(defaultConsistencyLevel)).build()
-
-        val session = cluster.connect()
-        session.execute(s"USE ${uri.keyspace}")
-        session
-    }
+object CassandraConnector extends CassandraKeyspace {
+    val hosts = Seq("localhost")
+    val keyspace = ContactPoints(hosts).keySpace("threesixty")
 }

@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    font-family: Roboto, Segoe UI, sans-serif;
+}
+
+header {
+    background-color: #4CAF50;
+    // box-shadow: 0 2px 6px rgba(0,0,0,.2), 0 4px 12px rgba(0,0,0,.1);
+}
+
+h1 {
+    font-weight: 300;
+    padding: .5em 1em;
+    margin: 0;
+    width: auto;
+    display: inline-block;
+}
+
+h2 {
+    margin: 0;
+    padding: 1em .5em;
+    font-weight: 500;
+}
+
+header button {
+    text-transform: none;
+    border-radius: 0;
+    float: right;
+    margin: .67em .8em;
+    font-size: 1.25em;
+    padding: .5em 1em;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    // box-shadow: 0 4px 12px rgba(0,0,0,.2), 0 6px 18px rgba(0,0,0,.1);
+}
+
+header button:hover {
+    background-color: #444;
+}
+
+header button:active {
+    background-color: #222;
+}
+
+.config {
+    box-sizing: border-box;
+}
+
+.viz-list, .data-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.viz-list {
+    overflow: auto;
+    background-color: #eee;
+    max-height: 20em;
+}
+
+.viz-list li {
+    display: inline-block;
+    width: 24%;
+    padding: .5em;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.viz-list li.active {
+    background-color: #4CAF50;
+}
+
+.viz-list input {
+    display: none;
+}
+
+.viz-list img {
+    max-width: 100%;
+}
+
+.viz-list span {
+    text-align: center;
+    display: block;
+}
+
+.data-list {
+    background-color: #eee;
+}
+
+.data-list input[type="checkbox"] {
+    display: none;
+}
+
+.data-list label {
+    display: inline-block;
+    padding: 1em 2em;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.data-list input:checked + label {
+    background-color: #4CAF50;
+}

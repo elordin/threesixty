@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.ScatterColorChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -7,17 +7,20 @@ import threesixty.visualizer._
 import threesixty.config.Config
 
 
-object ScatterColorChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("scattercolorchart" ->
-                VisualizationInfo(
-                    "ScatterColorChart",
-                    { json:String => ScatterColorChartConfig.apply(json) },
-                    "Parameters: \n" // TODO
-                )
-            )
-    }
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("scattercolorchart" -> ScatterColorChartConfig)
+}
+
+
+object ScatterColorChartConfig extends VisualizationCompanion {
+
+    def name = "ScatterColorChart"
+
+    def usage = "ScatterColorChart\n" +
+                "  Parameters: \n" // TODO
+
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
     /**
       *  Public constructor that parses JSON into a configuration
@@ -44,7 +47,7 @@ case class ScatterColorChartConfig private (
     xLabel: String = "",
     yLabel: String = "",
     title: String = ""
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(ids: Set[Identifier], height, width) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             scaling = Some(Scaling.Ordinal)

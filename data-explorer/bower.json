@@ -1,0 +1,23 @@
+{
+  "name": "Threesixty Data Explorer",
+  "homepage": "https://github.com/elordin/threesixty",
+  "description": "",
+  "main": "index.html",
+  "moduleType": [],
+  "authors": [
+    "Thomas Weber"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "iron-elements": "PolymerElements/iron-elements#~1.0.7",
+    "paper-elements": "PolymerElements/paper-elements#~1.0.7"
+  }
+}

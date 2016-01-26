@@ -13,23 +13,23 @@ object StatisticalAnalysis {
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Median of input dataset
+     *  @return Median of input dataset
      */
     def median(data: ProcessedData): ValueType = {
-        data.data.map(_.value).apply(data.data.length / 2)
+        data.dataPoints.map(_.value).apply(data.dataPoints.length / 2)
     }
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Mean of input dataset
+     *  @return Mean of input dataset
      */
     def mean(data: ProcessedData): ValueType = {
-        data.data.map(_.value.value).sum / data.data.length
+        data.dataPoints.map(_.value.value).sum / data.dataPoints.length
     }
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Standard deviation of input dataset
+     *  @return Standard deviation of input dataset
      */
     def stdDeviation(data: ProcessedData): ValueType = {
         math.sqrt(variance(data).value)
@@ -37,14 +37,15 @@ object StatisticalAnalysis {
 
     /**
      *  @param data Dataset to calculate the median of
-     *  @returns Variance of input dataset
+     *  @return Variance of input dataset
      */
     def variance(data: ProcessedData): ValueType = {
         val e = mean(data)
-        mean(ProcessedData(data.id, data.data.map { d:TaggedDataPoint =>
+        mean(ProcessedData(data.id, data.dataPoints.map { d:TaggedDataPoint =>
             TaggedDataPoint(d.timestamp, math.pow(e.value - d.value.value, 2), d.tags) }))
     }
 
+    // TODO
     def covariance(data1: ProcessedData, data2: ProcessedData): Double = {
         // easy idea with perfect dataset  //
         if( data1.data.length == data2.data.length ) {
@@ -62,6 +63,7 @@ object StatisticalAnalysis {
         }
     }
 
+    // TODO
     def correlation(data1: ProcessedData, data2: ProcessedData): Double = {
         covariance(data1, data2)/stdDeviation(data1).value/stdDeviation(data2).value
     }

@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations
+package threesixty.visualizer.visualizations.PolarAreaChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -7,17 +7,20 @@ import threesixty.visualizer._
 import threesixty.config.Config
 
 
-object PolarAreaChartConfig {
-    trait Info extends withVisualizationInfos {
-        abstract override def visualizationInfos: Map[String, VisualizationInfo] =
-            super.visualizationInfos + ("polarareachart" ->
-                VisualizationInfo(
-                    "PolarAreaChart",
-                    { json:String => PolarAreaChartConfig.apply(json) },
-                    "Parameters: \n" // TODO
-                )
-            )
-    }
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("polarareachart" -> PolarAreaChartConfig)
+}
+
+
+object PolarAreaChartConfig extends VisualizationCompanion {
+
+    def name = "PolarAreaChart"
+
+    def usage = "PolarAreaChart\n" +
+                "  Parameters: \n" // TODO
+
+    def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
 
     /**
@@ -39,7 +42,7 @@ case class PolarAreaChartConfig private (
     height: Int,
     width: Int,
     title: String = ""
-) extends VisualizationConfig(ids: Set[Identifier]) {
+) extends VisualizationConfig(ids: Set[Identifier], height, width) {
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             requiredProcessingMethods = None, //TODO Aggregation

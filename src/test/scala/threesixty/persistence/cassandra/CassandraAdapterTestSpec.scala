@@ -3,64 +3,59 @@ package threesixty.persistence.cassandra
 import java.sql.Timestamp
 import java.util.UUID
 
-import org.scalatest.{FunSpec, Matchers}
-import threesixty.data.metadata._
+import org.scalatest.{BeforeAndAfterAll, Matchers, FunSpec}
+import org.scalatest.concurrent.ScalaFutures
+import threesixty.data.Data.DoubleValue
 import threesixty.data.{InputData, DataPoint}
-import threesixty.data.Implicits._
+import threesixty.data.metadata._
 
+import scala.concurrent.Await
+import scala.concurrent.duration._
+
+import com.websudos.phantom.dsl._
 
 /**
-  * Created by Stefan Cimander on 09.01.16.
+  * Created by Stefan Cimander on 20.01.16.
   */
-class CassandraAdapterTestSpec extends FunSpec with Matchers{
+class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
+    with BeforeAndAfterAll with CassandraConnector.keyspace.Connector {
 
-    val timeframe = new Timeframe(new Timestamp(1452349667052L), new Timestamp(1452349687060L))
-    val reliabilty = Reliability.User
-    val resolution = Resolution.Low
-    val scaling = Scaling.Ordinal
-    val activityType = new ActivityType("Running")
-    activityType.setDescription("Short run in the morning")
-    val measurement = "Heart Rate"
+    override def beforeAll(): Unit = {
+        super.beforeAll()
+        Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
+    }
 
-    val metaData = new CompleteInputMetadata(timeframe, Reliability.User, Resolution.Low, Scaling.Ordinal, activityType)
-    val dataPoint = new DataPoint(1452343334, 200)
+    override def afterAll(): Unit = {
+        super.afterAll()
+        Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)
+    }
 
-    val id = UUID.randomUUID().toString
-    val inputData = new InputData(id, measurement, List(dataPoint), metaData)
+    describe("Inserting a input data set") {
+        it("should store and load the input data set correctly") {
 
-    val uri = CassandraConnectionUri("cassandra://localhost:9042/test")
-    val cassandraAdapter = new CassandraAdapter(uri)
+            val identifier = UUID.randomUUID()
+            val measurement = "Heart Rate"
 
+            val firstDataPoint = DataPoint(new Timestamp(1453227516719L), DoubleValue(130.3))
+            val secondDataPoint = DataPoint(new Timestamp(1453227568330L), DoubleValue(128.7))
+            val thirdDataPoint = DataPoint(new Timestamp(1453227593147L), DoubleValue(129.1))
+            val fourthDataPoint = DataPoint(new Timestamp(1453227615119L), DoubleValue(129.5))
+            val dataPoints = List(firstDataPoint, secondDataPoint, thirdDataPoint, fourthDataPoint)
 
+            val timeframe = Timeframe(new Timestamp(1453227383043L), new Timestamp(1453227461703L))
+            val activityType = ActivityType("Walking")
+            activityType.setDescription("Long walk with my dogs")
+            val resolution = Resolution.High
+            val reliability = Reliability.Device
+            val scaling = Scaling.Ordinal
+            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
 
-    describe("Inserting input data into the Cassandra database") {
-        it("should contain the input data") {
+            val inputDataSet = InputData(identifier.toString, measurement, dataPoints, inputMetadta)
 
-            cassandraAdapter.insertData(inputData)
-            cassandraAdapter.containsDataPointWithId(id) should be (true)
+            CassandraAdapter.insertData(inputDataSet) should be (Right(identifier.toString))
+            CassandraAdapter.getDataset(identifier.toString) should be (Right(inputDataSet))
         }
     }
-    describe("Reading from the database"){
-        it("should read the inserted metadata related to a given input"){
 
-            val result = cassandraAdapter.getDataset(id)
-
-            assert(result.isRight)
-
-            val data = result.right.get
-
-            (data) should not be (null)
-
-            data.id should be (id)
-            data.measurement should be (measurement)
-            data.metadata.reliability should be (reliabilty)
-            data.metadata.resolution should be (resolution)
-            data.metadata.scaling should be (scaling)
-            data.data should be (List(dataPoint))
-
-
-
-        }
-    }
 
 }

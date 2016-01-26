@@ -2,32 +2,14 @@ package threesixty.config
 
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
-import threesixty.data.Implicits.input2ProcessedData
 
 import threesixty.persistence.DatabaseAdapter
 
 import scala.collection.immutable.{Map => ImmutableMap}
 
-object Implicits {
-    import spray.json._
-
-    /**
-     *  Implicit conversion to parse a JSON Object to Config
-     */
-    // since Config is a case class, easier conversions might be available.
-    // Check the spray-json docs at https://github.com/spray/spray-json
-    implicit object ConfigJsonFormat extends RootJsonFormat[Config] {
-
-        def write(c: Config) = throw new NotImplementedError
-
-        def read(value: JsValue) = throw new NotImplementedError
-
-    }
-}
 
 /**
- *  Config potentially contains all options transmitted from the client.
- *  Some values may be required, some may be optional.
+ *  This contains all datasets requested by the client.
  *
  *  @param dataIDs Set of IDs of datasets that will be processed.
  *  @param databaseAdapter DatabaseAdapter
@@ -35,7 +17,6 @@ object Implicits {
 @throws[NoSuchElementException]("if an id was given, for which no InputData exists.")
 class Config(
     val dataIDs: Set[Identifier],
-
     implicit val databaseAdapter: DatabaseAdapter
 ) {
 
@@ -50,7 +31,7 @@ class Config(
 
     // convert input data to processed data
     var processedDatasets: Map[Identifier, ProcessedData] =
-        (for { data <- inputDatasets} yield (data.id, input2ProcessedData(data))).toMap
+        (for { data <- inputDatasets} yield (data.id, data: ProcessedData)).toMap
 
     /**
      *  Inserts data into the processedDatasets Map
@@ -64,7 +45,7 @@ class Config(
 
     /**
      *  Accessor for processedDatasets
-     *  @return Immutable Map of Identifier -> ProcessedData
+     *  @return Immutable Map of [[threesixty.data.Data.Identifier]] -> [[threesixty.data.ProcessedData]]
      */
     def datasets: ImmutableMap[Identifier, ProcessedData] = processedDatasets
 
@@ -72,5 +53,10 @@ class Config(
     @throws[NoSuchElementException]("if a dataset was requested that is not in processedDatasets")
     def getDatasets(ids: Set[Identifier]): Set[ProcessedData] =
         ids.map(processedDatasets(_))
+
+    @throws[NoSuchElementException]("if a dataset was requested that is not in processedDatasets")
+    def getDataset(id: Identifier): ProcessedData =
+        processedDatasets(id)
+
 }
 

@@ -7,6 +7,7 @@ import akka.io.Tcp.{Closed, Aborted, ConfirmedClosed, PeerClosed, ErrorClosed}
 import spray.http._
 import HttpMethods._
 import MediaTypes._
+import HttpHeaders._
 
 import scala.concurrent.duration._
 
@@ -21,10 +22,23 @@ class ServerTestSpec(_system:ActorSystem) extends TestKit(_system)
     describe("An APIHandler") {
         val apiHandler = system.actorOf(APIHandler.props)
         describe("when receiving a HttpRequest using POST") {
-
-            it("must respond with a HttpResponse") {
-                apiHandler ! HttpRequest(method = POST)
+            it("must respond with a HttpResponse with non-empty body") {
+                apiHandler ! HttpRequest(method = POST, entity = HttpEntity(`application/json`, "{}"))
                 expectMsgClass[HttpResponse](1.seconds, classOf[HttpResponse])
+            }
+
+            describe("if thre request had an empty body") {
+                it("must respond with an error") {
+                    apiHandler ! HttpRequest(method = POST, entity = HttpEntity.Empty)
+                    val response = expectMsgClass[HttpResponse](1.seconds, classOf[HttpResponse])
+                    assertResult(response) {
+                        HttpResponse(
+                            status = StatusCodes.MethodNotAllowed,
+                            entity = HttpEntity(`application/json`, """{ "error": "Empty request body." }"""),
+                            headers = List(`Access-Control-Allow-Origin`(AllOrigins))
+                        )
+                    }
+                }
             }
         }
 
@@ -33,6 +47,36 @@ class ServerTestSpec(_system:ActorSystem) extends TestKit(_system)
                 apiHandler ! HttpRequest(method = GET)
                 val response = expectMsgClass[HttpResponse](1.seconds, classOf[HttpResponse])
                 assert(response.status.intValue == 405)
+            }
+        }
+
+        describe("when receiving a message that is not a HttpRequest") {
+            describe("e.g. a None") {
+                it("should respond with an error") {
+                    apiHandler ! None
+                    val response = expectMsgClass[HttpResponse](1.seconds, classOf[HttpResponse])
+                    assertResult(response) {
+                        HttpResponse(
+                            status = StatusCodes.MethodNotAllowed,
+                            entity = HttpEntity(`application/json`, """{ "error": "Unknown message." }"""),
+                            headers = List(`Access-Control-Allow-Origin`(AllOrigins))
+                        )
+                    }
+                }
+            }
+
+            describe("e.g. an Integer") {
+                it("should respond with an error") {
+                    apiHandler ! 5
+                    val response = expectMsgClass[HttpResponse](1.seconds, classOf[HttpResponse])
+                    assertResult(response) {
+                        HttpResponse(
+                            status = StatusCodes.MethodNotAllowed,
+                            entity = HttpEntity(`application/json`, """{ "error": "Unknown message." }"""),
+                            headers = List(`Access-Control-Allow-Origin`(AllOrigins))
+                        )
+                    }
+                }
             }
         }
 
