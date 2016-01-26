@@ -22,6 +22,7 @@ trait EngineResponse {
 
 object SuccessResponse {
     def apply(json: JsValue): SuccessResponse = SuccessResponse(json.prettyPrint, `application/json`)
+    implicit def toHttpResponse(s: SuccessResponse): HttpResponse = s.toHttpResponse
 }
 case class SuccessResponse(msg: String, contentType: ContentType = `text/plain(UTF-8)`) extends EngineResponse {
     def toHttpResponse: HttpResponse = HttpResponse(
@@ -31,7 +32,9 @@ case class SuccessResponse(msg: String, contentType: ContentType = `text/plain(U
         )
 }
 
-
+object VisualizationResponse {
+    implicit def toHttpResponse(v: VisualizationResponse): HttpResponse = v.toHttpResponse
+}
 case class VisualizationResponse(visualization: Visualization) extends EngineResponse {
     def toHttpResponse: HttpResponse = HttpResponse(
             status = StatusCodes.OK,
@@ -43,6 +46,7 @@ case class VisualizationResponse(visualization: Visualization) extends EngineRes
 
 object ErrorResponse {
     def apply(json: JsValue): ErrorResponse = ErrorResponse(json.toString, `application/json`)
+    implicit def toHttpResponse(e: ErrorResponse): HttpResponse = e.toHttpResponse
 }
 case class ErrorResponse(msg: String, contentType: ContentType = `text/plain(UTF-8)`) extends EngineResponse {
     def toHttpResponse: HttpResponse = HttpResponse(
@@ -55,6 +59,7 @@ case class ErrorResponse(msg: String, contentType: ContentType = `text/plain(UTF
 object HelpResponse {
     def apply(json: JsValue): HelpResponse = HelpResponse(msg = json.toString, contentType = `application/json`)
     def apply(json: JsValue, status: StatusCode): HelpResponse = HelpResponse(json.toString, status, `application/json`)
+    implicit def toHttpResponse(h: HelpResponse): HttpResponse = h.toHttpResponse
 }
 case class HelpResponse(msg: String, status: StatusCode = StatusCodes.OK, contentType: ContentType = `text/plain(UTF-8)`) extends EngineResponse {
     def toHttpResponse: HttpResponse = HttpResponse(
