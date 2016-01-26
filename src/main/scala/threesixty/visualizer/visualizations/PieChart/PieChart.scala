@@ -22,18 +22,24 @@ object PieChartConfig extends VisualizationCompanion {
     def name = "PieChart"
 
     def usage = "Parameters: \n" +
-                "    height:        Int                  - Height of the diagram in px\n" +
-                "    width:         Int                  - Width of the diagram in px\n" +
-                "    title:         String    (optional) - Diagram title\n" +
-                "    borderTop:     Int       (optional) - Border to the top in px\n" +
-                "    borderBottom:  Int       (optional) - Border to the bottom in px\n" +
-                "    borderLeft:    Int       (optional) - Border to the left in px\n" +
-                "    borderRight:   Int       (optional) - Border to the right in px\n" +
-                "    angleStart     Int       (optional) - The start angle\n" +
-                "    angleEnd       Int       (optional) - The end angle\n" +
-                "    radius         Double    (optional) - The radius\n" +
-                "    innerRadius    Double    (optional) - Radius for cutting out a circle\n" +
-                "    showValues     Boolean   (optional) - If values should be shown"
+                "    height:            Int                  - Height of the diagram in px\n" +
+                "    width:             Int                  - Width of the diagram in px\n" +
+                "    title:             String    (optional) - Diagram title\n" +
+                "    borderTop:         Int       (optional) - Border to the top in px\n" +
+                "    borderBottom:      Int       (optional) - Border to the bottom in px\n" +
+                "    borderLeft:        Int       (optional) - Border to the left in px\n" +
+                "    borderRight:       Int       (optional) - Border to the right in px\n" +
+                "    distanceTable      Int       (optional) - Distance between the title and the chart in px\n" +
+                "    angleStart         Int       (optional) - The start angle\n" +
+                "    angleEnd           Int       (optional) - The end angle\n" +
+                "    radius             Double    (optional) - The radius\n" +
+                "    innerRadiusPercent Double    (optional) - Radius for cutting out a circle in percent of the radius\n" +
+                "    showValues         Boolean   (optional) - If values should be shown\n" +
+                "    fontSizeTitle      Int       (optional) - Font size of the title\n" +
+                "    fontSize           Int       (optional) - Font size of labels\n" +
+                "    widthLegendSysmbol Int       (optional) - Width and height of the legend symbol in px\n" +
+                "    distanceLegend     Int       (optional) - Gab before the legend in px"
+
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
@@ -46,7 +52,7 @@ object PieChartConfig extends VisualizationCompanion {
         implicit val pieChartConfigFormat = jsonFormat(PieChartConfig.apply,
             "ids", "height", "width", "title", "borderTop", "borderBottom", "borderLeft",
             "borderRight", "distanceTitle", "angleStart", "angleEnd", "radius", "innerRadius", "showValues",
-            "fontSizeTitle", "fontSize", "wLegendSymbol", "distanceLegend")
+            "fontSizeTitle", "fontSize", "widthLegendSymbol", "distanceLegend")
         jsonString.parseJson.convertTo[PieChartConfig]
     }
 
@@ -55,7 +61,7 @@ object PieChartConfig extends VisualizationCompanion {
         def getConfig: PieChartConfig = config
 
         def calculateLegendRectangle(index: Int): String = {
-            val wLegendSym = config._wLegendSymbol
+            val wLegendSym = config._widthLegendSymbol
             val xLeft = config.rightLimit
             val yTop = config.upperLimit + config._distanceLegend + index * 2 * wLegendSym
 
@@ -79,8 +85,8 @@ object PieChartConfig extends VisualizationCompanion {
                               stroke={config.getSegments(i).getColor}
                               stroke-width="0"
                               fill={config.getSegments(i).getColor}/>
-                        <text x={(config.rightLimit + 2*config._wLegendSymbol).toString}
-                              y={(config.upperLimit + config._distanceLegend + (2 * i + 1) * config._wLegendSymbol).toString}
+                        <text x={(config.rightLimit + 2*config._widthLegendSymbol).toString}
+                              y={(config.upperLimit + config._distanceLegend + (2 * i + 1) * config._widthLegendSymbol).toString}
                               font-family="Roboto, Segoe UI"
                               font-weight="100"
                               font-size={config.getSegments(i).getFontSize}
@@ -94,24 +100,24 @@ object PieChartConfig extends VisualizationCompanion {
 
 
 case class PieChartConfig(
-    val ids:                Set[Identifier],
-    val height:             Int,
-    val width:              Int,
-    val title:              Option[String] = None,
-    val borderTop:          Option[Int]    = None,
-    val borderBottom:       Option[Int]    = None,
-    val borderLeft:         Option[Int]    = None,
-    val borderRight:        Option[Int]    = None,
-    val distanceTitle:      Option[Int]    = None,
-    val angleStart:         Option[Int]    = None,
-    val angleEnd:           Option[Int]    = None,
-    val radius:             Option[Double] = None,
-    val innerRadiusPercent: Option[Double] = None,
-    val showValues:         Option[Boolean]= None,
-    val fontSizeTitle:      Option[Int]    = None,
-    val fontSize:           Option[Int]    = None,
-    val wLegendSymbol:      Option[Int]    = None,
-    val distanceLegend:     Option[Int]    = None
+    val ids:                    Set[Identifier],
+    val height:                 Int,
+    val width:                  Int,
+    val title:                  Option[String] = None,
+    val borderTop:              Option[Int]    = None,
+    val borderBottom:           Option[Int]    = None,
+    val borderLeft:             Option[Int]    = None,
+    val borderRight:            Option[Int]    = None,
+    val distanceTitle:          Option[Int]    = None,
+    val angleStart:             Option[Int]    = None,
+    val angleEnd:               Option[Int]    = None,
+    val radius:                 Option[Double] = None,
+    val innerRadiusPercent:     Option[Double] = None,
+    val showValues:             Option[Boolean]= None,
+    val fontSizeTitle:          Option[Int]    = None,
+    val fontSize:               Option[Int]    = None,
+    val widthLegendSymbol:      Option[Int]    = None,
+    val distanceLegend:         Option[Int]    = None
 ) extends VisualizationConfig(
     ids: Set[Identifier],
     height,
@@ -148,7 +154,7 @@ case class PieChartConfig(
     def _showValues: Boolean = showValues.getOrElse(false)
 
     def _distanceLegend: Int = distanceLegend.getOrElse(20)
-    def _wLegendSymbol: Int = wLegendSymbol.getOrElse(10)
+    def _widthLegendSymbol: Int = widthLegendSymbol.getOrElse(10)
 
     val strokes = List("#222222", "#444444", "#666666", "#888888", "#AAAAAA", "#CCCCCC")
     var strokeIndex = -1
