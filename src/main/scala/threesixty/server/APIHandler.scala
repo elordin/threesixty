@@ -32,6 +32,11 @@ object APIHandler {
     val dbURI: String =
         config.getString("database.uri")
 
+    val debug: Boolean = try {
+        config.getBoolean("debug")
+    } catch {
+        case _:ConfigException => false
+    }
 
     lazy val engine: Engine = VisualizationEngine(
         new Processor
@@ -48,6 +53,8 @@ object APIHandler {
 
 /**
  *  Reads the HTTP requests from a client and passes them to the engine. Sends responses.
+ *
+ *  @author Thomas Weber
  */
 class APIHandler extends Actor {
 
@@ -72,11 +79,11 @@ class APIHandler extends Actor {
                 case t: Throwable =>
                     peer ! HttpResponse(
                         status = StatusCodes.InternalServerError,
-                        entity = HttpEntity(`application/json`, s"""{ "error": "${t.getMessage}" }"""),
+                        entity = HttpEntity(`application/json`,
+                            s"""{ "error": "${if (APIHandler.debug) t.getMessage else "Internal Server Error" }" }"""),
                         headers = List(`Access-Control-Allow-Origin`(AllOrigins))
                     )
             }
-
 
         case HttpRequest(POST, _, _, HttpEntity.Empty, _) =>
             sender ! HttpResponse(

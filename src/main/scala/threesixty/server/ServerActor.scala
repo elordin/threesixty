@@ -20,12 +20,11 @@ class ServerActor extends Actor {
         case Http.Connected(remoteAddr, _) =>
             // created and attach new handler for API calls
             log.info("Creating API handler for %s.".format(remoteAddr.toString))
-            val peer = sender
+            val peer = sender // explicitly saving the peer since it may be overwriten during actorOf
             val apiHandler: ActorRef = context.actorOf(APIHandler.props)
             peer ! Http.Register(apiHandler)
 
         case msg => log.error("Unknown message: " + msg)
-
     }
 
 }
