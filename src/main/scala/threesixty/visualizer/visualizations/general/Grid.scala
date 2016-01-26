@@ -10,14 +10,14 @@ case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
     require(yAxis != null, "Null value for yAxis is not allowed.")
 
     def convertPoint(x: Double, y: Double): (Double, Double) = {
-        (xAxis.convertValue(x), - yAxis.convertValue(y))
+        (xAxis.convert(x), yAxis.convert(y))
     }
 
     def getSVGElement: Elem = {
-        val left = xAxis.convertValue(xAxis.getMinimumDisplayedValue)
-        val right = xAxis.convertValue(xAxis.getMaximumDisplayedValue)
-        val top = yAxis.convertValue(yAxis.getMaximumDisplayedValue)
-        val bottom = yAxis.convertValue(yAxis.getMinimumDisplayedValue)
+        val left = xAxis.convert(xAxis.getMinimumDisplayedValue)
+        val right = xAxis.convert(xAxis.getMaximumDisplayedValue)
+        val top = yAxis.convert(yAxis.getMaximumDisplayedValue)
+        val bottom = yAxis.convert(yAxis.getMinimumDisplayedValue)
 
         <g id="grid">
             <g id="xAxis">
@@ -25,20 +25,20 @@ case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
                     <line fill="none"
                           stroke={if(d._1 == 0) "#000000" else "#AAAAAA"}
                           stroke-dasharray={if (d._1 == 0) "0,0" else "5,5"}
-                          x1={xAxis.convertValue(d._1).toString}
+                          x1={d._1.toString}
                           y1={bottom.toString}
-                          x2={xAxis.convertValue(d._1).toString}
+                          x2={d._1.toString}
                           y2={top.toString}/>
-                    <text x={left.toString}
+                    <text x={d._1.toString}
                           y={(bottom + fontSize + 5).toString}
                           font-family="Roboto, Segoe UI"
                           font-weight="100"
                           font-size={fontSize.toString}
-                          text-anchor="start">{d._2}</text>
+                          text-anchor="middle">{d._2}</text>
                 }
                 <g id="xLabel">
                     <text x={(right + 20).toString}
-                          y={(bottom - fontSize / 2.0).toString}
+                          y={(bottom + fontSize / 3.0).toString}
                           font-family="Roboto, Segoe UI"
                           font-weight="100"
                           font-size={fontSize.toString}
@@ -51,11 +51,11 @@ case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
                           stroke={if(d._1 == 0) "#000000" else "#AAAAAA"}
                           stroke-dasharray={if (d._1 == 0) "0,0" else "5,5"}
                           x1={left.toString}
-                          y1={yAxis.convertValue(d._1).toString}
+                          y1={d._1.toString}
                           x2={right.toString}
-                          y2={yAxis.convertValue(d._1).toString}/>
+                          y2={d._1.toString}/>
                     <text x={(left - 10).toString}
-                          y={(yAxis.convertValue(d._1) + fontSize / 2.0).toString}
+                          y={(d._1 + fontSize / 3).toString}
                           font-family="Roboto, Segoe UI"
                           font-weight="100"
                           font-size={fontSize.toString}
@@ -63,7 +63,7 @@ case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
                 }
                 <g id="yLabel">
                     <text x={left.toString}
-                          y={(top - 20).toString}
+                          y={(top - 15).toString}
                           font-family="Roboto, Segoe UI"
                           font-weight="100"
                           font-size={fontSize.toString}

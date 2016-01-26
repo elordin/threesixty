@@ -42,7 +42,7 @@ object LineChartConfig extends VisualizationCompanion {
                 "    optUnitY           Double    (optional) - Value of the desired unit on the y-axis\n" +
                 "    fontSizeTitle      Int       (optional) - Font size of the title\n" +
                 "    fontSize           Int       (optional) - Font size of labels\n"
-    
+
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
 
@@ -93,9 +93,10 @@ object LineChartConfig extends VisualizationCompanion {
                             {for (datapoint <- dataset.dataPoints) yield
                                 <circle fill="#00008B"
                                         stroke="#00008B"
-                                        cx={grid.xAxis.convertValue(datapoint.timestamp.getTime).toString}
-                                        cy={grid.yAxis.convertValue(datapoint.value.value).toString}
-                                        r="4"/>}
+                                        cx={grid.xAxis.convert(datapoint.timestamp.getTime).toString}
+                                        cy={grid.yAxis.convert(datapoint.value.value).toString}
+                                        r="4" />
+                            }
                         </g>
                         <path stroke="#6495ED"
                               fill="none"
@@ -147,8 +148,8 @@ case class LineChartConfig(
     def _xLabel: String = xLabel.getOrElse("")
     def _yLabel: String = yLabel.getOrElse("")
 
-    def _minDistanceX: Int = minDistanceX.getOrElse(50)
-    def _minDistanceY: Int = minDistanceY.getOrElse(50)
+    def _minDistanceX: Int = minDistanceX.getOrElse(20)
+    def _minDistanceY: Int = minDistanceY.getOrElse(20)
 
     require(_minDistanceX > 0, "Value for minDistanceX must be positive.")
     require(_minDistanceY > 0, "Value for minDistanceY must be positive.")
@@ -200,7 +201,7 @@ case class LineChartConfig(
     }
 
     override def calculateOrigin: (Double, Double) = {
-        (_borderLeft, _borderTop - math.ceil(grid.yAxis.convertValue(yMax)).toInt)
+        (_borderLeft, _borderTop - math.ceil(grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue)).toInt)
     }
 
     def apply(config: Config): LineChartConfig.LineChart = {
@@ -211,8 +212,8 @@ case class LineChartConfig(
         yMin = optYMin.getOrElse(calculateYMinMulti(config.getDatasets(ids)).value)
         yMax = optYMax.getOrElse(calculateYMaxMulti(config.getDatasets(ids)).value)
 
-        val xAxis = AxisFactory.createAxis(AxisType.TimeAxis, widthChart, xMin, xMax, _xLabel, Some(_minDistanceX), optUnitX)
-        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY),
+        val xAxis = AxisFactory.createAxis(AxisType.TimeAxis, AxisDimension.xAxis, widthChart, xMin, xMax, _xLabel, Some(_minDistanceX), optUnitX)
+        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY),
             if(optUnitY.isDefined) Some(optUnitY.get.toString) else None)
 
         grid = new Grid(xAxis, yAxis, _fontSize)
