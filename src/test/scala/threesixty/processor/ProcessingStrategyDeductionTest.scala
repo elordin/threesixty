@@ -6,10 +6,10 @@ import threesixty.algorithms.interpolation.LinearInterpolation
 import threesixty.data.Data._
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
-import threesixty.visualizer.visualizations.BarChart.BarChartConfig
-import threesixty.visualizer.visualizations.LineChart.LineChartConfig
-import threesixty.visualizer.visualizations.PieChart.PieChartConfig
-import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig
+import threesixty.visualizer.visualizations.barChart.BarChartConfig
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
+import threesixty.visualizer.visualizations.pieChart.PieChartConfig
+import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
 /**
   * Created by Markus Schnappinger on 23.01.2016.

@@ -9,7 +9,6 @@ import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, 
 import threesixty.config.Config
 import threesixty.persistence.DatabaseAdapter
 import threesixty.algorithms.interpolation.LinearInterpolation
-import threesixty.data.Implicits.input2ProcessedData
 
 
 class ProcessorTestSpec extends FunSpec {
@@ -39,9 +38,10 @@ class ProcessorTestSpec extends FunSpec {
                 val config = new Config(Set("SomeId"), new DatabaseAdapter {
                         def getDataset(id:Identifier):Either[String, InputData] = Right(sampleData)
                         def insertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
-                        def appendData(data:InputData, id:Identifier):Either[String, Identifier] = throw new NotImplementedError
-                        def appendOrInsertData(data:InputData, id:Identifier):Either[String, Identifier] = throw new NotImplementedError
+                        def appendData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
+                        def appendOrInsertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
                     })
+
                 config.pushData(Set[ProcessedData](sampleData))
 
                 val expectedResult = interpolator(sampleData)
@@ -55,7 +55,7 @@ class ProcessorTestSpec extends FunSpec {
 
                 it("should not remove the original data") {
                     assert(config.datasets.contains("SomeId"))
-                    assert(config.datasets("SomeId") == input2ProcessedData(sampleData))
+                    assert(config.datasets("SomeId") == (sampleData: ProcessedData))
                 }
             }
         }

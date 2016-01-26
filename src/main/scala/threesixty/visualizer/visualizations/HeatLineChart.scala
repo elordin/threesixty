@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations.HeatLineChart
+package threesixty.visualizer.visualizations.heatLineChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -6,7 +6,9 @@ import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.visualizer._
 import threesixty.config.Config
 
-/*
+import scala.xml.Elem
+
+
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("heatlinechart" -> HeatLineChartConfig)
@@ -32,7 +34,7 @@ object HeatLineChartConfig extends VisualizationCompanion {
 
 
     case class HeatLineChart(config: HeatLineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: xml.Elem = <svg></svg>
+        def getSVGElements: List[Elem] = ???
     }
 }
 
@@ -59,4 +61,3 @@ case class HeatLineChartConfig private (
     def apply(config: Config): HeatLineChartConfig.HeatLineChart = HeatLineChartConfig.HeatLineChart(this, config.getDatasets(ids))
 
 }
-*/

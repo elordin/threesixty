@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations.PolarAreaChart
+package threesixty.visualizer.visualizations.polarAreaChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -6,7 +6,9 @@ import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
 import threesixty.config.Config
 
-/*
+import scala.xml.Elem
+
+
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("polarareachart" -> PolarAreaChartConfig)
@@ -32,7 +34,7 @@ object PolarAreaChartConfig extends VisualizationCompanion {
 
 
     case class PolarAreaChart(config: PolarAreaChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: xml.Elem = <svg></svg>
+        def getSVGElements: List[Elem] = ???
     }
 }
 
@@ -55,4 +57,3 @@ case class PolarAreaChartConfig private (
     def apply(config: Config): PolarAreaChartConfig.PolarAreaChart = PolarAreaChartConfig.PolarAreaChart(this, config.getDatasets(ids))
 
 }
-*/

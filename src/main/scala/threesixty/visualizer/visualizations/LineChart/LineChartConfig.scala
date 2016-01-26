@@ -12,11 +12,13 @@ import threesixty.visualizer.{DataRequirement, Visualization, VisualizationCompa
 import scala.xml.Elem
 
 
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("linechart" -> LineChartConfig)
+}
+
+
 object LineChartConfig extends VisualizationCompanion {
-    trait Mixin extends VisualizationMixins {
-        abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
-            super.visualizationInfos + ("linechart" -> LineChartConfig)
-    }
 
     def name = "LineChart"
 
@@ -60,8 +62,6 @@ object LineChartConfig extends VisualizationCompanion {
     }
 
     case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def getConfig: LineChartConfig = config
-
         private def calculatePath(data: ProcessedData): String = {
             val grid = config.getGrid
 

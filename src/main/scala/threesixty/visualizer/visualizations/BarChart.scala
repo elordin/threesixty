@@ -1,11 +1,13 @@
-package threesixty.visualizer.visualizations.BarChart
+package threesixty.visualizer.visualizations.barChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.visualizer._
 import threesixty.config.Config
 
-/*
+import scala.xml.Elem
+
+
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("barchart" -> BarChartConfig)
@@ -32,8 +34,8 @@ object BarChartConfig extends VisualizationCompanion {
     def apply(json: String): BarChartConfig = new BarChartConfig(Set(), 100, 200) // TODO actually read JSON
 
 
-    case class BarChart(config: BarChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: xml.Elem = <svg></svg>
+    case class BarChart(config: BarChartConfig, data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+        def getSVGElements: List[Elem] = ???
     }
 }
 
@@ -58,4 +60,3 @@ case class BarChartConfig(
     def apply(config: Config): BarChartConfig.BarChart = BarChartConfig.BarChart(this, config.getDatasets(ids))
 
 }
-*/

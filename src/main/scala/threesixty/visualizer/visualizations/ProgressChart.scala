@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations.ProgressChart
+package threesixty.visualizer.visualizations.progressChart
 
 import threesixty.data.ProcessedData
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
@@ -6,7 +6,9 @@ import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
 import threesixty.config.Config
 
-/*
+import scala.xml.Elem
+
+
 trait Mixin extends VisualizationMixins {
     abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
         super.visualizationInfos + ("progresschart" -> ProgressChartConfig)
@@ -31,7 +33,7 @@ object ProgressChartConfig extends VisualizationCompanion {
 
 
     case class ProgressChart(config: ProgressChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: xml.Elem = <svg></svg>
+        def getSVGElements: List[Elem] = ???
     }
 }
 
@@ -52,4 +54,3 @@ case class ProgressChartConfig private (
     def apply(config: Config): ProgressChartConfig.ProgressChart = ProgressChartConfig.ProgressChart(this, config.getDatasets(ids))
 
 }
-*/

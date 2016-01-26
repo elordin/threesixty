@@ -5,10 +5,9 @@ import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
 import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.algorithms.interpolation.LinearInterpolation
-
-
 import threesixty.data.Data.Identifier
 import threesixty.data.InputData
+import threesixty.visualizer.visualizations._
 
 import akka.actor.{Actor, Props}
 import akka.event.Logging
@@ -20,10 +19,6 @@ import MediaTypes.`application/json`
 import HttpHeaders.`Access-Control-Allow-Origin`
 
 import com.typesafe.config.{Config, ConfigFactory, ConfigException}
-import threesixty.visualizer.visualizations.lineChart.LineChartConfig
-import LineChartConfig.LineChart
-import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-import PieChartConfig.PieChart
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,8 +37,8 @@ object APIHandler {
         new Processor
             with LinearInterpolation.Mixin,
         new Visualizer
-            with LineChartConfig.Mixin
-            with PieChartConfig.Mixin,
+            with lineChart.Mixin
+            with pieChart.Mixin,
         FakeDatabaseAdapter
     )
 

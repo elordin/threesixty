@@ -11,11 +11,14 @@ import threesixty.visualizer.visualizations.general.{DefaultColorScheme, Segment
 
 import scala.xml.Elem
 
+
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("piechart" -> PieChartConfig)
+}
+
+
 object PieChartConfig extends VisualizationCompanion {
-    trait Mixin extends VisualizationMixins {
-        abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
-            super.visualizationInfos + ("piechart" -> PieChartConfig)
-    }
 
     def name = "PieChart"
 
