@@ -1,13 +1,93 @@
 package threesixty.algorithms.interpolation
 
-import threesixty.data.{ProcessedData, TaggedDataPoint}
-import threesixty.data.Data.{ValueType, Identifier, Timestamp}
+import threesixty.data.metadata.{Resolution, Scaling}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
-import threesixty.processor.SingleProcessingMethod
+import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
+
+import spray.json._
+import DefaultJsonProtocol._
+import threesixty.visualizer.VisualizationConfig
+import threesixty.visualizer.visualizations.BarChart.BarChartConfig
+import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig
+import threesixty.visualizer.visualizations.LineChart.LineChartConfig
+import threesixty.visualizer.visualizations.PieChart.PieChartConfig
+import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig
+import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig
+import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig
+import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig
+
+object SplineInterpolation extends ProcessingMethodCompanion {
+
+    trait Mixin extends ProcessingMixins {
+        abstract override def processingInfos: Map[String, ProcessingMethodCompanion] =
+            super.processingInfos + ("splineinterpolation" -> LinearInterpolation)
+    }
+
+    def name = "Spline Interpolation"
+
+    def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
+
+    def usage = """ Use responsibly """ // TODO
+
+    def apply(jsonString: String): SplineInterpolation = {
+        implicit val splineInterpolationFormat =
+            jsonFormat(SplineInterpolation.apply, "frequency", "idMapping")
+        jsonString.parseJson.convertTo[SplineInterpolation]
+    }
+
+    def computeDegreeOfFit(inputData: InputData): Double = {
+
+        var temp = 0.0
+        val meta = inputData.metadata
+
+        if (meta.scaling == Scaling.Ordinal) {
+            temp += 0.4
+        }
+        if (inputData.dataPoints.length >= 5) {
+            temp += 0.2
+        }
+        if (inputData.dataPoints.length >= 50) {
+            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
+        }
+        if (meta.resolution == Resolution.High) {
+            temp += 0.2
+        }
+        if (meta.resolution == Resolution.Middle) {
+            temp += 0.1
+        }
+
+        temp
+    }
+
+    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig ): Double = {
+
+        val strategyFactor = computeDegreeOfFit(inputData)
+        val visFactor = targetVisualization match {
+            //good
+            case _:LineChartConfig          => 1.0
+            case _:HeatLineChartConfig      => 1.0
+            case _:BarChartConfig           => 0.8
+            case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
+            //bad
+            case _:ScatterChartConfig       => 0.2
+            case _:ScatterColorChartConfig  => 0.2
+            case _:ProgressChartConfig      => 0.1
+            case _:PieChartConfig           => 0.0
+            //default
+            case _                          => 0.5
+        }
+
+        strategyFactor * visFactor
+    }
+
+}
+
 
 /**
-  *  Linear interpolator
+  *  Spline interpolator
   *
   *  @author Jens Woehrle
   *  @param resolution Desired max. time-distance between datapoints.
@@ -37,7 +117,7 @@ case class SplineInterpolation(resolution: Int, idMapping: Map[Identifier, Ident
           *  @param list of datapoints
           *  @returns list of datapoints with interpolated values and Tnterpolation-tags
           */
-        val odata = data.data.sortBy(d => timestamp2Long(d.timestamp))
+        val odata = data.dataPoints.sortBy(d => timestamp2Long(d.timestamp))
         val x = new Array[Long](odata.length)
         val y = new Array[Double](odata.length)
         for( j <- 0 until odata.length) {
@@ -87,13 +167,13 @@ case class SplineInterpolation(resolution: Int, idMapping: Map[Identifier, Ident
         //val dataPoints :  List[TaggedDataPoint] = new TaggedDataPoint(new Timestamp(x(0)), y(0), data.data(0).tags)
         var dataPoints = List[TaggedDataPoint]()
         while( tp < n ) {
-            dataPoints += new TaggedDataPoint(new Timestamp(x(0)), y(0), data.data(0).tags)
+            //dataPoints += new TaggedDataPoint(new Timestamp(x(0)), y(0), data.data(0).tags)
             tp += 1
             //einfügen dern andere...
         }
 
         val newID = idMapping(data.id)
 
-        Set(new ProcessedData(newID, dataPoints)
+        Set(new ProcessedData(newID, dataPoints))
     }
 }

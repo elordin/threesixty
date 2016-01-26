@@ -35,4 +35,35 @@ class DBSCANSpec extends FunSpec {
         }
     }
 
+    //Easy correlation and covariance claculation
+    describe("The dataset [0.1, 2.4, 5.1, 7.2, 9.2, 12.0] && [0.2, 2.5, 5.3, 6.2, 11.1, 12.0]") {
+        val sampleData1 = ProcessedData("", List(
+            TaggedDataPoint(new Timestamp(0),  0.1, Set()),
+            TaggedDataPoint(new Timestamp(1),  2.4, Set()),
+            TaggedDataPoint(new Timestamp(2),  5.1, Set()),
+            TaggedDataPoint(new Timestamp(3),  7.2, Set()),
+            TaggedDataPoint(new Timestamp(4),  9.2, Set()),
+            TaggedDataPoint(new Timestamp(5), 12.0, Set())
+        ))
+
+        val sampleData2 = ProcessedData("", List(
+            TaggedDataPoint(new Timestamp(0),  0.2, Set()),
+            TaggedDataPoint(new Timestamp(1),  2.5, Set()),
+            TaggedDataPoint(new Timestamp(2),  5.3, Set()),
+            TaggedDataPoint(new Timestamp(3),  6.2, Set()),
+            TaggedDataPoint(new Timestamp(4), 11.1, Set()),
+            TaggedDataPoint(new Timestamp(5), 12.0, Set())
+        ))
+
+        // TODO Values
+        it("should have a covariance of 5.1") {
+            assert( covariance(sampleData1, sampleData2) == 7.2 )
+        }
+
+        it("should have a correlation of 6.0") {
+            assert( correlation(sampleData1, sampleData2) == 6.0 )
+        }
+
+    }
+
 }
