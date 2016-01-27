@@ -43,7 +43,9 @@ object APIHandler {
             with LinearInterpolation.Mixin,
         new Visualizer
             with lineChart.Mixin
-            with pieChart.Mixin,
+            with pieChart.Mixin
+            with barChart.Mixin
+            with scatterChart.Mixin,
         FakeDatabaseAdapter
     )
 

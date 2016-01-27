@@ -4,4 +4,11 @@ project/*
 *~
 Thumbs.db
 .idea
+<<<<<<< HEAD
+.idea/workspace.xml
+.idea/workspace.xml
+.idea/workspace.xml
+.idea/workspace.xml
+=======
 bower_components/
+>>>>>>> refs/remotes/origin/master

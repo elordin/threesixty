@@ -35,18 +35,19 @@ case class Segment(val id: String,
                    val valueRadius: Double,
                    val value: String,
                    val fontSize: Option[Int] = None,
-                   val color: Option[String] = None) {
+                   val color: Option[RGBColor] = None) {
 
     def getSVGElement: Elem = {
         val (tlpx, tlpy) = calculateTextLabelPoint
 
         <g id={id}>
-            <path id="segment"
+            <path class="segment"
                   fill={getColor}
                   d={calculatePath} />
             <path stroke="#000000"
                   d={calculateLabelPath}/>
-            <text x={tlpx.toString}
+            <text class="value"
+                  x={tlpx.toString}
                   y={tlpy.toString}
                   font-family="Roboto, Segoe UI"
                   font-weight="100"
@@ -56,7 +57,7 @@ case class Segment(val id: String,
     }
 
     def getColor: String = {
-        if(color.isDefined) color.get else ""
+        if(color.isDefined) color.get.convertToColorString else ""
     }
 
     def getFontSize: String = {
