@@ -85,6 +85,34 @@ abstract class VisualizationConfig(
 
 
 
+    ///////////////////////////////////////////////////////////////////////////////
+
+
+
+
+    def isApplicableVis(inputData : Set[InputData]) : Boolean = {
+        require(inputData.size > 0, "Empty InputDataSet in deduction of Visualization. No deduction possible")
+
+        if (inputData.size ==1 ){
+            isMatching(inputData.head)
+        }else {
+            isMatching(inputData.head) && isApplicableVis(inputData.tail)
+        }
+    }
+
+
+
+    def isMatching(inputData: InputData) : Boolean = {
+
+        val requirements = metadata.dataRequirement
+        var isMatching = true
+        for( i <- 0 until requirements.length){
+            isMatching = isMatching && requirements(i).isMatchingData(inputData,null)
+        }
+        isMatching
+    }
+
+
 
 
 
