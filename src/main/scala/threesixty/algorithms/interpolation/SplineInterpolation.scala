@@ -34,9 +34,12 @@ object SplineInterpolation extends ProcessingMethodCompanion {
 
     def apply(jsonString: String): SplineInterpolation = {
         implicit val splineInterpolationFormat =
-            jsonFormat(SplineInterpolation.apply, "frequency", "idMapping")
+            jsonFormat({ idm: Map[Identifier, Identifier] => SplineInterpolation.apply(idm) }, "idMapping")
         jsonString.parseJson.convertTo[SplineInterpolation]
     }
+
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
+        SplineInterpolation(idMapping).asProcessingStep
 
     def computeDegreeOfFit(inputData: InputData): Double = {
 
@@ -90,9 +93,8 @@ object SplineInterpolation extends ProcessingMethodCompanion {
   *  Spline interpolator
   *
   *  @author Jens Woehrle
-  *  @param resolution Desired max. time-distance between datapoints.
   */
-case class SplineInterpolation(resolution: Int, idMapping: Map[Identifier, Identifier])
+case class SplineInterpolation(idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
