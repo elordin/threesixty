@@ -7,8 +7,8 @@ import threesixty.goals.Goal
 import threesixty.processor.ProcessingMethod
 
 /**
-  * @author Thomas Engel
-  */
+ * @author Thomas Engel
+ */
 case class DataRequirement(val resolution: Option[Resolution] = None,
                            val scaling: Option[Scaling] = None,
                            val requiredProcessingMethods: Option[List[ProcessingMethod]] = None,
@@ -16,12 +16,12 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
                            val requiredGoal: Option[Goal] = None) {
 
     /**
-      *  Method to determine if the input data fulfills the requirement
-      *
-      *  @param data an input data
-      *  @param pool Pool of datasets
-      *  @return true iff the input data fulfills the requirement
-      */
+     *  Method to determine if the input data fulfills the requirement
+     *
+     *  @param data an input data
+     *  @param pool Pool of datasets
+     *  @return true iff the input data fulfills the requirement
+     */
     def isMatchingData(data: InputData, pool: DataPool): Boolean = {
         // match resolution requirement
         val matchResolution = resolution match {

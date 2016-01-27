@@ -138,12 +138,19 @@ class Processor extends ProcessingMixins with UsageInfo {
         conversion(args)
     }
 
+    /**
+     *  Deduces the best fitting Processingstrategy for a given Set of InputData.
+     */
     def deduce(data: Set[InputData]): ProcessingStrategy = {
         ProcessingStrategy(processingInfos.values.par.map({
             info => (info, info.degreeOfFit(data))
         }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
     }
 
+    /**
+     *  Deduces the best fitting Processingstrategy for a given Set of InputData
+     *  and a Visualization.
+     */
     def deduce(data: Set[InputData], vizConf: VisualizationConfig): ProcessingStrategy = {
         ProcessingStrategy(processingInfos.values.par.map({
             info => (info, info.degreeOfFit(data, vizConf))

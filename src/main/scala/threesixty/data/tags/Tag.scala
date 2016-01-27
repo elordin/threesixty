@@ -37,11 +37,11 @@ object      ArtificialOrigin                        extends OriginTag {
   *
   * @param name name of the aggregated data
   */
-case class AggregationTag(val name: String) extends Tag {
+case class AggregationTag(val name: String)         extends Tag {
     override def toString() = name
 }
 
-trait       ChangedDataTag                        extends Tag
-object      Accumulated                            extends ChangedDataTag {
+trait       ChangedDataTag                          extends Tag
+object      Accumulated                             extends ChangedDataTag {
     override def toString(): String = "accumulated"
 }

@@ -171,8 +171,22 @@ VISUALIZATION
                 case "processingmethods" | "p" =>
                     val availableMethods = processor.processingInfos.keys
                     HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)))
-                case _ =>
-                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter."))
+                case helpFor =>
+                    visualizer
+                        .visualizationInfos
+                        .get(helpFor)
+                        .map(_.usage)
+                        .map(HelpResponse(_))
+                        .getOrElse(
+                            processor
+                                .processingInfos
+                                .get(helpFor)
+                                .map(_.usage)
+                                .map(HelpResponse(_))
+                                .getOrElse(
+                                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter."))
+                                )
+                        )
             }
             case _ => ErrorResponse(Engine.toErrorJson("Invalid format for for parameter."))
         }).getOrElse(HelpResponse(usage))
