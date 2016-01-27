@@ -38,7 +38,7 @@ case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
                 }
                 <g id="xLabel">
                     <text x={(right + 20).toString}
-                          y={(bottom + fontSize / 3.0).toString}
+                          y={(fontSize / 3.0).toString}
                           font-family="Roboto, Segoe UI"
                           font-weight="100"
                           font-size={fontSize.toString}
