@@ -44,6 +44,7 @@ abstract class MultiProcessingMethod(idMapping: Map[Identifier, Identifier])
 trait ProcessingMethodCompanion extends UsageInfo {
     def name: String
     def fromString: (String) => ProcessingStep
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep
 
     /**
      *  Decution methods
@@ -152,6 +153,18 @@ class Processor extends ProcessingMixins with UsageInfo {
         }
 
         conversion(args)
+    }
+
+    def deduce(data: Set[InputData]): ProcessingStrategy = {
+        ProcessingStrategy(processingInfos.values.par.map({
+            info => (info, info.degreeOfFit(data))
+        }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
+    }
+
+    def deduce(data: Set[InputData], vizConf: VisualizationConfig): ProcessingStrategy = {
+        ProcessingStrategy(processingInfos.values.par.map({
+            info => (info, info.degreeOfFit(data, vizConf))
+        }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
     }
 
 }
