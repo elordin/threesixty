@@ -15,27 +15,27 @@ sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
 
 /**
-  * ProcessingMethod that works only on one single dataset.
-  * It may however create datasets, and thus returns a Set of ProcessedData.
-  *
-  * @author Thomas Weber
-  *
-  * @param Single instance of ProcessedData it requires
-  * @return Set of ProcessedData, possibly including artificially created data
-  */
+ *  ProcessingMethod that works only on one single dataset.
+ *  It may however create datasets, and thus returns a Set of ProcessedData.
+ *
+ *  @author Thomas Weber
+ *
+ *  @param Single instance of ProcessedData it requires
+ *  @return Set of ProcessedData, possibly including artificially created data
+ */
 abstract class SingleProcessingMethod(idMapping: Map[Identifier, Identifier])
   extends ProcessingMethod(idMapping: Map[Identifier, Identifier])
   with Function1[ProcessedData, Set[ProcessedData]]
 
 
 /**
-  * ProcessingMethod that requires multiple datasets to process.
-  *
-  * @author Thomas Weber
-  *
-  * @param Set of ProcessedData that is going to process
-  * @return Set of ProcessedData, possibly including artificially created data
-  */
+ *  ProcessingMethod that requires multiple datasets to process.
+ *
+ *  @author Thomas Weber
+ *
+ *  @param Set of ProcessedData that is going to process
+ *  @return Set of ProcessedData, possibly including artificially created data
+ */
 abstract class MultiProcessingMethod(idMapping: Map[Identifier, Identifier])
   extends ProcessingMethod(idMapping: Map[Identifier, Identifier])
   with Function1[Set[ProcessedData], Set[ProcessedData]]
@@ -54,12 +54,7 @@ trait ProcessingMethodCompanion extends UsageInfo {
      */
     def degreeOfFit(inputData: Set[InputData]): Double = {
         require(inputData.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
-
-        if (inputData.size == 1) {
-            computeDegreeOfFit(inputData.head)
-        } else {
-            math.min(computeDegreeOfFit(inputData.head), degreeOfFit(inputData.tail))
-        }
+        inputData.map({ data => computeDegreeOfFit(data) }).min
     }
 
     /**
@@ -71,18 +66,11 @@ trait ProcessingMethodCompanion extends UsageInfo {
      */
     def degreeOfFit (inputData: Set[InputData], targetVisualization: VisualizationConfig): Double = {
         require(inputData.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
-
-        if (inputData.size == 1) {
-            computeDegreeOfFit(inputData.head, targetVisualization)
-        } else {
-            math.min(computeDegreeOfFit(inputData.head, targetVisualization),
-                degreeOfFit(inputData.tail, targetVisualization))
-        }
+        inputData.map({ data => computeDegreeOfFit(data, targetVisualization) }).min
     }
 
-    //have to be overwritten in ProcessingMethods
     def computeDegreeOfFit(inputData: InputData): Double
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig) : Double
+    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig): Double
 }
 
 
@@ -94,7 +82,8 @@ trait ProcessingMixins {
 /**
  *  Holds a list of available processing methods and some meta information.
  *
- *  Most notably knows and executes all conversions from JSON to [[threesixty.processor.ProcessingStep]].
+ *  Most notably knows and executes all conversions from JSON to [[threesixty.processor.ProcessingStep]]
+ *  as well as deductions when the processing strategy is not defined.
  */
 class Processor extends ProcessingMixins with UsageInfo {
 
@@ -132,24 +121,18 @@ class Processor extends ProcessingMixins with UsageInfo {
     @throws[NoSuchElementException]("if a requested method doesn't exist")
     def toProcessingStep(jsonString: String): ProcessingStep = {
         val json: JsObject = jsonString.parseJson.asJsObject
-        val method = try {
-            json.getFields("method")(0).convertTo[String]
-        } catch {
-            case e:IndexOutOfBoundsException =>
+        val method = json.fields.getOrElse("method",
                 throw new IllegalArgumentException("parameter \"method\" missing for processing step")
-        }
+            ).convertTo[String]
 
         val conversion: (String) => ProcessingStep =
             this.processingInfos.getOrElse(method,
                 throw new NoSuchElementException(s"Unknown processing method $method")
             ).fromString
 
-        val args: String = try {
-            json.getFields("args")(0).toString
-        } catch {
-            case e:IndexOutOfBoundsException =>
+        val args: String = json.fields.getOrElse("args",
                 throw new IllegalArgumentException(s"""parameter "args" missing for processing method $method""")
-        }
+            ).toString
 
         conversion(args)
     }

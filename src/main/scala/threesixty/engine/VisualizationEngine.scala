@@ -158,10 +158,9 @@ VISUALIZATION
      *
      *  @return HelpResponse with requested help or generic help if "for" was missing.
      */
-    def processHelpRequest(json: JsObject): EngineResponse = {
-        try {
-            val helpFor = json.fields("for").convertTo[String]
-            helpFor.toLowerCase match {
+    def processHelpRequest(json: JsObject): EngineResponse =
+        json.fields.get("for").map({
+            case JsString(forJson) => forJson.toLowerCase match {
                 case "visualizer" =>
                     HelpResponse(visualizer.usage)
                 case "processor" =>
@@ -173,13 +172,10 @@ VISUALIZATION
                     val availableMethods = processor.processingInfos.keys
                     HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)))
                 case _ =>
-                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter.").toString)
+                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter."))
             }
-        } catch {
-            // No "for" given
-            case e: NoSuchElementException => HelpResponse(usage)
-        }
-    }
+            case _ => ErrorResponse(Engine.toErrorJson("Invalid format for for parameter."))
+        }).getOrElse(HelpResponse(usage))
 
 
     /**
