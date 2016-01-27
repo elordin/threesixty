@@ -17,15 +17,14 @@ object AxisFactory {
                    availableLength: Int,
                    minValue: Double,
                    maxValue: Double,
-                   axisLabel: String,
+                   axisLabel: String = "",
                    minDistanceBetweenGridPoints: Option[Int] = None,
                    unit: Option[String] = None): Axis = {
 
         val result = axisType match {
             case AxisType.Nothing => new NoAxis(axisDim,
                                                 availableLength,
-                                                minValue,
-                                                maxValue)
+                                                axisLabel)
             case AxisType.ValueAxis => new ValueAxis(axisDim,
                                                      availableLength,
                                                      minValue,
@@ -60,8 +59,6 @@ object AxisFactory {
 
 abstract class Axis(axisDimension: AxisDimension.Value,
                     availableLength: Int,
-                    minValue: Double,
-                    maxValue: Double,
                     axisLabel: String,
                     minDistanceBetweenGridPoints: Option[Int]) {
 
@@ -112,20 +109,17 @@ abstract class Axis(axisDimension: AxisDimension.Value,
 
 case class NoAxis(val axisDimension: AxisDimension.Value,
                   val availableLength: Int,
-                  val minValue: Double,
-                  val maxValue: Double) extends Axis(axisDimension, availableLength, minValue, maxValue, "", None) {
+                  val axisLabel: String) extends Axis(axisDimension, availableLength, axisLabel, None) {
 
     def getNumberOfGridPoints: Int = 0
 
     def getUnit: Double = 0
 
-    def getMinimumDisplayedValue: Double = minValue
+    def getMinimumDisplayedValue: Double = 0
 
-    def getMaximumDisplayedValue: Double = maxValue
+    def getMaximumDisplayedValue: Double = availableLength
 
-    def convertValue(value: Double): Double = {
-        (value / (maxValue - minValue)) * availableLength
-    }
+    def convertValue(value: Double): Double = value
 
     def getGridLabels: List[String] = List.empty
 }
@@ -136,7 +130,7 @@ case class TimeAxis(val axisDimension: AxisDimension.Value,
                     val maxValue: Double,
                     val axisLabel: String,
                     val minDistanceBetweenGridPoints: Option[Int],
-                    val unit: Option[String]) extends Axis(axisDimension, availableLength, minValue, maxValue, axisLabel, minDistanceBetweenGridPoints) {
+                    val unit: Option[String]) extends Axis(axisDimension, availableLength, axisLabel, minDistanceBetweenGridPoints) {
 
     // calculate the distance between two control points on the axis
     val _unit = unit match {
@@ -220,7 +214,7 @@ case class ValueAxis(val axisDimension: AxisDimension.Value,
                      val maxValue: Double,
                      val axisLabel: String,
                      val minDistanceBetweenGridPoints: Option[Int],
-                     val unit: Option[Double]) extends Axis(axisDimension, availableLength, minValue, maxValue, axisLabel, minDistanceBetweenGridPoints) {
+                     val unit: Option[Double]) extends Axis(axisDimension, availableLength, axisLabel, minDistanceBetweenGridPoints) {
 
     // calculate the distance between two control points on the y-axis
     var _unit = unit.getOrElse(-1.0)

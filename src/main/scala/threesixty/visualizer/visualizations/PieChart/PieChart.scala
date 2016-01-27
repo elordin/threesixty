@@ -6,7 +6,7 @@ import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
-import threesixty.visualizer.visualizations.general.{DefaultColorScheme, Segment}
+import threesixty.visualizer.visualizations.general.{ColorScheme, Segment}
 
 import scala.xml.Elem
 
@@ -22,6 +22,7 @@ object PieChartConfig extends VisualizationCompanion {
     def name = "PieChart"
 
     def usage = "Parameters: \n" +
+                "    ids:               Set[String]          - The data identifiers\n" +
                 "    height:            Int                  - Height of the diagram in px\n" +
                 "    width:             Int                  - Width of the diagram in px\n" +
                 "    title:             String    (optional) - Diagram title\n" +
@@ -119,7 +120,7 @@ case class PieChartConfig(
     val widthLegendSymbol:      Option[Int]    = None,
     val distanceLegend:         Option[Int]    = None
 ) extends VisualizationConfig(
-    ids: Set[Identifier],
+    ids,
     height,
     width,
     title,
@@ -155,8 +156,6 @@ case class PieChartConfig(
 
     def _distanceLegend: Int = distanceLegend.getOrElse(20)
     def _widthLegendSymbol: Int = widthLegendSymbol.getOrElse(10)
-
-    val colorScheme = new DefaultColorScheme
 
     var segments = calculateSegments
 
@@ -302,8 +301,7 @@ case class PieChartConfig(
                 _radius + 20,
                 value,
                 Some(_fontSize),
-                Some(colorScheme.getColor(entry._1))
-                )
+                Some(ColorScheme.next))
 
             result = segment :: result
         }

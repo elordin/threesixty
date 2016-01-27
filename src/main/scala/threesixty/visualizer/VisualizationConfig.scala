@@ -83,7 +83,7 @@ abstract class VisualizationConfig(
      *  Method to determine if a list of input data fulfills the requirements of the visualization
      *
      *  @param inputData a list of input data
-     *  @param config the configuration
+     *  @param pool the data pool
      *  @return a maybe reordered list of input data that matches the visualization requirement
      */
     def isMatching(inputData: List[InputData], pool: DataPool): Option[List[InputData]] = {
