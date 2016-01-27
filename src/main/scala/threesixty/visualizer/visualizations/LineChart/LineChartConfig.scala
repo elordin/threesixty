@@ -199,7 +199,7 @@ case class LineChartConfig(
     }
 
     override def calculateOrigin: (Double, Double) = {
-        (_borderLeft, _borderTop - math.ceil(grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue)).toInt)
+        (_borderLeft, _borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
     }
 
     def apply(pool: DataPool): LineChartConfig.LineChart = {
