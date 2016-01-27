@@ -76,12 +76,13 @@ object Clustering extends ProcessingMethodCompanion {
                            epsilon: Double): Map[D, Classification] =
         DBSCAN.run[D](dataset,distFunction)
 
-
     def name = "Clustering"
 
     def usage = "Use responsibly..." // TODO
 
-    def fromString: (String) => ProcessingStep = ???
+    def fromString: (String) => ProcessingStep = ??? // TODO
+
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep = ??? // TODO
 
     def computeDegreeOfFit(inputData: InputData): Double = {
         var temp = 0.0

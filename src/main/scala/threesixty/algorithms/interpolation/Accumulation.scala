@@ -35,9 +35,12 @@ object Accumulation extends ProcessingMethodCompanion {
 
     def apply(jsonString: String): Accumulation = {
         implicit val akkumulationFormat =
-            jsonFormat(Accumulation.apply, "frequency", "idMapping")
+            jsonFormat({ idm: Map[Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
         jsonString.parseJson.convertTo[Accumulation]
     }
+
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
+        Accumulation(idMapping).asProcessingStep
 
     def computeDegreeOfFit(inputData: InputData): Double = {
 
@@ -93,7 +96,7 @@ object Accumulation extends ProcessingMethodCompanion {
   *  @author Thomas Weber
   *  @param frequency Desired max. time-distance between datapoints.
   */
-case class Accumulation(frequency: Int, idMapping: Map[Identifier, Identifier])
+case class Accumulation(idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
@@ -124,23 +127,6 @@ case class Accumulation(frequency: Int, idMapping: Map[Identifier, Identifier])
         def akkumulated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
             case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
                 TaggedDataPoint(t1, v1, tags1 + Accumulated) :: akkumulated( TaggedDataPoint(t2, v1.value + v2.value, tags2 + Accumulated) :: ds )
-
-                /*if (t2 - t1 > frequency) {
-
-                    val m = ((v2.value - v1.value) / (t2 - t1))
-                    val b = v1.value - m * t1
-
-                    def interpolFunc(x: Int): TaggedDataPoint =
-                        TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
-
-                    TaggedDataPoint(t1, v1, tags1 + Original) ::
-                        Range(t1.toInt + frequency, t2.toInt, frequency).map(interpolFunc).toList ++
-                            linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
-
-                } else {
-                    TaggedDataPoint(t1, v1, tags1 + Original) ::
-                        linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
-                }*/
 
             case otherwise => otherwise
         }
