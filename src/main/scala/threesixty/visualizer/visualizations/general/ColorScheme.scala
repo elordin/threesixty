@@ -1,5 +1,6 @@
 package threesixty.visualizer.visualizations.general
 
+/*
 /**
   * @author Thomas Engel
   */
@@ -28,8 +29,8 @@ case class DefaultColorScheme() extends ColorScheme {
         List("#222222", "#444444", "#666666", "#888888", "#AAAAAA", "#CCCCCC")
     }
 }
+*/
 
-/*
 
 object RGBColor {
     @throws[NumberFormatException]
@@ -42,6 +43,7 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
     require(0 <= green && green < 256)
     require(0 <= blue && blue < 256)
     override def toString(): String = s"rgb($red, $green, $blue)"
+    def convertToColorString: String = "#" + Integer.toHexString(red) + Integer.toHexString(green) + Integer.toHexString(blue)
 }
 
 /**
@@ -79,5 +81,3 @@ object ColorScheme extends Iterator[RGBColor] {
     }
     def hasNext = true
 }
-
-*/
