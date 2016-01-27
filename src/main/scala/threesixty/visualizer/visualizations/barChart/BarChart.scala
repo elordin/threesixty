@@ -42,6 +42,7 @@ object BarChartConfig extends VisualizationCompanion {
                 "    distanceBetweenBars    Double      (optional) - Distance between two bars in px\n" +
                 "    showValues             Boolean     (optional) - If values should be shown\n" +
                 "    minDistanceY           Int         (optional) - Minimum number of px between two control points on the y-axis\n" +
+                "    optUnitY               Double      (optional) - Value of the desired unit on the y-axis\n" +
                 "    fontSizeTitle          Int         (optional) - Font size of the title\n" +
                 "    fontSize               Int         (optional) - Font size of labels\n"
 
@@ -57,7 +58,7 @@ object BarChartConfig extends VisualizationCompanion {
             "ids", "height", "width", "optYMin", "optYMax",
             "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
             "borderRight", "distanceTitle", "widthBar", "distanceBetweenBars", "showValues",
-            "minDistanceY", "fontSizeTitle", "fontSize")
+            "minDistanceY", "optUnitY", "fontSizeTitle", "fontSize")
         jsonString.parseJson.convertTo[BarChartConfig]
     }
 
@@ -95,6 +96,7 @@ case class BarChartConfig(
      val distanceBetweenBars:    Option[Double] = None,
      val showValues:             Option[Boolean]= None,
      val minDistanceY:           Option[Int]    = None,
+     val optUnitY:               Option[Double] = None,
      val fontSizeTitle:          Option[Int]    = None,
      val fontSize:               Option[Int]    = None
 ) extends VisualizationConfig(
@@ -134,7 +136,7 @@ case class BarChartConfig(
         )))
 
     override def calculateOrigin: (Double, Double) = {
-        (_borderLeft, _borderTop - math.ceil(grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue)).toInt)
+        (_borderLeft, _borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
     }
 
     private def calculateWidthBar(data: ProcessedData): Double = {
@@ -195,7 +197,8 @@ case class BarChartConfig(
         yMax = math.max(0, yMax)
 
         val xAxis = AxisFactory.createAxis(AxisType.Nothing, AxisDimension.xAxis, widthChart, 0, 0, _xLabel)
-        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY))
+        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY),
+            if(optUnitY.isDefined) Some(optUnitY.get.toString) else None)
 
         grid = new Grid(xAxis, yAxis, _fontSize)
 
