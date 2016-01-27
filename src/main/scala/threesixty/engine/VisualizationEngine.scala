@@ -80,7 +80,7 @@ VISUALIZATION
         try {
             val json = jsonString.parseJson.asJsObject
 
-            val requestType: String = json.getFields("type")(0).convertTo[String]
+            val requestType: String = json.fields("type").convertTo[String]
 
             val result: EngineResponse =
                 (requestType) match {
@@ -92,8 +92,8 @@ VISUALIZATION
 
             result
         } catch {
-            case e:JsonParser.ParsingException => println(jsonString); ErrorResponse(Engine.toErrorJson("Invalid JSON"))
-            case e:IndexOutOfBoundsException => ErrorResponse(Engine.toErrorJson("type parameter missing"))
+            case e:JsonParser.ParsingException  => ErrorResponse(Engine.toErrorJson("Invalid JSON"))
+            case e:NoSuchElementException       => ErrorResponse(Engine.toErrorJson("type parameter missing"))
         }
     }
 
@@ -168,10 +168,10 @@ VISUALIZATION
                     HelpResponse(processor.usage)
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
-                    HelpResponse(JsObject(Map[String, JsValue]("visualizations" -> availablevisualizations.toJson)).toString)
+                    HelpResponse(JsObject(Map[String, JsValue]("visualizations" -> availablevisualizations.toJson)))
                 case "processingmethods" | "p" =>
                     val availableMethods = processor.processingInfos.keys
-                    HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)).toString)
+                    HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)))
                 case _ =>
                     ErrorResponse(Engine.toErrorJson("Unknown help-for parameter.").toString)
             }
