@@ -24,6 +24,7 @@ object LineChartConfig extends VisualizationCompanion {
 
     def usage = "LineChart\n" +
                 "  Parameters: \n" +
+                "    ids:               Set[String]          - The data identifiers\n" +
                 "    height:            Int                  - Height of the diagram in px\n" +
                 "    width:             Int                  - Width of the diagram in px\n" +
                 "    optXMin:           Timestamp (optional) - Minimum value of the x-axis\n" +
@@ -50,7 +51,7 @@ object LineChartConfig extends VisualizationCompanion {
 
     /**
      *  Public constructor that parses JSON into a LineChartConfig
-     *  @param json representation of the config
+     *  @param jsonString representation of the config
      *  @return LineChartConfig with all arguments from the JSON set
      */
     def apply(jsonString: String): LineChartConfig = {
@@ -133,7 +134,7 @@ case class LineChartConfig(
     val fontSizeTitle:Option[Int]       = None,
     val fontSize:     Option[Int]       = None
 ) extends VisualizationConfig(
-    ids: Set[Identifier],
+    ids,
     height,
     width,
     title,
@@ -151,14 +152,11 @@ case class LineChartConfig(
     def _minDistanceX: Int = minDistanceX.getOrElse(20)
     def _minDistanceY: Int = minDistanceY.getOrElse(20)
 
-    require(_minDistanceX > 0, "Value for minDistanceX must be positive.")
-    require(_minDistanceY > 0, "Value for minDistanceY must be positive.")
+    require(_minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
+    require(_minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
 
     val metadata = new VisualizationMetadata(
             List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
-
-    var yMin: Double = 0
-    var yMax: Double = 0
 
     var xMin: Long = 0
     var xMax: Long = 0
@@ -209,8 +207,8 @@ case class LineChartConfig(
         xMin = min.toLong
         xMax = max.toLong
 
-        yMin = optYMin.getOrElse(calculateYMinMulti(pool.getDatasets(ids)).value)
-        yMax = optYMax.getOrElse(calculateYMaxMulti(pool.getDatasets(ids)).value)
+        val yMin = optYMin.getOrElse(calculateYMinMulti(pool.getDatasets(ids)).value)
+        val yMax = optYMax.getOrElse(calculateYMaxMulti(pool.getDatasets(ids)).value)
 
         val xAxis = AxisFactory.createAxis(AxisType.TimeAxis, AxisDimension.xAxis, widthChart, xMin, xMax, _xLabel, Some(_minDistanceX), optUnitX)
         val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY),
