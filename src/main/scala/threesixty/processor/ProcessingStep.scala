@@ -1,8 +1,7 @@
 package threesixty.processor
 
-import threesixty.data.{InputData, ProcessedData}
+import threesixty.data.ProcessedData
 import threesixty.data.Data.Identifier
-import threesixty.config.Config
 
 import scala.collection.parallel._
 

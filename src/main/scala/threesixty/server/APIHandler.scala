@@ -4,13 +4,10 @@ import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
 import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.visualizer.visualizations.PieChart.PieChartConfig
-import threesixty.visualizer.visualizations._
 import threesixty.algorithms.interpolation.LinearInterpolation
-
-
 import threesixty.data.Data.Identifier
 import threesixty.data.InputData
+import threesixty.visualizer.visualizations._
 
 import akka.actor.{Actor, Props}
 import akka.event.Logging
@@ -35,13 +32,18 @@ object APIHandler {
     val dbURI: String =
         config.getString("database.uri")
 
+    val debug: Boolean = try {
+        config.getBoolean("debug")
+    } catch {
+        case _:ConfigException => false
+    }
 
     lazy val engine: Engine = VisualizationEngine(
         new Processor
             with LinearInterpolation.Mixin,
         new Visualizer
-            with LineChart.Mixin
-            with PieChart.Mixin,
+            with lineChart.Mixin
+            with pieChart.Mixin,
         FakeDatabaseAdapter
     )
 
@@ -51,6 +53,8 @@ object APIHandler {
 
 /**
  *  Reads the HTTP requests from a client and passes them to the engine. Sends responses.
+ *
+ *  @author Thomas Weber
  */
 class APIHandler extends Actor {
 
@@ -75,11 +79,11 @@ class APIHandler extends Actor {
                 case t: Throwable =>
                     peer ! HttpResponse(
                         status = StatusCodes.InternalServerError,
-                        entity = HttpEntity(`application/json`, s"""{ "error": "${t.getMessage}" }"""),
+                        entity = HttpEntity(`application/json`,
+                            s"""{ "error": "${if (APIHandler.debug) t.getMessage else "Internal Server Error" }" }"""),
                         headers = List(`Access-Control-Allow-Origin`(AllOrigins))
                     )
             }
-
 
         case HttpRequest(POST, _, _, HttpEntity.Empty, _) =>
             sender ! HttpResponse(
@@ -99,7 +103,7 @@ class APIHandler extends Actor {
             context stop self
 
         case msg =>
-            log.error("Unknown message: " + msg)
+            log.info("Unknown message: " + msg)
             sender ! HttpResponse(
                 status = StatusCodes.MethodNotAllowed,
                 entity = HttpEntity(`application/json`, """{ "error": "Unknown message." }"""),

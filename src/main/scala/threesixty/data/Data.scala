@@ -62,7 +62,7 @@ object Data {
 
 
 object Implicits {
-    import Data.{Timestamp, Identifier, DoubleValue, IntValue}
+    import Data.Timestamp
 
     implicit def timestamp2Long(timestamp: Timestamp): Long = timestamp.getTime()
     implicit def long2timestamp(t: Long): Timestamp = new Timestamp(t)
@@ -81,7 +81,6 @@ object DataJsonProtocol extends DefaultJsonProtocol {
             case _ => deserializationError("Timestamp expected")
         }
     }
-
 
     implicit val timeframeJsonFormat = jsonFormat(Timeframe.apply, "start", "end")
 

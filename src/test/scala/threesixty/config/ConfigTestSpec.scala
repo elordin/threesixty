@@ -1,39 +1,39 @@
-package threesixty.config
+package threesixty.data
 
 import org.scalatest.FunSpec
 
 import threesixty.persistence.FakeDatabaseAdapter
 
-class ConfigTestSpec extends FunSpec {
+class DataPoolTestSpec extends FunSpec {
 
-    describe("Creating a Config without data IDs") {
+    describe("Creating a DataPool without data IDs") {
         it("should throw an IllegalArgumentException") {
             intercept[IllegalArgumentException] {
-                new Config(Set(), FakeDatabaseAdapter)
+                new DataPool(Set(), FakeDatabaseAdapter)
             }
         }
     }
 
-    describe("Creating a Config with the FakeDatabaseAdapter") {
+    describe("Creating a DataPool with the FakeDatabaseAdapter") {
         describe("with all default IDs (data1, data2, data3)") {
-            val config = new Config(
+            val pool = new DataPool(
                 Set("data1", "data2", "data3"),
                 FakeDatabaseAdapter)
             it("should have all three datasets available") {
-                assert(config.datasets.size == 3)
-                assert(config.datasets.contains("data1"))
-                assert(config.datasets.contains("data2"))
-                assert(config.datasets.contains("data3"))
+                assert(pool.datasets.size == 3)
+                assert(pool.datasets.contains("data1"))
+                assert(pool.datasets.contains("data2"))
+                assert(pool.datasets.contains("data3"))
             }
 
             it("should throw a NoSuchElementException when accessing data4") {
                 intercept[NoSuchElementException] {
-                    config.getDatasets(Set("data4"))
+                    pool.getDatasets(Set("data4"))
                 }
             }
 
             it("should return the correct dataset when accesing it") {
-                var result = config.getDatasets(Set("data1")).toList
+                var result = pool.getDatasets(Set("data1")).toList
                 assert(result.length == 1)
                 assert(result(0).id == "data1")
                 assert(result(0).dataPoints.size == 26)

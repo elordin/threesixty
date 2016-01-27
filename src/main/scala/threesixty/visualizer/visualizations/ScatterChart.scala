@@ -1,10 +1,11 @@
-package threesixty.visualizer.visualizations.ScatterChart
+package threesixty.visualizer.visualizations.scatterChart
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
-import threesixty.config.Config
+
+import scala.xml.Elem
 
 
 trait Mixin extends VisualizationMixins {
@@ -31,7 +32,7 @@ object ScatterChartConfig extends VisualizationCompanion {
 
 
     case class ScatterChart(config: ScatterChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: xml.Elem = <svg></svg>
+        def getSVGElements: List[Elem] = ???
     }
 }
 
@@ -55,6 +56,6 @@ case class ScatterChartConfig(
             scaling = Some(Scaling.Ordinal)
         )))
 
-    def apply(config: Config): ScatterChartConfig.ScatterChart = ScatterChartConfig.ScatterChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): ScatterChartConfig.ScatterChart = ScatterChartConfig.ScatterChart(this, pool.getDatasets(ids))
 
 }

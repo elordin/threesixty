@@ -3,10 +3,9 @@ package threesixty.engine
 import threesixty.processor.{Processor, ProcessingStrategy, ProcessingStep}
 import threesixty.visualizer.{Visualizer, VisualizationConfig}
 import threesixty.persistence.DatabaseAdapter
-import threesixty.config.Config
 
+import threesixty.data.{DataPool, UnsafeInputData}
 import threesixty.data.Data.Identifier
-import threesixty.data.UnsafeInputData
 import threesixty.algorithms.interpolation.LinearInterpolation
 
 import spray.http.HttpResponse
@@ -81,7 +80,7 @@ VISUALIZATION
         try {
             val json = jsonString.parseJson.asJsObject
 
-            val requestType: String = json.getFields("type")(0).convertTo[String]
+            val requestType: String = json.fields("type").convertTo[String]
 
             val result: EngineResponse =
                 (requestType) match {
@@ -93,8 +92,8 @@ VISUALIZATION
 
             result
         } catch {
-            case e:JsonParser.ParsingException => println(jsonString); ErrorResponse(Engine.toErrorJson("Invalid JSON"))
-            case e:IndexOutOfBoundsException => ErrorResponse(Engine.toErrorJson("type parameter missing"))
+            case e:JsonParser.ParsingException  => ErrorResponse(Engine.toErrorJson("Invalid JSON"))
+            case e:NoSuchElementException       => ErrorResponse(Engine.toErrorJson("type parameter missing"))
         }
     }
 
@@ -169,10 +168,10 @@ VISUALIZATION
                     HelpResponse(processor.usage)
                 case "visualizations" | "v" =>
                     val availablevisualizations = visualizer.visualizationInfos.keys
-                    HelpResponse(JsObject(Map[String, JsValue]("visualizations" -> availablevisualizations.toJson)).toString)
+                    HelpResponse(JsObject(Map[String, JsValue]("visualizations" -> availablevisualizations.toJson)))
                 case "processingmethods" | "p" =>
                     val availableMethods = processor.processingInfos.keys
-                    HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)).toString)
+                    HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)))
                 case _ =>
                     ErrorResponse(Engine.toErrorJson("Unknown help-for parameter.").toString)
             }
@@ -236,12 +235,12 @@ VISUALIZATION
                     println("Both missing"); (???, ???)       // TODO deduction
             }
 
-        val config: Config = new Config(dataIDs, dbAdapter)
+        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
 
         // Apply processing Methods
-        processingStrategy(config)
+        processingStrategy(dataPool)
 
         // return Visualization
-        VisualizationResponse(visualizationConfig(config))
+        VisualizationResponse(visualizationConfig(dataPool))
     }
 }

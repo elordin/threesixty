@@ -24,7 +24,7 @@ class TimeframeTestSpec extends FlatSpec{
             DataPoint(max, 3))
         val inputdata = InputData("Data1", "", datapoints, null)
 
-        val timeframe = Timeframe.deduceInputData(inputdata)
+        val timeframe = Timeframe.deduceInputData(inputdata.dataPoints)
 
         assertResult(min) {timeframe.start}
         assertResult(max) {timeframe.end}

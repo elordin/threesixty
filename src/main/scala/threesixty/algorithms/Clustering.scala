@@ -7,14 +7,15 @@ import threesixty.processor.{MultiProcessingMethod, ProcessingMethodCompanion, P
 
 import clustering._
 import threesixty.visualizer.VisualizationConfig
-import threesixty.visualizer.visualizations.BarChart.BarChartConfig
-import threesixty.visualizer.visualizations.HeatLineChart.HeatLineChartConfig
-import threesixty.visualizer.visualizations.LineChart.LineChartConfig
-import threesixty.visualizer.visualizations.PieChart.PieChartConfig
-import threesixty.visualizer.visualizations.PolarAreaChart.PolarAreaChartConfig
-import threesixty.visualizer.visualizations.ProgressChart.ProgressChartConfig
-import threesixty.visualizer.visualizations.ScatterChart.ScatterChartConfig
-import threesixty.visualizer.visualizations.ScatterColorChart.ScatterColorChartConfig
+import threesixty.visualizer.visualizations.barChart.BarChartConfig
+import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
+import threesixty.visualizer.visualizations.pieChart.PieChartConfig
+import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
+import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
+import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
+import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
+
 
 object Clustering extends ProcessingMethodCompanion {
 

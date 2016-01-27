@@ -1,7 +1,6 @@
 package threesixty.visualizer
 
-import threesixty.config.Config
-import threesixty.data.InputData
+import threesixty.data.{InputData, DataPool}
 import threesixty.data.metadata.Resolution.Resolution
 import threesixty.data.metadata.Scaling.Scaling
 import threesixty.goals.Goal
@@ -20,10 +19,10 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
       *  Method to determine if the input data fulfills the requirement
       *
       *  @param data an input data
-      *  @param config the configuration
+      *  @param pool Pool of datasets
       *  @return true iff the input data fulfills the requirement
       */
-    def isMatchingData(data: InputData, config: Config): Boolean = {
+    def isMatchingData(data: InputData, pool: DataPool): Boolean = {
         // match resolution requirement
         val matchResolution = resolution match {
             case Some(res) => false // res == data.metadata.resolution

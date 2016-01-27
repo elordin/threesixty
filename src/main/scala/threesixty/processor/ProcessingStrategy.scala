@@ -1,38 +1,35 @@
 package threesixty.processor
 
-import threesixty.config.Config
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 
 
 /**
  *  Aggregation of multiple [[threesixty.processor.ProcessingStep]]s.
  *
- *  Acts as a function that is applied to a configuration, processing
- *  the ProcessedData stored in that configuration by piping it through
- *  the ProcessingSteps. It updates the processed data in the given config.
+ *  Acts as a function that is applied to a pool of data, processing
+ *  the ProcessedData stored in that pool by piping it through
+ *  the ProcessingSteps. It updates the processed data in the given pool.
  *
  *  @author Thomas Weber
  *
- *  @param config Configuration containing the data to be processed
+ *  @param steps Individual processing steps in the pipeline
  */
 case class ProcessingStrategy(steps: ProcessingStep*)
-        extends Function1[Config, Unit] {
+        extends Function1[DataPool, Unit] {
 
     /**
      *  Processes the input dataset based on the provided methods and config.
-     *  @param config Configuration defining the current processing pipeline.
+     *  @param pool Data pool at the current state in processing pipeline.
      */
-    def apply(config:Config): Unit =
+    def apply(pool: DataPool): Unit =
         steps.foreach {
-            step =>
-                val result = step.run(config.datasets)
-                config.pushData(result)
+            step => pool.pushData(step.run(pool.datasets))
         }
 
     /**
      *  Alternative way of calling the processing strategy.
      *  @see apply
      */
-    def process(config:Config): Unit = apply(config)
+    def process(pool: DataPool): Unit = apply(pool)
 
 }

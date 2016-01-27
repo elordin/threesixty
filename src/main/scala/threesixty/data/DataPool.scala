@@ -1,6 +1,5 @@
-package threesixty.config
+package threesixty.data
 
-import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
 
 import threesixty.persistence.DatabaseAdapter
@@ -15,7 +14,7 @@ import scala.collection.immutable.{Map => ImmutableMap}
  *  @param databaseAdapter DatabaseAdapter
  */
 @throws[NoSuchElementException]("if an id was given, for which no InputData exists.")
-class Config(
+class DataPool(
     val dataIDs: Set[Identifier],
     implicit val databaseAdapter: DatabaseAdapter
 ) {

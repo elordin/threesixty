@@ -1,10 +1,11 @@
-package threesixty.visualizer.visualizations.PolarAreaChart
+package threesixty.visualizer.visualizations.polarAreaChart
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.{ValueType, Timestamp, Identifier}
 import threesixty.data.metadata.Scaling
 import threesixty.visualizer._
-import threesixty.config.Config
+
+import scala.xml.Elem
 
 
 trait Mixin extends VisualizationMixins {
@@ -32,7 +33,7 @@ object PolarAreaChartConfig extends VisualizationCompanion {
 
 
     case class PolarAreaChart(config: PolarAreaChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        def toSVG: xml.Elem = <svg></svg>
+        def getSVGElements: List[Elem] = ???
     }
 }
 
@@ -52,6 +53,7 @@ case class PolarAreaChartConfig private (
             requiredGoal = None //TODO NoGoal
         )))
 
-    def apply(config: Config): PolarAreaChartConfig.PolarAreaChart = PolarAreaChartConfig.PolarAreaChart(this, config.getDatasets(ids))
+    def apply(pool: DataPool): PolarAreaChartConfig.PolarAreaChart =
+        PolarAreaChartConfig.PolarAreaChart(this, pool.getDatasets(ids))
 
 }
