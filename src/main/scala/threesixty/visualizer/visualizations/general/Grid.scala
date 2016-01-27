@@ -19,6 +19,14 @@ case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
         val top = yAxis.convert(yAxis.getMaximumDisplayedValue)
         val bottom = yAxis.convert(yAxis.getMinimumDisplayedValue)
 
+        var yCoordXLabel = bottom
+
+        // if a x-axis is drawn place the label next to it
+        val converted0 = yAxis.convert(0)
+        if(bottom <= yCoordXLabel && yCoordXLabel <= top) {
+           yCoordXLabel = 0
+        }
+
         <g id="grid">
             <g id="xAxis">
                 {for (d <- xAxis.getGridPointsAndLabel) yield
@@ -38,7 +46,7 @@ case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
                 }
                 <g id="xLabel">
                     <text x={(right + 20).toString}
-                          y={(fontSize / 3.0).toString}
+                          y={(yCoordXLabel + fontSize / 3.0).toString}
                           font-family="Roboto, Segoe UI"
                           font-weight="100"
                           font-size={fontSize.toString}
