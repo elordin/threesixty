@@ -12,11 +12,11 @@ import threesixty.data.tags.{Accumulated, Tag, Original, Interpolated}
 class AcumAgregSpec extends FunSpec {
 
     describe("Accumulation") {
-        val interpolator = Accumulation(1, Map("SomeID" -> "SomeID"))
+        val interpolator = Accumulation(Map("SomeID" -> "SomeID"))
 
 
         describe("easy case") {
-            val interpolator = Accumulation(1, Map("SomeID" -> "SomeID"))
+            val interpolator = Accumulation(Map("SomeID" -> "SomeID"))
 
             describe("from (0,0) to (3, 3)") {
                 val sampleData = new ProcessedData("SomeID", List(
