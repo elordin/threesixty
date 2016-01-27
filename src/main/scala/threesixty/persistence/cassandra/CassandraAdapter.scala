@@ -2,6 +2,7 @@ package threesixty.persistence.cassandra
 
 import java.util.UUID
 
+import com.twitter.util.Future
 import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
@@ -55,7 +56,18 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       *  @param id Id of existing data set to append to
       *  @return Either Right(id), id of appended data, or Left(errormsg) on error
       */
-    def appendData(data:InputData):Either[String, Identifier] = ???
+    def appendData(data:InputData):Either[String, Identifier] = {
+        val dataId = UUID.fromString(data.id)
+        val points = data.dataPoints
+
+        try {
+            points.foreach(CassandraAdapter.dataPoints.store(_, dataId))
+            Right(data.id)
+        }
+        catch
+        { case e: Exception => Left("Error in appending data to existing Data. " + e.toString)}
+
+    }
 
     /**
       *  Attempts to append data to a data set of given id.
@@ -65,7 +77,16 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       *  @param id Id of data set to append to
       *  @return Either Right(id), new id of inserted data or dataset appended to, or Left(errormsg) on error
       */
-    def appendOrInsertData(data:InputData):Either[String, Identifier] = ???
+    def appendOrInsertData(data:InputData):Either[String, Identifier] = {
+
+        val testIfExisting = CassandraAdapter.inputDatasets.getInputDataByIdentifier(UUID.fromString(data.id))
+        testIfExisting match {
+            case _: Future[None] => insertData(data)
+            case _: Future[Some[InputData]] => appendData(data)
+            case _ => Left("Something went wrong during appendOrInsert of new Data (id: " + data.id +")")
+        }
+        Right(data.id)
+    }
 
 }
 
