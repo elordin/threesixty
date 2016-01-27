@@ -34,7 +34,7 @@ case class DefaultColorScheme() extends ColorScheme {
 object RGBColor {
     @throws[NumberFormatException]
     def apply(hex: String):RGBColor = apply(Integer.parseInt(hex, 16))
-    def apply(hex: Int): RGBColor = RGBColor(hex % 0xFF, hex >> 8 & 0xFF, hex >> 16 & 0xFF)
+    def apply(hex: Int): RGBColor = RGBColor(hex >> 16 & 0xFF, hex >> 8 & 0xFF, hex & 0xFF)
 }
 
 case class RGBColor(red: Int, green: Int, blue: Int) {
@@ -49,6 +49,7 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
  *
  *  @example {{{
  *      ColorScheme.next // returns another color
+ *      ColorSchem(15) // returns a list of 15 colors
  *  }}}
  */
 object ColorScheme extends Iterator[RGBColor] {
@@ -56,7 +57,7 @@ object ColorScheme extends Iterator[RGBColor] {
         RGBColor("E91E63"),
         RGBColor("9C27B0"),
         RGBColor("673AB7"),
-        RGBColor("3F51B5"),
+        RGBColor("3F51FB5"),
         RGBColor("2196F3"),
         RGBColor("03A9F4"),
         RGBColor("00BCD4"),
@@ -78,6 +79,8 @@ object ColorScheme extends Iterator[RGBColor] {
         colorIterator.next
     }
     def hasNext = true
+    def reset = { colorIterator = colors.iterator }
+    def apply(n: Int): List[RGBColor] = colorIterator.zip((1 to n).iterator).toList.map(_._1)
 }
 
 */
