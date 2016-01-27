@@ -23,7 +23,7 @@ object SplineInterpolation extends ProcessingMethodCompanion {
 
     trait Mixin extends ProcessingMixins {
         abstract override def processingInfos: Map[String, ProcessingMethodCompanion] =
-            super.processingInfos + ("splineinterpolation" -> LinearInterpolation)
+            super.processingInfos + ("splineinterpolation" -> SplineInterpolation)
     }
 
     def name = "Spline Interpolation"
