@@ -44,7 +44,8 @@ object APIHandler {
         new Visualizer
             with lineChart.Mixin
             with pieChart.Mixin
-            with barChart.Mixin,
+            with barChart.Mixin
+            with scatterChart.Mixin,
         FakeDatabaseAdapter
     )
 
