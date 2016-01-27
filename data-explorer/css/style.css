@@ -102,3 +102,20 @@ header button:active {
 .data-list input:checked + label {
     background-color: #4CAF50;
 }
+
+.config select {
+    display: inline-block;
+    padding: .5em;
+    font-size: 1.25em;
+    width: calc(100% - 4em);
+}
+
+.addbtn {
+    font-size: 2em;
+    padding: .2em .4em;
+    border: none;
+    float: right;
+    width: 2em;
+    background-color: #4CAF50;
+    color: #333;
+}
