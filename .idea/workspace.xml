@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5c011ca-2a04-4eb7-bd44-7c8a0db214d5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/SplineInterpolation.scala" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/SplineInterpolation.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/Aggregation.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Threesixty.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -76,14 +77,24 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SplineInterpolation.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SplineInterpolation.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/SplineInterpolation.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.25">
+            <state vertical-scroll-proportion="0.0">
               <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
               <folding>
                 <element signature="e#45#98#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Aggregation.scala" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/Aggregation.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.05704698">
+              <caret line="2" column="27" selection-start-line="2" selection-start-column="27" selection-end-line="2" selection-end-column="27" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -207,6 +218,7 @@
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/algorithms/statistics/StatisticalAnalysis.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/algorithms/StatisticalAnalysisTestSpec.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/SplineInterpolation.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/Aggregation.scala" />
       </list>
     </option>
   </component>
@@ -1593,14 +1605,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/LinearInterpolation.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/data/InputData.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1972,11 +1976,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/SplineInterpolation.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.25">
+        <state vertical-scroll-proportion="0.0">
           <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
           <folding>
             <element signature="e#45#98#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/algorithms/interpolation/Aggregation.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.05704698">
+          <caret line="2" column="27" selection-start-line="2" selection-start-column="27" selection-end-line="2" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
