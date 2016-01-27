@@ -88,9 +88,9 @@ object Accumulation extends ProcessingMethodCompanion {
 
 
 /**
-  *  Linear interpolator
+  *  Accumulator
   *
-  *  @author Thomas Weber
+  *  @author Jens Wöhrle
   *  @param frequency Desired max. time-distance between datapoints.
   */
 case class Accumulation(frequency: Int, idMapping: Map[Identifier, Identifier])
