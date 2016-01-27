@@ -50,7 +50,7 @@ object StatisticalAnalysis {
     def covariance(data1: ProcessedData, data2: ProcessedData): Double = {
         // easy idea with perfect dataset  //
         if( data1.dataPoints.length == data2.dataPoints.length ) {
-            val cov = 1/(data1.dataPoints.length)
+            val cov = 1.0/(data1.dataPoints.length)
             var sum = 0.0
             for( i <- 0 until data1.dataPoints.length ) {
                 sum += (data1.dataPoints(i).value.value - mean(data1).value) * (data2.dataPoints(i).value.value - mean(data2).value)

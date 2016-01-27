@@ -8,6 +8,7 @@ import StatisticalAnalysis._
 
 class DBSCANSpec extends FunSpec {
 
+    val e = 0.001
     describe("The dataset [0.1, 2.4, 5.1, 7.2, 9.2, 12.0]") {
         val sampleData = ProcessedData("", List(
             TaggedDataPoint(new Timestamp(0),  0.1, Set()),
@@ -57,11 +58,15 @@ class DBSCANSpec extends FunSpec {
 
         // TODO Values
         it("should have a covariance of 5.1") {
-            assert( covariance(sampleData1, sampleData2) == 7.2 )
+            val cov = covariance(sampleData1, sampleData2)
+            assert( 16.668 - e <= cov )
+            assert( cov <= 16.668 + e )
         }
 
         it("should have a correlation of 6.0") {
-            assert( correlation(sampleData1, sampleData2) == 6.0 )
+            val cor = correlation(sampleData1, sampleData2)
+            assert( cor <= 0.980 + e )
+            assert( 0.980 - e <= cor )
         }
 
     }
