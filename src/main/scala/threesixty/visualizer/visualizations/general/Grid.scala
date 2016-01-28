@@ -3,8 +3,8 @@ package threesixty.visualizer.visualizations.general
 import scala.xml.Elem
 
 /**
-  * @author Thomas Engel
-  */
+ *  @author Thomas Engel
+ */
 case class Grid(val xAxis: Axis, val yAxis: Axis, val fontSize: Int = 12) {
     require(xAxis != null, "Null value for xAxis is not allowed.")
     require(yAxis != null, "Null value for yAxis is not allowed.")

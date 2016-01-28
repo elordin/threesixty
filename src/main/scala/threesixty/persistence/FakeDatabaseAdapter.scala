@@ -33,7 +33,26 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }).toList
     }
 
+    def generateGaussianDatapointSeries(mean: Double, stdDev: Double, start: Long, end: Long, amount: Int): List[DataPoint] = {
+        var t: Long = start
+        (for { _ <- 1 to amount } yield {
+            t += (end - start) / amount + Random.nextInt(4) - 2
+            DataPoint(t, mean * (Random.nextGaussian * stdDev))
+        }).toList
+    }
+
     var database: Map[Identifier, InputData] = Map(
+        "dataG" -> InputData(
+            "dataG", "gaussian demodata",
+            generateGaussianDatapointSeries(72, 16, 100, 1000000, 500000),
+            CompleteInputMetadata(
+                Timeframe(new Timestamp(23), new Timestamp(104)),
+                Reliability.Unknown,
+                Resolution.Low,
+                Scaling.Ordinal,
+                ActivityType("something")
+            )
+        ),
         "data1" -> InputData(
             "data1", "demodata",
             generateDatapointSeries(60, 120, 23, 104, 26),

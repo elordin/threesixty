@@ -58,7 +58,8 @@ object LineChartConfig extends VisualizationCompanion {
         implicit val lineChartConfigFormat = jsonFormat(LineChartConfig.apply,
             "ids", "height", "width", "optXMin", "optXMax", "optYMin", "optYMax",
             "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
-            "borderRight", "distanceTitle", "minDistanceX", "minDistanceY", "optUnitX", "optUnitY", "fontSizeTitle", "fontSize")
+            "borderRight", "distanceTitle", "minDistanceX", "minDistanceY",
+            "optUnitX", "optUnitY", "fontSizeTitle", "fontSize")
         jsonString.parseJson.convertTo[LineChartConfig]
     }
 
