@@ -35,6 +35,12 @@ class TimeframesTable extends CassandraTable[Timeframes, Timeframe] {
 
 abstract class Timeframes extends TimeframesTable with RootConnector {
 
+
+/** stores a given Timeframe in the database
+  * @param timeframe which timeframe to store
+  *@param identifier identifier with which the dataPoint is stored in the table and that acts as foreign key in MetadataTable
+  * @return returns an awaitable future object*/
+
     def store(timeframe: Timeframe, identifier: UUID = UUID.randomUUID()): Future[ResultSet] = {
         val startTime = new DateTime(timeframe.start.getTime())
         val endTime = new DateTime(timeframe.end.getTime)

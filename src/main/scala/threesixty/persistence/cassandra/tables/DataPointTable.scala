@@ -23,6 +23,9 @@ class DataPointsTable extends CassandraTable[DataPoints, DataPoint] {
     object value extends DoubleColumn(this)
     object inputDataId extends UUIDColumn(this) with PartitionKey[UUID]
 
+    /**
+      * this method is just for internal use.
+      * it is called via getXYZ-methods in child classes*/
     def fromRow(row: Row): DataPoint = {
         val resultTimestamp = new Timestamp(timestamp(row).getMillis)
         val resultValue = DoubleValue(value(row))
@@ -33,6 +36,12 @@ class DataPointsTable extends CassandraTable[DataPoints, DataPoint] {
 
 abstract class DataPoints extends DataPointsTable with RootConnector {
 
+    /**
+      * stores a given DataPoint in the database
+      * @param dataPoint which dataPoint to store
+      * @param inputDataId connect dataPoint to an InputData
+      *@param identifier(opt) give identifier with which the dataPoint is stored in the table
+      * @return returns an awaitable future object*/
     def store(dataPoint: DataPoint, inputDataId: UUID, identifier: UUID = UUID.randomUUID()): Future[ResultSet] = {
         val dateTime = new DateTime(dataPoint.timestamp.getTime());
 
