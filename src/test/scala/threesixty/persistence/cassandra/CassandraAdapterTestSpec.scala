@@ -72,14 +72,36 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
         it("should append datapoints to dataset if dataset is already in the DB "){
             val prevPoints = dataPoints
             val newPoint = DataPoint(new Timestamp(1453227510719L), DoubleValue(190.3))
-            val DataWithMorePoints = InputData(inputDataSet.id.toString, measurement, List(newPoint), inputMetadata)
+            val DataNewPoint = InputData(inputDataSet.id.toString, measurement, List(newPoint), inputMetadata)
 
-            CassandraAdapter.appendOrInsertData(inputDataSet) // -> Dataset is in the DB
-            CassandraAdapter.appendOrInsertData(DataWithMorePoints) should be (Right(inputDataSet.id.toString))
-            //Do it a second time and see that there are no new points
+            //Load some (irrelevant) data into Db
+            CassandraAdapter.insertData(inputDataSet)
+            //add a new datapoint
+            CassandraAdapter.appendOrInsertData(DataNewPoint) should be (Right(inputDataSet.id.toString))
+            //Do it a second time and get message that there are no new points to add
+            CassandraAdapter.appendOrInsertData(DataNewPoint) should be (Left("All Datapoints were already stored in the Database"))
+            //Do it with newPoint + previously added points -> same message
+            val DataWithMorePoints = InputData(inputDataSet.id.toString, measurement, prevPoints ++ List(newPoint), inputMetadata)
             CassandraAdapter.appendOrInsertData(DataWithMorePoints) should be (Left("All Datapoints were already stored in the Database"))
+
+
         }
         it("should update the metadata of the expanded dataset"){
+            val id = inputDataSet.id
+            val originalTimeframe = inputDataSet.metadata.timeframe
+            //fill database
+            CassandraAdapter.appendOrInsertData(inputDataSet)
+            //add a new point that causes the timestamp to get updated
+            val newPoint = DataPoint(new Timestamp(1000000000000L), DoubleValue(0.003)) //-> forces update of Timeframe
+            val DataNewPoint = InputData(id.toString, measurement, List(newPoint), inputMetadata)
+            CassandraAdapter.appendOrInsertData(DataNewPoint) should be (Right(inputDataSet.id.toString)) //-> insert worked
+            // check whether Timeframe got changed after insertion of that point
+            var queriedTimeframe = CassandraAdapter.getDataset(id) match {
+                    case Right(dataset) => dataset.metadata.timeframe
+                    case Left(_) => fail()
+                }
+
+            assert(!queriedTimeframe.equals(originalTimeframe))
 
         }
     }
