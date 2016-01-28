@@ -69,4 +69,8 @@ abstract class InputDatasets extends InputDataTable with RootConnector {
         select.where(_.identifier eqs identifier).one()
     }
 
+    def getMetadataID(identifier: UUID):  Future[Option[UUID]] ={
+        select(_.inputMetadataId).where(_.identifier eqs identifier).one()
+
+    }
 }

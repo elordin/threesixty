@@ -3,7 +3,7 @@ package threesixty.persistence.cassandra.tables
 import java.util.UUID
 
 import com.datastax.driver.core.ConsistencyLevel
-import com.websudos.phantom.CassandraTable
+import com.websudos.phantom.{dsl, CassandraTable}
 import com.websudos.phantom.column.DateTimeColumn
 import com.websudos.phantom.connectors.RootConnector
 import com.websudos.phantom.dsl._
@@ -28,6 +28,7 @@ class TimeframesTable extends CassandraTable[Timeframes, Timeframe] {
         val resultEndTime = new Timestamp(endTime(row).getMillis)
 
         Timeframe(resultStartTime, resultEndTime)
+
     }
 
 }
@@ -48,4 +49,20 @@ abstract class Timeframes extends TimeframesTable with RootConnector {
         select.where(_.identifier eqs identifier).one()
     }
 
+    def updateTimeframe(identifier : UUID, start: Timestamp, end : Timestamp) : Future[ResultSet] = {
+
+        val startTime = new DateTime(start.getTime())
+        val endTime = new DateTime(end.getTime())
+
+        //update starttime
+        update.where(_.identifier eqs identifier).modify( _.startTime setTo startTime)
+          .consistencyLevel_=(ConsistencyLevel.ALL).future()
+        //update endTime
+
+        var res = update.where(_.identifier eqs identifier).modify( _.endTime setTo endTime)
+          .consistencyLevel_=(ConsistencyLevel.ALL).future()
+
+
+        res
+    }
 }

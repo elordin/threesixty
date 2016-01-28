@@ -1,5 +1,6 @@
 package threesixty.persistence.cassandra
 
+import java.sql.ResultSet
 import java.util.UUID
 
 import com.sun.xml.internal.bind.v2.TODO
@@ -90,7 +91,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         else {
             try {
                 cleanedPoints.foreach(CassandraAdapter.dataPoints.store(_, dataId))
-                updateMetadata(data)
+                updateMetadata(data, points ++ cleanedPoints)
             }
             catch {
                 case e: Exception => Left("Error in appending data to existing Data. " + e.toString)
@@ -103,7 +104,8 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
     def cleanPoints(points : List[DataPoint], id : UUID): List[DataPoint] ={
 
         val existingPoints = Await.result(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(id), Duration.Inf)
-        points diff existingPoints toList
+         points.diff(existingPoints)
+
     }
 
 
@@ -114,19 +116,28 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       * Method that is called after appending new datapoints to InputData
       * Updates the Timeframe of the param InputData
       */
-    def updateMetadata(inputData: InputData) : Either[String, Identifier] = {
+    def updateMetadata(inputData: InputData, points: List[DataPoint]) : Either[String, Identifier] = {
         val dataset = getDataset(inputData.id) match {
             case Right(data) => data
         }
-        //TODO
-        /* val allPoints = dataset.dataPoints
-         val min = allPoints.minBy(_.timestamp).timestamp
-         val max = allPoints.maxBy(_.timestamp).timestamp
-         */   //
-        //GOTO MetaDatatable  -> get TimeframeID
-        //GOTO TImeframe with ID -> update start(min), end(max)
-        //TODO
+
+         val min = points.minBy(_.timestamp.getTime).timestamp
+         val max = points.maxBy(_.timestamp.getTime).timestamp
+
+        try {
+            //GOTO MetaDatatable  -> get TimeframeID
+            val metaId = Await.result(CassandraAdapter.inputDatasets.getMetadataID(UUID.fromString(inputData.id)), Duration.Inf)
+            //GOTO TImeframe with ID
+            val timeframe_Id = Await.result((CassandraAdapter.inputMetadataSets.getTimeframeId(metaId.get)), Duration.Inf)
+            //-> update start(min), end(max)
+            Await.result(CassandraAdapter.timeframes.updateTimeframe(timeframe_Id.get, min, max), Duration.Inf)
+
         Right(inputData.id)
+        }
+        catch{
+            case e: Exception => Left("problem when updating the timeframe for new dataPoints \n " + e.toString)
+            case _ => Left("problem when updating the timeframe for new dataPoints. - no more detailed information available")
+        }
 
     }
 

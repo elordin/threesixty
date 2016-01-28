@@ -64,8 +64,17 @@ abstract class InputMetadataSets extends InputMetadataTable with RootConnector {
             .future()
     }
 
+  /**
+    * calls Method fromRow()
+    */
+
     def getInputMetadataByIdentifier(identifier: UUID): Future[Option[CompleteInputMetadata]] = {
         select.where(_.identifier eqs identifier).one()
+    }
+
+    def getTimeframeId(identifier: UUID):  Future[Option[UUID]] ={
+    select(_.timeframeId).where(_.identifier eqs identifier).one()
+
     }
 
 }
