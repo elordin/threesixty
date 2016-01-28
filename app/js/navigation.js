@@ -1,21 +1,23 @@
 $("#burger-button").click(function (event) {
     toggleNavigationWidth();
+    toggleNavigationDescription();
 });
 
 
 function toggleNavigationWidth() {
-    if ($("aside").width() == 64) {
-        $("aside").width("260px");
+    var $aside = $("aside")
+    if ($aside.width() == 64) {
+        $aside.width("220px");
     } else {
-        $("aside").width("64px")
+        $aside.width("64px")
     }
 }
 
-
-
-$('#fullpage').fullpage({
-    sectionSelector: '.vertical-scrolling',
-    slideSelector: '.horizontal-scrolling',
-    controlArrows: false
-    // more options here
-});
+function toggleNavigationDescription() {
+    var $description = $(".nav-description")
+    if ($description.hasClass("visible")) {
+        $description.removeClass("visible")
+    } else {
+        $description.addClass("visible")
+    }
+}
