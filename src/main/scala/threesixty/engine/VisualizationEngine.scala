@@ -161,6 +161,10 @@ VISUALIZATION
     def processHelpRequest(json: JsObject): EngineResponse =
         json.fields.get("for").map({
             case JsString(forJson) => forJson.toLowerCase match {
+                case "data" => ???
+                case "data-insert" => ???
+                case "data-get" => ???
+
                 case "visualizer" =>
                     HelpResponse(visualizer.usage)
                 case "processor" =>
