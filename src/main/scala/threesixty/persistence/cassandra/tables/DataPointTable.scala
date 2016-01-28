@@ -35,6 +35,8 @@ abstract class DataPoints extends DataPointsTable with RootConnector {
 
     def store(dataPoint: DataPoint, inputDataId: UUID, identifier: UUID = UUID.randomUUID()): Future[ResultSet] = {
         val dateTime = new DateTime(dataPoint.timestamp.getTime());
+
+
         insert.value(_.identifier, identifier)
             .value(_.timestamp, dateTime)
             .value(_.inputDataId, inputDataId)

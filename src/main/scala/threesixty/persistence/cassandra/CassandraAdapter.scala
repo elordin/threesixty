@@ -2,11 +2,12 @@ package threesixty.persistence.cassandra
 
 import java.util.UUID
 
+import com.sun.xml.internal.bind.v2.TODO
 import com.twitter.util.Future
 import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
-import threesixty.data.InputData
+import threesixty.data.{DataPoint, InputData}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.persistence.cassandra.tables._
 
@@ -49,25 +50,6 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Right(data.id)
     }
 
-    /**
-      *  Appends data to a data set of given id
-      *
-      *  @param data Data to insert into the database
-      *  @param id Id of existing data set to append to
-      *  @return Either Right(id), id of appended data, or Left(errormsg) on error
-      */
-    def appendData(data:InputData):Either[String, Identifier] = {
-        val dataId = UUID.fromString(data.id)
-        val points = data.dataPoints
-
-        try {
-            points.foreach(CassandraAdapter.dataPoints.store(_, dataId))
-            Right(data.id)
-        }
-        catch
-        { case e: Exception => Left("Error in appending data to existing Data. " + e.toString)}
-
-    }
 
     /**
       *  Attempts to append data to a data set of given id.
@@ -79,13 +61,73 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       */
     def appendOrInsertData(data:InputData):Either[String, Identifier] = {
 
-        val testIfExisting = CassandraAdapter.inputDatasets.getInputDataByIdentifier(UUID.fromString(data.id))
+        val testIfExisting = getDataset(data.id)
         testIfExisting match {
-            case _: Future[None] => insertData(data)
-            case _: Future[Some[InputData]] => appendData(data)
+            case Left(_) => insertData(data)
+            case Right(_) => appendData(data)
             case _ => Left("Something went wrong during appendOrInsert of new Data (id: " + data.id +")")
         }
-        Right(data.id)
+
+    }
+
+
+
+
+    /**
+      *  Appends data to a data set of given id
+      *
+      *  @param data Data to insert into the database
+      *  @param id Id of existing data set to append to
+      *  @return Either Right(id), id of appended data, or Left(errormsg) on error
+      */
+    def appendData(data:InputData):Either[String, Identifier] = {
+        val dataId = UUID.fromString(data.id)
+        val points = data.dataPoints
+        val cleanedPoints = cleanPoints(points, dataId)
+
+        if  (cleanedPoints.isEmpty)
+            {Left("All Datapoints were already stored in the Database")}
+        else {
+            try {
+                cleanedPoints.foreach(CassandraAdapter.dataPoints.store(_, dataId))
+                updateMetadata(data)
+            }
+            catch {
+                case e: Exception => Left("Error in appending data to existing Data. " + e.toString)
+            }
+        }
+
+    }
+
+
+    def cleanPoints(points : List[DataPoint], id : UUID): List[DataPoint] ={
+
+        val existingPoints = Await.result(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(id), Duration.Inf)
+        points diff existingPoints toList
+    }
+
+
+
+
+
+    /**
+      * Method that is called after appending new datapoints to InputData
+      * Updates the Timeframe of the param InputData
+      */
+    def updateMetadata(inputData: InputData) : Either[String, Identifier] = {
+        val dataset = getDataset(inputData.id) match {
+            case Right(data) => data
+        }
+        //TODO
+        /* val allPoints = dataset.dataPoints
+         val min = allPoints.minBy(_.timestamp).timestamp
+         val max = allPoints.maxBy(_.timestamp).timestamp
+         */   //
+        //GOTO MetaDatatable  -> get TimeframeID
+        //GOTO TImeframe with ID -> update start(min), end(max)
+        //TODO
+        Right(inputData.id)
+
     }
 
 }

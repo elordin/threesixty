@@ -20,7 +20,7 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
       *
       *  @param data an input data
       *  @param pool Pool of datasets
-      *  @return true iff the input data fulfills the requirement
+      *  @return true if the input data fulfills the requirement
       */
     def isMatchingData(data: InputData, pool: DataPool): Boolean = {
         // match resolution requirement

@@ -154,7 +154,7 @@ abstract class VisualizationConfig(
         result
     }
 
-    def isMatching_limited(inputData: List[InputData], pool: DataPool) = Option[List[InputData]] {
+    def isMatching_limited(inputData: List[InputData], pool: DataPool): Option[List[InputData]] = {
 
         // Build matrix that determines if a specific input data can be matched to a specific data requirement
         val matchingMatrix = Array.ofDim[Boolean](inputData.size, metadata.dataRequirement.size)
