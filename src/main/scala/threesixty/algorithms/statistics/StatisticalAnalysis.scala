@@ -1,5 +1,7 @@
 package threesixty.algorithms.statistics
 
+import threesixty.data.Data.Timestamp
+
 import threesixty.data.Implicits._
 import threesixty.data.{ProcessedData, TaggedDataPoint, Data}
 import Data.ValueType
@@ -26,6 +28,12 @@ object StatisticalAnalysis {
      */
     def mean(data: ProcessedData): ValueType = {
         data.dataPoints.map(_.value.value).sum / data.dataPoints.length
+    }
+    def mean(dataPoints: List[TaggedDataPoint]): ValueType = {
+        dataPoints.map(_.value.value).sum / dataPoints.length
+    }
+    def meanTimestamp(dataPoints: List[TaggedDataPoint]): Timestamp = {
+        new Timestamp(dataPoints.map(_.timestamp.getTime).sum / dataPoints.length)
     }
 
     /**

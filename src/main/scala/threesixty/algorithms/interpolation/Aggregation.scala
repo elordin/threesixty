@@ -4,8 +4,9 @@ import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags.{Accumulated, Tag, Interpolated, Original}
+import threesixty.data.tags.{Aggregated, Tag, Interpolated, Original}
 import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
+import threesixty.algorithms.statistics.StatisticalAnalysis
 
 import spray.json._
 import DefaultJsonProtocol._
@@ -88,37 +89,44 @@ object Aggregation extends ProcessingMethodCompanion {
 
 
 /**
-  *  Linear interpolator
+  *  Aggregator
   *
-  *  @author Thomas Weber
-  *  @param frequency Desired max. time-distance between datapoints.
-  */
-case class Aggregation(frequency: Int, idMapping: Map[Identifier, Identifier])
+  *  @author Jens Wöhrle
+  *  @param aggregationMode desired Data points as result
+  *                 positive Value: It will just seperate the data in numData Blocks and gives its mean out
+  *                 -1: Will aggregate on a daily basis
+  *                 -2: EnumAggregation
+  */ //groupby() bei Listen :-)
+case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
       *  Creates a new dataset with ID as specified in idMapping.
-      *  Inserts interpolated values along the original ones into
-      *  this new dataset and adds tags to identify interpolated
-      *  and original values.
+      *  Creates new Dataset, but with aggregated Data which can directly used for
+      *  the diagramm as the number of data has been reduced
+      *  Tag aggegated will be added as well
+      *
       *
       *  @param data Data to interpolate
       *  @return One element Set containing the new dataset
       */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
+        if( aggregationMode > 0 ) {
+            val agdata = data.dataPoints.sortBy(d => -timestamp2Long((d.timestamp)))
 
-        /**
-          * Interpolation function.
-          * For each combination of two points it creates the linear
-          * equation paramters m (slope) and b (offset).
-          * It the generates the appropriate number of intermediary points
-          * with the corresponding values and tags and inserts them into
-          * the list of datapoints.
-          *
-          * @param list of datapoints
-          * @return list of datapoints with interpolated values and Tnterpolation-tags
-          */
+            val agregsize = math.ceil(agdata.length/aggregationMode).toInt
+
+            var l = List[TaggedDataPoint]()
+
+            for( i <- 0 until aggregationMode) {
+                var l = agdata.drop(agregsize)
+                    l = TaggedDataPoint(StatisticalAnalysis.mean()) : l
+            }
+
+            val newID = idMapping
+        } else if( aggregationMode == -1) {
+        }
         Set()
     }
 }
