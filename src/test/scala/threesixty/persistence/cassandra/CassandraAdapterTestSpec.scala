@@ -20,6 +20,10 @@ import com.websudos.phantom.dsl._
 class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
     with BeforeAndAfterAll with CassandraConnector.keyspace.Connector {
 
+    /**
+      * clean up that is done before and after testing
+      * hence, you can use the same example data many times
+    */
     override def beforeAll(): Unit = {
         super.beforeAll()
         Await.result(CassandraAdapter.autocreate.future(), 30.seconds)
@@ -89,18 +93,20 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
         it("should update the metadata of the expanded dataset"){
             val id = inputDataSet.id
             val originalTimeframe = inputDataSet.metadata.timeframe
+
             //fill database
             CassandraAdapter.appendOrInsertData(inputDataSet)
+
             //add a new point that causes the timestamp to get updated
             val newPoint = DataPoint(new Timestamp(1000000000000L), DoubleValue(0.003)) //-> forces update of Timeframe
             val DataNewPoint = InputData(id.toString, measurement, List(newPoint), inputMetadata)
             CassandraAdapter.appendOrInsertData(DataNewPoint) should be (Right(inputDataSet.id.toString)) //-> insert worked
+
             // check whether Timeframe got changed after insertion of that point
             var queriedTimeframe = CassandraAdapter.getDataset(id) match {
                     case Right(dataset) => dataset.metadata.timeframe
                     case Left(_) => fail()
                 }
-
             assert(!queriedTimeframe.equals(originalTimeframe))
 
         }
