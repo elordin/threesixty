@@ -25,8 +25,12 @@ case class ProcessingStep(val method: ProcessingMethod, val dataIDs: Set[Identif
     @throws[NoSuchElementException]("if ProcessedData for one of the ids could not be found")
     def run(pool: DataPool): Set[ProcessedData] = {
         method match {
-            case m: SingleProcessingMethod => dataIDs.map(pool(_)).par.flatMap(m(_)).seq
-            case m: MultiProcessingMethod => m(dataIDs.map(pool(_)))
+            case m: SingleProcessingMethod => dataIDs.map({
+                id => pool(id).getOrElse(throw new NoSuchElementException(s"No dataset with id $id found."))
+            }).par.flatMap(m(_)).seq
+            case m: MultiProcessingMethod => m(dataIDs.map({
+                id => pool(id).getOrElse(throw new NoSuchElementException(s"No dataset with id $id found."))
+            }))
         }
     }
 }

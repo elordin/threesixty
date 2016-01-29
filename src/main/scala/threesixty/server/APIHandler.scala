@@ -38,8 +38,8 @@ object APIHandler {
         case _:ConfigException => false
     }
 
-    lazy val engine: Engine = VisualizationEngine using
-        new Processor with LinearInterpolation.Mixin and new Visualizer
+    lazy val engine: Engine = VisualizationEngine using new Processor
+            with LinearInterpolation.Mixin and new Visualizer
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin

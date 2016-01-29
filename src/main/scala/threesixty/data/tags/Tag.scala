@@ -1,6 +1,6 @@
 package threesixty.data.tags
 
-import threesixty.data.InputData
+import threesixty.data.InputDataLike
 
 // TODO: CSS classes
 
@@ -22,10 +22,10 @@ object      Original                                extends InterpolationTag {
  *  sets or entirely artificially created.
  */
 trait       OriginTag                               extends Tag
-case class  InputOrigin(origin:InputData)           extends OriginTag {
+case class  InputOrigin(origin: InputDataLike)           extends OriginTag {
     override def toString() = s"from-${origin.id}"
 }
-case class  MultiInputOrigin(origin:Set[InputData]) extends OriginTag {
+case class  MultiInputOrigin(origin:Set[InputDataLike]) extends OriginTag {
     override def toString() = origin.foldLeft("") { (s, o) => s + " from-" + o.id }
 }
 object      ArtificialOrigin                        extends OriginTag {

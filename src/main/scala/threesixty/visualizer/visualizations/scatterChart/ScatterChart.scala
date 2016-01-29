@@ -53,10 +53,7 @@ object ScatterChartConfig extends VisualizationCompanion {
       *  @return ScatterChartConfig with all arguments from the JSON set
       */
     def apply(jsonString: String): ScatterChartConfig = {
-        implicit val lineChartConfigFormat = jsonFormat(ScatterChartConfig.apply,
-            "ids", "height", "width", "optXMin", "optXMax", "optYMin", "optYMax",
-            "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
-            "borderRight", "distanceTitle", "minDistanceX", "minDistanceY", "optUnitX", "optUnitY", "fontSizeTitle", "fontSize")
+        implicit val lineChartConfigFormat = jsonFormat21(ScatterChartConfig.apply)
         jsonString.parseJson.convertTo[ScatterChartConfig]
     }
 

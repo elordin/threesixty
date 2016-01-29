@@ -50,10 +50,10 @@ object Accumulation extends ProcessingMethodCompanion {
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.length >= 5) {
+        if (inputData.dataPoints.size >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.length >= 50) {
+        if (inputData.dataPoints.size >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {

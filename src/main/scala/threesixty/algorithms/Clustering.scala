@@ -106,10 +106,10 @@ object Clustering extends ProcessingMethodCompanion {
             temp+= 0.1
         }
 
-        if (inputData.dataPoints.length > 25) {
+        if (inputData.dataPoints.size > 25) {
             temp += 0.35
         }
-        else if (inputData.dataPoints.length >= 5) {
+        else if (inputData.dataPoints.size >= 5) {
             temp += 0.2
         }
 
