@@ -14,12 +14,6 @@ header {
     margin: 0 0 0 64px;
 }
 
-main {
-    margin: 0 0 0 64px;
-}
-
-
-
 aside {
     float: left;
     background: #323232;
@@ -28,17 +22,21 @@ aside {
     position: absolute;
 }
 
+main {
+    margin: 0 0 0 92px;
+}
+
 
 
 /* ****************** */
 /*       Header       */
 /* ****************** */
 
-h1 {
+header h1 {
     display: inline-block;
     color: white;
-    margin: 15px 28px;
-    font-size: 1.8em;
+    margin: 18px 28px;
+    font-size: 1.5em;
     font-weight: 100;
 }
 
@@ -47,18 +45,6 @@ h1 {
 /* ****************** */
 /*      Sidebar       */
 /* ****************** */
-
-
-.nav-item {
-    display: inline-block;
-    width: 100%;
-    height: 64px;
-    float: left;
-}
-
-.nav-item.selected {
-    background: #777777;
-}
 
 aside a {
     display: inline-block;
@@ -73,9 +59,6 @@ aside a:hover {
 aside a.selected {
     background: #777777;
 }
-
-
-
 
 
 /* Navigation Button */
@@ -97,7 +80,16 @@ aside a.selected {
 
 
 
+.nav-item {
+    display: inline-block;
+    width: 100%;
+    height: 64px;
+    float: left;
+}
 
+.nav-item.selected {
+    background: #777777;
+}
 
 .nav-image {
     width: 44px;
@@ -122,4 +114,23 @@ aside a.selected {
     display: inline-block;
     height: 64px;
 }
+
+
+
+/* ****************** */
+/*    Main Content    */
+/* ****************** */
+
+main h1 {
+    color: black;
+    font-size: 1.6em;
+    font-weight: 100;
+}
+
+main h2 {
+    font-size: 0.9em;
+    font-weight: 400;
+}
+
+
 

@@ -5,12 +5,12 @@
     <link rel="stylesheet" href="css/normalize.min.css">
     <link rel="stylesheet" type="text/css" href="css/jquery.fullpage.min.css" />
     <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/dashboard.css">
 </head>
     
 <body>
     
     <aside id="sidebar">    
-        
         <div id="burger-container" class="nav-item">
             <button id="burger-button">
                 <img id="burger-image" class="nav-image" src="img/menu.png">
@@ -69,23 +69,25 @@
                 </div>
             </a>
         </div>
-        
     </aside>
     
     
     <header>
-        
         <h1>Dashboard</h1>
-        
     </header>
     
     
     <main>
+        <h1>Recent Activity</h1>
+        <h2>Average daily activity pattern</h2>
+        <pre id="daily-activity"></pre>
         
+        <h2>Sleep duration</h2>
     </main>
     
     
     <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/navigation.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/dashboard.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>
