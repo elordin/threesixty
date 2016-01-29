@@ -3,17 +3,38 @@ package threesixty.visualizer.visualizations.general
 import java.sql.{Date, Timestamp}
 
 /**
+  * This abstract class is used for scaling a time period.
+  *
+  * @param name the name
+  * @param baseMillis the milliseconds for the base unit
+  * @param factor the factor
+  *
   * @author Thomas Engel
   */
 abstract class TimeScaling(val name: String, val baseMillis: Long, val factor: Int = 1) {
     require(baseMillis > 0, "Value for baseMillis must be positive.")
 
+    /**
+      * @return the total number of milliseconds for this scaling
+      */
     def getTotalMillis: Long = baseMillis * factor
 
+    /**
+      * @return a string for the unit
+      */
     def getUnit: String = ""
 
+    /**
+      * @param index of the point starting with 0
+      * @param millis the milliseconds at this point
+      * @return the label string
+      */
     def getLabel(index: Int, millis: Long): String
 
+    /**
+      * @param currentXMin the desired minimum at the start
+      * @return the actual minimum displayed value
+      */
     def getRealMinimum(currentXMin: Long): Long
 }
 
