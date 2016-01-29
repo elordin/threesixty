@@ -7,6 +7,14 @@ import threesixty.goals.Goal
 import threesixty.processor.ProcessingMethod
 
 /**
+ * This class contains the input data requirements for a visualization type.
+ *
+ * @param resolution the required resolution
+ * @param scaling the required scaling
+ * @param requiredProcessingMethods a list of required processing methods
+ * @param excludedProcessingMethods a list of processing methods that can not be applied
+ * @param requiredGoal the required goal
+ *
  * @author Thomas Engel
  */
 case class DataRequirement(val resolution: Option[Resolution] = None,
