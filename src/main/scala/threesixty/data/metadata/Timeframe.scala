@@ -41,4 +41,6 @@ case class Timeframe(val start: Timestamp, val end: Timestamp) {
     require(start != null, "Null value for start not allowed")
     require(end != null, "Null value for end not allowed")
     require(start.before(end), "Start must be before the end.")
+
+    def length: Long = end.getTime - start.getTime
 }
