@@ -37,7 +37,9 @@ aside {
 h1 {
     display: inline-block;
     color: white;
-    margin: 0;
+    margin: 15px 28px;
+    font-size: 1.8em;
+    font-weight: 100;
 }
 
 

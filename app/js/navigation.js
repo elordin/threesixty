@@ -7,7 +7,7 @@ $("#burger-button").click(function (event) {
 function toggleNavigationWidth() {
     var $aside = $("aside")
     if ($aside.width() == 64) {
-        $aside.width("220px");
+        $aside.width("264px");
     } else {
         $aside.width("64px")
     }
