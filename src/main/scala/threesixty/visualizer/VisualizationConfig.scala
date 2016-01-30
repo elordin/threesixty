@@ -2,7 +2,7 @@ package threesixty.visualizer
 
 import threesixty.data.{InputData, DataPool}
 import threesixty.data.Data.Identifier
-import threesixty.processor.ProcessingMethod
+import threesixty.processor.{ProcessingStep, ProcessingMethod}
 
 /**
  *  Generic Configuration for a [[threesixty.visualizer.Visualization]].
@@ -83,69 +83,34 @@ abstract class VisualizationConfig(
 
 
 
-
-
-    ///////////////////////////new implemented, untested////////////////////////////////////////////////////
-
-
-
-
-    def isApplicableVis(inputData : Set[InputData]) : Boolean = {
-        require(inputData.size > 0, "Empty InputDataSet in deduction of Visualization. No deduction possible")
-
-        if (inputData.size ==1 ){
-            isMatching(inputData.head)
-        }else {
-            isMatching(inputData.head) && isApplicableVis(inputData.tail)
-        }
-    }
-
-
-
-    def isMatching(inputData: InputData) : Boolean = {
-
-        val requirements = metadata.dataRequirement
-        var isMatching = true
-        for( i <- 0 until requirements.length){
-            isMatching = isMatching && requirements(i).isMatchingData(inputData,null)
-        }
-        isMatching
-    }
-
-
-
-
-////old version refactored vvvvv///
-
-
-
     /**
      *  Method to determine if a list of input data fulfills the requirements of the visualization
      *
      *  @param inputData a list of input data
      *  @param config the configuration
-     *  @return a maybe reordered list of input data that matches the visualization requirement
+     *  @return a maybe reordered list of input data that matches the visualization requirement.
+      *          It does not return a Boolean!
      */
-    def isMatching(inputData: List[InputData], pool: DataPool): Option[List[InputData]] = {
+    def isMatching(inputData: List[InputData], procMeth: ProcessingStep): Option[List[InputData]] = {
 
         if(metadata.unlimitedData) {
-           isMatching_unlimited(inputData, pool)
+           isMatching_unlimited(inputData, procMeth)
 
         } else if(metadata.numberOfInputs() != inputData.size) {
             // Wrong number of data for that visualization
             None
         } else {
             // Determine if any order of input data can be matched to the visualization
-            isMatching_limited(inputData,pool)
+            isMatching_limited(inputData,procMeth)
         }
     }
 
-    def isMatching_unlimited(inputData: List[InputData], pool: DataPool) : Option[List[InputData]] = {
+    private def isMatching_unlimited(inputData: List[InputData], procMeth: ProcessingStep) : Option[List[InputData]] = {
         // Unlimited data that all have to match the same data requirement
         var matching = true
-        val dataRequirement = metadata.dataRequirement.head
+        val dataRequirement = metadata.requirementList.head
         for(i <- 0 until inputData.size) {
-            matching = matching && dataRequirement.isMatchingData(inputData(i), pool)
+            matching = matching && dataRequirement.isMatchingData(inputData(i), procMeth)
         }
         val result = matching match {
             case true => Some(inputData)
@@ -154,17 +119,17 @@ abstract class VisualizationConfig(
         result
     }
 
-    def isMatching_limited(inputData: List[InputData], pool: DataPool): Option[List[InputData]] = {
+    private def isMatching_limited(inputData: List[InputData], procMeth : ProcessingStep): Option[List[InputData]] = {
 
         // Build matrix that determines if a specific input data can be matched to a specific data requirement
-        val matchingMatrix = Array.ofDim[Boolean](inputData.size, metadata.dataRequirement.size)
+        val matchingMatrix = Array.ofDim[Boolean](inputData.size, metadata.requirementList.size)
         for (i <- 0 until inputData.size;
-             k <- 0 until metadata.dataRequirement.size) {
-            matchingMatrix(i)(k) = metadata.dataRequirement(k).isMatchingData(inputData(i), pool)
+             k <- 0 until metadata.requirementList.size) {
+            matchingMatrix(i)(k) = metadata.requirementList(k).isMatchingData(inputData(i), procMeth)
         }
 
         // Check all permutations of input data if any of them can be matched
-        val permutations = List.range(0, inputData.size - 1).permutations.toList
+        val permutations = List.range(0, inputData.size ).permutations.toList
 
         for(p <- 0 until permutations.size) {
             val perm = permutations(p)
@@ -181,15 +146,12 @@ abstract class VisualizationConfig(
             if(matching) {
                 var result: List[InputData] = List()
                 for(i <- 1 to perm.size) {
-                    result = inputData(perm.size - i) :: result
+                    result = inputData(perm.size - i ) :: result
                 }
-                Some(result)
+                 return Some(result) //force break and return this value
             }
         }
-
-        None
-
-
+        None //is only reached if return statement was never reached
     }
 
 
