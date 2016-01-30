@@ -122,38 +122,54 @@ abstract class VisualizationConfig(
     private def isMatching_limited(inputData: List[InputData], procMeth : ProcessingStep): Option[List[InputData]] = {
 
         // Build matrix that determines if a specific input data can be matched to a specific data requirement
-        val matchingMatrix = Array.ofDim[Boolean](inputData.size, metadata.requirementList.size)
+        val matchingMatrix = buildMatchingMatrix(inputData,procMeth)
+
+        // Check all permutations of input data if any of them can be matched
+        val permutations = List.range(0, inputData.size ).permutations.toList
+        for(p <- 0 until permutations.size) {
+             val temp = checkPermutations(permutations, inputData, matchingMatrix,p)
+               temp match {
+                   case Some(list) => return Some(list) //force exit and return this value
+                   case None => {} //skip
+               }
+        }
+        None //is only reached if return-statement is never met
+
+    }
+
+
+    private def buildMatchingMatrix(inputData: List[InputData], procMeth: ProcessingStep) = {
+         val matchingMatrix = Array.ofDim[Boolean](inputData.size, metadata.requirementList.size)
         for (i <- 0 until inputData.size;
              k <- 0 until metadata.requirementList.size) {
             matchingMatrix(i)(k) = metadata.requirementList(k).isMatchingData(inputData(i), procMeth)
         }
 
-        // Check all permutations of input data if any of them can be matched
-        val permutations = List.range(0, inputData.size ).permutations.toList
-
-        for(p <- 0 until permutations.size) {
-            val perm = permutations(p)
-            var matching = true
-            // Look up in matching matrix
-            var requirementIndex = 0
-            for(i <- 0 until inputData.size) {
-                val dataIndex = perm(i)
-                matching = matching && matchingMatrix(dataIndex)(requirementIndex)
-                requirementIndex += 1
-            }
-
-            // Build matching order of input data
-            if(matching) {
-                var result: List[InputData] = List()
-                for(i <- 1 to perm.size) {
-                    result = inputData(perm.size - i ) :: result
-                }
-                 return Some(result) //force break and return this value
-            }
-        }
-        None //is only reached if return statement was never reached
+        matchingMatrix
     }
 
+    private  def checkPermutations( permutations : List[List[Int]], inputData: List[InputData],
+                                    matchingMatrix: Array[Array[Boolean]], p : Int): Option[List[InputData]] ={
 
+        val perm = permutations(p)
+        var matching = true
+        // Look up in matching matrix
+        var requirementIndex = 0
+        for(i <- 0 until inputData.size) {
+            val dataIndex = perm(i)
+            matching = matching && matchingMatrix(dataIndex)(requirementIndex)
+            requirementIndex += 1
+        }
+
+        // Build matching order of input data
+        if(matching) {
+            var result: List[InputData] = List()
+            for(i <- 1 to perm.size) {
+                result = inputData(perm.size - i ) :: result
+            }
+            return Some(result) //force break and return this value
+        }
+        None
+    }
 
 }
