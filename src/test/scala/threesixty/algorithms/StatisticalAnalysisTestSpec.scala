@@ -27,6 +27,10 @@ class DBSCANSpec extends FunSpec {
             assert( mean(sampleData).value == 6.0 )
         }
 
+        it("should have a sum of 6.0") {
+            assert( sum(sampleData).value == 36.0 )
+        }
+
         it("should have a variance of about 16.043") {
             assert( math.round(variance(sampleData).value * 1000) ==  16043 )
         }
@@ -56,7 +60,6 @@ class DBSCANSpec extends FunSpec {
             TaggedDataPoint(new Timestamp(5), 12.0, Set())
         ))
 
-        // TODO Values
         it("should have a covariance of 5.1") {
             val cov = covariance(sampleData1, sampleData2)
             assert( 16.668 - e <= cov )
