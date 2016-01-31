@@ -47,6 +47,10 @@ class InputMetadataTable extends CassandraTable[InputMetadataSets, CompleteInput
 
 abstract class InputMetadataSets extends InputMetadataTable with RootConnector {
 
+     /** stores a given Metadata object in the database
+      * @param inputMetadata the metadata to store
+      * @param identifier(opt) give identifier with which the metadata is stored in the table
+      * @return returns an awaitable future object*/
     def store(inputMetadata: CompleteInputMetadata, identifier: UUID = UUID.randomUUID): Future[ResultSet] = {
         val timeframeId = UUID.randomUUID()
         val activityTypeId = UUID.randomUUID()
@@ -64,8 +68,17 @@ abstract class InputMetadataSets extends InputMetadataTable with RootConnector {
             .future()
     }
 
+  /**
+    * calls Method fromRow()
+    */
+
     def getInputMetadataByIdentifier(identifier: UUID): Future[Option[CompleteInputMetadata]] = {
         select.where(_.identifier eqs identifier).one()
+    }
+
+    def getTimeframeId(identifier: UUID):  Future[Option[UUID]] ={
+    select(_.timeframeId).where(_.identifier eqs identifier).one()
+
     }
 
 }

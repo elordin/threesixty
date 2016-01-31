@@ -10,10 +10,10 @@ package threesixty.visualizer
   *
   * @author Thomas Engel
   */
-case class VisualizationMetadata(val dataRequirement: List[DataRequirement],
+case class VisualizationMetadata(val requirementList: List[DataRequirement],
                                  val unlimitedData: Boolean = false) {
 
-    require(dataRequirement != null && dataRequirement.size > 0, "There must be at least one data required")
+    require(requirementList != null && requirementList.size > 0, "There must be at least one data required")
 
     /**
       * If the number of input data is unlimited [[Int.MaxValue]] is returned.
@@ -22,7 +22,7 @@ case class VisualizationMetadata(val dataRequirement: List[DataRequirement],
       */
     def numberOfInputs(): Int = unlimitedData match {
         case true => Int.MaxValue
-        case false => dataRequirement.size
+        case false => requirementList.size
     }
 }
 
