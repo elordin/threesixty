@@ -36,10 +36,10 @@ object LineChartConfig extends VisualizationCompanion {
                 "    ids:               Set[String]          - The data identifiers\n" +
                 "    height:            Int                  - Height of the diagram in px\n" +
                 "    width:             Int                  - Width of the diagram in px\n" +
-                "    optXMin:           Timestamp (optional) - Minimum value of the x-axis\n" +
-                "    optXMax:           Timestamp (optinmal) - Maximum value of the x-axis\n" +
-                "    optYMin:           Double    (optional) - Minimum value of the y-axis\n" +
-                "    optYMax:           Double    (optional) - Maximum value of the y-axis\n" +
+                "    xMin:              Timestamp (optional) - Minimum value of the x-axis\n" +
+                "    xMax:              Timestamp (optinmal) - Maximum value of the x-axis\n" +
+                "    yMin:              Double    (optional) - Minimum value of the y-axis\n" +
+                "    yMax:              Double    (optional) - Maximum value of the y-axis\n" +
                 "    xLabel:            String    (optional) - Label for the x-axis\n" +
                 "    yLabel:            String    (optional) - Label for the y-axis\n" +
                 "    title:             String    (optional) - Diagram title\n" +
@@ -50,8 +50,8 @@ object LineChartConfig extends VisualizationCompanion {
                 "    distanceTitle      Int       (optional) - Distance between the title and the chart in px\n" +
                 "    minDistanceX       Int       (optional) - Minimum number of px between two control points on the x-axis\n" +
                 "    minDistanceY       Int       (optional) - Minimum number of px between two control points on the y-axis\n" +
-                "    optUnitX           String    (optional) - Name of the desired unit on the x-axis\n" +
-                "    optUnitY           Double    (optional) - Value of the desired unit on the y-axis\n" +
+                "    xUnit              String    (optional) - Name of the desired unit on the x-axis\n" +
+                "    yUnit              Double    (optional) - Value of the desired unit on the y-axis\n" +
                 "    fontSizeTitle      Int       (optional) - Font size of the title\n" +
                 "    fontSize           Int       (optional) - Font size of labels\n"
 
@@ -65,10 +65,10 @@ object LineChartConfig extends VisualizationCompanion {
      */
     def apply(jsonString: String): LineChartConfig = {
         implicit val lineChartConfigFormat = jsonFormat(LineChartConfig.apply,
-            "ids", "height", "width", "optXMin", "optXMax", "optYMin", "optYMax",
+            "ids", "height", "width", "xMin", "xMax", "yMin", "yMax",
             "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
             "borderRight", "distanceTitle", "minDistanceX", "minDistanceY",
-            "optUnitX", "optUnitY", "fontSizeTitle", "fontSize")
+            "xUnit", "yUnit", "fontSizeTitle", "fontSize")
         jsonString.parseJson.convertTo[LineChartConfig]
     }
 
