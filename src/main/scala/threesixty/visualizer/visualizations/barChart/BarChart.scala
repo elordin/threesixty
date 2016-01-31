@@ -73,6 +73,7 @@ object BarChartConfig extends VisualizationCompanion {
 
         val xAxisLabels: Seq[(String, Int)] = ??? // TODO
         val yAxisLabels: Seq[(String, Int)] = ??? // TODO
+        val chartOrigin = (config.borderLeft, config.height - config.borderBottom)
 
 
         def toSVG: Elem = (<g class="bars">
@@ -84,21 +85,21 @@ object BarChartConfig extends VisualizationCompanion {
                 }
             </g>: SVGXML)
                 .withGrid(Grid(
-                    config.chartOrigin._1,
-                    config.chartOrigin._2,
+                    chartOrigin._1,
+                    chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
                     xAxisLabels.size,
                     yAxisLabels.size))
                 .withAxis(HorizontalAxis(
-                    x = config.chartOrigin._1,
-                    y = config.chartOrigin._2,
+                    x = chartOrigin._1,
+                    y = chartOrigin._2,
                     width = config.chartWidth,
                     title = config.xLabel,
                     labels = xAxisLabels))
                 .withAxis(VerticalAxis(
-                    x = config.chartOrigin._1,
-                    y = config.chartOrigin._2,
+                    x = chartOrigin._1,
+                    y = chartOrigin._2,
                     height = config.chartHeight,
                     title = config.yLabel,
                     labels = yAxisLabels))

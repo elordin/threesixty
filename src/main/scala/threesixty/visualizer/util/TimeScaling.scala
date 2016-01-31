@@ -1,7 +1,7 @@
 package threesixty.visualizer.util
 
 import java.sql.{Date, Timestamp}
-
+/*
 /**
   * @author Thomas Engel
   */
@@ -172,7 +172,7 @@ abstract class TimeScalingYears(name: String, factor: Int) extends TimeScaling(n
 case class TimeScalingYears1() extends TimeScalingYears("years1", 1)
 case class TimeScalingYears5() extends TimeScalingYears("years5", 5)
 case class TimeScalingYears10() extends TimeScalingYears("years10", 10)
-
+*/
 
 
 
@@ -187,13 +187,68 @@ trait Scale[T] {
 }
 
 object TimeScale {
-    def apply(inMin: Long, inMax: Long, outMin: Int, outMax: Int, unit: String): TimeScale = ???
-    def bestFit(min: Long, max: Long): TimeScale = ???
+    object TimeUnits extends Enumeration {
+        class TimeUnit(val i: Int, val name: String, val millis: Long, val shortName: String) extends Val(i: Int, name: String)
+        val MILLISECONDS = new TimeUnit(0, "milliseconds", 1, "ms")
+        val SECONDS      = new TimeUnit(1, "seconds", 1000L, "s")
+        val MINUTES      = new TimeUnit(2, "minutes", 60000L, "min")
+        val HOURS        = new TimeUnit(3, "hours", 3600000L, "h")
+        val DAYS         = new TimeUnit(4, "days", 86400000L, "")
+        val WEEKS        = new TimeUnit(5, "weeks", 604800000L, "")
+        val MONTHS       = new TimeUnit(6, "months", 2628000000L, "")
+        val YEARS        = new TimeUnit(7, "years", 31540000000L, "")
+    }
+    import TimeUnits._
+
+    val AVAILABLE_SCALE_UNITS = Seq(
+        (MILLISECONDS, 1), (MILLISECONDS, 10), (MILLISECONDS, 100),
+        (SECONDS, 1), (SECONDS, 10),
+        (MINUTES, 1), (MINUTES, 10),
+        (HOURS, 1), (HOURS, 10),
+        (DAYS, 1), (DAYS, 10),
+        (WEEKS, 1),
+        (MONTHS, 1), (MONTHS, 10),
+        (YEARS, 1)
+    )
+
+    @throws[NumberFormatException]("if the given unit string is invalid")
+    def apply(inMin: Long, inMax: Long, outMin: Int, outMax: Int, unparsedStep: String): TimeScale = {
+        val matchingRegEx = " *(0*[1-9][0-9]*) *(milli|millis|second|seconds|minute|minutes|hour|hours|day|days|week|weeks|month|months|year|years) *".r
+        val (stepSize, unit) = unparsedStep match {
+            case matchingRegEx(s, "milli")   => (s, MILLISECONDS)
+            case matchingRegEx(s, "millis")  => (s, MILLISECONDS)
+            case matchingRegEx(s, "second")  => (s, SECONDS)
+            case matchingRegEx(s, "seconds") => (s, SECONDS)
+            case matchingRegEx(s, "minute")  => (s, MINUTES)
+            case matchingRegEx(s, "minutes") => (s, MINUTES)
+            case matchingRegEx(s, "hour")    => (s, HOURS)
+            case matchingRegEx(s, "hours")   => (s, HOURS)
+            case matchingRegEx(s, "day")     => (s, DAYS)
+            case matchingRegEx(s, "days")    => (s, DAYS)
+            case matchingRegEx(s, "week")    => (s, WEEKS)
+            case matchingRegEx(s, "weeks")   => (s, WEEKS)
+            case matchingRegEx(s, "month")   => (s, MONTHS)
+            case matchingRegEx(s, "months")  => (s, MONTHS)
+            case matchingRegEx(s, "year")    => (s, YEARS)
+            case matchingRegEx(s, "years")   => (s, YEARS)
+            case _ => throw new NumberFormatException("Invalid format for scale step.")
+        }
+        TimeScale(inMin, inMax, outMin, outMax, unit, stepSize.toLong)
+    }
+
+    def apply(inMin: Long, inMax: Long, outMin: Int, outMax: Int): TimeScale = {
+        val (unit: TimeUnit, stepSize: Long) = (for { (unit, steps) <- AVAILABLE_SCALE_UNITS } yield {
+            val stepSize: Long = unit.millis * steps
+            (stepSize, (inMax - inMin) / stepSize, unit)
+        }).dropWhile(_._2 > 25).headOption.map({
+            case (stepSize, stepCount, unit) => (unit, stepSize)}).getOrElse((YEARS, 1))
+        TimeScale(inMin, inMax, outMin, outMax, unit, stepSize)
+    }
 }
 
-case class TimeScale(inMin: Long, inMax: Long, outMin: Int, outMax: Int, step: Long) extends Scale[Long] {
-    def format(t: Long): String = ???
-    def nextBreakpoint(t: Long): Long = ???
+case class TimeScale(inMin: Long, inMax: Long, outMin: Int, outMax: Int, unit: TimeScale.TimeUnits.TimeUnit, step: Long) extends Scale[Long] {
+    def format(t: Long): String = ""
+    def nextBreakpoint(t: Long): Long = t - (t % step) + step
     def scale(t: Long): Int = (((t - inMin).toDouble / (inMax - inMin).toDouble) * (outMax - outMin)).toInt
 }
 
@@ -213,4 +268,3 @@ case class ValueScale(inMin: Double, inMax: Double, outMin: Int, outMax: Int, st
     def nextBreakpoint(v: Double): Double = v - (v % step) + step
     def scale(v: Double): Int = ((v - inMin) / (inMax - inMin) * (outMax - outMin)).toInt
 }
-

@@ -64,16 +64,13 @@ abstract class VisualizationConfig(
     require(chartWidth > 0, "The available width for the chart must be greater than 0.")
     require(chartHeight > 0, "The available height for the chart must be greater than 0.")
 
-    def chartOrigin: (Int, Int) = (0, 0)
-
     def viewBox: (Int, Int, Int, Int) = {
-        val (x, y) = chartOrigin
-        (x, y, width, height)
+        (0, 0, width, height)
     }
 
-    def lowerLimit = - chartOrigin._2 + height - borderBottom
-    def upperLimit = - chartOrigin._2 + borderTop
-    def leftLimit = - chartOrigin._1 + borderLeft
-    def rightLimit = - chartOrigin._1 + width - borderRight
+    def lowerLimit = height - borderBottom
+    def upperLimit = borderTop
+    def leftLimit  = borderLeft
+    def rightLimit = width - borderRight
 
 }

@@ -27,6 +27,9 @@ case class Grid(
     hDashArray: String = "5, 5",
     vDashArray: String = "5, 5"
 ) extends Renderable {
+    require(hDivision > 0)
+    require(vDivision > 0)
+
     def toSVG: Elem =
         <g class="grid">
             <g class="horizontal">
@@ -46,7 +49,7 @@ case class Grid(
             <g class="vertical">
                 {
                     val hGapSize = width / hDivision
-                    for { currX <- Range(vOffset, width, hGapSize).inclusive } yield
+                    for { currX <- Range(x + vOffset, width, hGapSize).inclusive } yield
                         <line
                             fill="none"
                             stroke="#AAAAAA"

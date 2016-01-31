@@ -98,7 +98,6 @@ class Visualizer extends VisualizationMixins with UsageInfo {
 
 }
 
-
 object SVGXML {
     implicit def unpimpMulti(pimped: SVGXML): Seq[Elem] = pimped.elems
     implicit def unpimpSingle(pimped: SVGXML): Elem = pimped.elems.head
@@ -106,7 +105,12 @@ object SVGXML {
     implicit def pimpMulti(xmls: Seq[Elem]): SVGXML = SVGXML(xmls: _*)
 }
 
+/**
+ *  Pimped Version of scala.xml.Elems that allows pluggin additional
+ *  SVG components.
+ */
 case class SVGXML(elems: Elem*) {
+    /** Wraps everything in the SVG tag */
     def withSVGHeader(
             viewBoxX: Int,
             viewBoxY: Int,
@@ -120,8 +124,10 @@ case class SVGXML(elems: Elem*) {
                 { elems }
             </svg>)
 
+    /** Appends an arbitrary element */
     def withElem(elem: Elem): SVGXML = SVGXML(elems ++ Seq(elem) :_*)
 
+    /** Appends a title */
     def withTitle(text: String, x: Int, y: Int, fontSize: Int): SVGXML =
         if (text != "") {
             withElem(<text  x={ x.toString }
@@ -135,8 +141,10 @@ case class SVGXML(elems: Elem*) {
             this
         }
 
+    /** Prepends a grid */
     def withGrid(grid: Grid): SVGXML = SVGXML(Seq[Elem](grid) ++ elems :_*)
 
+    /** Appends an axis */
     def withAxis(axis: Axis): SVGXML = withElem(axis: Elem)
 
     // def withLegend(legend: Legend): SVGXML = ???

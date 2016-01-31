@@ -106,9 +106,15 @@ object LineChartConfig extends VisualizationCompanion {
         val dataMinY: Double = dataMinMaxY._1
         val dataMaxY: Double = dataMinMaxY._2
 
+        val chartOrigin = (config.borderLeft, config.height - config.borderBottom)
+
+        println(dataMinY)
+        println(dataMaxY)
+        println(config.chartHeight)
+
         val xScale = config.optUnitX.map(
             TimeScale(dataMinX, dataMaxX, 0, config.chartWidth, _)).getOrElse {
-                TimeScale.bestFit(dataMaxX, dataMinX)
+                TimeScale(dataMaxX, dataMinX, 0, config.chartWidth)
             }
         val yScale = config.optUnitY.map(
                 ValueScale(dataMinY, dataMaxY, 0, config.chartHeight, _)).getOrElse {
@@ -139,14 +145,16 @@ object LineChartConfig extends VisualizationCompanion {
             construct(yScale.nextBreakpoint(dataMinX), Seq())
         }
 
+        println(xAxisLabels)
+        println(yAxisLabels)
+        println(chartOrigin)
+
         private def calculatePath(data: ProcessedData): String =
             'M' + data.dataPoints.foldLeft("")({
                 (s, dp) => s + s"L${xScale.scale(dp.timestamp.getTime)} ${yScale.scale(dp.value.value)} "
             }).tail
 
         def toSVG: Elem = {
-            val xLabels = xAxisLabels
-            val yLabels = yAxisLabels
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
 
             (<g class="data">
@@ -172,25 +180,25 @@ object LineChartConfig extends VisualizationCompanion {
                 } }
             </g>: SVGXML)
                 .withGrid(Grid(
-                    config.chartOrigin._1,
-                    config.chartOrigin._2,
+                    chartOrigin._1,
+                    chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    xAxisLabels.size,
-                    yAxisLabels.size))
+                    5,
+                    5))
                 .withAxis(HorizontalAxis(
-                    x = config.chartOrigin._1,
-                    y = config.chartOrigin._2,
+                    x = chartOrigin._1,
+                    y = chartOrigin._2,
                     width = config.chartWidth,
                     title = config.xLabel,
                     labels = xAxisLabels))
                 .withAxis(VerticalAxis(
-                    x = config.chartOrigin._1,
-                    y = config.chartOrigin._2,
+                    x = chartOrigin._1,
+                    y = chartOrigin._2,
                     height = config.chartHeight,
                     title = config.yLabel,
                     labels = yAxisLabels))
-                .withTitle(config.title, 1, 2, config.fontSizeTitle)
+                .withTitle(config.title, config.width / 2, config.borderTop - config.distanceTitle, config.fontSizeTitle)
                 .withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
         }
 
