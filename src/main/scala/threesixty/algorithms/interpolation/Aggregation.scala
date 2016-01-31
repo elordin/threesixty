@@ -4,7 +4,7 @@ import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags.{Aggregated, Tag, Interpolated, Original}
+import threesixty.data.tags._
 import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
 import threesixty.algorithms.statistics.StatisticalAnalysis
 
@@ -94,8 +94,8 @@ object Aggregation extends ProcessingMethodCompanion {
   *  @author Jens Wöhrle
   *  @param aggregationMode desired Data points as result
   *                 positive Value: It will just seperate the data in numData Blocks and gives its mean out
-  *                 -1: Will aggregate on a daily basis
-  *                 -2: EnumAggregation
+  *                 -1: EnumAggregation
+  *                 -2: Will aggregate on a daily, Monat, basis
   */ //groupby() bei Listen :-)
 case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
@@ -112,21 +112,45 @@ case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifi
       */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
-        if( aggregationMode > 0 ) {
-            val agdata = data.dataPoints.sortBy(d => -timestamp2Long((d.timestamp)))
+        if ( aggregationMode > 0 ) {
+            //Aggregation to several data
+            var agdata = data.dataPoints.sortBy(d => -timestamp2Long((d.timestamp)))
 
             val agregsize = math.ceil(agdata.length/aggregationMode).toInt
 
             var l = List[TaggedDataPoint]()
 
-            for( i <- 0 until aggregationMode) {
-                var l = agdata.drop(agregsize)
-                    l = TaggedDataPoint(StatisticalAnalysis.mean()) : l
+            for( i <- 0 until aggregationMode ) {
+                val buf = agdata.splitAt(agregsize)
+                val r = buf._1
+                agdata = buf._2
+                l = TaggedDataPoint( r(0).timestamp, StatisticalAnalysis.mean(r), r(0).tags + TimeAggregated) :: l
             }
 
-            val newID = idMapping
-        } else if( aggregationMode == -1) {
+            val newID = idMapping(data.id)
+
+            Set(ProcessedData(newID, l))
+        } else if ( aggregationMode == -1) {
+            /** Enum Aggregation
+              * It looses the Data on time and just aggregates on Enumdata
+              */
+            val grouped = data.dataPoints.groupBy( _.value.value )
+
+            var l = List[TaggedDataPoint]()
+
+            for( (k,v) <- grouped ) {
+                l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).value)) :: l
+            }
+
+            val newID = idMapping(data.id)
+
+            Set( ProcessedData(newID, l) )
+        } else if (aggregationMode == -2){
+            //TODO
+            Set()
+        } else {
+            //TODO
+            Set()
         }
-        Set()
     }
 }
