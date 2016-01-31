@@ -16,7 +16,11 @@ trait Mixin extends VisualizationMixins {
         super.visualizationInfos + ("scatterchart" -> ScatterChartConfig)
 }
 
-
+/**
+  * The config class for a [[threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig.ScatterChart]].
+  *
+  * @author Thomas Engel
+  */
 object ScatterChartConfig extends VisualizationCompanion {
 
     def name = "ScatterChart"
@@ -57,7 +61,6 @@ object ScatterChartConfig extends VisualizationCompanion {
         jsonString.parseJson.convertTo[ScatterChartConfig]
     }
 
-
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             scaling = Some(Scaling.Ordinal)
@@ -66,6 +69,14 @@ object ScatterChartConfig extends VisualizationCompanion {
         )))
 
 
+    /**
+     * This class creates the svg element for a scatter chart.
+     *
+     * @param config the scatter chart config
+     * @param data the data
+     *
+     * @author Thomas Engel
+     */
     case class ScatterChart(config: ScatterChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
 
         def toSVG: Elem = ???
@@ -94,6 +105,31 @@ object ScatterChartConfig extends VisualizationCompanion {
 }
 
 
+/**
+  * The config to create a [[threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig.ScatterChart]].
+  *
+  * @param ids set of ids which are to be displayed in the visualization
+  * @param height the height
+  * @param width the width
+  * @param optXMin the minimum value displayed on the x-coordinate
+  * @param optXMax the maximum value displayed on the x-coordinate
+  * @param optYMin the minimum value displayed on the y-coordinate
+  * @param optYMax the maximum value displayed on the y-coordinate
+  * @param xLabel the label on the x-axis
+  * @param yLabel the label on the y-axis
+  * @param title the title
+  * @param borderTop the border to the top
+  * @param borderBottom the border to the bottom
+  * @param borderLeft the border to the left
+  * @param borderRight the border to the right
+  * @param distanceTitle the distance between the title and the top of the chart
+  * @param minDistanceX the minimal distance between two grid points on the x-axis
+  * @param minDistanceY the minimal distance between two grid points on the y-axis
+  * @param optUnitX the unit of the x-axis
+  * @param optUnitY the unit of the y-axis
+  * @param fontSizeTitle the font size of the title
+  * @param fontSize the font size of labels
+  */
 case class ScatterChartConfig(
      val ids:          Set[Identifier],
      val height:       Int,
@@ -129,10 +165,23 @@ case class ScatterChartConfig(
     _fontSizeTitle,
     _fontSize) {
 
+    /**
+     * @return the label on the x-axis or an empty string
+     */
     def xLabel: String = _xLabel.getOrElse("")
+
+    /**
+     * @return the label on the y-axis or an empty string
+     */
     def yLabel: String = _yLabel.getOrElse("")
 
+    /**
+     * @return the minDistanceX or a default value
+     */
     def minDistanceX: Int = _minDistanceX.getOrElse(20)
+    /**
+      * @return the minDistanceY or a default value
+      */
     def minDistanceY: Int = _minDistanceY.getOrElse(20)
 
     require(minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
@@ -141,12 +190,27 @@ case class ScatterChartConfig(
     /*
     var grid: Grid = null
 
+    /**
+     * Please note: The grid has to be set before in order to get the proper grid.
+     * The grid will only be set in the method [[apply()]].
+     *
+     * @return the [[Grid]]
+     */
     def getGrid: Grid = {
         grid
     }
     */
 
     /*
+
+    /**
+     * Completes the given optional minimum and maximum displayed value if needed.
+     *
+     * @param data the data
+     * @param minimum the optional minimum value
+     * @param maximum the optional maximum value
+     * @return a tuple containing the minimum and maximum value for the given data
+     */
     private def calculateMinMax(data: ProcessedData, minimum: Option[Double], maximum: Option[Double]) = {
         var datapoints: List[Double] = List.empty
         if(!minimum.isDefined || !maximum.isDefined) {
@@ -166,6 +230,14 @@ case class ScatterChartConfig(
     }
     */
 
+    /**
+     *  Returns a
+     *  [[threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig.ScatterChart]]
+     *  using visualizing the given dataset with configuration.
+     *
+     *  @param pool the pool containing the data
+     *  @return the [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]] for this configuration
+     */
     def apply(pool: DataPool): ScatterChartConfig.ScatterChart =  {
 
         /*

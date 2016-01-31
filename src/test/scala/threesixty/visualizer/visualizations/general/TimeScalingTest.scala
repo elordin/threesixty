@@ -1,10 +1,8 @@
-package threesixty.visualizer
+package threesixty.visualizer.visualizations.general
 
-import java.sql.{Time, Date, Timestamp}
+import java.sql.{Date, Time, Timestamp}
 
 import org.scalatest.FlatSpec
-import threesixty.visualizer.visualizations.LineChart._
-import threesixty.visualizer.visualizations.general._
 
 /**
   * @author Thomas Engel

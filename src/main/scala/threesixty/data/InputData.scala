@@ -22,7 +22,7 @@ object UnsafeInputData {
 case class UnsafeInputData(
 	val id: Identifier,
 	val measurement: String, //heartrate, temperature etc
-	val dataPoints: Iterable[DataPoint],
+	val dataPoints: List[DataPoint],
 	val metadata: IncompleteInputMetadata
 ) {
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")
@@ -32,7 +32,7 @@ case class UnsafeInputData(
 trait InputDataLike {
     def id: Identifier
     def measurement: String
-    def dataPoints: Iterable[DataPoint]
+    def dataPoints: List[DataPoint]
     def metadata: CompleteInputMetadata
 }
 
@@ -51,7 +51,7 @@ object InputDataLike {
 case class InputData(
 	val id: Identifier,
 	val measurement: String, //heartrate, temperature etc
-	val dataPoints: Iterable[DataPoint],
+	val dataPoints: List[DataPoint],
 	val metadata: CompleteInputMetadata
 ) extends InputDataLike {
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")

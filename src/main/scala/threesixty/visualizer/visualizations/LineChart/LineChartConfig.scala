@@ -14,7 +14,6 @@ import threesixty.visualizer.{
 import threesixty.visualizer.util._
 
 import threesixty.visualizer.SVGXML
-
 import scala.xml.Elem
 import scala.annotation.tailrec
 
@@ -27,6 +26,11 @@ trait Mixin extends VisualizationMixins {
 }
 
 
+/**
+ *  The config class for a [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]].
+ *
+ *  @author Thomas Engel, Thomas Weber
+ */
 object LineChartConfig extends VisualizationCompanion {
 
     def name = "LineChart"
@@ -73,11 +77,16 @@ object LineChartConfig extends VisualizationCompanion {
         jsonString.parseJson.convertTo[LineChartConfig]
     }
 
-
     val metadata = new VisualizationMetadata(
         List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
 
-
+    /**
+     *
+     *  @param config the line chart config
+     *  @param data the data
+     *
+     *  @author Thomas Engel
+     */
     case class LineChart private[LineChartConfig] (
         config: LineChartConfig,
         data: Set[ProcessedData]
@@ -145,9 +154,6 @@ object LineChartConfig extends VisualizationCompanion {
             construct(yScale.nextBreakpoint(dataMinX), Seq())
         }
 
-        println(xAxisLabels)
-        println(yAxisLabels)
-        println(chartOrigin)
 
         private def calculatePath(data: ProcessedData): String =
             'M' + data.dataPoints.foldLeft("")({
@@ -206,6 +212,33 @@ object LineChartConfig extends VisualizationCompanion {
 }
 
 
+/**
+ *  The config to create a [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]].
+ *
+ *  @param ids set of ids which are to be displayed in the visualization
+ *  @param height the height
+ *  @param width the width
+ *  @param optXMin the minimum value displayed on the x-coordinate
+ *  @param optXMax the maximum value displayed on the x-coordinate
+ *  @param optYMin the minimum value displayed on the y-coordinate
+ *  @param optYMax the maximum value displayed on the y-coordinate
+ *  @param xLabel the label on the x-axis
+ *  @param yLabel the label on the y-axis
+ *  @param title the title
+ *  @param borderTop the border to the top
+ *  @param borderBottom the border to the bottom
+ *  @param borderLeft the border to the left
+ *  @param borderRight the border to the right
+ *  @param distanceTitle the distance between the title and the top of the chart
+ *  @param minDistanceX the minimal distance between two grid points on the x-axis
+ *  @param minDistanceY the minimal distance between two grid points on the y-axis
+ *  @param optUnitX the unit of the x-axis
+ *  @param optUnitY the unit of the y-axis
+ *  @param fontSizeTitle the font size of the title
+ *  @param fontSize the font size of labels
+ *
+ *  @author Thomas Engel
+ */
 case class LineChartConfig(
     val ids:            Set[Identifier],
     val height:         Int,
@@ -251,6 +284,14 @@ case class LineChartConfig(
     require(minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
     require(minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
 
+    /**
+     *  Sets the [[Grid]] and returns the
+     *  [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]]
+     *  for this configuration.
+      *
+     *  @param pool the pool containing the data
+     *  @return the [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]] for this configuration
+      */
     def apply(pool: DataPool): LineChartConfig.LineChart = {
         LineChartConfig.LineChart(this, pool.getDatasets(ids))
     }

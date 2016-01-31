@@ -4,9 +4,22 @@ import threesixty.visualizer.util.RGBColor
 
 import scala.xml.Elem
 
+
 /**
-  * @author Thomas Engel
-  */
+ * This class is used to generate a svg element for a bar.
+ *
+ * @param id the id for the corresponding svg element
+ * @param xLeft x-coordinate of the left side of the bar
+ * @param width the width of the bar
+ * @param height the height of the bar (can also be negative)
+ * @param description the description displayed for the bar
+ * @param showValues iff the value should be shown to
+ * @param value the shown value
+ * @param fontSize the font size of labels
+ * @param color the color of the bar
+ *
+ * @author Thomas Engel
+ */
 case class BarElement(
     val id: String,
     val xLeft: Double,
@@ -19,10 +32,19 @@ case class BarElement(
     val color: Option[RGBColor] = None
   ) {
 
+    /**
+     * @return the string for the color or an empty string if no color was set
+     */
     private def getColor: String = color.map(_.toHexString).getOrElse("")
 
+    /**
+     * @return the string for the font size or an empty string if no font size was set
+     */
     private def getFontSize: String = fontSize.map(_.toString).getOrElse("")
 
+    /**
+     * @return the svg element for the bar
+     */
     def getSVGElement: Elem = {
         val (dpx, dpy) = calculateDescriptionAnchorPoint
         val (vpx, vpy) = calculateValueAnchorPoint
@@ -53,7 +75,10 @@ case class BarElement(
         </g>
     }
 
-    private def calculateBarPath: String = {
+    /**
+     * @return the path string (<path d=.. />) for the bar
+     */
+    def calculateBarPath: String = {
         val p1 = (xLeft, 0)
         val p2 = (xLeft, height)
         val p3 = (xLeft + width, height)
@@ -66,14 +91,20 @@ case class BarElement(
         " L " + p1._1 + " " + p1._2
     }
 
-    private def calculateValueAnchorPoint: (Double, Double) = {
+    /**
+     * @return the anchor point for the value label
+     */
+    def calculateValueAnchorPoint: (Double, Double) = {
         val barMiddle = (xLeft + width / 2.0, height)
         val offset = if(height < 0) -10 else 5 + fontSize.getOrElse(15)
 
         (barMiddle._1, barMiddle._2 + offset)
     }
 
-    private def calculateDescriptionAnchorPoint: (Double, Double) = {
+    /**
+     * @return the anchor point for the description label
+     */
+    def calculateDescriptionAnchorPoint: (Double, Double) = {
         val baseMiddle = (xLeft + width / 2.0, 0)
         val offset = if(height < 0) 5 + fontSize.getOrElse(15) else - 10
 

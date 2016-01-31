@@ -35,7 +35,7 @@ class ActivityTypesTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             Await.result(CassandraAdapter.activityTypes.store(activityType, identifier), Duration.Inf)
 
-            whenReady(CassandraAdapter.activityTypes.getById(identifier)) {
+            whenReady(CassandraAdapter.activityTypes.getById(identifier), timeout(Duration.Inf)) {
                 case Some(result) => result should be (activityType)
                     result.name should be ("Swimming")
                     result.description should be (null)
@@ -53,7 +53,7 @@ class ActivityTypesTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             Await.result(CassandraAdapter.activityTypes.store(activityType, identifier), Duration.Inf)
 
-            whenReady(CassandraAdapter.activityTypes.getById(identifier)) {
+            whenReady(CassandraAdapter.activityTypes.getById(identifier), timeout(Duration.Inf)) {
                 case Some(result) => result should be (activityType)
                     result.name should be ("Running")
                     result.description should be ("Fast Run in the Evening")

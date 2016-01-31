@@ -5,9 +5,9 @@ import threesixty.engine.UsageInfo
 
 import spray.json._
 import DefaultJsonProtocol._
+import threesixty.processor.{ProcessingMethod, ProcessingMethodCompanion}
 
 import scala.xml.Elem
-
 
 trait Renderable {
     /**
@@ -21,7 +21,6 @@ trait Renderable {
 
     // def toRawdata:String
 }
-
 
 /**
  *  Mixin trait for layering [[threesixty.visualizer.Visualization]]s onto the [[threesixty.visualizer.Visualizer]]
