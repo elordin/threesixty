@@ -1,14 +1,16 @@
 package threesixty.visualizer.visualizations.pieChart
 
-import spray.json._
 import threesixty.data.Data.{DoubleValue, Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
-import threesixty.visualizer.visualizations.general.{ColorScheme, Segment}
+import threesixty.visualizer.visualizations.Segment
+import threesixty.visualizer.util.ColorScheme
 
 import scala.xml.Elem
+
+import spray.json._
 
 
 trait Mixin extends VisualizationMixins {
@@ -59,12 +61,15 @@ object PieChartConfig extends VisualizationCompanion {
 
 
     case class PieChart(config: PieChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+
+        def toSVG: Elem = ???
+        /*
         def getConfig: PieChartConfig = config
 
         private def calculateLegendRectangle(index: Int): String = {
-            val wLegendSym = config._widthLegendSymbol
+            val wLegendSym = config.widthLegendSymbol
             val xLeft = config.rightLimit
-            val yTop = config.upperLimit + config._distanceLegend + index * 2 * wLegendSym
+            val yTop = config.upperLimit + config.distanceLegend + index * 2 * wLegendSym
 
             "M " + xLeft + " " + yTop +
             " L " + (xLeft + wLegendSym) + " " + yTop +
@@ -86,8 +91,8 @@ object PieChartConfig extends VisualizationCompanion {
                               stroke={config.getSegments(i).getColor}
                               stroke-width="0"
                               fill={config.getSegments(i).getColor}/>
-                        <text x={(config.rightLimit + 2*config._widthLegendSymbol).toString}
-                              y={(config.upperLimit + config._distanceLegend + (2 * i + 1) * config._widthLegendSymbol).toString}
+                        <text x={(config.rightLimit + 2*config.widthLegendSymbol).toString}
+                              y={(config.upperLimit + config.distanceLegend + (2 * i + 1) * config.widthLegendSymbol).toString}
                               font-family="Roboto, Segoe UI"
                               font-weight="100"
                               font-size={config.getSegments(i).getFontSize}
@@ -96,6 +101,8 @@ object PieChartConfig extends VisualizationCompanion {
                 </g>
             )
         }
+
+        */
     }
 }
 
@@ -104,33 +111,33 @@ case class PieChartConfig(
     val ids:                    Set[Identifier],
     val height:                 Int,
     val width:                  Int,
-    val title:                  Option[String] = None,
-    val borderTop:              Option[Int]    = None,
-    val borderBottom:           Option[Int]    = None,
-    val borderLeft:             Option[Int]    = None,
-    val borderRight:            Option[Int]    = None,
-    val distanceTitle:          Option[Int]    = None,
-    val angleStart:             Option[Int]    = None,
-    val angleEnd:               Option[Int]    = None,
-    val radius:                 Option[Double] = None,
-    val innerRadiusPercent:     Option[Double] = None,
-    val showValues:             Option[Boolean]= None,
-    val fontSizeTitle:          Option[Int]    = None,
-    val fontSize:               Option[Int]    = None,
-    val widthLegendSymbol:      Option[Int]    = None,
-    val distanceLegend:         Option[Int]    = None
+    val _title:                  Option[String] = None,
+    val _borderTop:              Option[Int]    = None,
+    val _borderBottom:           Option[Int]    = None,
+    val _borderLeft:             Option[Int]    = None,
+    val _borderRight:            Option[Int]    = None,
+    val _distanceTitle:          Option[Int]    = None,
+    val _angleStart:             Option[Int]    = None,
+    val _angleEnd:               Option[Int]    = None,
+    val _radius:                 Option[Double] = None,
+    val _innerRadiusPercent:     Option[Double] = None,
+    val _showValues:             Option[Boolean]= None,
+    val _fontSizeTitle:          Option[Int]    = None,
+    val _fontSize:               Option[Int]    = None,
+    val _widthLegendSymbol:      Option[Int]    = None,
+    val _distanceLegend:         Option[Int]    = None
 ) extends VisualizationConfig(
     ids,
     height,
     width,
-    title,
-    borderTop,
-    borderBottom,
-    borderLeft,
-    borderRight,
-    distanceTitle,
-    fontSizeTitle,
-    fontSize) {
+    _title,
+    _borderTop,
+    _borderBottom,
+    _borderLeft,
+    _borderRight,
+    _distanceTitle,
+    _fontSizeTitle,
+    _fontSize) {
 
     // TODO: for testing only!!!
     val dataTest = new ProcessedData("aggregatedData", List(
@@ -142,22 +149,24 @@ case class PieChartConfig(
     override def borderTopDefault: Int = 100
     override def borderRightDefault: Int = 150
 
-    def _angleStart: Int = angleStart.getOrElse(90)
-    def _angleEnd: Int = angleEnd.getOrElse(-270)
+    def angleStart: Int = _angleStart.getOrElse(90)
+    def angleEnd: Int = _angleEnd.getOrElse(-270)
 
-    def _radius: Double = radius.getOrElse(calculateRadius)
-    def _innerRadiusPercent: Double = innerRadiusPercent.getOrElse(0)
-    def _innerRadius: Double = _radius * _innerRadiusPercent
+    def radius: Double = _radius.getOrElse(calculateRadius)
+    def innerRadiusPercent: Double = _innerRadiusPercent.getOrElse(0)
+    def innerRadius: Double = radius * innerRadiusPercent
 
-    require(_radius > 0, "Value for radius must be greater than 0.")
-    require(_innerRadius >= 0, "Negative value for innerRadius is not allowed.")
+    require(radius > 0, "Value for radius must be greater than 0.")
+    require(innerRadius >= 0, "Negative value for innerRadius is not allowed.")
 
-    def _showValues: Boolean = showValues.getOrElse(false)
+    def showValues: Boolean = _showValues.getOrElse(false)
 
-    def _distanceLegend: Int = distanceLegend.getOrElse(20)
-    def _widthLegendSymbol: Int = widthLegendSymbol.getOrElse(10)
+    def distanceLegend: Int = _distanceLegend.getOrElse(20)
+    def widthLegendSymbol: Int = _widthLegendSymbol.getOrElse(10)
 
+    /*
     var segments = calculateSegments
+    */
 
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
@@ -165,15 +174,16 @@ case class PieChartConfig(
             requiredGoal = None //TODO NoGoal
         )))
 
+
     private def getAllAngleCandidates: List[Int] = {
-        var angles = List(_angleStart, _angleEnd)
-        if(Segment.isAngleContained(-270, _angleStart, _angleEnd)) angles = -270 :: angles
-        if(Segment.isAngleContained(-180, _angleStart, _angleEnd)) angles = -180 :: angles
-        if(Segment.isAngleContained(-90, _angleStart, _angleEnd)) angles = -90 :: angles
-        if(Segment.isAngleContained(0, _angleStart, _angleEnd)) angles = 0 :: angles
-        if(Segment.isAngleContained(90, _angleStart, _angleEnd)) angles = 90 :: angles
-        if(Segment.isAngleContained(180, _angleStart, _angleEnd)) angles = 180 :: angles
-        if(Segment.isAngleContained(270, _angleStart, _angleEnd)) angles = 270 :: angles
+        var angles = List(angleStart, angleEnd)
+        if(Segment.isAngleContained(-270, angleStart, angleEnd)) angles = -270 :: angles
+        if(Segment.isAngleContained(-180, angleStart, angleEnd)) angles = -180 :: angles
+        if(Segment.isAngleContained(-90, angleStart, angleEnd)) angles = -90 :: angles
+        if(Segment.isAngleContained(0, angleStart, angleEnd)) angles = 0 :: angles
+        if(Segment.isAngleContained(90, angleStart, angleEnd)) angles = 90 :: angles
+        if(Segment.isAngleContained(180, angleStart, angleEnd)) angles = 180 :: angles
+        if(Segment.isAngleContained(270, angleStart, angleEnd)) angles = 270 :: angles
 
         angles
     }
@@ -182,7 +192,7 @@ case class PieChartConfig(
         var angles = getAllAngleCandidates
 
         val outerValues = angles.map((i: Int) => Segment.calculateXCoordinate(i, 1))
-        val innerValues = angles.map((i: Int) => Segment.calculateXCoordinate(i, _innerRadiusPercent))
+        val innerValues = angles.map((i: Int) => Segment.calculateXCoordinate(i, innerRadiusPercent))
 
         val outerMin = outerValues.min
         val outerMax = outerValues.max
@@ -197,7 +207,7 @@ case class PieChartConfig(
         var angles = getAllAngleCandidates
 
         val outerValues = angles.map((i: Int) => Segment.calculateYCoordinate(i, 1))
-        val innerValues = angles.map((i: Int) => Segment.calculateYCoordinate(i, _innerRadiusPercent))
+        val innerValues = angles.map((i: Int) => Segment.calculateYCoordinate(i, innerRadiusPercent))
 
         val outerMin = outerValues.min
         val outerMax = outerValues.max
@@ -212,20 +222,19 @@ case class PieChartConfig(
         val (xleft, xright) = calculateXRange
         val maxXRange = math.max(math.abs(xleft), math.abs(xright))
 
-        widthChart * (maxXRange / (xright - xleft))
+        chartWidth * (maxXRange / (xright - xleft))
     }
 
     private def getMaxRadiusY: Double = {
         val (ytop, ybottom) = calculateYRange
         val maxYRange = math.max(math.abs(ytop), math.abs(ybottom))
 
-        heightChart * (maxYRange / (ybottom - ytop))
+        chartHeight * (maxYRange / (ybottom - ytop))
     }
-
     private def calculateRadius: Double = {
         math.min(getMaxRadiusX, getMaxRadiusY)
     }
-
+/*
     override def calculateOrigin: (Double, Double) = {
         val maxRx = getMaxRadiusX
         val maxRy = getMaxRadiusY
@@ -238,14 +247,14 @@ case class PieChartConfig(
         val dy = y2 - y1
         val yradStart = if (math.abs(y2) < math.abs(y1)) -1 else 1
 
-        val ox = (if(xradStart < 0) _radius else - _radius + widthChart) - xradStart * (math.max(0, dx * (getMaxRadiusX - getMaxRadiusY))) / 2.0
-        val oy = (if(yradStart < 0) _radius else - _radius + heightChart) - yradStart * (math.max(0, dy * (getMaxRadiusY - getMaxRadiusX))) / 2.0
+        val ox = (if(xradStart < 0) radius else - radius + chartWidth) - xradStart * (math.max(0, dx * (getMaxRadiusX - getMaxRadiusY))) / 2.0
+        val oy = (if(yradStart < 0) radius else - radius + chartHeight) - yradStart * (math.max(0, dy * (getMaxRadiusY - getMaxRadiusX))) / 2.0
 
-        (_borderLeft + ox, _borderTop + oy)
+        (borderLeft + ox, borderTop + oy)
     }
 
     private def getDeltaAngles: Double = {
-        _angleEnd - _angleStart
+        angleEnd - angleStart
     }
 
     private def calculateSumValues: Double = {
@@ -277,7 +286,7 @@ case class PieChartConfig(
     private def calculateSegments: List[Segment] = {
         var result: List[Segment] = List()
 
-        var sAngle: Double = _angleStart
+        var sAngle: Double = angleStart
         val deltaAngle = getDeltaAngles
 
         val percentMap = calculatePercentValues
@@ -289,18 +298,18 @@ case class PieChartConfig(
             sAngle += dAngle
             val end = sAngle
 
-            val value = if(_showValues) valueMap.get(entry._1).get else math.round(1000*entry._2)/10.0 + " %"
+            val value = if(showValues) valueMap.get(entry._1).get else math.round(1000*entry._2)/10.0 + " %"
 
             val segment = new Segment(
                 entry._1,
                 entry._1,
                 start,
                 end,
-                _radius,
-                _innerRadius,
-                _radius + 20,
+                radius,
+                innerRadius,
+                radius + 20,
                 value,
-                Some(_fontSize),
+                Some(fontSize),
                 Some(ColorScheme.next))
 
             result = segment :: result
@@ -313,6 +322,7 @@ case class PieChartConfig(
         segments
     }
 
+    */
     def apply(pool: DataPool): PieChartConfig.PieChart = {
         PieChartConfig.PieChart(this, pool.getDatasets(ids))
     }

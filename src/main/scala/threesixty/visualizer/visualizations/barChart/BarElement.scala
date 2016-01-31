@@ -1,53 +1,54 @@
 package threesixty.visualizer.visualizations.barChart
 
-import threesixty.visualizer.visualizations.general.RGBColor
+import threesixty.visualizer.util.RGBColor
 
 import scala.xml.Elem
 
 /**
   * @author Thomas Engel
   */
-case class BarElement(val id: String,
-                      val xLeft: Double,
-                      val width: Double,
-                      val height: Double,
-                      val description: String,
-                      val showValues: Boolean = false,
-                      val value: String = "",
-                      val fontSize: Option[Int] = None,
-                      val color: Option[RGBColor] = None) {
+case class BarElement(
+    val id: String,
+    val xLeft: Double,
+    val width: Double,
+    val height: Double,
+    val description: String,
+    val showValues: Boolean = false,
+    val value: String = "",
+    val fontSize: Option[Int] = None,
+    val color: Option[RGBColor] = None
+  ) {
 
-    private def getColor: String = {
-        if(color.isDefined) color.get.convertToColorString else ""
-    }
+    private def getColor: String = color.map(_.toHexString).getOrElse("")
 
-    private def getFontSize: String = {
-        if(fontSize.isDefined) fontSize.get.toString else ""
-    }
+    private def getFontSize: String = fontSize.map(_.toString).getOrElse("")
 
     def getSVGElement: Elem = {
         val (dpx, dpy) = calculateDescriptionAnchorPoint
         val (vpx, vpy) = calculateValueAnchorPoint
 
         <g id={id}>
-            <path class="bar"
-                  fill={getColor}
-                  d={calculateBarPath} />
-            <text class="description"
-                  x={dpx.toString}
-                  y={dpy.toString}
-                  font-family="Roboto, Segoe UI"
-                  font-weight="100"
-                  font-size={getFontSize}
-                  text-anchor="middle">{description}</text>
+            <path
+                class="bar"
+                fill={getColor}
+                d={calculateBarPath} />
+            <text
+                class="description"
+                x={dpx.toString}
+                y={dpy.toString}
+                font-family="Roboto, Segoe UI"
+                font-weight="100"
+                font-size={getFontSize}
+                text-anchor="middle">{description}</text>
             {if (showValues)
-                <text class="value"
-                      x={vpx.toString}
-                      y={vpy.toString}
-                      font-family="Roboto, Segoe UI"
-                      font-weight="100"
-                      font-size={getFontSize}
-                      text-anchor="middle">{value}</text>
+                <text
+                    class="value"
+                    x={vpx.toString}
+                    y={vpy.toString}
+                    font-family="Roboto, Segoe UI"
+                    font-weight="100"
+                    font-size={getFontSize}
+                    text-anchor="middle">{value}</text>
             }
         </g>
     }

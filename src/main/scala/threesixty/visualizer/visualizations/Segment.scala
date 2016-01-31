@@ -1,4 +1,6 @@
-package threesixty.visualizer.visualizations.general
+package threesixty.visualizer.visualizations
+
+import threesixty.visualizer.util.RGBColor
 
 import scala.xml.Elem
 
@@ -57,7 +59,7 @@ case class Segment(val id: String,
     }
 
     def getColor: String = {
-        if(color.isDefined) color.get.convertToColorString else ""
+        if(color.isDefined) color.get.toHexString else ""
     }
 
     def getFontSize: String = {

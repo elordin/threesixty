@@ -1,13 +1,22 @@
 package threesixty.visualizer.visualizations.lineChart
 
-import threesixty.data.Data.{Identifier, Timestamp, ValueType}
+import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
-import threesixty.data.metadata.{Scaling, Timeframe}
+import threesixty.data.metadata.Scaling
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
-import threesixty.visualizer.visualizations.general._
-import threesixty.visualizer.{DataRequirement, Visualization, VisualizationCompanion, VisualizationConfig, VisualizationMetadata, VisualizationMixins}
+import threesixty.visualizer.{
+    DataRequirement,
+    Visualization,
+    VisualizationCompanion,
+    VisualizationConfig,
+    VisualizationMetadata,
+    VisualizationMixins}
+import threesixty.visualizer.util._
+
+import threesixty.visualizer.SVGXML
 
 import scala.xml.Elem
+import scala.concurrent.duration.FiniteDuration
 
 import spray.json._
 
@@ -63,161 +72,145 @@ object LineChartConfig extends VisualizationCompanion {
         jsonString.parseJson.convertTo[LineChartConfig]
     }
 
-    case class LineChart(config: LineChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
-        private def calculatePath(data: ProcessedData): String = {
-            val grid = config.getGrid
+    case class LineChart private[LineChartConfig] (
+        config: LineChartConfig,
+        data: Set[ProcessedData]
+    ) extends Visualization(data: Set[ProcessedData]) {
 
-            var path = ""
+        private def doubleFold[T](projection: (TaggedDataPoint) => T, selection: (T, T) => T): T =
+            (projection(data.head.dataPoints.head) /: data)({
+                (currResult: T, dataset: ProcessedData) =>
+                    val resultOfSet: T = (projection(dataset.dataPoints.head) /: dataset.dataPoints)({
+                            (a: T, b: TaggedDataPoint) => selection(a, projection(b))
+                        })
+                    selection(resultOfSet, currResult)
+            })
 
-            for {d <- data.dataPoints} {
-                val (x, y) = grid.convertPoint(d.timestamp.getTime, d.value.value)
+        val dataMinMaxX: (Long, Long) =
+            doubleFold[(Long, Long)](
+                { dp => (dp.timestamp.getTime, dp.timestamp.getTime) },
+                { case ((a, b), (c, d)) => (if (a < c) a else c, if (a > c) a else c) })
+        val dataMinMaxY: (Double, Double) =
+            doubleFold[(Double, Double)](
+                { dp => (dp.value.value, dp.value.value) },
+                { case ((a, b), (c, d)) => (if (a < c) a else c, if (a > c) a else c) })
 
-                if (path.isEmpty) {
-                    path += "M "
-                } else {
-                    path += " L "
-                }
-                path += x + " " + y
-            }
+        val dataMinX: Long = dataMinMaxX._1
+        val dataMaxX: Long = dataMinMaxX._2
+        val dataMinY: Double = dataMinMaxY._1
+        val dataMaxY: Double = dataMinMaxY._2
 
-            path
-        }
+        private def scaleToFitX(value: Long): Int =
+            ((value - dataMinX) / (dataMaxX - dataMinX)).toInt * config.chartWidth
+        private def scaleToFitY(value: Double): Int =
+            ((value - dataMinY) / (dataMaxY - dataMinY)).toInt * config.chartHeight
 
-        def getSVGElements: List[Elem] = {
-            var grid = config.getGrid
+        val xAxisLabels: Seq[(String, Int)] = ??? // TODO
+        val yAxisLabels: Seq[(String, Int)] = ??? // TODO
 
-            List(
-                grid.getSVGElement,
-                <g id="data">
-                    {for {dataset <- data} yield
-                    <g id={dataset.id}>
-                        <g id="datapoints">
-                            {for (datapoint <- dataset.dataPoints) yield
-                                <circle fill="#00008B"
-                                        stroke="#00008B"
-                                        cx={grid.xAxis.convert(datapoint.timestamp.getTime).toString}
-                                        cy={grid.yAxis.convert(datapoint.value.value).toString}
-                                        r="4" />
+        private def calculatePath(data: ProcessedData): String =
+            'M' + data.dataPoints.foldLeft("")({
+                (s, dp) => s + s"L${scaleToFitX(dp.timestamp.getTime)} ${scaleToFitY(dp.value.value)} "
+            }).tail
+
+        def toSVG: Elem = (
+            <g class="data">
+                { for { dataset <- data } yield {
+                    val color: RGBColor = ColorScheme.next
+                    <g class={ s"datapoints-${dataset.id}" }>
+                        {
+                            for { datapoint <- dataset.dataPoints } yield {
+                                <circle
+                                    fill={ color.toString }
+                                    stroke={ color.toString }
+                                    cx={ scaleToFitX(datapoint.timestamp.getTime).toString }
+                                    cy={ scaleToFitY(datapoint.value.value).toString }
+                                    r="4" />
                             }
-                        </g>
-                        <path stroke="#6495ED"
-                              fill="none"
-                              stroke-width="2"
-                              d={calculatePath(dataset)}/>
-                    </g>}
-                </g>
-            )
-        }
+                        }
+                    </g>
+                    <path
+                        stroke={ color.toString }
+                        fill="none"
+                        stroke-width="2"
+                        d={calculatePath(dataset)} />
+                } }
+            </g>: SVGXML)
+                .withGrid(Grid(
+                    config.chartOrigin._1,
+                    config.chartOrigin._2,
+                    config.chartWidth,
+                    config.chartHeight,
+                    xAxisLabels.size,
+                    yAxisLabels.size))
+                .withAxis(HorizontalAxis(
+                    x = config.chartOrigin._1,
+                    y = config.chartOrigin._2,
+                    width = config.chartWidth,
+                    title = config.xLabel,
+                    labels = xAxisLabels))
+                .withAxis(VerticalAxis(
+                    x = config.chartOrigin._1,
+                    y = config.chartOrigin._2,
+                    height = config.chartHeight,
+                    title = config.yLabel,
+                    labels = yAxisLabels))
+                .withTitle(config.title, 1, 2, config.fontSizeTitle)
+                .withSVGHeader(0, 0, config.width, config.height)
+
     }
 }
 
 
 case class LineChartConfig(
-    val ids: Set[Identifier],
-    val height: Int,
-    val width: Int,
-    val optXMin:      Option[Timestamp] = None,
-    val optXMax:      Option[Timestamp] = None,
-    val optYMin:      Option[Double]    = None,
-    val optYMax:      Option[Double]    = None,
-    val xLabel:       Option[String]    = None,
-    val yLabel:       Option[String]    = None,
-    val title:        Option[String]    = None,
-    val borderTop:    Option[Int]       = None,
-    val borderBottom: Option[Int]       = None,
-    val borderLeft:   Option[Int]       = None,
-    val borderRight:  Option[Int]       = None,
-    val distanceTitle:Option[Int]       = None,
-    val minDistanceX: Option[Int]       = None,
-    val minDistanceY: Option[Int]       = None,
-    val optUnitX:     Option[String]    = None,
-    val optUnitY:     Option[Double]    = None,
-    val fontSizeTitle:Option[Int]       = None,
-    val fontSize:     Option[Int]       = None
+    val ids:            Set[Identifier],
+    val height:         Int,
+    val width:          Int,
+    val optXMin:        Option[Timestamp] = None,
+    val optXMax:        Option[Timestamp] = None,
+    val optYMin:        Option[Double]    = None,
+    val optYMax:        Option[Double]    = None,
+    val _xLabel:        Option[String]    = None,
+    val _yLabel:        Option[String]    = None,
+    val _title:         Option[String]    = None,
+    val _borderTop:     Option[Int]       = None,
+    val _borderBottom:  Option[Int]       = None,
+    val _borderLeft:    Option[Int]       = None,
+    val _borderRight:   Option[Int]       = None,
+    val _distanceTitle: Option[Int]       = None,
+    val _minDistanceX:  Option[Int]       = None,
+    val _minDistanceY:  Option[Int]       = None,
+    val optUnitX:       Option[FiniteDuration]    = None,
+    val optUnitY:       Option[Double]    = None,
+    val _fontSizeTitle: Option[Int]       = None,
+    val _fontSize:      Option[Int]       = None
 ) extends VisualizationConfig(
     ids,
     height,
     width,
-    title,
-    borderTop,
-    borderBottom,
-    borderLeft,
-    borderRight,
-    distanceTitle,
-    fontSizeTitle,
-    fontSize) {
+    _title,
+    _borderTop,
+    _borderBottom,
+    _borderLeft,
+    _borderRight,
+    _distanceTitle,
+    _fontSizeTitle,
+    _fontSize
+) {
 
-    def _xLabel: String = xLabel.getOrElse("")
-    def _yLabel: String = yLabel.getOrElse("")
+    def xLabel: String = _xLabel.getOrElse("")
+    def yLabel: String = _yLabel.getOrElse("")
 
-    def _minDistanceX: Int = minDistanceX.getOrElse(20)
-    def _minDistanceY: Int = minDistanceY.getOrElse(20)
+    def minDistanceX: Int = _minDistanceX.getOrElse(20)
+    def minDistanceY: Int = _minDistanceY.getOrElse(20)
 
-    require(_minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
-    require(_minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
+    require(minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
+    require(minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
 
     val metadata = new VisualizationMetadata(
-            List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
-
-    var xMin: Long = 0
-    var xMax: Long = 0
-
-    var grid: Grid = null
-
-    def getGrid: Grid = {
-        grid
-    }
-
-    private def calculateXMinMax(pool: DataPool): (Double, Double) = {
-        if (!optXMin.isDefined || !optXMax.isDefined) {
-            val xframe = Timeframe.deduceProcessedData(pool.getDatasets(ids))
-            xMin = if (optXMin.isDefined) math.min(xframe.start.getTime, math.max(0, optXMin.get.getTime)) else xframe.start.getTime
-            xMax = if (optXMax.isDefined) math.max(xframe.end.getTime, optXMax.get.getTime) else xframe.end.getTime
-        } else {
-            xMin = optXMin.get.getTime
-            xMax = optXMax.get.getTime
-        }
-
-        (xMin, xMax)
-    }
-
-    private def calculateYMin(data: Iterable[Double]): Double = {
-        data.reduceLeft((l,r) => if (l < r) l else r)
-    }
-
-    private def calculateYMinMulti(data: Iterable[ProcessedData]): ValueType = {
-        val mins = data.map((d: ProcessedData) => calculateYMin(d.dataPoints.map((x: TaggedDataPoint) => x.value.value)))
-        calculateYMin(mins)
-    }
-
-    private def calculateYMax(data: Iterable[Double]): Double = {
-        data.reduceLeft((l,r) => if (l > r) l else r)
-    }
-
-    private def calculateYMaxMulti(data: Iterable[ProcessedData]): ValueType = {
-        val maxs = data.map((d: ProcessedData) => calculateYMax(d.dataPoints.map((x: TaggedDataPoint) => x.value.value)))
-        calculateYMax(maxs)
-    }
-
-    override def calculateOrigin: (Double, Double) = {
-        (_borderLeft, _borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
-    }
+        List(DataRequirement(scaling = Some(Scaling.Ordinal))), true)
 
     def apply(pool: DataPool): LineChartConfig.LineChart = {
-        val (min, max) = calculateXMinMax(pool)
-        xMin = min.toLong
-        xMax = max.toLong
-
-        val yMin = optYMin.getOrElse(calculateYMinMulti(pool.getDatasets(ids)).value)
-        val yMax = optYMax.getOrElse(calculateYMaxMulti(pool.getDatasets(ids)).value)
-
-        val xAxis = AxisFactory.createAxis(AxisType.TimeAxis, AxisDimension.xAxis, widthChart, xMin, xMax, _xLabel, Some(_minDistanceX), optUnitX)
-        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY),
-            if(optUnitY.isDefined) Some(optUnitY.get.toString) else None)
-
-        grid = new Grid(xAxis, yAxis, _fontSize)
-
         LineChartConfig.LineChart(this, pool.getDatasets(ids))
     }
-
 }

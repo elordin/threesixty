@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations.general
+package threesixty.visualizer.util
 
 import java.sql.{Date, Timestamp}
 
@@ -172,28 +172,4 @@ abstract class TimeScalingYears(name: String, factor: Int) extends TimeScaling(n
 case class TimeScalingYears1() extends TimeScalingYears("years1", 1)
 case class TimeScalingYears5() extends TimeScalingYears("years5", 5)
 case class TimeScalingYears10() extends TimeScalingYears("years10", 10)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,7 +1,10 @@
-package threesixty.visualizer.visualizations.general
+package threesixty.visualizer.util
 
 
 object RGBColor {
+    val BLACK = RGBColor(0, 0, 0)
+    val WHITE = RGBColor(255, 255, 255)
+
     @throws[NumberFormatException]
     def apply(hex: String):RGBColor = apply(Integer.parseInt(hex, 16))
     def apply(hex: Int): RGBColor = RGBColor(hex >> 16 & 0xFF, hex >> 8 & 0xFF, hex & 0xFF)
@@ -12,7 +15,7 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
     require(0 <= green && green < 256)
     require(0 <= blue && blue < 256)
     override def toString(): String = s"rgb($red, $green, $blue)"
-    def convertToColorString: String = "#" + Integer.toHexString(red) + Integer.toHexString(green) + Integer.toHexString(blue)
+    def toHexString: String = "#" + Integer.toHexString(red) + Integer.toHexString(green) + Integer.toHexString(blue)
 }
 
 /**
@@ -24,6 +27,7 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
  *  }}}
  */
 object ColorScheme extends Iterator[RGBColor] {
+
     val colors = Seq(RGBColor("F44336"),
         RGBColor("E91E63"),
         RGBColor("9C27B0"),

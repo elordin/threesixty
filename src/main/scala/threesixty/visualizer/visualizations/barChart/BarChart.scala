@@ -5,7 +5,7 @@ import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{Tag, AggregationTag}
 import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
-import threesixty.visualizer.visualizations.general._
+import threesixty.visualizer.util._
 import spray.json._
 import scala.xml.Elem
 
@@ -64,6 +64,42 @@ object BarChartConfig extends VisualizationCompanion {
 
 
     case class BarChart(config: BarChartConfig, data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+
+        val xAxisLabels: Seq[(String, Int)] = ??? // TODO
+        val yAxisLabels: Seq[(String, Int)] = ??? // TODO
+
+
+        def toSVG: Elem = (<g class="bars">
+                {
+                /*
+                    for (bar <- config.getBarElements) yield
+                        bar.getSVGElement
+                */
+                }
+            </g>: SVGXML)
+                .withGrid(Grid(
+                    config.chartOrigin._1,
+                    config.chartOrigin._2,
+                    config.chartWidth,
+                    config.chartHeight,
+                    xAxisLabels.size,
+                    yAxisLabels.size))
+                .withAxis(HorizontalAxis(
+                    x = config.chartOrigin._1,
+                    y = config.chartOrigin._2,
+                    width = config.chartWidth,
+                    title = config.xLabel,
+                    labels = xAxisLabels))
+                .withAxis(VerticalAxis(
+                    x = config.chartOrigin._1,
+                    y = config.chartOrigin._2,
+                    height = config.chartHeight,
+                    title = config.yLabel,
+                    labels = yAxisLabels))
+                .withTitle(config.title, 1, 2, config.fontSizeTitle)
+                .withSVGHeader(0, 0, config.width, config.height)
+
+        /*
         def getSVGElements: List[Elem] = {
             List(
                 config.getGrid.getSVGElement,
@@ -74,6 +110,7 @@ object BarChartConfig extends VisualizationCompanion {
                 </g>
             )
         }
+        */
     }
 }
 
@@ -84,33 +121,33 @@ case class BarChartConfig(
      val width:                  Int,
      val optYMin:                Option[Double] = None,
      val optYMax:                Option[Double] = None,
-     val xLabel:                 Option[String] = None,
-     val yLabel:                 Option[String] = None,
-     val title:                  Option[String] = None,
-     val borderTop:              Option[Int]    = None,
-     val borderBottom:           Option[Int]    = None,
-     val borderLeft:             Option[Int]    = None,
-     val borderRight:            Option[Int]    = None,
-     val distanceTitle:          Option[Int]    = None,
-     val widthBar:               Option[Double] = None,
-     val distanceBetweenBars:    Option[Double] = None,
-     val showValues:             Option[Boolean]= None,
-     val minDistanceY:           Option[Int]    = None,
+     val _xLabel:                 Option[String] = None,
+     val _yLabel:                 Option[String] = None,
+     val _title:                  Option[String] = None,
+     val _borderTop:              Option[Int]    = None,
+     val _borderBottom:           Option[Int]    = None,
+     val _borderLeft:             Option[Int]    = None,
+     val _borderRight:            Option[Int]    = None,
+     val _distanceTitle:          Option[Int]    = None,
+     val _widthBar:               Option[Double] = None,
+     val _distanceBetweenBars:    Option[Double] = None,
+     val _showValues:             Option[Boolean]= None,
+     val _minDistanceY:           Option[Int]    = None,
      val optUnitY:               Option[Double] = None,
-     val fontSizeTitle:          Option[Int]    = None,
-     val fontSize:               Option[Int]    = None
+     val _fontSizeTitle:          Option[Int]    = None,
+     val _fontSize:               Option[Int]    = None
 ) extends VisualizationConfig(
     ids,
     height,
     width,
-    title,
-    borderTop,
-    borderBottom,
-    borderLeft,
-    borderRight,
-    distanceTitle,
-    fontSizeTitle,
-    fontSize) {
+    _title,
+    _borderTop,
+    _borderBottom,
+    _borderLeft,
+    _borderRight,
+    _distanceTitle,
+    _fontSizeTitle,
+    _fontSize) {
 
     // TODO: for testing only!!!
     val dataTest = new ProcessedData("aggregatedData", List(
@@ -119,32 +156,33 @@ case class BarChartConfig(
         new TaggedDataPoint(new Timestamp(0), new DoubleValue(50), Set(new AggregationTag("Wert 3"))),
         new TaggedDataPoint(new Timestamp(0), new DoubleValue(20), Set(new AggregationTag("Wert 4")))))
 
-    def _xLabel: String = xLabel.getOrElse("")
-    def _yLabel: String = yLabel.getOrElse("")
+    def xLabel: String = _xLabel.getOrElse("")
+    def yLabel: String = _yLabel.getOrElse("")
 
-    def _minDistanceY: Int = minDistanceY.getOrElse(20)
-    require(_minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
+    def minDistanceY: Int = _minDistanceY.getOrElse(20)
+    require(minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
 
-    def _showValues: Boolean = showValues.getOrElse(false)
-
-    var barElements: List[BarElement] = List.empty
-    var grid: Grid = null
+    def showValues: Boolean = _showValues.getOrElse(false)
 
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
             requiredProcessingMethods = None //TODO Aggregation
         )))
 
+    /*
+    var barElements: List[BarElement] = List.empty
+    var grid: Grid = null
+
     override def calculateOrigin: (Double, Double) = {
-        (_borderLeft, _borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
+        (borderLeft, borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
     }
 
     private def calculateWidthBar(data: ProcessedData): Double = {
-        (1.0*widthChart) / (2 * data.dataPoints.size + 1)
+        (1.0* chartWidth) / (2 * data.dataPoints.size + 1)
     }
 
     private def calculateDistanceBetweenBars(data: ProcessedData): Double = {
-        (1.0*widthChart) / (2 * data.dataPoints.size + 1)
+        (1.0* chartWidth) / (2 * data.dataPoints.size + 1)
     }
 
     private def calculateBarElements(data: ProcessedData, distanceBetweenBars: Double, widthBar: Double): Unit = {
@@ -159,9 +197,9 @@ case class BarChartConfig(
                 widthBar,
                 grid.yAxis.convert(point.value.value),
                 description,
-                _showValues,
+                showValues,
                 point.value.value.toString,
-                Some(_fontSize),
+                Some(fontSize),
                 Some(ColorScheme.next))
 
             leftOffset += widthBar + distanceBetweenBars
@@ -176,17 +214,19 @@ case class BarChartConfig(
 
     def getGrid: Grid = grid
 
+    */
     def apply(pool: DataPool): BarChartConfig.BarChart = {
+    /*
         //val dataset = pool.getDatasets(ids)
         val dataset = Set(dataTest)
 
-        val _widthBar = widthBar.getOrElse(calculateWidthBar(dataset.head))
-        val _distanceBetweenBars = distanceBetweenBars.getOrElse(calculateDistanceBetweenBars(dataset.head))
+        val widthBar = _widthBar.getOrElse(calculateWidthBar(dataset.head))
+        val distanceBetweenBars = _distanceBetweenBars.getOrElse(calculateDistanceBetweenBars(dataset.head))
 
-        require(_widthBar > 0, "Value for widthBar must be greater than 0.")
-        require(_distanceBetweenBars >= 0, "Negative value for distanceBetweenBars is not allowed.")
+        require(widthBar > 0, "Value for widthBar must be greater than 0.")
+        require(distanceBetweenBars >= 0, "Negative value for distanceBetweenBars is not allowed.")
 
-        require(_widthBar*dataset.head.dataPoints.size + _distanceBetweenBars*dataset.head.dataPoints.size <= widthChart,
+        require(widthBar*dataset.head.dataPoints.size + distanceBetweenBars*dataset.head.dataPoints.size <=  chartWidth,
             "widthBar or distanceBetweenBars is to large to fit into the chart.")
 
         val datapoints = dataset.head.dataPoints.map((p: TaggedDataPoint) => p.value.value)
@@ -196,15 +236,15 @@ case class BarChartConfig(
         yMin = math.min(0, yMin)
         yMax = math.max(0, yMax)
 
-        val xAxis = AxisFactory.createAxis(AxisType.Nothing, AxisDimension.xAxis, widthChart, 0, 0, _xLabel)
-        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel, Some(_minDistanceY),
+        val xAxis = AxisFactory.createAxis(AxisType.Nothing, AxisDimension.xAxis,  chartWidth, 0, 0, xLabel)
+        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, chartHeight, yMin, yMax, yLabel, Some(minDistanceY),
             if(optUnitY.isDefined) Some(optUnitY.get.toString) else None)
 
-        grid = new Grid(xAxis, yAxis, _fontSize)
+        grid = new Grid(xAxis, yAxis, fontSize)
 
-        calculateBarElements(dataset.head, _distanceBetweenBars, _widthBar)
-
-        BarChartConfig.BarChart(this, dataset)
+        calculateBarElements(dataset.head, distanceBetweenBars, widthBar)
+    */
+        BarChartConfig.BarChart(this, pool.getDatasets(ids))
     }
 
 }

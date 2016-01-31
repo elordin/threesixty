@@ -3,8 +3,27 @@ package threesixty.visualizer
 import threesixty.data.ProcessedData
 import threesixty.engine.UsageInfo
 
+import threesixty.visualizer.util.{Grid, Axis}
+
+
 import spray.json._
 import DefaultJsonProtocol._
+
+import scala.xml.Elem
+
+
+trait Renderable {
+    /**
+     *  Returns a SVG/XML tree.
+     */
+    def toSVG: Elem
+
+    // def toPNG:PNGImage
+
+    // def toJPG:JPGImage
+
+    // def toRawdata:String
+}
 
 
 /** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
@@ -88,4 +107,48 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         conversion(args)
     }
 
+}
+
+
+object SVGXML {
+    implicit def unpimpMulti(pimped: SVGXML): Seq[Elem] = pimped.elems
+    implicit def unpimpSingle(pimped: SVGXML): Elem = pimped.elems.head
+    implicit def pimpSingle(xml: Elem): SVGXML = SVGXML(xml)
+    implicit def pimpMulti(xmls: Seq[Elem]): SVGXML = SVGXML(xmls: _*)
+}
+
+case class SVGXML(elems: Elem*) {
+    def withSVGHeader(
+            viewBoxX: Int,
+            viewBoxY: Int,
+            viewBoxWidth: Int,
+            viewBoxHeight: Int): SVGXML =
+        SVGXML(<svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox={ s"$viewBoxX $viewBoxY $viewBoxWidth $viewBoxHeight" }
+                xml:space="preserve">
+                { elems }
+            </svg>)
+
+    def withElem(elem: Elem): SVGXML = SVGXML(elems ++ Seq(elem) :_*)
+
+    def withTitle(text: String, x: Int, y: Int, fontSize: Int): SVGXML =
+        if (text != "") {
+            withElem(<text  x={ x.toString }
+                        y={ y.toString }
+                        font-family="Roboto, Segoe UI, Sans-Serif"
+                        font-weight="100"
+                        font-size={ fontSize.toString }
+                        text-anchor="middle">{ text }
+                </text>)
+        } else {
+            this
+        }
+
+    def withGrid(grid: Grid): SVGXML = SVGXML(Seq[Elem](grid) ++ elems :_*)
+
+    def withAxis(axis: Axis): SVGXML = withElem(axis: Elem)
+
+    // def withLegend(legend: Legend): SVGXML = ???
 }

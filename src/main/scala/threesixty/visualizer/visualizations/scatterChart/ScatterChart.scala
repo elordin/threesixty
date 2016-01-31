@@ -6,7 +6,7 @@ import threesixty.data.DataJsonProtocol._
 import threesixty.data.metadata.Scaling
 import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
-import threesixty.visualizer.visualizations.general.{AxisDimension, AxisFactory, AxisType, Grid}
+import threesixty.visualizer.util.{Axis, Grid}
 
 import scala.xml.Elem
 
@@ -59,6 +59,9 @@ object ScatterChartConfig extends VisualizationCompanion {
 
 
     case class ScatterChart(config: ScatterChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+
+        def toSVG: Elem = ???
+        /*
         def getSVGElements: List[Elem] = {
             val xdata = data.head
             val ydata = data.last
@@ -78,6 +81,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                 </g>
             )
         }
+        */
     }
 }
 
@@ -90,47 +94,49 @@ case class ScatterChartConfig(
      val optXMax:      Option[Double]    = None,
      val optYMin:      Option[Double]    = None,
      val optYMax:      Option[Double]    = None,
-     val xLabel:       Option[String]    = None,
-     val yLabel:       Option[String]    = None,
-     val title:        Option[String]    = None,
-     val borderTop:    Option[Int]       = None,
-     val borderBottom: Option[Int]       = None,
-     val borderLeft:   Option[Int]       = None,
-     val borderRight:  Option[Int]       = None,
-     val distanceTitle:Option[Int]       = None,
-     val minDistanceX: Option[Int]       = None,
-     val minDistanceY: Option[Int]       = None,
+     val _xLabel:       Option[String]    = None,
+     val _yLabel:       Option[String]    = None,
+     val _title:        Option[String]    = None,
+     val _borderTop:    Option[Int]       = None,
+     val _borderBottom: Option[Int]       = None,
+     val _borderLeft:   Option[Int]       = None,
+     val _borderRight:  Option[Int]       = None,
+     val _distanceTitle:Option[Int]       = None,
+     val _minDistanceX: Option[Int]       = None,
+     val _minDistanceY: Option[Int]       = None,
      val optUnitX:     Option[Double]    = None,
      val optUnitY:     Option[Double]    = None,
-     val fontSizeTitle:Option[Int]       = None,
-     val fontSize:     Option[Int]       = None
+     val _fontSizeTitle:Option[Int]       = None,
+     val _fontSize:     Option[Int]       = None
 ) extends VisualizationConfig(
     ids,
     height,
     width,
-    title,
-    borderTop,
-    borderBottom,
-    borderLeft,
-    borderRight,
-    distanceTitle,
-    fontSizeTitle,
-    fontSize) {
+    _title,
+    _borderTop,
+    _borderBottom,
+    _borderLeft,
+    _borderRight,
+    _distanceTitle,
+    _fontSizeTitle,
+    _fontSize) {
 
-    def _xLabel: String = xLabel.getOrElse("")
-    def _yLabel: String = yLabel.getOrElse("")
+    def xLabel: String = _xLabel.getOrElse("")
+    def yLabel: String = _yLabel.getOrElse("")
 
-    def _minDistanceX: Int = minDistanceX.getOrElse(20)
-    def _minDistanceY: Int = minDistanceY.getOrElse(20)
+    def minDistanceX: Int = _minDistanceX.getOrElse(20)
+    def minDistanceY: Int = _minDistanceY.getOrElse(20)
 
-    require(_minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
-    require(_minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
+    require(minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
+    require(minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
 
+    /*
     var grid: Grid = null
 
     def getGrid: Grid = {
         grid
     }
+    */
 
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
@@ -139,6 +145,7 @@ case class ScatterChartConfig(
             scaling = Some(Scaling.Ordinal)
         )))
 
+    /*
     private def calculateMinMax(data: ProcessedData, minimum: Option[Double], maximum: Option[Double]) = {
         var datapoints: List[Double] = List.empty
         if(!minimum.isDefined || !maximum.isDefined) {
@@ -153,11 +160,14 @@ case class ScatterChartConfig(
     }
 
     override def calculateOrigin: (Double, Double) = {
-        (_borderLeft - grid.xAxis.convert(grid.xAxis.getMinimumDisplayedValue),
-            _borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
+        (borderLeft - grid.xAxis.convert(grid.xAxis.getMinimumDisplayedValue),
+            borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
     }
+    */
 
     def apply(pool: DataPool): ScatterChartConfig.ScatterChart =  {
+
+        /*
         val dataset = pool.getDatasets(ids)
         val xdata = dataset.head
         val ydata = dataset.last
@@ -165,12 +175,12 @@ case class ScatterChartConfig(
         val (xMin, xMax) = calculateMinMax(xdata, optXMin, optXMax)
         val (yMin, yMax) = calculateMinMax(ydata, optYMin, optYMax)
 
-        val xAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.xAxis, widthChart, xMin, xMax, _xLabel,
-            Some(_minDistanceX), if(optUnitX.isDefined) Some(optUnitX.get.toString) else None)
-        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, heightChart, yMin, yMax, _yLabel,
-            Some(_minDistanceY), if(optUnitY.isDefined) Some(optUnitY.get.toString) else None)
+        val xAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.xAxis, chartWidth, xMin, xMax, _xLabel,
+            Some(minDistanceX), if(optUnitX.isDefined) Some(optUnitX.get.toString) else None)
+        val yAxis = AxisFactory.createAxis(AxisType.ValueAxis, AxisDimension.yAxis, chartHeight, yMin, yMax, _yLabel,
+            Some(minDistanceY), if(optUnitY.isDefined) Some(optUnitY.get.toString) else None)
 
-        grid = new Grid(xAxis, yAxis, _fontSize)
+        grid = new Grid(xAxis, yAxis, _fontSize) */
 
         ScatterChartConfig.ScatterChart(this, pool.getDatasets(ids))
     }

@@ -8,13 +8,13 @@ import threesixty.processor.{MultiProcessingMethod, ProcessingMethodCompanion, P
 import clustering._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
+// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
+// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
+// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
+// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
 object Clustering extends ProcessingMethodCompanion {
@@ -121,16 +121,16 @@ object Clustering extends ProcessingMethodCompanion {
         val visFactor =  targetVisualization match {
             //ideal
             case _:ScatterChartConfig       => -1.0
-            case _:ScatterColorChartConfig  => -1.0
+//             case _:ScatterColorChartConfig  => -1.0
             //medium
             case _:BarChartConfig           => 0.3
-            case _:PolarAreaChartConfig     => 0.3  //equal to BarChar
+//             case _:PolarAreaChartConfig     => 0.3  //equal to BarChar
             //maybe but rather bad
             case _:LineChartConfig          => 0.2
-            case _:HeatLineChartConfig      => 0.2
+//             case _:HeatLineChartConfig      => 0.2
             case _:PieChartConfig           => 0.2
             //bad
-            case _:ProgressChartConfig      => 0
+//             case _:ProgressChartConfig      => 0
             //default
             case _                          => 0.3
         }

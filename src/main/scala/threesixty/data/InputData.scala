@@ -57,6 +57,7 @@ case class InputData(
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")
 }
 
+
 /*
 
 case class LazyInputData(
@@ -74,7 +75,7 @@ case class LazyInputData(
 
     var bufferIterator = buffer.iterator
 
-    def refillBuffer(): Unit = {
+    def refillBuffer(): Boolean = {
         ???
     }
 
@@ -82,8 +83,6 @@ case class LazyInputData(
         true
     } else {
         refillBuffer()
-        bufferIterator = buffer.iterator
-        bufferIterator.next
     }
 
     def next = bufferIterator.next
