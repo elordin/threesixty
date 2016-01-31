@@ -17,6 +17,7 @@ import threesixty.visualizer.SVGXML
 
 import scala.xml.Elem
 import scala.concurrent.duration.FiniteDuration
+import scala.annotation.tailrec
 
 import spray.json._
 
@@ -33,7 +34,7 @@ object LineChartConfig extends VisualizationCompanion {
 
     def usage = "LineChart\n" +
                 "  Parameters: \n" +
-                "    ids:               Set[String]          - The data identifiers\n" +
+                "    ids:               List[String]         - The data identifiers\n" +
                 "    height:            Int                  - Height of the diagram in px\n" +
                 "    width:             Int                  - Width of the diagram in px\n" +
                 "    xMin:              Timestamp (optional) - Minimum value of the x-axis\n" +
@@ -105,7 +106,27 @@ object LineChartConfig extends VisualizationCompanion {
         private def scaleToFitY(value: Double): Int =
             ((value - dataMinY) / (dataMaxY - dataMinY)).toInt * config.chartHeight
 
-        val xAxisLabels: Seq[(String, Int)] = ??? // TODO
+        private def xAxisLabels(formatter: (Long) => String): Seq[(String, Int)] = {
+            def bestFittingUnit(start: Long, end: Long) = ???
+
+            val step: FiniteDuration = config.optUnitX.getOrElse {
+                bestFittingUnit(dataMaxX, dataMinX)
+            }
+
+            def smallestBreakPoint(start: Long, step: FiniteDuration): Long = ???
+
+            @tailrec
+            def construct(t: Long, init: Seq[(String, Int)]): Seq[(String, Int)] = {
+                if (t > dataMaxX) {
+                    init
+                } else {
+                    construct(t + step.toMillis, init ++ Seq((formatter(t), scaleToFitX(t))))
+                }
+            }
+            construct(smallestBreakPoint(dataMinX, step), Seq())
+        }
+
+        // TODO
         val yAxisLabels: Seq[(String, Int)] = ??? // TODO
 
         private def calculatePath(data: ProcessedData): String =
@@ -113,8 +134,12 @@ object LineChartConfig extends VisualizationCompanion {
                 (s, dp) => s + s"L${scaleToFitX(dp.timestamp.getTime)} ${scaleToFitY(dp.value.value)} "
             }).tail
 
-        def toSVG: Elem = (
-            <g class="data">
+        def toSVG: Elem = {
+            val xLabels = xAxisLabels({ a => a.toString })
+            val yLabels = yAxisLabels
+            val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+
+            (<g class="data">
                 { for { dataset <- data } yield {
                     val color: RGBColor = ColorScheme.next
                     <g class={ s"datapoints-${dataset.id}" }>
@@ -133,7 +158,7 @@ object LineChartConfig extends VisualizationCompanion {
                         stroke={ color.toString }
                         fill="none"
                         stroke-width="2"
-                        d={calculatePath(dataset)} />
+                        d={ calculatePath(dataset) } />
                 } }
             </g>: SVGXML)
                 .withGrid(Grid(
@@ -141,22 +166,23 @@ object LineChartConfig extends VisualizationCompanion {
                     config.chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    xAxisLabels.size,
-                    yAxisLabels.size))
+                    xLabels.size,
+                    yLabels.size))
                 .withAxis(HorizontalAxis(
                     x = config.chartOrigin._1,
                     y = config.chartOrigin._2,
                     width = config.chartWidth,
                     title = config.xLabel,
-                    labels = xAxisLabels))
+                    labels = xLabels))
                 .withAxis(VerticalAxis(
                     x = config.chartOrigin._1,
                     y = config.chartOrigin._2,
                     height = config.chartHeight,
                     title = config.yLabel,
-                    labels = yAxisLabels))
+                    labels = yLabels))
                 .withTitle(config.title, 1, 2, config.fontSizeTitle)
-                .withSVGHeader(0, 0, config.width, config.height)
+                .withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
+        }
 
     }
 }
@@ -174,16 +200,16 @@ case class LineChartConfig(
     val _yLabel:        Option[String]    = None,
     val _title:         Option[String]    = None,
     val _borderTop:     Option[Int]       = None,
-    val _borderBottom:  Option[Int]       = None,
-    val _borderLeft:    Option[Int]       = None,
-    val _borderRight:   Option[Int]       = None,
-    val _distanceTitle: Option[Int]       = None,
-    val _minDistanceX:  Option[Int]       = None,
-    val _minDistanceY:  Option[Int]       = None,
-    val optUnitX:       Option[FiniteDuration]    = None,
-    val optUnitY:       Option[Double]    = None,
-    val _fontSizeTitle: Option[Int]       = None,
-    val _fontSize:      Option[Int]       = None
+    val _borderBottom:  Option[Int]            = None,
+    val _borderLeft:    Option[Int]            = None,
+    val _borderRight:   Option[Int]            = None,
+    val _distanceTitle: Option[Int]            = None,
+    val _minDistanceX:  Option[Int]            = None,
+    val _minDistanceY:  Option[Int]            = None,
+    val optUnitX:       Option[FiniteDuration] = None,
+    val optUnitY:       Option[Double]         = None,
+    val _fontSizeTitle: Option[Int]            = None,
+    val _fontSize:      Option[Int]            = None
 ) extends VisualizationConfig(
     ids,
     height,
