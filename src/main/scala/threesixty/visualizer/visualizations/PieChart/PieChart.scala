@@ -60,6 +60,13 @@ object PieChartConfig extends VisualizationCompanion {
     }
 
 
+    val metadata = new VisualizationMetadata(
+        List(DataRequirement(
+            requiredProcessingMethods = None, //TODO Aggregation
+            requiredGoal = None //TODO NoGoal
+        )))
+
+
     case class PieChart(config: PieChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
 
         def toSVG: Elem = ???
@@ -168,11 +175,6 @@ case class PieChartConfig(
     var segments = calculateSegments
     */
 
-    val metadata = new VisualizationMetadata(
-        List(DataRequirement(
-            requiredProcessingMethods = None, //TODO Aggregation
-            requiredGoal = None //TODO NoGoal
-        )))
 
 
     private def getAllAngleCandidates: List[Int] = {

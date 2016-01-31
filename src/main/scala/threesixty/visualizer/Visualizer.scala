@@ -1,10 +1,7 @@
 package threesixty.visualizer
 
-import threesixty.data.ProcessedData
-import threesixty.engine.UsageInfo
-
 import threesixty.visualizer.util.{Grid, Axis}
-
+import threesixty.engine.UsageInfo
 
 import spray.json._
 import DefaultJsonProtocol._
@@ -23,16 +20,6 @@ trait Renderable {
     // def toJPG:JPGImage
 
     // def toRawdata:String
-}
-
-
-/** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
-trait VisualizationCompanion extends UsageInfo {
-    /** Verbose name of the visualization */
-    def name: String
-
-    /** Conversion from String to [[threesixty.visualizer.VisualizationConfig]]. */
-    def fromString: (String) => VisualizationConfig
 }
 
 
@@ -88,10 +75,12 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         val json: JsObject = jsonString.parseJson.asJsObject
 
         val vizType = try {
-            json.getFields("type")(0).convertTo[String]
-        } catch {
-            case e:IndexOutOfBoundsException =>
+            json.fields.getOrElse("type", {
                 throw new IllegalArgumentException("parameter \"type\" missing for visualization")
+            }).convertTo[String]
+        } catch {
+            case e: DeserializationException =>
+                throw new IllegalArgumentException("Invalid value for parameter \"type\". Should be String.")
         }
 
         val conversion: (String) => VisualizationConfig =

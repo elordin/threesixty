@@ -58,6 +58,14 @@ object ScatterChartConfig extends VisualizationCompanion {
     }
 
 
+    val metadata = new VisualizationMetadata(
+        List(DataRequirement(
+            scaling = Some(Scaling.Ordinal)
+        ), DataRequirement(
+            scaling = Some(Scaling.Ordinal)
+        )))
+
+
     case class ScatterChart(config: ScatterChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
 
         def toSVG: Elem = ???
@@ -137,13 +145,6 @@ case class ScatterChartConfig(
         grid
     }
     */
-
-    val metadata = new VisualizationMetadata(
-        List(DataRequirement(
-            scaling = Some(Scaling.Ordinal)
-        ), DataRequirement(
-            scaling = Some(Scaling.Ordinal)
-        )))
 
     /*
     private def calculateMinMax(data: ProcessedData, minimum: Option[Double], maximum: Option[Double]) = {

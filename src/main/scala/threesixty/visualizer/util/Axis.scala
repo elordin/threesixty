@@ -4,7 +4,9 @@ import threesixty.visualizer.Renderable
 
 import scala.xml.Elem
 
-
+/**
+ *  @author Thomas Engel, Thomas Weber
+ */
 object Axis {
     implicit def toXML(axis: Axis): Elem = axis.toSVG
 }
@@ -185,15 +187,4 @@ case class VerticalAxis(
             }
         </g>
 
-}
-
-object AxisText extends App {
-
-    println((HorizontalAxis(
-        100, 300, 300, labels = Seq(("123", 100), ("456", 200)),
-            title = "Test Title"
-    ).toSVG: threesixty.visualizer.SVGXML).withAxis(VerticalAxis(
-        100, 300, 200, labels = Seq(("A", 50), ("B", 100)),
-        title = "Another test"
-    )).withSVGHeader(0, 0, 512, 512): Elem)
 }

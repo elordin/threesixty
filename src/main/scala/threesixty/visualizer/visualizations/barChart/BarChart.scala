@@ -63,6 +63,12 @@ object BarChartConfig extends VisualizationCompanion {
     }
 
 
+    val metadata = new VisualizationMetadata(
+        List(DataRequirement(
+            requiredProcessingMethods = None //TODO Aggregation
+        )))
+
+
     case class BarChart(config: BarChartConfig, data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
 
         val xAxisLabels: Seq[(String, Int)] = ??? // TODO
@@ -164,10 +170,6 @@ case class BarChartConfig(
 
     def showValues: Boolean = _showValues.getOrElse(false)
 
-    val metadata = new VisualizationMetadata(
-        List(DataRequirement(
-            requiredProcessingMethods = None //TODO Aggregation
-        )))
 
     /*
     var barElements: List[BarElement] = List.empty

@@ -13,9 +13,6 @@ object Grid {
 
 }
 
-/**
- *  Pluggable
- */
 case class Grid(
     x: Int,
     y: Int,
