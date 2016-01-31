@@ -40,6 +40,9 @@ object Aggregation extends ProcessingMethodCompanion {
         jsonString.parseJson.convertTo[Aggregation]
     }
 
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
+        Aggregation(1, idMapping).asProcessingStep
+
     def computeDegreeOfFit(inputData: InputData): Double = {
 
         var temp = 0.0
