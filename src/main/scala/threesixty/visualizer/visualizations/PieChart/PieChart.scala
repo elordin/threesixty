@@ -57,7 +57,7 @@ object PieChartConfig extends VisualizationCompanion {
     def apply(jsonString: String): PieChartConfig = {
         implicit val pieChartConfigFormat = jsonFormat(PieChartConfig.apply,
             "ids", "height", "width", "title", "borderTop", "borderBottom", "borderLeft",
-            "borderRight", "distanceTitle", "angleStart", "angleEnd", "radius", "innerRadius", "showValues",
+            "borderRight", "distanceTitle", "angleStart", "angleEnd", "radius", "innerRadiusPercent", "showValues",
             "fontSizeTitle", "fontSize", "widthLegendSymbol", "distanceLegend")
         jsonString.parseJson.convertTo[PieChartConfig]
     }

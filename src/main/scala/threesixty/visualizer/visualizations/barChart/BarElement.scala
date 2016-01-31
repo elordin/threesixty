@@ -77,7 +77,7 @@ case class BarElement(val id: String,
     /**
       * @return the path string (<path d=.. />) for the bar
       */
-    private def calculateBarPath: String = {
+    def calculateBarPath: String = {
         val p1 = (xLeft, 0)
         val p2 = (xLeft, height)
         val p3 = (xLeft + width, height)
@@ -93,7 +93,7 @@ case class BarElement(val id: String,
     /**
       * @return the anchor point for the value label
       */
-    private def calculateValueAnchorPoint: (Double, Double) = {
+    def calculateValueAnchorPoint: (Double, Double) = {
         val barMiddle = (xLeft + width / 2.0, height)
         val offset = if(height < 0) -10 else 5 + fontSize.getOrElse(15)
 
@@ -103,7 +103,7 @@ case class BarElement(val id: String,
     /**
       * @return the anchor point for the description label
       */
-    private def calculateDescriptionAnchorPoint: (Double, Double) = {
+    def calculateDescriptionAnchorPoint: (Double, Double) = {
         val baseMiddle = (xLeft + width / 2.0, 0)
         val offset = if(height < 0) 5 + fontSize.getOrElse(15) else - 10
 
