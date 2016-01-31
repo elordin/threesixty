@@ -199,10 +199,11 @@ case class TimeScale(inMin: Long, inMax: Long, outMin: Int, outMax: Int, step: L
 
 object ValueScale {
     def apply(inMin: Double, inMax: Double, outMin: Int, outMax: Int): ValueScale = {
-        var stepSize: Int = 1
-        while ((inMax - inMin) / stepSize >= 9) {
-            stepSize * 10
-        }
+        val stepSize: Int = (for { e <- 0 to 6 } yield {
+            val stepSize: Int = math.pow(10, e).toInt
+            (stepSize, (inMax - inMin) / stepSize)
+        }).dropWhile(_._2 > 25).headOption.map(_._1).getOrElse(10000000)
+
         ValueScale(inMin, inMax, outMin, outMax, stepSize.toDouble)
     }
 }
@@ -212,3 +213,4 @@ case class ValueScale(inMin: Double, inMax: Double, outMin: Int, outMax: Int, st
     def nextBreakpoint(v: Double): Double = v - (v % step) + step
     def scale(v: Double): Int = ((v - inMin) / (inMax - inMin) * (outMax - outMin)).toInt
 }
+
