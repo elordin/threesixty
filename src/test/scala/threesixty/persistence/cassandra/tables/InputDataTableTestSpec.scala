@@ -54,7 +54,7 @@ class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             Await.result(CassandraAdapter.inputDatasets.store(inputDataSet), Duration.Inf)
 
-            whenReady(CassandraAdapter.inputDatasets.getInputDataByIdentifier(identifier)) {
+            whenReady(CassandraAdapter.inputDatasets.getInputDataByIdentifier(identifier), timeout(Duration.Inf)) {
                 case Some(result) => result should be (inputDataSet)
                     result.measurement should be (measurement)
                     result.dataPoints should be (dataPoints)

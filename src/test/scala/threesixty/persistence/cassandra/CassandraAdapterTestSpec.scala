@@ -64,7 +64,6 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
 
     describe("InsertOrAppend newly received Data"){
 
-
         it("should insert data if it has not been in the database yet"){
             val newDataId = UUID.randomUUID().toString
             val newData = InputData(newDataId, measurement, dataPoints, inputMetadata)
