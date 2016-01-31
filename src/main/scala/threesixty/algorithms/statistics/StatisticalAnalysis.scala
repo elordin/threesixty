@@ -23,6 +23,17 @@ object StatisticalAnalysis {
     }
 
     /**
+      *  @param data Dataset to calculate the median of
+      *  @return Sum of input dataset
+      */
+    def sum(data: ProcessedData): ValueType = {
+        data.dataPoints.map( _.value.value ).sum
+    }
+    def sum(dataPoints: List[TaggedDataPoint]): ValueType = {
+        dataPoints.map( _.value.value ).sum
+    }
+
+    /**
      *  @param data Dataset to calculate the median of
      *  @return Mean of input dataset
      */

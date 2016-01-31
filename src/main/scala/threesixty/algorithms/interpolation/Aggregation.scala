@@ -98,7 +98,14 @@ object Aggregation extends ProcessingMethodCompanion {
   *  @param aggregationMode desired Data points as result
   *                 positive Value: It will just seperate the data in numData Blocks and gives its mean out
   *                 -1: EnumAggregation
-  *                 -2: Will aggregate on a daily, Monat, basis
+  *                 -20 - -29: Will aggregate on a daily basis
+  *                     here we have several modes:
+  *                     -20 Number of Data
+  *                     -21 mean of Data
+  *                     -22 sum of Data
+  *                 -30 - -39 same on monthly basis
+  *                 -40 - -49 same on yearly basis
+  *
   */ //groupby() bei Listen :-)
 case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
@@ -108,6 +115,8 @@ case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifi
       *  Creates new Dataset, but with aggregated Data which can directly used for
       *  the diagramm as the number of data has been reduced
       *  Tag aggegated will be added as well
+      *     Timeaggregated -> just reduce the complexity of the datapoints
+      *
       *
       *
       *  @param data Data to interpolate
@@ -148,11 +157,40 @@ case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifi
             val newID = idMapping(data.id)
 
             Set( ProcessedData(newID, l) )
-        } else if (aggregationMode == -2){
-            //TODO
-            Set()
+        } else if ( -20 >= aggregationMode && aggregationMode >= -29 ){
+            val buf = aggregationMode * -1
+            val agMode = buf % 10
+            val agFrame = buf / 10
+
+            var grouped = Map[Int, List[TaggedDataPoint]]()
+            agFrame match {
+                case 2 =>
+                    grouped = data.dataPoints.groupBy( _.timestamp.getDay )
+                case 3 =>
+                    grouped = data.dataPoints.groupBy( _.timestamp.getMonth )
+                case 4 =>
+                    grouped = data.dataPoints.groupBy( _.timestamp.getYear )
+            }
+
+            var l = List[TaggedDataPoint]()
+
+            for( (k,v) <- grouped ) {
+                agMode match {
+                    case 0 =>
+                        l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                    case 1 =>
+                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.mean(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                    case 2 =>
+                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.sum(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                }
+            }
+
+            val newID = idMapping(data.id)
+
+            Set( ProcessedData(newID, l) )
         } else {
             //TODO
+            println("Fuck ungültiger Code")
             Set()
         }
     }
