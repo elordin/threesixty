@@ -57,5 +57,7 @@ class DataPool(
     def getDataset(id: Identifier): ProcessedData =
         processedDatasets(id)
 
+    def apply(id: Identifier): Option[ProcessedData] = this.processedDatasets.get(id)
+
 }
 

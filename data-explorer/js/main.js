@@ -70,7 +70,10 @@ window.addEventListener('load', function () {
             }),
             dataType: 'json',
             success: function (response) {
-                console.log(response.processingmethods);
+                var select = $('#procMethodSelect');
+                $.each(response.processingmethods, function (i, method) {
+                    select.append($('<option>').html(method));
+                });
             },
             error: function (response) {
                 console.log(response.responseText);
@@ -134,5 +137,28 @@ window.addEventListener('load', function () {
         requestPreview(generateJSON(), displayPreview);
     });
 
+
+    function addProcMethod() {
+        var selected = $('#procMethodSelect').val();
+        console.log(selected);
+        $.ajax({
+            url: SERVER_URL,
+            method: "POST",
+            data: JSON.stringify({
+                "type": "help",
+                "for": selected
+            }),
+            success: function (response) {
+                var config = $('<div>' + response + '</div>');
+                $('#processingSteps').append(config);
+            },
+            error: function (response) {
+                console.log(response.responseText);
+            }
+        });
+
+    }
+
+    $('#addProcMethod').click(addProcMethod);
 
 });

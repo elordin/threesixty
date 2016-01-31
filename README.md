@@ -17,7 +17,7 @@ Project repository for the semester project of the Software Engineering lecture 
 
 ### Visualization request
 
-The most common call uses `"type": "visualization"`. It is used to request a visualization with certain parameters.
+Usually the most common call uses `"type": "visualization"`. It is used to request a visualization with certain parameters.
 
 ```json
 {
@@ -88,6 +88,92 @@ _The unprocessed data is no longer accessible_.
 Additional parameters may be required depending on the processing method.
 See their specific usage info for details.
 
+
+### Data requests
+
+Data requests can be used to send and retrieve raw data.
+
+The `action` parameter defines which one it is:
+- `"action": "insert"`
+- `"action": "get"`
+
+#### Insert
+
+To insert data, pass the data using the `"data"` key
+
+```json
+{
+    "type": "data",
+    "action": "insert",
+    "data": {
+
+    }
+}
+```
+
+Data follows the following format:
+
+```json
+{
+    "id": "Foo",
+    "measurement": "Bar",
+    "dataPoints": [ ],
+    "metadata": { }
+}
+```
+
+- `id` is the ID of the dataset
+- `measurement` is an arbitrary String describing the data
+- `dataPoints` is a list of datapoints
+- `metadata` is a metadata object
+
+##### `dataPoints`
+
+Each datapoint must follow the format:
+
+```json
+{
+    "timestamp": 1234,
+    "value": {
+        "type": "int | double",
+        "value": 12.34
+    }
+}
+```
+
+- `timestamp` ist the timestap for the measurement taken
+- `value` is an object with `type` being either `"int"` or `"double"` to define, what type it is, and `value` the actual value (__Note__ that Double values with `type` being `int` are converted to Integers)
+
+##### `metadata`
+
+The metadata object can contains the following keys (_all are optional_)
+
+```json
+{
+    "timeframe": {
+        "start": 1234,
+        "end": 4567
+    }
+    "reliability": "Device | User | Unknown",
+    "resolution": "High | Middle | Low"
+    "scaling": "Nominal | Ordinal",
+    "acitivityType": {
+        "name": "Foo"
+    }
+}
+```
+
+#### Get
+
+Retrieveing data requires an ID of the dataset.
+
+```json
+{
+    "type": "data",
+    "action": "get",
+    "id": "someID"
+}
+```
 
 ### Help requests / usage info
 

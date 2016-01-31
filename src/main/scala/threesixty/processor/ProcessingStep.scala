@@ -1,6 +1,6 @@
 package threesixty.processor
 
-import threesixty.data.ProcessedData
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.Identifier
 
 import scala.collection.parallel._
@@ -23,10 +23,13 @@ import scala.collection.parallel._
 case class ProcessingStep(val method: ProcessingMethod, val dataIDs: Set[Identifier]) {
 
     @throws[NoSuchElementException]("if ProcessedData for one of the ids could not be found")
-    def run(datasetPool: Map[Identifier, ProcessedData]): Set[ProcessedData] = {
+    def run(pool: DataPool): Set[ProcessedData] = {
         method match {
-            case m: SingleProcessingMethod => dataIDs.map(datasetPool(_)).par.flatMap(m(_)).seq
-            case m: MultiProcessingMethod => m(dataIDs.map(datasetPool(_)))
+            case m: SingleProcessingMethod => dataIDs.map(
+                { id => pool(id).getOrElse(throw new NoSuchElementException(s"No data for id $id")) }
+            ).par.flatMap(m(_)).seq
+            case m: MultiProcessingMethod => m(dataIDs.map(
+                { id => pool(id).getOrElse(throw new NoSuchElementException(s"No data for id $id")) }))
         }
     }
 }

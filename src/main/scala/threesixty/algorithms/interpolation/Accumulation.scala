@@ -35,9 +35,16 @@ object Accumulation extends ProcessingMethodCompanion {
 
     def apply(jsonString: String): Accumulation = {
         implicit val akkumulationFormat =
+<<<<<<< HEAD
             jsonFormat( { idm: Map [Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
+=======
+            jsonFormat({ idm: Map[Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
+>>>>>>> refs/remotes/origin/master
         jsonString.parseJson.convertTo[Accumulation]
     }
+
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
+        Accumulation(idMapping).asProcessingStep
 
     def computeDegreeOfFit(inputData: InputData): Double = {
 

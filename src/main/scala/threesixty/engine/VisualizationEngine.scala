@@ -14,6 +14,21 @@ import spray.json._
 import threesixty.data.DataJsonProtocol._
 
 
+object VisualizationEngine {
+    def using(p: Processor) = new AnyRef {
+        def and(v: Visualizer) = new AnyRef {
+            def and(d: DatabaseAdapter) = VisualizationEngine(p, v, d)
+        }
+    }
+
+    def using(v: Visualizer) = new AnyRef {
+        def and(p: Processor) = new AnyRef {
+            def and(d: DatabaseAdapter) = VisualizationEngine(p, v, d)
+        }
+    }
+}
+
+
 /**
  *  Core Visualization engine. Processes a string (usually from a HTTP request)
  *  and return the requested resource, usually a visualization.
@@ -158,10 +173,13 @@ VISUALIZATION
      *
      *  @return HelpResponse with requested help or generic help if "for" was missing.
      */
-    def processHelpRequest(json: JsObject): EngineResponse = {
-        try {
-            val helpFor = json.fields("for").convertTo[String]
-            helpFor.toLowerCase match {
+    def processHelpRequest(json: JsObject): EngineResponse =
+        json.fields.get("for").map({
+            case JsString(forJson) => forJson.toLowerCase match {
+                case "data" => ???
+                case "data-insert" => ???
+                case "data-get" => ???
+
                 case "visualizer" =>
                     HelpResponse(visualizer.usage)
                 case "processor" =>
@@ -172,14 +190,25 @@ VISUALIZATION
                 case "processingmethods" | "p" =>
                     val availableMethods = processor.processingInfos.keys
                     HelpResponse(JsObject(Map[String, JsValue]("processingmethods" -> availableMethods.toJson)))
-                case _ =>
-                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter.").toString)
+                case helpFor =>
+                    visualizer
+                        .visualizationInfos
+                        .get(helpFor)
+                        .map(_.usage)
+                        .map(HelpResponse(_))
+                        .getOrElse(
+                            processor
+                                .processingInfos
+                                .get(helpFor)
+                                .map(_.usage)
+                                .map(HelpResponse(_))
+                                .getOrElse(
+                                    ErrorResponse(Engine.toErrorJson("Unknown help-for parameter."))
+                                )
+                        )
             }
-        } catch {
-            // No "for" given
-            case e: NoSuchElementException => HelpResponse(usage)
-        }
-    }
+            case _ => ErrorResponse(Engine.toErrorJson("Invalid format for for parameter."))
+        }).getOrElse(HelpResponse(usage))
 
 
     /**

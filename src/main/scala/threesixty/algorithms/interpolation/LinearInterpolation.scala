@@ -39,6 +39,9 @@ object LinearInterpolation extends ProcessingMethodCompanion {
         jsonString.parseJson.convertTo[LinearInterpolation]
     }
 
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
+        LinearInterpolation(1, idMapping).asProcessingStep
+
     def computeDegreeOfFit(inputData: InputData): Double = {
 
         var temp = 0.0
