@@ -20,13 +20,6 @@ class DataGeneratorTest extends FunSpec{
 
 
   describe("Heart Rate example data"){
-    it("manual inspection possibility") {
-      println("_Begin of Values")
-      for (i <- 0 until points.length) {
-          println(points(i).value)
-      }
-      println("_End of Values")
-    }
 
     it("heart rate is continious")
     { var diff0 = 0.0
