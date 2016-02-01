@@ -1,4 +1,4 @@
-package threesixty.visualizer.visualizations.barChart
+package threesixty.visualizer.visualizations
 
 import threesixty.visualizer.util.RGBColor
 
@@ -8,7 +8,7 @@ import scala.xml.Elem
 /**
  * This class is used to generate a svg element for a bar.
  *
- * @param id the id for the corresponding svg element
+ * @param identifier the class for the corresponding svg element
  * @param xLeft x-coordinate of the left side of the bar
  * @param width the width of the bar
  * @param height the height of the bar (can also be negative)
@@ -21,7 +21,7 @@ import scala.xml.Elem
  * @author Thomas Engel
  */
 case class BarElement(
-    val id: String,
+    val identifier: String,
     val xLeft: Double,
     val width: Double,
     val height: Double,
@@ -49,7 +49,7 @@ case class BarElement(
         val (dpx, dpy) = calculateDescriptionAnchorPoint
         val (vpx, vpy) = calculateValueAnchorPoint
 
-        <g id={id}>
+        <g class={identifier}>
             <path
                 class="bar"
                 fill={getColor}

@@ -27,7 +27,7 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
       *  Method to determine if the input data fulfills the requirement
       *
       *  @param data an input data
-      *  @param pool Pool of datasets
+      *  @param procMeth the processing step
       *  @return true if the input data fulfills the requirement
       */
     def isMatchingData(data: InputData, procMeth: ProcessingStep): Boolean = {

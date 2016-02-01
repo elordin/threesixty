@@ -198,20 +198,19 @@ object ScatterChartConfig extends VisualizationCompanion {
   * @param optXMax the maximum value displayed on the x-coordinate
   * @param optYMin the minimum value displayed on the y-coordinate
   * @param optYMax the maximum value displayed on the y-coordinate
-  * @param xLabel the label on the x-axis
-  * @param yLabel the label on the y-axis
-  * @param title the title
-  * @param borderTop the border to the top
-  * @param borderBottom the border to the bottom
-  * @param borderLeft the border to the left
-  * @param borderRight the border to the right
-  * @param distanceTitle the distance between the title and the top of the chart
-  * @param minDistanceX the minimal distance between two grid points on the x-axis
-  * @param minDistanceY the minimal distance between two grid points on the y-axis
+  * @param _xLabel the label on the x-axis
+  * @param _yLabel the label on the y-axis
+  * @param _title the title
+  * @param _borderTop the border to the top
+  * @param _borderBottom the border to the bottom
+  * @param _borderLeft the border to the left
+  * @param _borderRight the border to the right
+  * @param _minDistanceX the minimal distance between two grid points on the x-axis
+  * @param _minDistanceY the minimal distance between two grid points on the y-axis
   * @param optUnitX the unit of the x-axis
   * @param optUnitY the unit of the y-axis
-  * @param fontSizeTitle the font size of the title
-  * @param fontSize the font size of labels
+  * @param _fontSizeTitle the font size of the title
+  * @param _fontSize the font size of labels
   */
 case class ScatterChartConfig(
      val ids:          Set[Identifier],

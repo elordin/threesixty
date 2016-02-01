@@ -1,6 +1,7 @@
 package threesixty.visualizer.visualizations.barChart
 
 import org.scalatest.FunSpec
+import threesixty.visualizer.visualizations.BarElement
 
 class BarElementTestSpec extends FunSpec {
     describe("A created BarElement with positive height") {

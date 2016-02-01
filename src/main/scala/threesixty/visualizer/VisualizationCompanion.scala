@@ -20,7 +20,7 @@ trait VisualizationCompanion extends UsageInfo {
      *  Method to determine if a list of input data fulfills the requirements of the visualization
      *
      *  @param inputData a list of input data
-     *  @param config the configuration
+     *  @param procMeth the processing step
      *  @return a maybe reordered list of input data that matches the visualization requirement.
      *          It does not return a Boolean!
      */
