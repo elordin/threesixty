@@ -86,7 +86,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait withPerceptron extends VisualizationCompanion {
 
     final val ENCODING_LENGTH = 12
-    final def encode(metadata: CompleteInputMetadata): Seq[Boolean] = Seq(
+    final def encodeMetadata(metadata: CompleteInputMetadata): Seq[Boolean] = Seq(
         metadata.reliability == Device,
         metadata.reliability == User,
         metadata.reliability == Unknown,
@@ -107,7 +107,7 @@ trait withPerceptron extends VisualizationCompanion {
                 (future: Future[SLPerceptron], metadata: CompleteInputMetadata) =>
                     future.andThen {
                         case Success(newPerceptron: SLPerceptron) =>
-                            newPerceptron.train(chooseThis, encode(metadata): _*)
+                            newPerceptron.train(chooseThis, encodeMetadata(metadata): _*)
                         case Failure(_) => this.perceptron
                     }
             }
@@ -121,7 +121,7 @@ trait withPerceptron extends VisualizationCompanion {
 
     abstract override def degreeOfFit(inputMetadata: CompleteInputMetadata*): Double =
         (super.degreeOfFit(inputMetadata: _*) + inputMetadata.map({
-            imd: CompleteInputMetadata => perceptron.run(encode(imd): _*)
+            imd: CompleteInputMetadata => perceptron.run(encodeMetadata(imd): _*)
         }).sum / inputMetadata.size) / 2
 
 }

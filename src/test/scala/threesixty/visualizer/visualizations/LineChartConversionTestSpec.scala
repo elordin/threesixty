@@ -41,20 +41,20 @@ class LineChartConversionTestSpec extends FunSpec {
                 optXMax = Some(new Timestamp(200000)),
                 optYMin = Some(10.0),
                 optYMax = Some(123.456),
-                xLabel = Some("X-Axis"),
-                yLabel = Some("Y-Axis"),
-                title = Some("Title"),
-                borderTop = Some(100),
-                borderBottom = Some(50),
-                borderLeft = Some(50),
-                borderRight = Some(50),
-                distanceTitle = Some(15),
-                minDistanceX = Some(50),
-                minDistanceY = Some(50),
+                _xLabel = Some("X-Axis"),
+                _yLabel = Some("Y-Axis"),
+                _title = Some("Title"),
+                _borderTop = Some(100),
+                _borderBottom = Some(50),
+                _borderLeft = Some(50),
+                _borderRight = Some(50),
+                _distanceTitle = Some(15),
+                _minDistanceX = Some(50),
+                _minDistanceY = Some(50),
                 optUnitX = Some("seconds30"),
                 optUnitY = Some(10.0),
-                fontSizeTitle = Some(40),
-                fontSize = Some(20)
+                _fontSizeTitle = Some(40),
+                _fontSize = Some(20)
             )
             assertResult(expectedResult) {
                 LineChartConfig(jsonString)

@@ -3,6 +3,7 @@ package threesixty.visualizer.visualizations.general
 import java.sql.{Date, Time, Timestamp}
 
 import org.scalatest.FlatSpec
+import threesixty.visualizer.util._
 
 /**
   * @author Thomas Engel

@@ -49,15 +49,15 @@ class VisDeductionTestSpec extends  FunSpec{
     optXMax = Some(new Timestamp(200000)),
     optYMin = Some(10.0),
     optYMax = Some(123.456),
-    xLabel = Some("X-Axis"),
-    yLabel = Some("Y-Axis"),
-    title = Some("Title"),
-    borderTop = Some(100),
-    borderBottom = Some(50),
-    borderLeft = Some(50),
-    borderRight = Some(50),
-    minDistanceX = Some(50),
-    minDistanceY = Some(50),
+    _xLabel = Some("X-Axis"),
+    _yLabel = Some("Y-Axis"),
+    _title = Some("Title"),
+    _borderTop = Some(100),
+    _borderBottom = Some(50),
+    _borderLeft = Some(50),
+    _borderRight = Some(50),
+    _minDistanceX = Some(50),
+    _minDistanceY = Some(50),
     optUnitX = Some("seconds30"),
     optUnitY = Some(10.0)
   )
@@ -66,29 +66,29 @@ class VisDeductionTestSpec extends  FunSpec{
     ids = Set("a"),
     height = 1024,
     width = 768,
-    title = Some("Title"),
-    borderTop = Some(100),
-    borderBottom = Some(50),
-    borderLeft = Some(50),
-    borderRight = Some(50),
-   distanceTitle = Some(50),
-   angleStart = None,
-   angleEnd = None,
-   radius = None,
-   innerRadiusPercent = None,
-   showValues = Some(true),
-   fontSizeTitle   = None,
-   fontSize  = None,
-   widthLegendSymbol = None,
-   distanceLegend = None
+    _title = Some("Title"),
+    _borderTop = Some(100),
+    _borderBottom = Some(50),
+    _borderLeft = Some(50),
+    _borderRight = Some(50),
+   _distanceTitle = Some(50),
+   _angleStart = None,
+   _angleEnd = None,
+   _radius = None,
+   _innerRadiusPercent = None,
+   _showValues = Some(true),
+   _fontSizeTitle   = None,
+   _fontSize  = None,
+   _widthLegendSymbol = None,
+   _distanceLegend = None
   )
 
   val linInt = new LinearInterpolation(4, null)
   val linIntStep = new ProcessingStep(linInt, null)
 
 
-  val lineChartMeta = lineChart.metadata
-  val pieChartMeta = pieChart.metadata
+  val lineChartMeta = LineChartConfig.metadata
+  val pieChartMeta = PieChartConfig.metadata
 
 describe(" a given ProcessingMethod isMatching() a Visualization"){
 
@@ -117,14 +117,14 @@ describe(" a given ProcessingMethod isMatching() a Visualization"){
     val ListOfInputdata = List(inputDataSet0)
 
     //testcase unlimited Data allowed
-    val res0 = lineChart.isMatching(ListOfInputdata,linIntStep)
+    val res0 = LineChartConfig.isMatching(ListOfInputdata,linIntStep)
     res0 match {
       case Some(datalist) => assert(datalist.equals(ListOfInputdata))
       case None => assert(false)
     }
 
     //testcase with limited data
-    val res1 = pieChart.isMatching(ListOfInputdata,linIntStep)
+    val res1 = PieChartConfig.isMatching(ListOfInputdata,linIntStep)
     res1 match {
       case Some(datalist) => assert(datalist.equals(ListOfInputdata))
       case None => assert(false)
@@ -136,14 +136,14 @@ describe(" a given ProcessingMethod isMatching() a Visualization"){
     val ListOfInputdata = List(inputDataSet0,inputDataSet1)
 
     //testcase unlimited Data allowed
-    val res0 = lineChart.isMatching(ListOfInputdata,linIntStep)
+    val res0 = LineChartConfig.isMatching(ListOfInputdata,linIntStep)
     res0 match {
       case Some(datalist) => assert(datalist.equals(ListOfInputdata))
       case None => assert(false)
     }
 
   //algorithm is aware of limit
-    val res1 = pieChart.isMatching(ListOfInputdata,linIntStep)
+    val res1 = PieChartConfig.isMatching(ListOfInputdata,linIntStep)
     assert(res1 == None) //because pieChart does not work on 2 InputData
 
 

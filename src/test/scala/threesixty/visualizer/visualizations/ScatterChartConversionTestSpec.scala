@@ -1,6 +1,7 @@
 package threesixty.visualizer.visualizations
 
 import org.scalatest.FunSpec
+import threesixty.data.Data.Timestamp
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
 
@@ -32,28 +33,28 @@ class ScatterChartConversionTestSpec extends FunSpec {
             }"""
 
         it("should have all values set correctly") {
-            val expectedResult = ScatterChartConfig(
+            val expectedResult = new ScatterChartConfig(
                 ids = Set("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMin = Some(20),
-                optXMax = Some(500),
+                optXMin = Some(new Timestamp(20)),
+                optXMax = Some(new Timestamp(500)),
                 optYMin = Some(10.0),
                 optYMax = Some(123.456),
-                xLabel = Some("X-Axis"),
-                yLabel = Some("Y-Axis"),
-                title = Some("Title"),
-                borderTop = Some(100),
-                borderBottom = Some(50),
-                borderLeft = Some(50),
-                borderRight = Some(50),
-                distanceTitle = Some(15),
-                minDistanceX = Some(50),
-                minDistanceY = Some(50),
-                optUnitX = Some(100),
+                _xLabel = Some("X-Axis"),
+                _yLabel = Some("Y-Axis"),
+                _title = Some("Title"),
+                _borderTop = Some(100),
+                _borderBottom = Some(50),
+                _borderLeft = Some(50),
+                _borderRight = Some(50),
+                _distanceTitle = Some(15),
+                _minDistanceX = Some(50),
+                _minDistanceY = Some(50),
+                optUnitX = Some("milliseconds10"),
                 optUnitY = Some(10.0),
-                fontSizeTitle = Some(40),
-                fontSize = Some(20)
+                _fontSizeTitle = Some(40),
+                _fontSize = Some(20)
             )
             assertResult(expectedResult) {
                 ScatterChartConfig(jsonString)
@@ -91,23 +92,23 @@ class ScatterChartConversionTestSpec extends FunSpec {
         }
 
         it("should have all values set correctly") {
-            val expectedResult = ScatterChartConfig(
+            val expectedResult = new ScatterChartConfig(
                 ids = Set("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMax = Some(500),
+                optXMax = Some(new Timestamp(500)),
                 optYMin = Some(10.0),
-                xLabel = Some("X-Axis"),
-                yLabel = Some("Y-Axis"),
-                title = Some("Title"),
-                borderTop = Some(100),
-                borderBottom = Some(50),
-                borderLeft = Some(50),
-                distanceTitle = Some(15),
-                minDistanceY = Some(50),
+                _xLabel = Some("X-Axis"),
+                _yLabel = Some("Y-Axis"),
+                _title = Some("Title"),
+                _borderTop = Some(100),
+                _borderBottom = Some(50),
+                _borderLeft = Some(50),
+                _distanceTitle = Some(15),
+                _minDistanceY = Some(50),
                 optUnitY = Some(10.0),
-                fontSizeTitle = Some(40),
-                fontSize = Some(20)
+                _fontSizeTitle = Some(40),
+                _fontSize = Some(20)
             )
             assertResult(expectedResult) {
                 ScatterChartConfig(jsonString)
