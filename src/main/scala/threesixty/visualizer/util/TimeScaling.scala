@@ -1,7 +1,8 @@
 package threesixty.visualizer.util
 
 import java.sql.{Date, Timestamp}
-/*
+
+
 /**
   * This abstract class is used for scaling a time period.
   *
@@ -193,7 +194,6 @@ abstract class TimeScalingYears(name: String, factor: Int) extends TimeScaling(n
 case class TimeScalingYears1() extends TimeScalingYears("years1", 1)
 case class TimeScalingYears5() extends TimeScalingYears("years5", 5)
 case class TimeScalingYears10() extends TimeScalingYears("years10", 10)
-*/
 
 
 
@@ -225,7 +225,7 @@ object TimeScale {
         (MILLISECONDS, 1), (MILLISECONDS, 10), (MILLISECONDS, 100),
         (SECONDS, 1), (SECONDS, 10),
         (MINUTES, 1), (MINUTES, 10),
-        (HOURS, 1), (HOURS, 10),
+        (HOURS, 1), (HOURS, 12), (HOURS, 24),
         (DAYS, 1), (DAYS, 10),
         (WEEKS, 1),
         (MONTHS, 1), (MONTHS, 10),
@@ -268,7 +268,29 @@ object TimeScale {
 }
 
 case class TimeScale(inMin: Long, inMax: Long, outMin: Int, outMax: Int, unit: TimeScale.TimeUnits.TimeUnit, step: Long) extends Scale[Long] {
-    def format(t: Long): String = ""
+    import TimeScale.TimeUnits._
+
+    def format(t: Long): String = unit match {
+        case MILLISECONDS => "+" + (t - inMin) + "ms"
+        case SECONDS => "+" + ((t - inMin) / 1000) + "s"
+        case MINUTES => {
+            val time = new Timestamp(t)
+            val h = time.getHours
+            val min = time.getMinutes
+            val m = if (min < 10) ("0" + min) else min.toString
+            s"$h:$m Uhr"
+        }
+        case HOURS => (new Timestamp(t)).getHours + " Uhr"
+        case DAYS => {
+            val time = new Timestamp(t)
+            val d = time.getDate
+            val m = time.getMonth + 1
+            s"$d.$m."
+        }
+        case WEEKS => ""
+        case MONTHS => ""
+        case YEARS => ""
+    }
     def nextBreakpoint(t: Long): Long = t - (t % step) + step
     def apply(t: Long): Int = (((t - inMin).toDouble / (inMax - inMin).toDouble) * (outMax - outMin)).toInt
 }

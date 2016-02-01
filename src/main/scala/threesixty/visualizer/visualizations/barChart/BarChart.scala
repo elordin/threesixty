@@ -130,31 +130,32 @@ object BarChartConfig extends VisualizationCompanion {
 }
 
 /**
-  * The config to create a [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]].
-  *
-  * @param ids set of ids which are to be displayed in the visualization
-  * @param height the height
-  * @param width the width
-  * @param optYMin the minimum value displayed on the y-coordinate
-  * @param optYMax the maximum value displayed on the y-coordinate
-  * @param xLabel the label on the x-axis
-  * @param yLabel the label on the y-axis
-  * @param title the title
-  * @param borderTop the border to the top
-  * @param borderBottom the border to the bottom
-  * @param borderLeft the border to the left
-  * @param borderRight the border to the right
-  * @param distanceTitle the distance between the title and the top of the chart
-  * @param widthBar the width of a bar
-  * @param distanceBetweenBars the distance between two bars
-  * @param showValues iff the values for a bar should be shown
-  * @param minDistanceY the minimal distance between two grid points on the y-axis
-  * @param optUnitY the unit of the y-axis
-  * @param fontSizeTitle the font size of the title
-  * @param fontSize the font size of labels
-  *
-  * @author Thomas Engel
-  */
+ *  Config for a [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]].
+ *  Acts as a factory.
+ *
+ *  @param ids set of ids which are to be displayed in the visualization
+ *  @param height the height
+ *  @param width the width
+ *  @param optYMin the minimum value displayed on the y-coordinate
+ *  @param optYMax the maximum value displayed on the y-coordinate
+ *  @param xLabel the label on the x-axis
+ *  @param yLabel the label on the y-axis
+ *  @param title the title
+ *  @param borderTop the border to the top
+ *  @param borderBottom the border to the bottom
+ *  @param borderLeft the border to the left
+ *  @param borderRight the border to the right
+ *  @param distanceTitle the distance between the title and the top of the chart
+ *  @param widthBar the width of a bar
+ *  @param distanceBetweenBars the distance between two bars
+ *  @param showValues iff the values for a bar should be shown
+ *  @param minDistanceY the minimal distance between two grid points on the y-axis
+ *  @param optUnitY the unit of the y-axis
+ *  @param fontSizeTitle the font size of the title
+ *  @param fontSize the font size of labels
+ *
+ * @author Thomas Engel
+ */
 case class BarChartConfig(
      val ids:                    Set[Identifier],
      val height:                 Int,
@@ -187,7 +188,8 @@ case class BarChartConfig(
     _borderRight,
     _distanceTitle,
     _fontSizeTitle,
-    _fontSize) {
+    _fontSize
+) {
 
     // TODO: for testing only!!!
     val dataTest = new ProcessedData("aggregatedData", List(

@@ -124,12 +124,18 @@ case class SVGXML(elems: Elem*) {
             </svg>)
 
     /** Appends an arbitrary element */
-    def withElem(elem: Elem): SVGXML = SVGXML(elems ++ Seq(elem) :_*)
+    def append(elem: Elem): SVGXML = SVGXML(elems ++ Seq(elem) :_*)
+    /** Prepends an arbitrary element */
+    def prepend(elem: Elem): SVGXML = SVGXML(Seq(elem) ++ elems:_*)
+    /** Appends a renderable element */
+    def append(renderable: Renderable): SVGXML = append(renderable.toSVG)
+    /** Prepends a renderable element */
+    def prepend(renderable: Renderable): SVGXML = prepend(renderable.toSVG)
 
     /** Appends a title */
     def withTitle(text: String, x: Int, y: Int, fontSize: Int): SVGXML =
         if (text != "") {
-            withElem(<text  x={ x.toString }
+            append(<text  x={ x.toString }
                         y={ y.toString }
                         font-family="Roboto, Segoe UI, Sans-Serif"
                         font-weight="100"
@@ -141,10 +147,10 @@ case class SVGXML(elems: Elem*) {
         }
 
     /** Prepends a grid */
-    def withGrid(grid: Grid): SVGXML = SVGXML(Seq[Elem](grid) ++ elems :_*)
+    def withGrid(grid: Grid): SVGXML = prepend(grid)
 
     /** Appends an axis */
-    def withAxis(axis: Axis): SVGXML = withElem(axis: Elem)
+    def withAxis(axis: Axis): SVGXML = append(axis)
 
     // def withLegend(legend: Legend): SVGXML = ???
 }

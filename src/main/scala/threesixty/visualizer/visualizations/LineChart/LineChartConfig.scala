@@ -124,7 +124,7 @@ object LineChartConfig extends VisualizationCompanion {
                 if (t > xScale.inMax) {
                     init
                 } else {
-                    construct(xScale.nextBreakpoint(t + 1), init ++ Seq((xScale.format(t), xScale(t))))
+                    construct(xScale.nextBreakpoint(t), init ++ Seq((xScale.format(t), xScale(t))))
                 }
             }
             construct(xScale.nextBreakpoint(xScale.inMin), Seq())
@@ -136,7 +136,7 @@ object LineChartConfig extends VisualizationCompanion {
                 if (v > yScale.inMax) {
                     init
                 } else {
-                    construct(yScale.nextBreakpoint(v + 1), init ++ Seq((yScale.format(v), yScale(v))))
+                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v))))
                 }
             }
             construct(yScale.nextBreakpoint(yScale.inMin), Seq())

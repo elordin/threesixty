@@ -44,7 +44,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
     var database: Map[Identifier, InputData] = Map(
         "dataG" -> InputData(
             "dataG", "gaussian demodata",
-            generateGaussianDatapointSeries(72, 16, 100, 1000000, 500000),
+            generateGaussianDatapointSeries(72, 16, 100, 1000000, 1000000),
             CompleteInputMetadata(
                 Timeframe(new Timestamp(23), new Timestamp(104)),
                 Reliability.Unknown,
@@ -55,7 +55,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         ),
         "data1" -> InputData(
             "data1", "demodata",
-            generateDatapointSeries(60, 120, 23, 10000, 1000),
+            generateDatapointSeries(60, 120, 0, 2000000, 5000),
             CompleteInputMetadata(
                 Timeframe(new Timestamp(23), new Timestamp(104)),
                 Reliability.Unknown,

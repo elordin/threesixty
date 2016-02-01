@@ -1,14 +1,15 @@
 package threesixty.visualizer.visualizations.scatterChart
 
 import spray.json._
-import threesixty.data.Data.Identifier
+import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
 import threesixty.data.metadata.Scaling
 import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
-import threesixty.visualizer.util.{Axis, Grid}
+import threesixty.visualizer.util._
 
 import scala.xml.Elem
+import scala.annotation.tailrec
 
 
 trait Mixin extends VisualizationMixins {
@@ -17,10 +18,10 @@ trait Mixin extends VisualizationMixins {
 }
 
 /**
-  * The config class for a [[threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig.ScatterChart]].
-  *
-  * @author Thomas Engel
-  */
+ *  The config class for a [[threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig.ScatterChart]].
+ *
+ *  @author Thomas Engel
+ */
 object ScatterChartConfig extends VisualizationCompanion {
 
     def name = "ScatterChart"
@@ -52,10 +53,10 @@ object ScatterChartConfig extends VisualizationCompanion {
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
     /**
-      *  Public constructor that parses JSON into a configuration
-      *  @param jsonString representation of the config
-      *  @return ScatterChartConfig with all arguments from the JSON set
-      */
+     *  Public constructor that parses JSON into a configuration
+     *  @param jsonString representation of the config
+     *  @return ScatterChartConfig with all arguments from the JSON set
+     */
     def apply(jsonString: String): ScatterChartConfig = {
         implicit val lineChartConfigFormat = jsonFormat21(ScatterChartConfig.apply)
         jsonString.parseJson.convertTo[ScatterChartConfig]
@@ -78,29 +79,111 @@ object ScatterChartConfig extends VisualizationCompanion {
      * @author Thomas Engel
      */
     case class ScatterChart(config: ScatterChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+        // TODO Performance optimization, get both in one run
+        val dataMinMaxX: (Long, Long) =
+            (data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).min }).min,
+            data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).max }).max)
+        val dataMinMaxY: (Double, Double) =
+            (data.map({ d => d.dataPoints.map({ p => p.value.value }).min }).min,
+            data.map({ d => d.dataPoints.map({ p => p.value.value }).max }).max)
+        val dataMinX: Long = dataMinMaxX._1
+        val dataMaxX: Long = dataMinMaxX._2
+        val dataMinY: Double = dataMinMaxY._1
+        val dataMaxY: Double = dataMinMaxY._2
+        val chartOrigin = (config.borderLeft, config.height - config.borderBottom)
 
-        def toSVG: Elem = ???
-        /*
-        def getSVGElements: List[Elem] = {
+        val xScale = config.optUnitX.map(
+                TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
+                    config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
+                    TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
+                        config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth)
+            }
+        val yScale = config.optUnitY.map(
+                ValueScale(config.optYMin.getOrElse(dataMinY),
+                    config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
+                    ValueScale(config.optYMin.getOrElse(dataMinY),
+                        config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight)
+            }
+
+        val xAxisLabels: Seq[(String, Int)] = {
+            @tailrec
+            def construct(t: Long, init: Seq[(String, Int)]): Seq[(String, Int)] = {
+                if (t > xScale.inMax) {
+                    init
+                } else {
+                    construct(xScale.nextBreakpoint(t), init ++ Seq((xScale.format(t), xScale(t))))
+                }
+            }
+            construct(xScale.nextBreakpoint(xScale.inMin), Seq())
+        }
+
+        val yAxisLabels: Seq[(String, Int)] =  {
+            @tailrec
+            def construct(v: Double, init: Seq[(String, Int)]): Seq[(String, Int)] = {
+                if (v > yScale.inMax) {
+                    init
+                } else {
+                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v))))
+                }
+            }
+            construct(yScale.nextBreakpoint(yScale.inMin), Seq())
+        }
+
+        def toSVG: Elem = {
+            val displayData = data.map {
+                dataset => ProcessedData(dataset.id, dataset.dataPoints.filter {
+                    dataPoint =>
+                        dataPoint.timestamp.getTime >= xScale.inMin &&
+                        dataPoint.timestamp.getTime <= xScale.inMax &&
+                        dataPoint.value.value >= yScale.inMin &&
+                        dataPoint.value.value <= yScale.inMax
+                })
+            }
+            val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+
+            /*
             val xdata = data.head
             val ydata = data.last
 
             val zippedData = xdata.dataPoints.zip(ydata.dataPoints)
-            val grid = config.getGrid
+            */
+            (<g id="datapoints">
+                { for { dataset <- data } yield  {
+                    val color = ColorScheme.next
+                    for { datapoint <- dataset.dataPoints } yield
+                        <circle
+                            cx={ (chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString }
+                            cy={ (chartOrigin._2 - yScale(datapoint.value.value)).toString }
+                            fill={ color.toHexString }
+                            r="2" />
+                } }
+            </g>: SVGXML)
+                .withGrid(Grid(
+                    chartOrigin._1,
+                    chartOrigin._2,
+                    config.chartWidth,
+                    config.chartHeight,
+                    xAxisLabels.size,
+                    yAxisLabels.size,
+                    xOffset = xScale(xScale.nextBreakpoint(dataMinX)),
+                    yOffset = yScale(yScale.nextBreakpoint(dataMinY))
+                    ))
+                .withAxis(HorizontalAxis(
+                    x = chartOrigin._1,
+                    y = chartOrigin._2,
+                    width = config.chartWidth,
+                    title = config.xLabel,
+                    labels = xAxisLabels))
+                .withAxis(VerticalAxis(
+                    x = chartOrigin._1,
+                    y = chartOrigin._2,
+                    height = config.chartHeight,
+                    title = config.yLabel,
+                    labels = yAxisLabels))
+                .withTitle(config.title, config.width / 2, config.borderTop - config.distanceTitle, config.fontSizeTitle)
+                .withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
 
-            List(
-                grid.getSVGElement,
-                <g id="datapoints">
-                    {for(d <- zippedData) yield
-                        <circle cx={grid.xAxis.convert(d._1.value.value).toString}
-                                cy={grid.yAxis.convert(d._2.value.value).toString}
-                                fill="#00008B"
-                                r="2" />
-                    }
-                </g>
-            )
         }
-        */
     }
 }
 
@@ -134,8 +217,8 @@ case class ScatterChartConfig(
      val ids:          Set[Identifier],
      val height:       Int,
      val width:        Int,
-     val optXMin:      Option[Double]    = None,
-     val optXMax:      Option[Double]    = None,
+     val optXMin:      Option[Timestamp]    = None,
+     val optXMax:      Option[Timestamp]    = None,
      val optYMin:      Option[Double]    = None,
      val optYMax:      Option[Double]    = None,
      val _xLabel:       Option[String]    = None,
@@ -148,8 +231,8 @@ case class ScatterChartConfig(
      val _distanceTitle:Option[Int]       = None,
      val _minDistanceX: Option[Int]       = None,
      val _minDistanceY: Option[Int]       = None,
-     val optUnitX:     Option[Double]    = None,
-     val optUnitY:     Option[Double]    = None,
+     val optUnitX:      Option[String]    = None,
+     val optUnitY:      Option[Double]    = None,
      val _fontSizeTitle:Option[Int]       = None,
      val _fontSize:     Option[Int]       = None
 ) extends VisualizationConfig(

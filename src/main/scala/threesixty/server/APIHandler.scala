@@ -55,6 +55,9 @@ object APIHandler {
  *  @author Thomas Weber
  */
 class APIHandler extends Actor {
+    // Create with target processing handler
+    // Send processing request to ProcessingActor
+    // Forward response
 
     val log = Logging(context.system, this)
 
@@ -65,6 +68,7 @@ class APIHandler extends Actor {
     def receive = {
         case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
             val peer = sender
+
             val processingFuture: Future[HttpResponse] = Future {
                 APIHandler.engine.processRequest(body.asString).toHttpResponse
             }
