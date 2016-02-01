@@ -38,16 +38,12 @@ object APIHandler {
         case _:ConfigException => false
     }
 
-    lazy val engine: Engine = VisualizationEngine(
-        new Processor
-            with LinearInterpolation.Mixin,
-        new Visualizer
+    lazy val engine: Engine = VisualizationEngine using
+        new Processor with LinearInterpolation.Mixin and new Visualizer
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin
-            with scatterChart.Mixin,
-        FakeDatabaseAdapter
-    )
+            with scatterChart.Mixin and FakeDatabaseAdapter
 
     def props: Props = Props(new APIHandler)
 }

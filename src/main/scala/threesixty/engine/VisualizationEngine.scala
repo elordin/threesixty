@@ -14,6 +14,21 @@ import spray.json._
 import threesixty.data.DataJsonProtocol._
 
 
+object VisualizationEngine {
+    def using(p: Processor) = new AnyRef {
+        def and(v: Visualizer) = new AnyRef {
+            def and(d: DatabaseAdapter) = VisualizationEngine(p, v, d)
+        }
+    }
+
+    def using(v: Visualizer) = new AnyRef {
+        def and(p: Processor) = new AnyRef {
+            def and(d: DatabaseAdapter) = VisualizationEngine(p, v, d)
+        }
+    }
+}
+
+
 /**
  *  Core Visualization engine. Processes a string (usually from a HTTP request)
  *  and return the requested resource, usually a visualization.

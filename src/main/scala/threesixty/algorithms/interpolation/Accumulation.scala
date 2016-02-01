@@ -35,7 +35,8 @@ object Accumulation extends ProcessingMethodCompanion {
 
     def apply(jsonString: String): Accumulation = {
         implicit val akkumulationFormat =
-            jsonFormat({ idm: Map[Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
+            jsonFormat( { idm: Map [Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
+
         jsonString.parseJson.convertTo[Accumulation]
     }
 
@@ -91,10 +92,9 @@ object Accumulation extends ProcessingMethodCompanion {
 
 
 /**
-  *  Linear interpolator
+  *  Accumulator
   *
-  *  @author Thomas Weber
-  *  @param frequency Desired max. time-distance between datapoints.
+  *  @author Jens Wöhrle
   */
 case class Accumulation(idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
@@ -122,8 +122,6 @@ case class Accumulation(idMapping: Map[Identifier, Identifier])
           * @param list of datapoints
           * @return list of datapoints with interpolated values and Tnterpolation-tags
           */
-
-        // TODO
         def akkumulated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
             case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
                 TaggedDataPoint(t1, v1, tags1 + Accumulated) :: akkumulated( TaggedDataPoint(t2, v1.value + v2.value, tags2 + Accumulated) :: ds )

@@ -42,7 +42,7 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             Await.result(CassandraAdapter.inputMetadataSets.store(inputMetadta, identifier), Duration.Inf)
 
-            whenReady(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(identifier)) {
+            whenReady(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(identifier), timeout(Duration.Inf)) {
                 case Some(result) => result should be (inputMetadta)
                     result.reliability should be (reliability)
                     result.resolution should be (resolution)

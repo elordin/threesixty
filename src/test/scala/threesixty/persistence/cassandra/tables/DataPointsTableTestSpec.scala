@@ -53,7 +53,7 @@ class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             Await.result(CassandraAdapter.dataPoints.store(dataPoint, inputDataId, identifier), Duration.Inf)
 
-            whenReady(CassandraAdapter.dataPoints.getDataPointWithIdentifier(identifier)) {
+            whenReady(CassandraAdapter.dataPoints.getDataPointWithIdentifier(identifier), timeout(Duration.Inf)) {
                 case Some(result) => result should be (dataPoint)
                 case None => fail("Received no result from the database.")
             }
@@ -76,7 +76,7 @@ class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             Await.result(CassandraAdapter.dataPoints.store(secondDataPoint, inputDataId), Duration.Inf)
 
-            whenReady(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(inputDataId)) {
+            whenReady(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(inputDataId), timeout(Duration.Inf)) {
                 case results =>
                     results.contains(firstDataPoint) should be (true)
                     results.contains(secondDataPoint) should be (true)

@@ -1,0 +1,197 @@
+package threesixty.algorithms.interpolation
+
+import threesixty.data.metadata.{Resolution, Scaling}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.data.Data.{Identifier, Timestamp}
+import threesixty.data.Implicits.timestamp2Long
+import threesixty.data.tags._
+import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
+import threesixty.algorithms.statistics.StatisticalAnalysis
+
+import spray.json._
+import DefaultJsonProtocol._
+import threesixty.visualizer.VisualizationConfig
+import threesixty.visualizer.visualizations.barChart.BarChartConfig
+import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
+import threesixty.visualizer.visualizations.pieChart.PieChartConfig
+import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
+import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
+import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
+import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
+
+
+object Aggregation extends ProcessingMethodCompanion {
+
+    trait Mixin extends ProcessingMixins {
+        abstract override def processingInfos: Map[String, ProcessingMethodCompanion] =
+            super.processingInfos + ("aaggregation" -> Aggregation)
+    }
+
+    def name = "Aggregation"
+
+    def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
+
+    def usage = """ Use responsibly """ // TODO
+
+    def apply(jsonString: String): Aggregation = {
+        implicit val aggregationFormat =
+            jsonFormat(Aggregation.apply, "frequency", "idMapping")
+        jsonString.parseJson.convertTo[Aggregation]
+    }
+
+    def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
+        Aggregation(1, idMapping).asProcessingStep
+
+    def computeDegreeOfFit(inputData: InputData): Double = {
+
+        var temp = 0.0
+        val meta = inputData.metadata
+
+        if (meta.scaling == Scaling.Ordinal) {
+            temp += 0.4
+        }
+        if (inputData.dataPoints.length >= 5) {
+            temp += 0.2
+        }
+        if (inputData.dataPoints.length >= 50) {
+            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
+        }
+        if (meta.resolution == Resolution.High) {
+            temp += 0.2
+        }
+        if (meta.resolution == Resolution.Middle) {
+            temp += 0.1
+        }
+
+        temp
+    }
+
+    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig ): Double = {
+
+        val strategyFactor = computeDegreeOfFit(inputData)
+        val visFactor = targetVisualization match {
+            //good
+            case _:LineChartConfig          => 1.0
+            case _:HeatLineChartConfig      => 1.0
+            case _:BarChartConfig           => 0.8
+            case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
+            //bad
+            case _:ScatterChartConfig       => 0.2
+            case _:ScatterColorChartConfig  => 0.2
+            case _:ProgressChartConfig      => 0.1
+            case _:PieChartConfig           => 0.0
+            //default
+            case _                          => 0.5
+        }
+
+        strategyFactor * visFactor
+    }
+
+}
+
+
+/**
+  *  Aggregator
+  *
+  *  @author Jens Wöhrle
+  *  @param aggregationMode desired Data points as result
+  *                 positive Value: It will just seperate the data in numData Blocks and gives its mean out
+  *                 -1: EnumAggregation
+  *                 -20 - -29: Will aggregate on a daily basis
+  *                     here we have several modes:
+  *                     -20 Number of Data
+  *                     -21 mean of Data
+  *                     -22 sum of Data
+  *                 -30 - -39 same on monthly basis
+  *                 -40 - -49 same on yearly basis
+  *
+  */ //groupby() bei Listen :-)
+case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifier])
+    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+
+    /**
+      *  Creates a new dataset with ID as specified in idMapping.
+      *  Creates new Dataset, but with aggregated Data which can directly used for
+      *  the diagramm as the number of data has been reduced
+      *  Tag aggegated will be added as well
+      *     Timeaggregated -> just reduce the complexity of the datapoints
+      *
+      *
+      *
+      *  @param data Data to interpolate
+      *  @return One element Set containing the new dataset
+      */
+    @throws[NoSuchElementException]("if data.id can not be found in idMapping")
+    def apply(data: ProcessedData): Set[ProcessedData] = {
+        if ( aggregationMode > 0 ) {
+            //Aggregation to several data
+            var agdata = data.dataPoints.sortBy(d => -timestamp2Long((d.timestamp)))
+
+            val agregsize = math.ceil(agdata.length/aggregationMode).toInt
+
+            var l = List[TaggedDataPoint]()
+
+            for( i <- 0 until aggregationMode ) {
+                val buf = agdata.splitAt(agregsize)
+                val r = buf._1
+                agdata = buf._2
+                l = TaggedDataPoint( r(0).timestamp, StatisticalAnalysis.mean(r), r(0).tags + TimeAggregated) :: l
+            }
+
+            val newID = idMapping(data.id)
+
+            Set(ProcessedData(newID, l))
+        } else if ( aggregationMode == -1) {
+            /** Enum Aggregation
+              * It looses the Data on time and just aggregates on Enumdata
+              */
+            val grouped = data.dataPoints.groupBy( _.value.value )
+
+            var l = List[TaggedDataPoint]()
+
+            for( (k,v) <- grouped ) {
+                l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).value)) :: l
+            }
+
+            val newID = idMapping(data.id)
+
+            Set( ProcessedData(newID, l) )
+        } else if ( -20 >= aggregationMode && aggregationMode >= -29 ){
+            val buf = aggregationMode * -1
+            val agMode = buf % 10
+            val agFrame = buf / 10
+
+            var grouped = Map[Int, List[TaggedDataPoint]]()
+            agFrame match {
+                case 2 =>
+                    grouped = data.dataPoints.groupBy( _.timestamp.getDay )
+                case 3 =>
+                    grouped = data.dataPoints.groupBy( _.timestamp.getMonth )
+                case 4 =>
+                    grouped = data.dataPoints.groupBy( _.timestamp.getYear )
+            }
+
+            var l = List[TaggedDataPoint]()
+
+            for( (k,v) <- grouped ) {
+                agMode match {
+                    case 0 =>
+                        l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                    case 1 =>
+                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.mean(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                    case 2 =>
+                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.sum(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                }
+            }
+
+            val newID = idMapping(data.id)
+
+            Set( ProcessedData(newID, l) )
+        } else {
+            //TODO
+            println("Fuck ungültiger Code")
+            Set()
+        }
+    }
+}

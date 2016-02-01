@@ -23,7 +23,7 @@ case class ProcessingStrategy(steps: ProcessingStep*)
      */
     def apply(pool: DataPool): Unit =
         steps.foreach {
-            step => pool.pushData(step.run(pool.datasets))
+            step => pool.pushData(step.run(pool))
         }
 
     /**

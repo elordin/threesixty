@@ -32,6 +32,8 @@ libraryDependencies ++= Seq(
     "com.typesafe.akka"             %% "akka-testkit"       % "2.4.1",
     "org.skife.com.typesafe.config" %  "typesafe-config"    % "0.3.0",
     "io.spray"                      %% "spray-can"          % "1.3.3",
+    "io.spray"                      %% "spray-util"         % "1.3.3",
+    "io.spray"                      %% "spray-caching"      % "1.3.3",
     "io.spray"                      %% "spray-json"         % "1.3.2",
     "org.scalatest"                 %  "scalatest_2.11"     % "2.2.4"   % "test"
 )

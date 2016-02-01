@@ -31,6 +31,11 @@ class ActivityTypesTable extends CassandraTable[ActivityTypes, ActivityType] {
 
 abstract class ActivityTypes extends ActivityTypesTable with RootConnector {
 
+    /**
+      * stores a given ActivityType in the database
+      * @param activity which activity to store
+      * @param identifier connect activity to InputMetaData, where this key is stored as a foreign key
+      * @return returns an awaitable future object*/
     def store(activity: ActivityType, identifier: UUID = UUID.randomUUID()): Future[ResultSet] = {
         val descriptionText = Option(activity.description) match {
             case Some(description) => description

@@ -45,3 +45,7 @@ trait       ChangedDataTag                          extends Tag
 object      Accumulated                             extends ChangedDataTag {
     override def toString(): String = "accumulated"
 }
+
+object      TimeAggregated                            extends ChangedDataTag {
+    override def toString(): String = "timeaggregated"
+}
