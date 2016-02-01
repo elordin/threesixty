@@ -17,6 +17,8 @@ trait Mixin extends VisualizationMixins {
 
 
 /**
+ * The config class for a [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]].
+ *
  * @author Thomas Engel
  */
 object BarChartConfig extends VisualizationCompanion {
@@ -63,7 +65,18 @@ object BarChartConfig extends VisualizationCompanion {
     }
 
 
+    /**
+      * This class creates the svg element for a bar chart.
+      *
+      * @param config the bar chart config
+      * @param data the data
+      *
+      * @author Thomas Engel
+      */
     case class BarChart(config: BarChartConfig, data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+        /**
+          * @return a list of svg elements that should be included into the chart
+          */
         def getSVGElements: List[Elem] = {
             List(
                 config.getGrid.getSVGElement,
@@ -77,7 +90,32 @@ object BarChartConfig extends VisualizationCompanion {
     }
 }
 
-
+/**
+  * The config to create a [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]].
+  *
+  * @param ids set of ids which are to be displayed in the visualization
+  * @param height the height
+  * @param width the width
+  * @param optYMin the minimum value displayed on the y-coordinate
+  * @param optYMax the maximum value displayed on the y-coordinate
+  * @param xLabel the label on the x-axis
+  * @param yLabel the label on the y-axis
+  * @param title the title
+  * @param borderTop the border to the top
+  * @param borderBottom the border to the bottom
+  * @param borderLeft the border to the left
+  * @param borderRight the border to the right
+  * @param distanceTitle the distance between the title and the top of the chart
+  * @param widthBar the width of a bar
+  * @param distanceBetweenBars the distance between two bars
+  * @param showValues iff the values for a bar should be shown
+  * @param minDistanceY the minimal distance between two grid points on the y-axis
+  * @param optUnitY the unit of the y-axis
+  * @param fontSizeTitle the font size of the title
+  * @param fontSize the font size of labels
+  *
+  * @author Thomas Engel
+  */
 case class BarChartConfig(
      val ids:                    Set[Identifier],
      val height:                 Int,
@@ -119,12 +157,25 @@ case class BarChartConfig(
         new TaggedDataPoint(new Timestamp(0), new DoubleValue(50), Set(new AggregationTag("Wert 3"))),
         new TaggedDataPoint(new Timestamp(0), new DoubleValue(20), Set(new AggregationTag("Wert 4")))))
 
+    /**
+      * @return the label on the x-axis or an empty string
+      */
     def _xLabel: String = xLabel.getOrElse("")
+
+    /**
+      * @return the label on the y-axis or an empty string
+      */
     def _yLabel: String = yLabel.getOrElse("")
 
+    /**
+      * @return the minDistanceY or a default value
+      */
     def _minDistanceY: Int = minDistanceY.getOrElse(20)
     require(_minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
 
+    /**
+      * @return showValues or false
+      */
     def _showValues: Boolean = showValues.getOrElse(false)
 
     var barElements: List[BarElement] = List.empty
@@ -139,14 +190,30 @@ case class BarChartConfig(
         (_borderLeft, _borderTop - grid.yAxis.convert(grid.yAxis.getMaximumDisplayedValue))
     }
 
-    private def calculateWidthBar(data: ProcessedData): Double = {
-        (1.0*widthChart) / (2 * data.dataPoints.size + 1)
+    /**
+      * @param data the data
+      * @return a tuple containing the width of a bar and the distance between two bars
+      */
+    private def calculateDistances(data: ProcessedData) = {
+        if(!widthBar.isDefined && !distanceBetweenBars.isDefined) {
+            val w = (1.0*widthChart) / (2 * data.dataPoints.size + 1)
+            (w, w)
+        } else if(!widthBar.isDefined) {
+            ((1.0*(widthChart - (data.dataPoints.size + 1) * distanceBetweenBars.get)) / (data.dataPoints.size), distanceBetweenBars.get)
+        } else if(!distanceBetweenBars.isDefined) {
+            (widthBar.get, (1.0*(widthChart - data.dataPoints.size*widthBar.get)) / (data.dataPoints.size + 1))
+        } else {
+            (widthBar.get, distanceBetweenBars.get)
+        }
     }
 
-    private def calculateDistanceBetweenBars(data: ProcessedData): Double = {
-        (1.0*widthChart) / (2 * data.dataPoints.size + 1)
-    }
-
+    /**
+      * Calculates the list of [[BarElement]] and assigns them to the corresponding variable.
+      *
+      * @param data the data
+      * @param distanceBetweenBars the distance between two bars
+      * @param widthBar the width of a bar
+      */
     private def calculateBarElements(data: ProcessedData, distanceBetweenBars: Double, widthBar: Double): Unit = {
         var leftOffset = distanceBetweenBars
 
@@ -172,16 +239,35 @@ case class BarChartConfig(
         barElements = barElements.reverse
     }
 
+    /**
+      * Please note: The method [[calculateBarElements()]] has to be invoked previously to get
+      * the proper list of [[BarElement]]s. Otherwise an empty list will be returned.
+      *
+      * @return the list of [[BarElement]]s
+      */
     def getBarElements: List[BarElement] = barElements
 
+    /**
+      * Please note: The grid has to be set before in order to get the proper grid.
+      * The grid will only be set in the method [[apply()]].
+      *
+      * @return the [[Grid]]
+      */
     def getGrid: Grid = grid
 
+    /**
+      * Sets the [[Grid]], calculates the list of [[BarElement]]s and returns the
+      * [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]]
+      * for this configuration.
+      *
+      * @param pool the pool containing the data
+      * @return the [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]] for this configuration
+      */
     def apply(pool: DataPool): BarChartConfig.BarChart = {
         //val dataset = pool.getDatasets(ids)
         val dataset = Set(dataTest)
 
-        val _widthBar = widthBar.getOrElse(calculateWidthBar(dataset.head))
-        val _distanceBetweenBars = distanceBetweenBars.getOrElse(calculateDistanceBetweenBars(dataset.head))
+        val (_widthBar, _distanceBetweenBars) = calculateDistances(dataset.head)
 
         require(_widthBar > 0, "Value for widthBar must be greater than 0.")
         require(_distanceBetweenBars >= 0, "Negative value for distanceBetweenBars is not allowed.")

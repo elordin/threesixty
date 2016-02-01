@@ -23,10 +23,13 @@ class LineChartConversionTestSpec extends FunSpec {
                 "borderBottom": 50,
                 "borderLeft": 50,
                 "borderRight": 50,
+                "distanceTitle": 15,
                 "minDistanceX": 50,
                 "minDistanceY": 50,
                 "optUnitX": "seconds30",
-                "optUnitY": 10.0
+                "optUnitY": 10.0,
+                "fontSizeTitle": 40,
+                "fontSize": 20
             }"""
 
         it("should have all values set correctly") {
@@ -45,10 +48,13 @@ class LineChartConversionTestSpec extends FunSpec {
                 borderBottom = Some(50),
                 borderLeft = Some(50),
                 borderRight = Some(50),
+                distanceTitle = Some(15),
                 minDistanceX = Some(50),
                 minDistanceY = Some(50),
                 optUnitX = Some("seconds30"),
-                optUnitY = Some(10.0)
+                optUnitY = Some(10.0),
+                fontSizeTitle = Some(40),
+                fontSize = Some(20)
             )
             assertResult(expectedResult) {
                 LineChartConfig(jsonString)
@@ -79,7 +85,11 @@ class LineChartConversionTestSpec extends FunSpec {
             assert(convertedConfig.optXMin == None)
             assert(convertedConfig._xLabel == "")
             assert(convertedConfig._borderLeft == 50)
+            assert(convertedConfig._distanceTitle == 15)
             assert(convertedConfig.optUnitY == None)
+            assert(convertedConfig._fontSizeTitle == 20)
+            assert(convertedConfig._fontSize == 12)
+
         }
 
         it("should have the correct values where they were given") {

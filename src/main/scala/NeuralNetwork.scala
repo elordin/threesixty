@@ -73,66 +73,55 @@ case class SLPerceptron(val neuron: Neuron, val alpha: Double = 0.1, val thresho
 }
 
 
-
-import threesixty.data.{InputData, DataPoint}
-import threesixty.data.Data.{DoubleValue, Timestamp}
+import threesixty.visualizer.VisualizationCompanion
 import threesixty.data.metadata._
 import Resolution._
 import Reliability._
 import Scaling._
 
-object EncodableInputData {
-    implicit def pimp(data: InputData) = EncodableInputData(data)
-    implicit def unpimp: EncodableInputData => InputData = { case EncodableInputData(data) => data }
-}
+import scala.util.{Success, Failure}
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-case class EncodableInputData(data: InputData) {
-    def boolEncode: Seq[Boolean] = Seq(
-        data.metadata.reliability == Device,
-        data.metadata.reliability == User,
-        data.metadata.reliability == Unknown,
-        data.metadata.resolution  == High,
-        data.metadata.resolution  == Low,
-        data.metadata.resolution  == Middle,
-        data.metadata.scaling     == Nominal,
-        data.metadata.scaling     == Ordinal,
-        data.metadata.timeframe.length > 3600000L,
-        data.metadata.timeframe.length > 86400000L,
-        data.metadata.timeframe.length > 604800000L,
-        data.metadata.timeframe.length > 2419200000L
+trait withPerceptron extends VisualizationCompanion {
+
+    final val ENCODING_LENGTH = 12
+    final def encode(metadata: CompleteInputMetadata): Seq[Boolean] = Seq(
+        metadata.reliability == Device,
+        metadata.reliability == User,
+        metadata.reliability == Unknown,
+        metadata.resolution  == High,
+        metadata.resolution  == Low,
+        metadata.resolution  == Middle,
+        metadata.scaling     == Nominal,
+        metadata.scaling     == Ordinal,
+        metadata.timeframe.length > 3600000L,
+        metadata.timeframe.length > 86400000L,
+        metadata.timeframe.length > 604800000L,
+        metadata.timeframe.length > 2419200000L
     )
-}
 
+    def train(chooseThis: Boolean, datasets: CompleteInputMetadata*): Unit = {
+        val trainingsFuture =
+            datasets.foldLeft(Future[SLPerceptron] { this.perceptron } ) {
+                (future: Future[SLPerceptron], metadata: CompleteInputMetadata) =>
+                    future.andThen {
+                        case Success(newPerceptron: SLPerceptron) =>
+                            newPerceptron.train(chooseThis, encode(metadata): _*)
+                        case Failure(_) => this.perceptron
+                    }
+            }
 
-
-object PerceptronTest extends App {
-
-    var perceptron = SLPerceptron(Neuron(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0))
-
-    for { _ <- 1 to 1000 } {
-        for { start       <- List(10L, 1000L, 10000L, 100000L, 1000000L, 10000000L);
-              end         <- List(50L, 5000L, 50000L, 500000L, 5000000L, 50000000L);
-              if start < end;
-              reliability <- List(Device, User, Unknown);
-              resolution  <- List(High, Middle, Low);
-              scaling     <- List(Nominal, Ordinal) } {
-            val metadata = CompleteInputMetadata(
-                Timeframe(new Timestamp(start), new Timestamp(end)),
-                reliability,
-                resolution,
-                scaling,
-                ActivityType(".")
-            )
-            val inputData = InputData(".", ".", List(DataPoint(new Timestamp(0), DoubleValue(1.0))), metadata)
-            perceptron = perceptron.train(scala.util.Random.nextBoolean, (inputData: EncodableInputData).boolEncode: _*)
+        trainingsFuture onSuccess {
+            case newPerceptron: SLPerceptron => this.perceptron = newPerceptron
         }
     }
 
-    println(perceptron)
+    var perceptron = SLPerceptron(Neuron((for { _ <- 1 to ENCODING_LENGTH } yield 0.5): _*))
 
-    val test: EncodableInputData = InputData(".", ".", List(DataPoint(new Timestamp(0), DoubleValue(1.0))), CompleteInputMetadata(
-        Timeframe(new Timestamp(0), new Timestamp(10000)), User, Middle, Nominal, ActivityType(".")))
-
-    println(perceptron(test.boolEncode: _*))
+    abstract override def degreeOfFit(inputMetadata: CompleteInputMetadata*): Double =
+        (super.degreeOfFit(inputMetadata: _*) + inputMetadata.map({
+            imd: CompleteInputMetadata => perceptron.run(encode(imd): _*)
+        }).sum / inputMetadata.size) / 2
 
 }

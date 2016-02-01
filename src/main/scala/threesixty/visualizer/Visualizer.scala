@@ -1,12 +1,13 @@
 package threesixty.visualizer
 
-import threesixty.data.ProcessedData
+import threesixty.data.{InputData, ProcessedData}
 import threesixty.engine.UsageInfo
 
 import spray.json._
 import DefaultJsonProtocol._
+import threesixty.processor.{ProcessingMethod, ProcessingMethodCompanion}
 
-
+/*
 /** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
 trait VisualizationCompanion extends UsageInfo {
     /** Verbose name of the visualization */
@@ -15,6 +16,7 @@ trait VisualizationCompanion extends UsageInfo {
     /** Conversion from String to [[threesixty.visualizer.VisualizationConfig]]. */
     def fromString: (String) => VisualizationConfig
 }
+*/
 
 
 /**

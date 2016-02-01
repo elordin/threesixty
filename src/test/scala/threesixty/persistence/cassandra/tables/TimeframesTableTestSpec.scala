@@ -38,7 +38,7 @@ class TimeframesTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
             Await.result(CassandraAdapter.timeframes.store(timeframe, identifier), Duration.Inf)
 
-            whenReady(CassandraAdapter.timeframes.getTimeframeByIdentifier(identifier)) {
+            whenReady(CassandraAdapter.timeframes.getTimeframeByIdentifier(identifier), timeout(Duration.Inf)) {
                 case Some(result) => result should be(timeframe)
                     result.start should be(startTime)
                     result.end should be(endTime)

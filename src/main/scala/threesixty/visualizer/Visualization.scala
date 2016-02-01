@@ -17,10 +17,19 @@ abstract class Visualization(data: Set[ProcessedData]) {
 
     override def toString(): String = toSVG.toString
 
+    /**
+      * @return the configuration for the chart
+      */
     def config: VisualizationConfig
 
+    /**
+      * @return a list of svg elements that should be included into the chart
+      */
     def getSVGElements: List[Elem]
 
+    /**
+      * @return the svg element representing the title
+      */
     def getTitleElement: xml.Elem = {
         <text x={(config.calculateViewBox._1 + config._width / 2.0).toString}
               y={(config.upperLimit - config._distanceTitle).toString}
@@ -31,8 +40,8 @@ abstract class Visualization(data: Set[ProcessedData]) {
     }
 
     /**
-     *  Returns a SVG/XML tree.
-     */
+      * @return the svg element representing the chart
+      */
     def toSVG:Elem = {
         val (vbX, vbY, width, height) = config.calculateViewBox
 
