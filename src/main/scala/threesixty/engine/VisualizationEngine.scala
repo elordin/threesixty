@@ -252,6 +252,8 @@ VISUALIZATION
             ).convertTo[Set[Identifier]]
 
 
+        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
+
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
                 case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) =>
@@ -264,7 +266,6 @@ VISUALIZATION
                     println("Both missing"); (???, ???)       // TODO deduction
             }
 
-        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
 
         // Apply processing Methods
         processingStrategy(dataPool)

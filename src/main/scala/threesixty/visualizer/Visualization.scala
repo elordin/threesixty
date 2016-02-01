@@ -13,51 +13,8 @@ import scala.xml.Elem
  *
  *  Use [[threesixty.visualizer.VisualizationMixins]] to add them to a [[threesixty.visualizer.Visualizer]].
  */
-abstract class Visualization(data: Set[ProcessedData]) {
+abstract class Visualization(data: Set[ProcessedData]) extends Renderable {
 
     override def toString(): String = toSVG.toString
 
-    /**
-      * @return the configuration for the chart
-      */
-    def config: VisualizationConfig
-
-    /**
-      * @return a list of svg elements that should be included into the chart
-      */
-    def getSVGElements: List[Elem]
-
-    /**
-      * @return the svg element representing the title
-      */
-    def getTitleElement: xml.Elem = {
-        <text x={(config.calculateViewBox._1 + config._width / 2.0).toString}
-              y={(config.upperLimit - config._distanceTitle).toString}
-              font-family="Roboto, Segoe UI, Sans-Serif"
-              font-weight="100"
-              font-size={(config._fontSizeTitle).toString}
-              text-anchor="middle">{config._title}</text>
-    }
-
-    /**
-      * @return the svg element representing the chart
-      */
-    def toSVG:Elem = {
-        val (vbX, vbY, width, height) = config.calculateViewBox
-
-        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox={vbX + " " + vbY + " " + width + " " + height} xml:space="preserve">
-            {for(elem <- getSVGElements) yield
-                elem
-            }
-            <g id="title">
-                {getTitleElement}
-            </g>
-        </svg>
-    }
-
-    // def toPNG:PNGImage
-
-    // def toJPG:JPGImage
-
-    // def toRawdata:String
 }

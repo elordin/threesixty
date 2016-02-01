@@ -29,7 +29,7 @@ val identifier = UUID.randomUUID()
    var dataPoints : List[DataPoint] = List()
     val random = new Random()
     var value = 75
-    //Todo creation
+
     for (i <- 0 until steps){
       var r = random.nextInt(5)
       var delta = r match{
