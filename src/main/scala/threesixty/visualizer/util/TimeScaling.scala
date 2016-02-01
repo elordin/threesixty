@@ -273,7 +273,7 @@ case class TimeScale(inMin: Long, inMax: Long, outMin: Int, outMax: Int, unit: T
     def format(t: Long): String = unit match {
         case MILLISECONDS => "+" + (t - inMin) + "ms"
         case SECONDS => "+" + ((t - inMin) / 1000) + "s"
-        case MINUTES => {
+        case MINUTES => { // TODO
             val time = new Timestamp(t)
             val h = time.getHours
             val min = time.getMinutes
@@ -281,15 +281,15 @@ case class TimeScale(inMin: Long, inMax: Long, outMin: Int, outMax: Int, unit: T
             s"$h:$m Uhr"
         }
         case HOURS => (new Timestamp(t)).getHours + " Uhr"
-        case DAYS => {
+        case DAYS => { // TODO
             val time = new Timestamp(t)
             val d = time.getDate
             val m = time.getMonth + 1
             s"$d.$m."
         }
-        case WEEKS => ""
-        case MONTHS => ""
-        case YEARS => ""
+        case WEEKS => "" // TODO
+        case MONTHS => "" // TODO
+        case YEARS => "" // TODO
     }
     def nextBreakpoint(t: Long): Long = t - (t % step) + step
     def apply(t: Long): Int = (((t - inMin).toDouble / (inMax - inMin).toDouble) * (outMax - outMin)).toInt

@@ -187,8 +187,10 @@ object LineChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    5, 5,
-                    xOffset = xScale(xScale.nextBreakpoint(dataMinX))))
+                    xScale(xScale.step),
+                    xScale(xScale.step),
+                    xOffset = xScale(xScale.nextBreakpoint(dataMinX)),
+                    yOffset = yScale(yScale.nextBreakpoint(dataMinY))))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
