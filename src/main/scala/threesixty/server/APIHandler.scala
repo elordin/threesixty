@@ -1,12 +1,10 @@
 package threesixty.server
 
+import threesixty.persistence.cassandra.CassandraAdapter
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
-import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.algorithms.interpolation.LinearInterpolation
-import threesixty.data.Data.Identifier
-import threesixty.data.InputData
 import threesixty.visualizer.visualizations._
 
 import akka.actor.{Actor, Props}
@@ -43,7 +41,7 @@ object APIHandler {
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin
-            with scatterChart.Mixin and FakeDatabaseAdapter
+            with scatterChart.Mixin and CassandraAdapter
 
     def props: Props = Props(new APIHandler)
 }
