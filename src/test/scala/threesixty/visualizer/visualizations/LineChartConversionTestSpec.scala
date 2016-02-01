@@ -67,8 +67,8 @@ class LineChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "optXMax": 200000,
-                "optYMin": 10.0,
+                "xMax": 200000,
+                "yMin": 10.0,
                 "optYMax": 123.456,
                 "yLabel": "Y-Axis",
                 "title": "Title",
@@ -83,12 +83,12 @@ class LineChartConversionTestSpec extends FunSpec {
         it("should have the default values where none were given") {
             val convertedConfig = LineChartConfig(jsonString)
             assert(convertedConfig.optXMin == None)
-            assert(convertedConfig._xLabel == "")
-            assert(convertedConfig._borderLeft == 50)
-            assert(convertedConfig._distanceTitle == 15)
+            assert(convertedConfig.xLabel == "")
+            assert(convertedConfig.borderLeft == 50)
+            assert(convertedConfig.distanceTitle == 10)
             assert(convertedConfig.optUnitY == None)
-            assert(convertedConfig._fontSizeTitle == 20)
-            assert(convertedConfig._fontSize == 12)
+            assert(convertedConfig.fontSizeTitle == 20)
+            assert(convertedConfig.fontSize == 12)
 
         }
 

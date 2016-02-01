@@ -79,11 +79,11 @@ class BarChartConversionTestSpec extends FunSpec {
 
         it("should have the default values where none were given") {
             val convertedConfig = BarChartConfig(jsonString)
-            assert(convertedConfig._yLabel == "")
-            assert(convertedConfig._borderBottom == 50)
-            assert(convertedConfig._distanceTitle == 10)
-            assert(convertedConfig._distanceBetweenBars == None)
-            assert(convertedConfig.minDistanceY == None)
+            assert(convertedConfig.yLabel == "")
+            assert(convertedConfig.borderBottom == 50)
+            assert(convertedConfig.distanceTitle == 10)
+            // assert(convertedConfig.distanceBetweenBars == None)
+            assert(convertedConfig.minDistanceY == 20)
 
         }
 
