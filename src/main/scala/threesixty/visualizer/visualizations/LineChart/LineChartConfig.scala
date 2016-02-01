@@ -92,79 +92,76 @@ object LineChartConfig extends VisualizationCompanion {
         data: Set[ProcessedData]
     ) extends Visualization(data: Set[ProcessedData]) {
 
-        private def doubleFold[T](projection: (TaggedDataPoint) => T, selection: (T, T) => T): T =
-            (projection(data.head.dataPoints.head) /: data)({
-                (currResult: T, dataset: ProcessedData) =>
-                    val resultOfSet: T = (projection(dataset.dataPoints.head) /: dataset.dataPoints)({
-                            (a: T, b: TaggedDataPoint) => selection(a, projection(b))
-                        })
-                    selection(resultOfSet, currResult)
-            })
-
+        // TODO Performance optimization, get both in one run
         val dataMinMaxX: (Long, Long) =
-            doubleFold[(Long, Long)](
-                { dp => (dp.timestamp.getTime, dp.timestamp.getTime) },
-                { case ((a, b), (c, d)) => (if (a < c) a else c, if (a > c) a else c) })
+            (data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).min }).min,
+            data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).max }).max)
         val dataMinMaxY: (Double, Double) =
-            doubleFold[(Double, Double)](
-                { dp => (dp.value.value, dp.value.value) },
-                { case ((a, b), (c, d)) => (if (a < c) a else c, if (a > c) a else c) })
-
+            (data.map({ d => d.dataPoints.map({ p => p.value.value }).min }).min,
+            data.map({ d => d.dataPoints.map({ p => p.value.value }).max }).max)
         val dataMinX: Long = dataMinMaxX._1
         val dataMaxX: Long = dataMinMaxX._2
         val dataMinY: Double = dataMinMaxY._1
         val dataMaxY: Double = dataMinMaxY._2
-
         val chartOrigin = (config.borderLeft, config.height - config.borderBottom)
 
-        println(dataMinY)
-        println(dataMaxY)
-        println(config.chartHeight)
-
         val xScale = config.optUnitX.map(
-            TimeScale(dataMinX, dataMaxX, 0, config.chartWidth, _)).getOrElse {
-                TimeScale(dataMaxX, dataMinX, 0, config.chartWidth)
+                TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
+                    config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
+                    TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
+                        config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth)
             }
         val yScale = config.optUnitY.map(
-                ValueScale(dataMinY, dataMaxY, 0, config.chartHeight, _)).getOrElse {
-                ValueScale(dataMinY, dataMaxY, 0, config.chartHeight)
+                ValueScale(config.optYMin.getOrElse(dataMinY),
+                    config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
+                    ValueScale(config.optYMin.getOrElse(dataMinY),
+                        config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight)
             }
 
         val xAxisLabels: Seq[(String, Int)] = {
             @tailrec
             def construct(t: Long, init: Seq[(String, Int)]): Seq[(String, Int)] = {
-                if (t > dataMaxX) {
+                if (t > xScale.inMax) {
                     init
                 } else {
-                    construct(xScale.nextBreakpoint(t + 1), init ++ Seq((xScale.format(t), xScale.scale(t))))
+                    construct(xScale.nextBreakpoint(t + 1), init ++ Seq((xScale.format(t), xScale(t))))
                 }
             }
-            construct(xScale.nextBreakpoint(dataMinX), Seq())
+            construct(xScale.nextBreakpoint(xScale.inMin), Seq())
         }
 
         val yAxisLabels: Seq[(String, Int)] =  {
             @tailrec
             def construct(v: Double, init: Seq[(String, Int)]): Seq[(String, Int)] = {
-                if (v > dataMaxY) {
+                if (v > yScale.inMax) {
                     init
                 } else {
-                    construct(yScale.nextBreakpoint(v + 1), init ++ Seq((yScale.format(v), yScale.scale(v))))
+                    construct(yScale.nextBreakpoint(v + 1), init ++ Seq((yScale.format(v), yScale(v))))
                 }
             }
-            construct(yScale.nextBreakpoint(dataMinX), Seq())
+            construct(yScale.nextBreakpoint(yScale.inMin), Seq())
         }
 
 
         private def calculatePath(data: ProcessedData): String =
             'M' + data.dataPoints.foldLeft("")({
-                (s, dp) => s + s"L${xScale.scale(dp.timestamp.getTime)} ${yScale.scale(dp.value.value)} "
+                (s, dp) => s + s"L${chartOrigin._1 + xScale(dp.timestamp.getTime)} ${chartOrigin._2 - yScale(dp.value.value)} "
             }).tail
 
         def toSVG: Elem = {
+            val displayData = data.map {
+                dataset => ProcessedData(dataset.id, dataset.dataPoints.filter {
+                    dataPoint =>
+                        dataPoint.timestamp.getTime >= xScale.inMin &&
+                        dataPoint.timestamp.getTime <= xScale.inMax &&
+                        dataPoint.value.value >= yScale.inMin &&
+                        dataPoint.value.value <= yScale.inMax
+                })
+            }
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
 
             (<g class="data">
-                { for { dataset <- data } yield {
+                { for { dataset <- displayData } yield {
                     val color: RGBColor = ColorScheme.next
                     <g class={ s"datapoints-${dataset.id}" }>
                         {
@@ -172,8 +169,8 @@ object LineChartConfig extends VisualizationCompanion {
                                 <circle
                                     fill={ color.toString }
                                     stroke={ color.toString }
-                                    cx={ xScale.scale(datapoint.timestamp.getTime).toString }
-                                    cy={ yScale.scale(datapoint.value.value).toString }
+                                    cx={ (chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString }
+                                    cy={ (chartOrigin._2 - yScale(datapoint.value.value)).toString }
                                     r="4" />
                             }
                         }
@@ -190,8 +187,8 @@ object LineChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    5,
-                    5))
+                    5, 5,
+                    xOffset = xScale(xScale.nextBreakpoint(dataMinX))))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
@@ -237,7 +234,7 @@ object LineChartConfig extends VisualizationCompanion {
  *  @param fontSizeTitle the font size of the title
  *  @param fontSize the font size of labels
  *
- *  @author Thomas Engel
+ *  @author Thomas Engel, Thomas Weber
  */
 case class LineChartConfig(
     val ids:            Set[Identifier],

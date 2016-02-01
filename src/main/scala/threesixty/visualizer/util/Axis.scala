@@ -155,7 +155,7 @@ case class VerticalAxis(
                         transform={ s"rotate($labelRotation, $labelX, $labelY)"}
                         fill={ labelColor.toString }
                         font-size={ labelSize.toString }
-                        text-anchor="middle">
+                        text-anchor="end">
                         { labelText }
                     </text>
                     <line class="label-dash"

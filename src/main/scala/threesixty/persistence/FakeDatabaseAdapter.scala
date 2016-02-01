@@ -55,7 +55,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         ),
         "data1" -> InputData(
             "data1", "demodata",
-            generateDatapointSeries(60, 120, 23, 104, 26),
+            generateDatapointSeries(60, 120, 23, 10000, 1000),
             CompleteInputMetadata(
                 Timeframe(new Timestamp(23), new Timestamp(104)),
                 Reliability.Unknown,
@@ -66,7 +66,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         ),
         "data2" -> InputData(
             "data2", "demodata",
-            generateDatapointSeries(71, 94, 11, 91, 10),
+            generateDatapointSeries(71, 94, 11, 20000, 2500),
             CompleteInputMetadata(
                 Timeframe(new Timestamp(11), new Timestamp(91)),
                 Reliability.Unknown,
@@ -77,7 +77,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         ),
         "data3" -> InputData(
             "data3", "demodata",
-            generateDatapointSeries(3, 41, 0, 100, 14),
+            generateDatapointSeries(3, 41, 0, 5000, 400),
             CompleteInputMetadata(
                 Timeframe(new Timestamp(0), new Timestamp(100)),
                 Reliability.Unknown,

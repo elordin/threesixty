@@ -20,8 +20,8 @@ case class Grid(
     height: Int,
     hDivision: Int,
     vDivision: Int,
-    hOffset: Int = 0,
-    vOffset: Int = 0,
+    xOffset: Int = 0,
+    yOffset: Int = 0,
     hDashed: Boolean = true,
     vDashed: Boolean = true,
     hDashArray: String = "5, 5",
@@ -35,7 +35,7 @@ case class Grid(
             <g class="horizontal">
                 {
                     val vGapSize = height / vDivision
-                    for { currY <- Range(y + hOffset, y - height, -1 * vGapSize).inclusive } yield
+                    for { currY <- Range(y + yOffset, y - height, -1 * vGapSize).inclusive } yield
                         <line
                             fill="none"
                             stroke="#AAAAAA"
@@ -49,7 +49,7 @@ case class Grid(
             <g class="vertical">
                 {
                     val hGapSize = width / hDivision
-                    for { currX <- Range(x + vOffset, width, hGapSize).inclusive } yield
+                    for { currX <- Range(x + xOffset, width, hGapSize).inclusive } yield
                         <line
                             fill="none"
                             stroke="#AAAAAA"
