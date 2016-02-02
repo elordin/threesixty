@@ -191,6 +191,8 @@ object PieChartConfig extends VisualizationCompanion {
             val oy = (if(yradStart < 0) radius else - radius + config.chartHeight) - yradStart * (math.max(0, dy * (getMaxRadiusY - getMaxRadiusX))) / 2.0
 
             (config.borderLeft + ox, config.borderTop + oy)
+
+            // (config.width / 2, config.height / 2)
         }
 
         /**
@@ -283,7 +285,8 @@ object PieChartConfig extends VisualizationCompanion {
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
             val segments = calculateSegments
 
-            (<g class="segments">
+            (<g class="segments"
+                transform={ s"translate$calculateOrigin" }>
                 {for (seg <- segments) yield
                     seg.getSVGElement
                 }

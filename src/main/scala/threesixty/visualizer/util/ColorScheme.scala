@@ -27,7 +27,24 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
  *  }}}
  */
 trait ColorScheme extends Iterator[RGBColor] {
-    val colors: Seq[RGBColor]
+    val colors =
+        Seq(RGBColor("F44336"),
+            RGBColor("E91E63"),
+            RGBColor("9C27B0"),
+            RGBColor("673AB7"),
+            RGBColor("3F51FB5"),
+            RGBColor("2196F3"),
+            RGBColor("03A9F4"),
+            RGBColor("00BCD4"),
+            RGBColor("009688"),
+            RGBColor("4CAF50"),
+            RGBColor("8BC34A"),
+            RGBColor("CDDC39"),
+            RGBColor("FFEB3B"),
+            RGBColor("FFC107"),
+            RGBColor("FF9800"),
+            RGBColor("FF5722")
+        )
 
     var colorIterator = colors.iterator
 
@@ -43,45 +60,26 @@ trait ColorScheme extends Iterator[RGBColor] {
 }
 
 
-object DefaultColorScheme extends ColorScheme {
-    val colors = Seq(RGBColor("F44336"),
-        RGBColor("E91E63"),
-        RGBColor("9C27B0"),
-        RGBColor("673AB7"),
-        RGBColor("3F51FB5"),
-        RGBColor("2196F3"),
-        RGBColor("03A9F4"),
-        RGBColor("00BCD4"),
-        RGBColor("009688"),
-        RGBColor("4CAF50"),
-        RGBColor("8BC34A"),
-        RGBColor("CDDC39"),
-        RGBColor("FFEB3B"),
-        RGBColor("FFC107"),
-        RGBColor("FF9800"),
-        RGBColor("FF5722")
-    )
-}
+object DefaultColorScheme extends ColorScheme
 
 // object BlueColorScheme      extends ColorScheme {
-//     val colors = Seq(...)
+//     override val colors = Seq(...)
 // }
 // object RedColorScheme       extends ColorScheme {
-//     val colors = Seq(...)
+//     override val colors = Seq(...)
 // }
 // object GreenColorScheme     extends ColorScheme {
-//     val colors = Seq(...)
-// }
+//     override val colors = Seq(...)
 // }
 // object YellowColorScheme    extends ColorScheme {
-//     val colors = Seq(...)
+//     override val colors = Seq(...)
 // }
 // object OrangeColorScheme    extends ColorScheme {
-//     val colors = Seq(...)
+//     override val colors = Seq(...)
 // }
 // object PurpleColorScheme    extends ColorScheme {
-//     val colors = Seq(...)
+//     override val colors = Seq(...)
 // }
 // object PinkColorScheme      extends ColorScheme {
-//     val colors = Seq(...)
+//     override val colors = Seq(...)
 // }

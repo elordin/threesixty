@@ -63,20 +63,22 @@ object Segment {
   *
   * @author Thomas Engel
   */
-case class Segment(val id: String,
-                   val description: String,
-                   val angleStart: Double,
-                   val angleEnd: Double,
-                   val radius: Double,
-                   val innerRadius: Double,
-                   val valueRadius: Double,
-                   val value: String,
-                   val fontSize: Option[Int] = None,
-                   val color: Option[RGBColor] = None) {
+case class Segment(
+    val id: String,
+    val description: String,
+    val angleStart: Double,
+    val angleEnd: Double,
+    val radius: Double,
+    val innerRadius: Double,
+    val valueRadius: Double,
+    val value: String,
+    val fontSize: Option[Int] = None,
+    val color: Option[RGBColor] = None
+  ) {
 
     /**
-      * @return the svg element representing the circle segment
-      */
+     * @return the svg element representing the circle segment
+     */
     def getSVGElement: Elem = {
         val (tlpx, tlpy) = calculateValueLabelAnchorPoint
 
