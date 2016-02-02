@@ -171,7 +171,7 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
                 case "weekday" =>
                     data.dataPoints.groupBy( _.timestamp.getDay )
                 case "day" =>
-                    data.dataPoints.groupBy( _.timestamp.getDate )
+                    data.dataPoints.groupBy( { dt: TaggedDataPoint => (dt.timestamp.getDate, dt.timestamp.getMonth) } )
                 case "month" =>
                     data.dataPoints.groupBy( _.timestamp.getMonth )
                 case "year" =>
