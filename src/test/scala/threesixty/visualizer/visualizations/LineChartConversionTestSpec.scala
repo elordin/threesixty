@@ -34,7 +34,7 @@ class LineChartConversionTestSpec extends FunSpec {
 
         it("should have all values set correctly") {
             val expectedResult = LineChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
                 optXMin = Some(new Timestamp(100000)),

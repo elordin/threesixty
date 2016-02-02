@@ -8,7 +8,7 @@ import threesixty.visualizer.util._
 /**
   * @author Thomas Engel
   */
-class XScalingTestSpec extends FlatSpec {
+/*class XScalingTestSpec extends FlatSpec {
     "A XScalingMillis10" should "return a correct label text" in {
         val scaling = new TimeScalingMillis10
 
@@ -133,3 +133,4 @@ class XScalingTestSpec extends FlatSpec {
         assert(new TimeScalingYears10().getUnit.isEmpty)
     }
 }
+*/

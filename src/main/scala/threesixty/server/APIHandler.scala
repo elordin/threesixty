@@ -1,10 +1,12 @@
 package threesixty.server
 
-import threesixty.persistence.cassandra.CassandraAdapter
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.persistence.FakeDatabaseAdapter
+import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
+import threesixty.data.Data.Identifier
+import threesixty.data.InputData
 import threesixty.visualizer.visualizations._
 
 import akka.actor.{Actor, Props}
@@ -36,12 +38,15 @@ object APIHandler {
         case _:ConfigException => false
     }
 
-    lazy val engine: Engine = VisualizationEngine using new Processor
-            with LinearInterpolation.Mixin and new Visualizer
+    lazy val engine: Engine = VisualizationEngine using
+        new Processor   with LinearInterpolation.Mixin
+                        with Aggregation.Mixin
+                        with Accumulation.Mixin
+                        with TimeSelection.Mixin and new Visualizer
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin
-            with scatterChart.Mixin and CassandraAdapter
+            with scatterChart.Mixin and FakeDatabaseAdapter
 
     def props: Props = Props(new APIHandler)
 }
@@ -53,9 +58,6 @@ object APIHandler {
  *  @author Thomas Weber
  */
 class APIHandler extends Actor {
-    // Create with target processing handler
-    // Send processing request to ProcessingActor
-    // Forward response
 
     val log = Logging(context.system, this)
 
@@ -66,7 +68,6 @@ class APIHandler extends Actor {
     def receive = {
         case HttpRequest(POST, _, _, body: HttpEntity.NonEmpty, _) =>
             val peer = sender
-
             val processingFuture: Future[HttpResponse] = Future {
                 APIHandler.engine.processRequest(body.asString).toHttpResponse
             }

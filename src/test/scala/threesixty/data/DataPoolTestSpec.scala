@@ -28,12 +28,12 @@ class DataPoolTestSpec extends FunSpec {
 
             it("should throw a NoSuchElementException when accessing data4") {
                 intercept[NoSuchElementException] {
-                    pool.getDatasets(Set("data4"))
+                    pool.getDatasets("data4")
                 }
             }
 
             it("should return the correct dataset when accesing it") {
-                var result = pool.getDatasets(Set("data1")).toList
+                var result = pool.getDatasets("data1").toList
                 assert(result.length == 1)
                 assert(result(0).id == "data1")
                 assert(result(0).dataPoints.size == 5000)
