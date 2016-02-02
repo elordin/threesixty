@@ -14,6 +14,9 @@ import threesixty.visualizer.{
 import threesixty.visualizer.util._
 
 import threesixty.visualizer.SVGXML
+
+import threesixty.machinelearning.PerceptronVizMixin
+
 import scala.xml.Elem
 import scala.annotation.tailrec
 
@@ -31,7 +34,7 @@ trait Mixin extends VisualizationMixins {
  *
  *  @author Thomas Engel, Thomas Weber
  */
-object LineChartConfig extends VisualizationCompanion {
+object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
 
     def name = "LineChart"
 

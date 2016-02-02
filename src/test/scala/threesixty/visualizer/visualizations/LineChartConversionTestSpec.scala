@@ -12,10 +12,10 @@ class LineChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "optXMin": 100000,
-                "optXMax": 200000,
-                "optYMin": 10.0,
-                "optYMax": 123.456,
+                "xMin": 100000,
+                "xMax": 200000,
+                "yMin": 10.0,
+                "yMax": 123.456,
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "title": "Title",
@@ -26,8 +26,8 @@ class LineChartConversionTestSpec extends FunSpec {
                 "distanceTitle": 15,
                 "minDistanceX": 50,
                 "minDistanceY": 50,
-                "optUnitX": "seconds30",
-                "optUnitY": 10.0,
+                "xUnit": "30 seconds",
+                "yUnit": 10.0,
                 "fontSizeTitle": 40,
                 "fontSize": 20
             }"""
@@ -51,7 +51,7 @@ class LineChartConversionTestSpec extends FunSpec {
                 _distanceTitle = Some(15),
                 _minDistanceX = Some(50),
                 _minDistanceY = Some(50),
-                optUnitX = Some("seconds30"),
+                optUnitX = Some("30 seconds"),
                 optUnitY = Some(10.0),
                 _fontSizeTitle = Some(40),
                 _fontSize = Some(20)
@@ -69,7 +69,7 @@ class LineChartConversionTestSpec extends FunSpec {
                 "width": 768,
                 "xMax": 200000,
                 "yMin": 10.0,
-                "optYMax": 123.456,
+                "yMax": 123.456,
                 "yLabel": "Y-Axis",
                 "title": "Title",
                 "borderTop": 100,
@@ -77,7 +77,7 @@ class LineChartConversionTestSpec extends FunSpec {
                 "borderRight": 50,
                 "minDistanceX": 50,
                 "minDistanceY": 50,
-                "optUnitX": "seconds30"
+                "xMax": "30 seconds"
             }"""
 
         it("should have the default values where none were given") {

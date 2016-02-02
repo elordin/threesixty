@@ -109,7 +109,7 @@ abstract class VisualizationConfig(
     require(chartHeight > 0, "The available height for the chart must be greater than 0.")
 
     def viewBox: (Int, Int, Int, Int) = {
-        (0, 0, width, height)
+        (-borderLeft, -borderBottom, width + borderRight, height + borderTop)
     }
 
     def lowerLimit = height - borderBottom
