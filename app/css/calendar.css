@@ -1,0 +1,68 @@
+/* ****************** */
+/*    Days Chooser    */
+/* ****************** */
+
+.day-container {
+    background: #eee;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0 0 0 -28px;
+}
+
+.day-item {
+    height: 64px;
+    flex-basis: 64px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.day-item a {
+    text-decoration: none;
+}
+
+.day-item a:hover {
+    color: #4DAF50;
+}
+
+.day-item a:active {
+    color: #388E3C;
+}
+
+.day-item a img {
+    display: inline-block;
+    padding: 20px 0;
+    height: 24px;
+}
+
+.day-item a p {
+    margin: 18px 0;
+    font-size: 1.5em;
+}
+
+.day-item.selected {
+    background: white
+}
+
+.day-item.selected a {
+    color: #388E3C;
+}
+
+
+/* ****************** */
+/*    Day Content     */
+/* ****************** */
+
+.date-title,
+.week-title {
+    margin-right: 8px;
+    font-size: 2.5vmax;
+}
+
+pre {
+    width: 320px;
+    height: 300px;
+    margin: -80px 0 0 -28px;
+}
+
+
