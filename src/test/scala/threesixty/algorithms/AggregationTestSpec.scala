@@ -14,7 +14,7 @@ class AggregationTestSpec extends FunSpec {
     describe("Aggregation") {
 
         describe("TimeAggregation") {
-            val interpolator = Aggregation(2, Map("SomeID" -> "SomeID"))
+            val aggregator = Aggregation("mean", "datasize-2", Map("SomeID" -> "SomeID"))
 
             describe("from (0,0) to (3, 3)") {
                 val sampleData = new ProcessedData("SomeID", List(
@@ -31,14 +31,14 @@ class AggregationTestSpec extends FunSpec {
                     )))
 
                     assertResult(expectedResult) {
-                        interpolator(sampleData)
+                        aggregator(sampleData)
                     }
                 }
             }
         }
 
         describe("EnumAggregation") {
-            val interpolator = Aggregation(-1, Map("SomeID" -> "SomeID"))
+            val aggregatorenum = Aggregation("enum", "enum", Map("SomeID" -> "SomeID"))
 
             describe("from (0,0) to (3, 3)") {
                 val sampleData = new ProcessedData("SomeID", List(
@@ -55,16 +55,16 @@ class AggregationTestSpec extends FunSpec {
                     )))
 
                     assertResult(expectedResult) {
-                        interpolator(sampleData)
+                        aggregatorenum(sampleData)
                     }
                 }
             }
         }
 
         describe("Cyclic Aggregation") {
-            val interpolator1 = Aggregation(-20, Map("SomeID" -> "SomeID"))
-            val interpolator2 = Aggregation(-21, Map("SomeID" -> "SomeID"))
-            val interpolator3 = Aggregation(-22, Map("SomeID" -> "SomeID"))
+            val interpolator1 = Aggregation("num", "weekday", Map("SomeID" -> "SomeID"))
+            val interpolator2 = Aggregation("mean", "weekday", Map("SomeID" -> "SomeID"))
+            val interpolator3 = Aggregation("sum", "weekday", Map("SomeID" -> "SomeID"))
 
             describe("from (0,0) to (3, 3)") {
                 val sampleData = new ProcessedData("SomeID", List(

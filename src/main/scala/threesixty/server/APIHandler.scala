@@ -4,7 +4,7 @@ import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
 import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
 import threesixty.data.Data.Identifier
 import threesixty.data.InputData
 import threesixty.visualizer.visualizations._
@@ -39,7 +39,10 @@ object APIHandler {
     }
 
     lazy val engine: Engine = VisualizationEngine using
-        new Processor with LinearInterpolation.Mixin and new Visualizer
+        new Processor   with LinearInterpolation.Mixin
+                        with Aggregation.Mixin
+                        with Accumulation.Mixin
+                        with TimeSelection.Mixin and new Visualizer
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin

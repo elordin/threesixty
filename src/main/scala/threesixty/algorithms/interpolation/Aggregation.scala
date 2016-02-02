@@ -25,7 +25,7 @@ object Aggregation extends ProcessingMethodCompanion {
 
     trait Mixin extends ProcessingMixins {
         abstract override def processingInfos: Map[String, ProcessingMethodCompanion] =
-            super.processingInfos + ("aaggregation" -> Aggregation)
+            super.processingInfos + ("aggregation" -> Aggregation)
     }
 
     def name = "Aggregation"
@@ -36,12 +36,12 @@ object Aggregation extends ProcessingMethodCompanion {
 
     def apply(jsonString: String): Aggregation = {
         implicit val aggregationFormat =
-            jsonFormat(Aggregation.apply, "frequency", "idMapping")
+            jsonFormat(Aggregation.apply, "mode", "param", "idMapping")
         jsonString.parseJson.convertTo[Aggregation]
     }
 
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
-        Aggregation(1, idMapping).asProcessingStep
+        Aggregation("mean", "d-1000", idMapping).asProcessingStep
 
     def computeDegreeOfFit(inputData: InputData): Double = {
 
@@ -95,19 +95,22 @@ object Aggregation extends ProcessingMethodCompanion {
   *  Aggregator
   *
   *  @author Jens Wöhrle
-  *  @param aggregationMode desired Data points as result
-  *                 positive Value: It will just seperate the data in numData Blocks and gives its mean out
-  *                 -1: EnumAggregation
-  *                 -20 - -29: Will aggregate on a daily basis
-  *                     here we have several modes:
-  *                     -20 Number of Data
-  *                     -21 mean of Data
-  *                     -22 sum of Data
-  *                 -30 - -39 same on monthly basis
-  *                 -40 - -49 same on yearly basis
+  *  @param mode possible input:
+  *                 mean:       In the aggrggaton the MEAN is used
+  *                 sum         In the aggrggaton the values are summed up and its sum is returned
+  *                 num         In the aggregation the number of values is used - its number of elements is used
+  *                 enum        This aggregation goes by the Y-Axis: and counts how often which value occured; param not need in this case
+  *
+  * @param param possible input:
+  *                 datasize-1990:
+  *                 blocksize-1990:
+  *                 weekday:
+  *                 monthly:    Aggregates the values of a month together
+  *                 yearly:     Aggregates the values of a year together
+  *
   *
   */ //groupby() bei Listen :-)
-case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifier])
+case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
     /**
@@ -124,16 +127,36 @@ case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifi
       */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
-        if ( aggregationMode > 0 ) {
-            //Aggregation to several data
+        val paramsplit = param.split("-").map(_.trim)
+        if( param == "" ) {
+            throw new IllegalArgumentException("Empty Argument not allow in param")
+        }
+
+        if( paramsplit(0) == "datasize" || paramsplit(0) == "blocksize" ) {
+            if( paramsplit.length != 2) {
+                throw new IllegalArgumentException("Wrong Input, needs to be of format datasize-190")
+            }
+
             var agdata = data.dataPoints.sortBy(d => -timestamp2Long((d.timestamp)))
 
-            val agregsize = math.ceil(agdata.length/aggregationMode).toInt
+            var blocksize = 0
+            var datasize = 0
+
+            paramsplit(0) match {
+                case "datasize" =>
+                    datasize = paramsplit(1).toInt
+                    blocksize = math.ceil(agdata.length/datasize).toInt
+                case "blocksize" =>
+                    blocksize = paramsplit(1).toInt
+                    datasize = math.ceil(agdata.length/datasize).toInt
+                case default =>
+                    throw new IllegalArgumentException("Not matching argument given like 'datasize' or 'blocksize' BUT got: " + paramsplit(0) )
+            }
 
             var l = List[TaggedDataPoint]()
 
-            for( i <- 0 until aggregationMode ) {
-                val buf = agdata.splitAt(agregsize)
+            for( i <- 0 until datasize ) {
+                val buf = agdata.splitAt(blocksize)
                 val r = buf._1
                 agdata = buf._2
                 l = TaggedDataPoint( r(0).timestamp, StatisticalAnalysis.mean(r), r(0).tags + TimeAggregated) :: l
@@ -142,56 +165,43 @@ case class Aggregation(aggregationMode: Int, idMapping: Map[Identifier, Identifi
             val newID = idMapping(data.id)
 
             Set(ProcessedData(newID, l))
-        } else if ( aggregationMode == -1) {
-            /** Enum Aggregation
-              * It looses the Data on time and just aggregates on Enumdata
-              */
-            val grouped = data.dataPoints.groupBy( _.value.value )
+        } else {
 
-            var l = List[TaggedDataPoint]()
-
-            for( (k,v) <- grouped ) {
-                l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).value)) :: l
-            }
-
-            val newID = idMapping(data.id)
-
-            Set( ProcessedData(newID, l) )
-        } else if ( -20 >= aggregationMode && aggregationMode >= -29 ){
-            val buf = aggregationMode * -1
-            val agMode = buf % 10
-            val agFrame = buf / 10
-
-            var grouped = Map[Int, List[TaggedDataPoint]]()
-            agFrame match {
-                case 2 =>
-                    grouped = data.dataPoints.groupBy( _.timestamp.getDay )
-                case 3 =>
-                    grouped = data.dataPoints.groupBy( _.timestamp.getMonth )
-                case 4 =>
-                    grouped = data.dataPoints.groupBy( _.timestamp.getYear )
+            val grouped = param match {
+                case "weekday" =>
+                    data.dataPoints.groupBy( _.timestamp.getDay )
+                case "day" =>
+                    data.dataPoints.groupBy( _.timestamp.getDate )
+                case "month" =>
+                    data.dataPoints.groupBy( _.timestamp.getMonth )
+                case "year" =>
+                    data.dataPoints.groupBy( _.timestamp.getYear )
+                case "enum" =>
+                    data.dataPoints.groupBy( _.value.value )
+                case default =>
+                    throw new IllegalArgumentException("Not matching argument given like 'weekday', 'month', 'year' BUT got: " + param )
             }
 
             var l = List[TaggedDataPoint]()
 
             for( (k,v) <- grouped ) {
-                agMode match {
-                    case 0 =>
+                mode match {
+                    case "num" =>
                         l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
-                    case 1 =>
+                    case "mean" =>
                         l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.mean(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
-                    case 2 =>
+                    case "sum" =>
                         l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.sum(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                    case "enum" =>
+                        l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).value)) :: l
+                    case default =>
+                        throw new IllegalArgumentException("Not matching argument given like 'num', 'mean', 'sum' BUT got: " + param )
                 }
             }
 
             val newID = idMapping(data.id)
 
             Set( ProcessedData(newID, l) )
-        } else {
-            //TODO
-            println("Fuck ungültiger Code")
-            Set()
         }
     }
 }
