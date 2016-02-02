@@ -109,6 +109,16 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
             assert(!queriedTimeframe.equals(originalTimeframe))
 
         }
+
+        it("should get the metadata and length separately"){
+            val id = inputDataSet.id
+            CassandraAdapter.appendOrInsertData(inputDataSet)
+
+            assert(inputMetadata equals CassandraAdapter.getMetadata(id))
+            assert(CassandraAdapter.getDatapointsLength(id) == 4)
+        }
+
     }
+
 
 }

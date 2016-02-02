@@ -36,7 +36,7 @@ class DataPoolTestSpec extends FunSpec {
                 var result = pool.getDatasets(Set("data1")).toList
                 assert(result.length == 1)
                 assert(result(0).id == "data1")
-                assert(result(0).dataPoints.size == 26)
+                assert(result(0).dataPoints.size == 5000)
             }
         }
     }

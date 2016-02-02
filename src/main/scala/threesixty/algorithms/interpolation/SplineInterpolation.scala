@@ -11,13 +11,13 @@ import spray.json._
 import DefaultJsonProtocol._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
+// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
+// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
+// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
+// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 object SplineInterpolation extends ProcessingMethodCompanion {
 
@@ -49,10 +49,10 @@ object SplineInterpolation extends ProcessingMethodCompanion {
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.length >= 5) {
+        if (inputData.dataPoints.size >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.length >= 50) {
+        if (inputData.dataPoints.size >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
@@ -71,13 +71,13 @@ object SplineInterpolation extends ProcessingMethodCompanion {
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-            case _:HeatLineChartConfig      => 1.0
+            // case _:HeatLineChartConfig      => 1.0
             case _:BarChartConfig           => 0.8
-            case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
+            // case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.2
-            case _:ScatterColorChartConfig  => 0.2
-            case _:ProgressChartConfig      => 0.1
+            // case _:ScatterColorChartConfig  => 0.2
+            // case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.0
             //default
             case _                          => 0.5

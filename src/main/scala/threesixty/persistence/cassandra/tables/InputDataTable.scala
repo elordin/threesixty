@@ -73,6 +73,8 @@ abstract class InputDatasets extends InputDataTable with RootConnector {
             .future()
     }
 
+    /**
+      * calls fromRow method*/
     def getInputDataByIdentifier(identifier: UUID): Future[Option[InputData]] = {
         select.where(_.identifier eqs identifier).one()
     }

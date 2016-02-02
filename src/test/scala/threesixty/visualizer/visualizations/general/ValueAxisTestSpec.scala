@@ -2,7 +2,7 @@ package threesixty.visualizer.visualizations.general
 
 import org.scalatest.FunSpec
 
-
+/*
 class ValueAxisTestSpec extends FunSpec {
 
     describe("A ValueAxis") {
@@ -47,3 +47,4 @@ class ValueAxisTestSpec extends FunSpec {
         }
     }
 }
+*/

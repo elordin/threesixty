@@ -2,8 +2,10 @@ package threesixty.data
 
 import threesixty.data.tags.{InputOrigin}
 import threesixty.data.metadata.IncompleteInputMetadata
+
 import java.sql.{Timestamp => JSQLTimestamp}
 
+import scala.concurrent.duration.{Duration, FiniteDuration}
 import spray.json._
 
 
@@ -72,6 +74,21 @@ object Implicits {
 object DataJsonProtocol extends DefaultJsonProtocol {
     import Data._
     import metadata._
+
+    implicit object FiniteDurationJsoNFormat extends JsonFormat[FiniteDuration] {
+        def write(d:FiniteDuration) = JsNumber(d.toMillis)
+
+        def read(v: JsValue) = v match {
+            case JsString(s) =>
+                val d = Duration(s)
+                if (d.isFinite) {
+                    FiniteDuration(d.toMillis, d.unit)
+                } else {
+                    deserializationError("Infinite duration not allowed.")
+                }
+            case _ => deserializationError("Timestamp expected")
+        }
+    }
 
     implicit object TimestampJsonFormat extends JsonFormat[Timestamp] {
         def write(t:Timestamp) = JsNumber(t.getTime)
