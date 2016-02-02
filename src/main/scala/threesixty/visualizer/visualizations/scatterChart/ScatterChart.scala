@@ -17,6 +17,7 @@ trait Mixin extends VisualizationMixins {
         super.visualizationInfos + ("scatterchart" -> ScatterChartConfig)
 }
 
+
 /**
  *  The config class for a [[threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig.ScatterChart]].
  *
@@ -76,27 +77,43 @@ object ScatterChartConfig extends VisualizationCompanion {
      * @param config the scatter chart config
      * @param data the data
      *
-     * @author Thomas Engel
+     * @author Thomas Engel, Thomas Weber
      */
-    case class ScatterChart(config: ScatterChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+    case class ScatterChart(config: ScatterChartConfig, val data: ProcessedData*) extends Visualization(data: _*) {
+        require(data.size == 2, "Scatter chart can only be applied to two sets of data.")
+
+        // Nested Loop Join
+        val joinedDatasets: Seq[List[(TaggedDataPoint, TaggedDataPoint)]] =
+            data.tail.map {
+                dataset => data.head.dataPoints.flatMap {
+                    dp1: TaggedDataPoint => dataset.dataPoints.map {
+                        dp2: TaggedDataPoint => (dp1, dp2)
+                    }
+                } filter {
+                    case (dp1: TaggedDataPoint, dp2: TaggedDataPoint) =>
+                      dp1.timestamp.getTime == dp2.timestamp.getTime
+                }
+            }
+
+
         // TODO Performance optimization, get both in one run
-        val dataMinMaxX: (Long, Long) =
+        val dataMinMaxX: (Double, Double) =
             (data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).min }).min,
             data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).max }).max)
         val dataMinMaxY: (Double, Double) =
             (data.map({ d => d.dataPoints.map({ p => p.value.value }).min }).min,
             data.map({ d => d.dataPoints.map({ p => p.value.value }).max }).max)
-        val dataMinX: Long = dataMinMaxX._1
-        val dataMaxX: Long = dataMinMaxX._2
+        val dataMinX: Double = dataMinMaxX._1
+        val dataMaxX: Double = dataMinMaxX._2
         val dataMinY: Double = dataMinMaxY._1
         val dataMaxY: Double = dataMinMaxY._2
         val chartOrigin = (config.borderLeft, config.height - config.borderBottom)
 
         val xScale = config.optUnitX.map(
-                TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
-                    config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
-                    TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
-                        config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth)
+                ValueScale(config.optXMin.getOrElse(dataMinX),
+                    config.optXMax.getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
+                    ValueScale(config.optXMin.getOrElse(dataMinX),
+                        config.optXMax.getOrElse(dataMaxX), 0, config.chartWidth)
             }
         val yScale = config.optUnitY.map(
                 ValueScale(config.optYMin.getOrElse(dataMinY),
@@ -107,11 +124,11 @@ object ScatterChartConfig extends VisualizationCompanion {
 
         val xAxisLabels: Seq[(String, Int)] = {
             @tailrec
-            def construct(t: Long, init: Seq[(String, Int)]): Seq[(String, Int)] = {
-                if (t > xScale.inMax) {
+            def construct(v: Double, init: Seq[(String, Int)]): Seq[(String, Int)] = {
+                if (v > xScale.inMax) {
                     init
                 } else {
-                    construct(xScale.nextBreakpoint(t), init ++ Seq((xScale.format(t), xScale(t))))
+                    construct(xScale.nextBreakpoint(v), init ++ Seq((xScale.format(v                                                          ), xScale(v))))
                 }
             }
             construct(xScale.nextBreakpoint(xScale.inMin), Seq())
@@ -149,7 +166,7 @@ object ScatterChartConfig extends VisualizationCompanion {
             */
             (<g id="datapoints">
                 { for { dataset <- data } yield  {
-                    val color = ColorScheme.next
+                    val color = DefaultColorScheme.next
                     for { datapoint <- dataset.dataPoints } yield
                         <circle
                             cx={ (chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString }
@@ -213,11 +230,11 @@ object ScatterChartConfig extends VisualizationCompanion {
   * @param _fontSize the font size of labels
   */
 case class ScatterChartConfig(
-     val ids:          Set[Identifier],
+     val ids:          Seq[Identifier],
      val height:       Int,
      val width:        Int,
-     val optXMin:      Option[Timestamp]    = None,
-     val optXMax:      Option[Timestamp]    = None,
+     val optXMin:      Option[Double]    = None,
+     val optXMax:      Option[Double]    = None,
      val optYMin:      Option[Double]    = None,
      val optYMax:      Option[Double]    = None,
      val _xLabel:       Option[String]    = None,
@@ -230,7 +247,7 @@ case class ScatterChartConfig(
      val _distanceTitle:Option[Int]       = None,
      val _minDistanceX: Option[Int]       = None,
      val _minDistanceY: Option[Int]       = None,
-     val optUnitX:      Option[String]    = None,
+     val optUnitX:      Option[Double]    = None,
      val optUnitY:      Option[Double]    = None,
      val _fontSizeTitle:Option[Int]       = None,
      val _fontSize:     Option[Int]       = None
@@ -337,7 +354,7 @@ case class ScatterChartConfig(
 
         grid = new Grid(xAxis, yAxis, _fontSize) */
 
-        ScatterChartConfig.ScatterChart(this, pool.getDatasets(ids))
+        ScatterChartConfig.ScatterChart(this, pool.getDatasets(ids: _*): _*)
     }
 
 }

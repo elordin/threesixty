@@ -21,7 +21,7 @@ import threesixty.processor.{ProcessingStep, ProcessingMethod}
  * @param fontSize the font size of labels
  */
 abstract class VisualizationConfig(
-    ids: Set[Identifier],
+    ids: Seq[Identifier],
     height: Int,
     width: Int,
     _title: Option[String] = None,

@@ -2,6 +2,7 @@ package threesixty.visualizer.util
 
 import java.sql.{Date, Timestamp}
 
+/*
 
 /**
   * This abstract class is used for scaling a time period.
@@ -197,7 +198,7 @@ case class TimeScalingYears10() extends TimeScalingYears("years10", 10)
 
 
 
-
+*/
 
 
 

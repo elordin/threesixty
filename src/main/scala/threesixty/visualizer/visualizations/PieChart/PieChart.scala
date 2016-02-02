@@ -6,7 +6,7 @@ import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
 import threesixty.visualizer.visualizations.Segment
-import threesixty.visualizer.util.ColorScheme
+import threesixty.visualizer.util.DefaultColorScheme
 
 import scala.xml.Elem
 
@@ -78,7 +78,7 @@ object PieChartConfig extends VisualizationCompanion {
       *
       * @author Thomas Engel
      */
-    case class PieChart(config: PieChartConfig, val data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+    case class PieChart(config: PieChartConfig, val data: ProcessedData*) extends Visualization(data: _*) {
         //val displayData = data.headOption.getOrElse(null)
         // TODO: for testing only!!!
         val displayData = new ProcessedData("aggregatedData", List(
@@ -256,7 +256,7 @@ object PieChartConfig extends VisualizationCompanion {
                     radius + 20,
                     value,
                     Some(config.fontSize),
-                    Some(ColorScheme.next))
+                    Some(DefaultColorScheme.next))
 
                 result = segment :: result
             }
@@ -336,7 +336,7 @@ object PieChartConfig extends VisualizationCompanion {
   * @author Thomas Engel
   */
 case class PieChartConfig(
-    val ids:                    Set[Identifier],
+    val ids:                    Seq[Identifier],
     val height:                 Int,
     val width:                  Int,
     val _title:                  Option[String] = None,
@@ -408,7 +408,7 @@ case class PieChartConfig(
       * @return the [[threesixty.visualizer.visualizations.pieChart.PieChartConfig.PieChart]] for this configuration
      */
     def apply(pool: DataPool): PieChartConfig.PieChart = {
-        PieChartConfig.PieChart(this, pool.getDatasets(ids))
+        PieChartConfig.PieChart(this, pool.getDatasets(ids: _*): _*)
     }
 
 }

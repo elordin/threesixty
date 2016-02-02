@@ -89,8 +89,8 @@ object LineChartConfig extends VisualizationCompanion {
      */
     case class LineChart private[LineChartConfig] (
         config: LineChartConfig,
-        data: Set[ProcessedData]
-    ) extends Visualization(data: Set[ProcessedData]) {
+        data: ProcessedData*
+    ) extends Visualization(data: _*) {
 
         // TODO Performance optimization, get both in one run
         val dataMinMaxX: (Long, Long) =
@@ -162,7 +162,7 @@ object LineChartConfig extends VisualizationCompanion {
 
             (<g class="data">
                 { for { dataset <- displayData } yield {
-                    val color: RGBColor = ColorScheme.next
+                    val color: RGBColor = DefaultColorScheme.next
                     <g class={ s"datapoints-${dataset.id}" }>
                         {
                             for { datapoint <- dataset.dataPoints } yield {
@@ -239,7 +239,7 @@ object LineChartConfig extends VisualizationCompanion {
  *  @author Thomas Engel, Thomas Weber
  */
 case class LineChartConfig(
-    val ids:            Set[Identifier],
+    val ids:            Seq[Identifier],
     val height:         Int,
     val width:          Int,
     val optXMin:        Option[Timestamp] = None,
@@ -292,6 +292,6 @@ case class LineChartConfig(
      *  @return the [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]] for this configuration
       */
     def apply(pool: DataPool): LineChartConfig.LineChart = {
-        LineChartConfig.LineChart(this, pool.getDatasets(ids))
+        LineChartConfig.LineChart(this, pool.getDatasets(ids: _*): _*)
     }
 }

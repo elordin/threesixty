@@ -50,7 +50,7 @@ class DataPool(
 
 
     @throws[NoSuchElementException]("if a dataset was requested that is not in processedDatasets")
-    def getDatasets(ids: Set[Identifier]): Set[ProcessedData] =
+    def getDatasets(ids: Identifier*): Seq[ProcessedData] =
         ids.map(processedDatasets(_))
 
     @throws[NoSuchElementException]("if a dataset was requested that is not in processedDatasets")

@@ -13,7 +13,7 @@ import scala.xml.Elem
  *
  *  Use [[threesixty.visualizer.VisualizationMixins]] to add them to a [[threesixty.visualizer.Visualizer]].
  */
-abstract class Visualization(data: Set[ProcessedData]) extends Renderable {
+abstract class Visualization(data: ProcessedData*) extends Renderable {
 
     override def toString(): String = toSVG.toString
 

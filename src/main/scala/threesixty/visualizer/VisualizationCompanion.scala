@@ -76,9 +76,8 @@ trait VisualizationCompanion extends UsageInfo {
 
     }
 
-
     private def buildMatchingMatrix(inputData: List[InputData], procMeth: ProcessingStep) = {
-         val matchingMatrix = Array.ofDim[Boolean](inputData.size, metadata.requirementList.size)
+        val matchingMatrix = Array.ofDim[Boolean](inputData.size, metadata.requirementList.size)
         for (i <- 0 until inputData.size;
              k <- 0 until metadata.requirementList.size) {
             matchingMatrix(i)(k) = metadata.requirementList(k).isMatchingData(inputData(i), procMeth)

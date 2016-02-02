@@ -79,7 +79,7 @@ object BarChartConfig extends VisualizationCompanion {
      *
      * @author Thomas Engel, Thomas Weber
      */
-    case class BarChart(config: BarChartConfig, data: Set[ProcessedData]) extends Visualization(data: Set[ProcessedData]) {
+    case class BarChart(config: BarChartConfig, data: ProcessedData*) extends Visualization(data: _*) {
 
         //val displayData = data.headOption.getOrElse(null)
         // TODO: for testing only!!!
@@ -159,7 +159,7 @@ object BarChartConfig extends VisualizationCompanion {
                     config.showValues,
                     point.value.value.toString,
                     Some(config.fontSize),
-                    Some(ColorScheme.next))
+                    Some(DefaultColorScheme.next))
 
                 leftOffset += widthBar + distanceBetweenBars
 
@@ -230,7 +230,7 @@ object BarChartConfig extends VisualizationCompanion {
  * @author Thomas Engel
  */
 case class BarChartConfig(
-     val ids:                    Set[Identifier],
+     val ids:                    Seq[Identifier],
      val height:                 Int,
      val width:                  Int,
      val optYMin:                Option[Double] = None,
@@ -292,7 +292,7 @@ case class BarChartConfig(
      * @return the [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]] for this configuration
      */
     def apply(pool: DataPool): BarChartConfig.BarChart = {
-        BarChartConfig.BarChart(this, pool.getDatasets(ids))
+        BarChartConfig.BarChart(this, pool.getDatasets(ids: _*): _*)
     }
 
 }

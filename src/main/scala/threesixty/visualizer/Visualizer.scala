@@ -99,16 +99,10 @@ class Visualizer extends VisualizationMixins with UsageInfo {
 
 }
 
-object SVGXML {
-    implicit def unpimpMulti(pimped: SVGXML): Seq[Elem] = pimped.elems
-    implicit def unpimpSingle(pimped: SVGXML): Elem = pimped.elems.head
-    implicit def pimpSingle(xml: Elem): SVGXML = SVGXML(xml)
-    implicit def pimpMulti(xmls: Seq[Elem]): SVGXML = SVGXML(xmls: _*)
-}
 
 /**
- *  Pimped Version of scala.xml.Elems that allows pluggin additional
- *  SVG components.
+ *  Pimped Version of scala.xml.Elems that allows plugin additional
+ *  Renderables or XML components.
  */
 case class SVGXML(elems: Elem*) {
     /** Wraps everything in the SVG tag */
@@ -155,4 +149,10 @@ case class SVGXML(elems: Elem*) {
     def withAxis(axis: Axis): SVGXML = append(axis)
 
     // def withLegend(legend: Legend): SVGXML = ???
+}
+object SVGXML {
+    implicit def unpimpMulti(pimped: SVGXML): Seq[Elem] = pimped.elems
+    implicit def unpimpSingle(pimped: SVGXML): Elem = pimped.elems.head
+    implicit def pimpSingle(xml: Elem): SVGXML = SVGXML(xml)
+    implicit def pimpMulti(xmls: Seq[Elem]): SVGXML = SVGXML(xmls: _*)
 }

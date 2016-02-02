@@ -26,8 +26,24 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
  *      ColorSchem(15) // returns a list of 15 colors
  *  }}}
  */
-object ColorScheme extends Iterator[RGBColor] {
+trait ColorScheme extends Iterator[RGBColor] {
+    val colors: Seq[RGBColor]
 
+    var colorIterator = colors.iterator
+
+    def next = {
+        if (!colorIterator.hasNext) {
+            colorIterator = colors.iterator
+        }
+        colorIterator.next
+    }
+    def hasNext = true
+    def reset() = { colorIterator = colors.iterator }
+    def apply(n: Int): List[RGBColor] = colorIterator.take(n).toList
+}
+
+
+object DefaultColorScheme extends ColorScheme {
     val colors = Seq(RGBColor("F44336"),
         RGBColor("E91E63"),
         RGBColor("9C27B0"),
@@ -45,15 +61,27 @@ object ColorScheme extends Iterator[RGBColor] {
         RGBColor("FF9800"),
         RGBColor("FF5722")
     )
-    var colorIterator = colors.iterator
-
-    def next = {
-        if (!colorIterator.hasNext) {
-            colorIterator = colors.iterator
-        }
-        colorIterator.next
-    }
-    def hasNext = true
-    def reset() = { colorIterator = colors.iterator }
-    def apply(n: Int): List[RGBColor] = colorIterator.take(n).toList
 }
+
+// object BlueColorScheme      extends ColorScheme {
+//     val colors = Seq(...)
+// }
+// object RedColorScheme       extends ColorScheme {
+//     val colors = Seq(...)
+// }
+// object GreenColorScheme     extends ColorScheme {
+//     val colors = Seq(...)
+// }
+// }
+// object YellowColorScheme    extends ColorScheme {
+//     val colors = Seq(...)
+// }
+// object OrangeColorScheme    extends ColorScheme {
+//     val colors = Seq(...)
+// }
+// object PurpleColorScheme    extends ColorScheme {
+//     val colors = Seq(...)
+// }
+// object PinkColorScheme      extends ColorScheme {
+//     val colors = Seq(...)
+// }
