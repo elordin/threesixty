@@ -2,6 +2,30 @@
 
 window.addEventListener('load', function (e) {
     
+     var requestText = {
+        "type": "visualization",
+        "visualization": {
+            "type": "piechart",
+            "args": {
+                
+                "width": 300,
+                "height": 300,
+                "ids": ["data1"],
+                "borderRight": 0,
+                "borderTop": 10,
+                "borderLeft": 25,
+                "innerRadiusPercent": 0.5,
+                "angleStart": 50,
+                "angleEnd": 360
+            }
+        },
+        "processor": [],
+        "data": ["data1", "data2"]
+    }
+    
+    
+    
+    /*
     var requestText = {
         "type": "visualization",
         "visualization": {
@@ -21,6 +45,7 @@ window.addEventListener('load', function (e) {
         "processor": [],
         "data": ["22b8f0b0-4451-483d-ae79-c61030e1fb29"]
     }
+    */
     
     requestText = JSON.stringify(requestText);
     
