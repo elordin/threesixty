@@ -34,11 +34,11 @@ class ScatterChartConversionTestSpec extends FunSpec {
 
         it("should have all values set correctly") {
             val expectedResult = new ScatterChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMin = Some(new Timestamp(20)),
-                optXMax = Some(new Timestamp(500)),
+                optXMin = Some(20),
+                optXMax = Some(500),
                 optYMin = Some(10.0),
                 optYMax = Some(123.456),
                 _xLabel = Some("X-Axis"),
@@ -51,7 +51,7 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 _distanceTitle = Some(15),
                 _minDistanceX = Some(50),
                 _minDistanceY = Some(50),
-                optUnitX = Some("milliseconds10"),
+                optUnitX = Some(10),
                 optUnitY = Some(10.0),
                 _fontSizeTitle = Some(40),
                 _fontSize = Some(20)
@@ -93,10 +93,10 @@ class ScatterChartConversionTestSpec extends FunSpec {
 
         it("should have all values set correctly") {
             val expectedResult = new ScatterChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMax = Some(new Timestamp(500)),
+                optXMax = Some(500),
                 optYMin = Some(10.0),
                 _xLabel = Some("X-Axis"),
                 _yLabel = Some("Y-Axis"),

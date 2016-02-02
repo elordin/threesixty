@@ -12,13 +12,9 @@ import spray.json._
 import threesixty.data.DataJsonProtocol._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
 object TimeSelection extends ProcessingMethodCompanion {
@@ -73,13 +69,9 @@ object TimeSelection extends ProcessingMethodCompanion {
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-            case _:HeatLineChartConfig      => 1.0
             case _:BarChartConfig           => 0.8
-            case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.2
-            case _:ScatterColorChartConfig  => 0.2
-            case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.0
             //default
             case _                          => 0.5

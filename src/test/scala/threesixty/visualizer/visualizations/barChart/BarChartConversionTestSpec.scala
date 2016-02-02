@@ -30,7 +30,7 @@ class BarChartConversionTestSpec extends FunSpec {
 
         it("should have all values set correctly") {
             val expectedResult = BarChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
                 optYMin = Some(10.0),
@@ -89,7 +89,7 @@ class BarChartConversionTestSpec extends FunSpec {
 
         it("should have all values set correctly") {
             val expectedResult = new BarChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
                 optYMin = Some(10.0),
