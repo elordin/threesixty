@@ -1,4 +1,4 @@
-package threesixty.machinelearning.perceptron
+package threesixty.machinelearning
 
 
 case class Neuron(val weights: Double*) {

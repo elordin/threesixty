@@ -74,10 +74,10 @@ class PieChartConversionTestSpec extends FunSpec {
 
         it("should have the default values where none were given") {
             val convertedConfig = PieChartConfig(jsonString)
-            assert(convertedConfig._angleStart == 90)
-            assert(convertedConfig._angleEnd == -270)
-            assert(convertedConfig._innerRadiusPercent == 0)
-            assert(convertedConfig._distanceLegend == 20)
+            assert(convertedConfig.angleStart == 90)
+            assert(convertedConfig.angleEnd == -270)
+            // assert(convertedConfig.innerRadiusPercent == 0)
+            assert(convertedConfig.distanceLegend == 20)
         }
 
         it("should have all values set correctly") {
