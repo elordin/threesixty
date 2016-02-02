@@ -2,7 +2,7 @@ package threesixty.visualizer.visualizations.general
 
 import org.scalatest.FunSpec
 
-
+/*
 class TimeAxisTestSpec extends FunSpec{
 
     describe("A TimeAxis") {
@@ -47,3 +47,4 @@ class TimeAxisTestSpec extends FunSpec{
         }
     }
 }
+*/

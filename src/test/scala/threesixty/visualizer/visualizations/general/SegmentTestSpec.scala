@@ -1,6 +1,7 @@
 package threesixty.visualizer.visualizations.general
 
 import org.scalatest.FunSpec
+import threesixty.visualizer.visualizations.Segment
 
 class SegmentTestSpec extends FunSpec {
 

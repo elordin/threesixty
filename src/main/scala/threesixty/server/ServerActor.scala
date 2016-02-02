@@ -14,6 +14,9 @@ object ServerActor {
  *  them to newly created APIHandlers.
  */
 class ServerActor extends Actor {
+    // Maintain a list of distributed processing actors
+    // Pass the LFU to every new APIHandler
+
     val log = Logging(context.system, this)
 
     def receive = {

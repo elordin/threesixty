@@ -1,23 +1,26 @@
 package threesixty.visualizer
 
-import threesixty.data.{InputData, ProcessedData}
+import threesixty.visualizer.util.{Grid, Axis}
 import threesixty.engine.UsageInfo
 
 import spray.json._
 import DefaultJsonProtocol._
 import threesixty.processor.{ProcessingMethod, ProcessingMethodCompanion}
 
-
-/** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
-trait VisualizationCompanion extends UsageInfo {
-    /** Verbose name of the visualization */
-    def name: String
-
-    /** Conversion from String to [[threesixty.visualizer.VisualizationConfig]]. */
-    def fromString: (String) => VisualizationConfig
+import scala.xml.Elem
 
 
+trait Renderable {
+    /**
+     *  Returns a SVG/XML tree.
+     */
+    def toSVG: Elem
 
+    // def toPNG:PNGImage
+
+    // def toJPG:JPGImage
+
+    // def toRawdata:String
 }
 
 
@@ -73,10 +76,12 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         val json: JsObject = jsonString.parseJson.asJsObject
 
         val vizType = try {
-            json.getFields("type")(0).convertTo[String]
-        } catch {
-            case e:IndexOutOfBoundsException =>
+            json.fields.getOrElse("type", {
                 throw new IllegalArgumentException("parameter \"type\" missing for visualization")
+            }).convertTo[String]
+        } catch {
+            case e: DeserializationException =>
+                throw new IllegalArgumentException("Invalid value for parameter \"type\". Should be String.")
         }
 
         val conversion: (String) => VisualizationConfig =
@@ -92,4 +97,62 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         conversion(args)
     }
 
+}
+
+
+/**
+ *  Pimped Version of scala.xml.Elems that allows plugin additional
+ *  Renderables or XML components.
+ */
+case class SVGXML(elems: Elem*) {
+    /** Wraps everything in the SVG tag */
+    def withSVGHeader(
+            viewBoxX: Int,
+            viewBoxY: Int,
+            viewBoxWidth: Int,
+            viewBoxHeight: Int): SVGXML =
+        SVGXML(<svg
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox={ s"$viewBoxX $viewBoxY $viewBoxWidth $viewBoxHeight" }
+                xml:space="preserve">
+                { elems }
+            </svg>)
+
+    /** Appends an arbitrary element */
+    def append(elem: Elem): SVGXML = SVGXML(elems ++ Seq(elem) :_*)
+    /** Prepends an arbitrary element */
+    def prepend(elem: Elem): SVGXML = SVGXML(Seq(elem) ++ elems:_*)
+    /** Appends a renderable element */
+    def append(renderable: Renderable): SVGXML = append(renderable.toSVG)
+    /** Prepends a renderable element */
+    def prepend(renderable: Renderable): SVGXML = prepend(renderable.toSVG)
+
+    /** Appends a title */
+    def withTitle(text: String, x: Int, y: Int, fontSize: Int): SVGXML =
+        if (text != "") {
+            append(<text  x={ x.toString }
+                        y={ y.toString }
+                        font-family="Roboto, Segoe UI, Sans-Serif"
+                        font-weight="100"
+                        font-size={ fontSize.toString }
+                        text-anchor="middle">{ text }
+                </text>)
+        } else {
+            this
+        }
+
+    /** Prepends a grid */
+    def withGrid(grid: Grid): SVGXML = prepend(grid)
+
+    /** Appends an axis */
+    def withAxis(axis: Axis): SVGXML = append(axis)
+
+    // def withLegend(legend: Legend): SVGXML = ???
+}
+object SVGXML {
+    implicit def unpimpMulti(pimped: SVGXML): Seq[Elem] = pimped.elems
+    implicit def unpimpSingle(pimped: SVGXML): Elem = pimped.elems.head
+    implicit def pimpSingle(xml: Elem): SVGXML = SVGXML(xml)
+    implicit def pimpMulti(xmls: Seq[Elem]): SVGXML = SVGXML(xmls: _*)
 }

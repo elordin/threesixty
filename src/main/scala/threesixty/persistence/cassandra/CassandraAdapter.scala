@@ -4,11 +4,13 @@ import java.util.UUID
 import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
+import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.data.{DataPoint, InputData}
 import threesixty.persistence.DatabaseAdapter
+import threesixty.persistence.cassandra.CassandraAdapter
 import threesixty.persistence.cassandra.tables._
 
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 
 /**
@@ -67,7 +69,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
 
     }
 
-
+//vv author Markus . ^^ author Stefan ................................//
 
 
     /**
@@ -95,6 +97,40 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         }
 
     }
+
+
+  def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] = {
+
+    val metaIdOption = Await.result(CassandraAdapter.inputDatasets.getMetadataID(UUID.fromString(identifier)), Duration.Inf)
+    val metadata = metaIdOption match{
+      case Some(metaId) => partialProxy_Metadata(metaId)
+      case None => None
+    }
+    metadata
+  }
+
+
+  def getDatapointsLength(identifier: Identifier) : Either[String,Int] = {
+    //count(*) where...
+    val length = getDataset(identifier) match {
+      case Left(msg) => Left(msg)
+      case Right(data) => Right(data.dataPoints.length)
+    }
+    length
+  }
+
+
+
+
+  private def partialProxy_Metadata(id : UUID) : Option[CompleteInputMetadata] = {
+    val resultInputMetadata = Await.result(CassandraAdapter.inputMetadataSets
+      .getInputMetadataByIdentifier(id), Duration.Inf)
+    match {
+      case Some(inputMetadata) => Some(inputMetadata)
+      case None => None
+    }
+    resultInputMetadata
+  }
 
     /**
      * helper Method that ensures only new points are appended to the InputData*/

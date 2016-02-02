@@ -41,20 +41,20 @@ class LineChartConversionTestSpec extends FunSpec {
                 optXMax = Some(new Timestamp(200000)),
                 optYMin = Some(10.0),
                 optYMax = Some(123.456),
-                xLabel = Some("X-Axis"),
-                yLabel = Some("Y-Axis"),
-                title = Some("Title"),
-                borderTop = Some(100),
-                borderBottom = Some(50),
-                borderLeft = Some(50),
-                borderRight = Some(50),
-                distanceTitle = Some(15),
-                minDistanceX = Some(50),
-                minDistanceY = Some(50),
+                _xLabel = Some("X-Axis"),
+                _yLabel = Some("Y-Axis"),
+                _title = Some("Title"),
+                _borderTop = Some(100),
+                _borderBottom = Some(50),
+                _borderLeft = Some(50),
+                _borderRight = Some(50),
+                _distanceTitle = Some(15),
+                _minDistanceX = Some(50),
+                _minDistanceY = Some(50),
                 optUnitX = Some("seconds30"),
                 optUnitY = Some(10.0),
-                fontSizeTitle = Some(40),
-                fontSize = Some(20)
+                _fontSizeTitle = Some(40),
+                _fontSize = Some(20)
             )
             assertResult(expectedResult) {
                 LineChartConfig(jsonString)
@@ -67,8 +67,8 @@ class LineChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "optXMax": 200000,
-                "optYMin": 10.0,
+                "xMax": 200000,
+                "yMin": 10.0,
                 "optYMax": 123.456,
                 "yLabel": "Y-Axis",
                 "title": "Title",
@@ -83,12 +83,12 @@ class LineChartConversionTestSpec extends FunSpec {
         it("should have the default values where none were given") {
             val convertedConfig = LineChartConfig(jsonString)
             assert(convertedConfig.optXMin == None)
-            assert(convertedConfig._xLabel == "")
-            assert(convertedConfig._borderLeft == 50)
-            assert(convertedConfig._distanceTitle == 15)
+            assert(convertedConfig.xLabel == "")
+            assert(convertedConfig.borderLeft == 50)
+            assert(convertedConfig.distanceTitle == 10)
             assert(convertedConfig.optUnitY == None)
-            assert(convertedConfig._fontSizeTitle == 20)
-            assert(convertedConfig._fontSize == 12)
+            assert(convertedConfig.fontSizeTitle == 20)
+            assert(convertedConfig.fontSize == 12)
 
         }
 

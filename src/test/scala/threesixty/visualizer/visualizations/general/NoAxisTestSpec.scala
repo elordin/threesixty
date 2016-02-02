@@ -2,7 +2,7 @@ package threesixty.visualizer.visualizations.general
 
 import org.scalatest.FunSpec
 
-
+/*
 class NoAxisTestSpec extends FunSpec {
 
     describe("A NoAxis") {
@@ -40,3 +40,4 @@ class NoAxisTestSpec extends FunSpec {
         }
     }
 }
+*/
