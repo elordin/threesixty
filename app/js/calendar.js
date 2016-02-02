@@ -12,7 +12,14 @@ var months = [
 ];
 
 var selectedDate = new Date();
-selectedDate.setDate(11);
+
+var monday = new Date();
+var tuesday = new Date();
+var wednesday = new Date();
+var thursday = new Date();
+var friday = new Date();
+var saturday = new Date();
+var sunday = new Date();
 
 loadCurrentWeekDays();
 selectTodayInDayList();
@@ -25,21 +32,21 @@ function loadCurrentWeekDays() {
     var dayInMonth = selectedDate.getDate(),
         weekday = selectedDate.getDay();
     
-    var monday = dayInMonth - weekday + 1,
-        tuesday = monday + 1,
-        wednesday = monday + 2,
-        thursday = monday + 3,
-        friday = monday + 4,
-        saturday = monday + 5,
-        sunday = monday + 6;
+    monday.setDate(dayInMonth - weekday + 1);
+    tuesday.setDate(monday.getDate() + 1);
+    wednesday.setDate(monday.getDate() + 2);
+    thursday.setDate(monday.getDate() + 3);
+    friday.setDate(monday.getDate() + 4);
+    saturday.setDate(monday.getDate() + 5);
+    sunday.setDate(monday.getDate() + 6);
     
-    getLabelForDayItem($("#monday")).replaceWith('<p>' + monday + '</p>');
-    getLabelForDayItem($("#tuesday")).replaceWith('<p>' + tuesday + '</p>');
-    getLabelForDayItem($("#wednesday")).replaceWith('<p>' + wednesday + '</p>');
-    getLabelForDayItem($("#thursday")).replaceWith('<p>' + thursday + '</p>');
-    getLabelForDayItem($("#friday")).replaceWith('<p>' + friday + '</p>');
-    getLabelForDayItem($("#saturday")).replaceWith('<p>' + saturday + '</p>');
-    getLabelForDayItem($("#sunday")).replaceWith('<p>' + sunday + '</p>');
+    getLabelForDayItem($("#monday")).replaceWith('<p>' + monday.getDate() + '</p>');
+    getLabelForDayItem($("#tuesday")).replaceWith('<p>' + tuesday.getDate() + '</p>');
+    getLabelForDayItem($("#wednesday")).replaceWith('<p>' + wednesday.getDate() + '</p>');
+    getLabelForDayItem($("#thursday")).replaceWith('<p>' + thursday.getDate() + '</p>');
+    getLabelForDayItem($("#friday")).replaceWith('<p>' + friday.getDate() + '</p>');
+    getLabelForDayItem($("#saturday")).replaceWith('<p>' + saturday.getDate() + '</p>');
+    getLabelForDayItem($("#sunday")).replaceWith('<p>' + sunday.getDate() + '</p>');
 }
 
 function getLabelForDayItem(dayItem) {
@@ -74,16 +81,41 @@ $('.day-link').click(function () {
     $('.day-item').removeClass('selected');
     $(this).parent().addClass('selected');
     
-    selectedDate.setDate(($(this).children().first().text()));
+    var dateClicked = $(this).children().first().text();
+    
+    if (dateClicked == monday.getDate().toString()) {
+        selectedDate = monday;
+    } else if (dateClicked == tuesday.getDate().toString()) {
+        selectedDate = tuesday;
+    } else if (dateClicked == wednesday.getDate().toString()) {
+        selectedDate = wednesday;
+    } else if (dateClicked == thursday.getDate().toString()) {
+        selectedDate = thursday;
+    } else if (dateClicked == friday.getDate().toString()) {
+        selectedDate = friday;
+    } else if (dateClicked == saturday.getDate().toString()) {
+        selectedDate = saturday;
+    } else {
+        selectedDate = sunday;
+    }
+    
     updateDateTitle();
     
     return false;
 });
 
 $('#previous-week').click(function () {
+    selectedDate.setDate(selectedDate.getDate() - 7);
+    loadCurrentWeekDays();
+    updateDateTitle();
+    
     return false;
 });
 
 $('#next-week').click(function () {
+    selectedDate.setDate(selectedDate.getDate() + 7);
+    loadCurrentWeekDays();
+    updateDateTitle();
+    
     return false;
 });

@@ -19,6 +19,7 @@
 
 .day-item a {
     text-decoration: none;
+    color: black;
 }
 
 .day-item a:hover {
@@ -35,9 +36,9 @@
     height: 24px;
 }
 
-.day-item a p {
-    margin: 18px 0;
-    font-size: 1.5em;
+.day-item p {
+    margin: 20px 0;
+    font-size: 1.3em;
 }
 
 .day-item.selected {
@@ -46,6 +47,11 @@
 
 .day-item.selected a {
     color: #388E3C;
+}
+
+.day-item.selected p {
+    margin: 18px 0;
+    font-size: 1.5em;
 }
 
 
