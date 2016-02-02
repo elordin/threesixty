@@ -59,4 +59,5 @@ class ProcessorTestSpec extends FunSpec {
             }
         }
     }
+
 }

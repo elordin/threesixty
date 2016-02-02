@@ -24,19 +24,12 @@ class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
     }
 
-
-    override def afterAll(): Unit = {
-        super.afterAll()
-        Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)
-    }
-
-
     describe("Asking for data points with a specific inputDataId") {
         it("should load an empty sequence if there are no appropriate data points") {
 
             val inputDataId = UUID.randomUUID()
 
-            whenReady(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(inputDataId)) {
+            whenReady(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(inputDataId), timeout(Duration.Inf)) {
                 case results => results should be (Seq())
             }
         }

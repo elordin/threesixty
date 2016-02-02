@@ -20,18 +20,9 @@ import com.websudos.phantom.dsl._
 class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
     with BeforeAndAfterAll with CassandraConnector.keyspace.Connector {
 
-    /**
-      * clean up that is done before and after testing
-      * hence, you can use the same example data many times
-    */
     override def beforeAll(): Unit = {
         super.beforeAll()
         Await.result(CassandraAdapter.autocreate.future(), 30.seconds)
-    }
-
-    override def afterAll(): Unit = {
-        super.afterAll()
-        Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)
     }
 
     val identifier = UUID.randomUUID()
@@ -59,7 +50,6 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
             CassandraAdapter.insertData(inputDataSet) should be (Right(identifier.toString))
             CassandraAdapter.getDataset(identifier.toString) should be (Right(inputDataSet))
         }
-
     }
 
     describe("InsertOrAppend newly received Data"){
@@ -86,9 +76,8 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
             //Do it with newPoint + previously added points -> same message
             val DataWithMorePoints = InputData(inputDataSet.id.toString, measurement, prevPoints ++ List(newPoint), inputMetadata)
             CassandraAdapter.appendOrInsertData(DataWithMorePoints) should be (Left("All Datapoints were already stored in the Database"))
-
-
         }
+
         it("should update the metadata of the expanded dataset"){
             val id = inputDataSet.id
             val originalTimeframe = inputDataSet.metadata.timeframe
@@ -107,7 +96,6 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
                     case Left(_) => fail()
                 }
             assert(!queriedTimeframe.equals(originalTimeframe))
-
         }
 
         it("should get the metadata and length separately"){
