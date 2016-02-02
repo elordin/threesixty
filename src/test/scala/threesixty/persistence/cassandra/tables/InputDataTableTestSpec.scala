@@ -25,11 +25,6 @@ class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
     }
 
-    override def afterAll(): Unit = {
-        super.afterAll()
-        Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)
-    }
-
     describe("Inserting an input data set") {
         it("should store and load the input data set correctly") {
 
