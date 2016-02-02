@@ -26,6 +26,10 @@
     color: #4DAF50;
 }
 
+.day-item a:hover p {
+    font-weight: 500;
+}
+
 .day-item a:active {
     color: #388E3C;
 }
@@ -39,6 +43,7 @@
 .day-item p {
     margin: 20px 0;
     font-size: 1.3em;
+    font-weight: 300;
 }
 
 .day-item.selected {
@@ -52,6 +57,7 @@
 .day-item.selected p {
     margin: 18px 0;
     font-size: 1.5em;
+    font-weight: 500;
 }
 
 

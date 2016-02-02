@@ -1,7 +1,29 @@
 
 
 window.addEventListener('load', function (e) {
-    var requestText = '{"type": "visualization", "visualization": {"type": "linechart", "args": {"ids": ["92e87fc3-f718-45a1-951f-fa58ab679402"], "width": 300, "height":300}},"processor": [], "data": ["92e87fc3-f718-45a1-951f-fa58ab679402"]}';
+    
+    var requestText = {
+        "type": "visualization",
+        "visualization": {
+            "type": "linechart",
+            "args": {
+                
+                "width": 300,
+                "height": 300,
+                "ids": ["22b8f0b0-4451-483d-ae79-c61030e1fb29"],
+                "optYMin": 30,
+                "optUnitX": "minutes10",
+                "minDistanceY": 10.0,
+                "borderRight": 15,
+                "borderTop": 10
+            }
+        },
+        "processor": [],
+        "data": ["22b8f0b0-4451-483d-ae79-c61030e1fb29"]
+    }
+    
+    requestText = JSON.stringify(requestText);
+    
     $.ajax({
         url: 'http://localhost:8080',
         method: 'POST',
