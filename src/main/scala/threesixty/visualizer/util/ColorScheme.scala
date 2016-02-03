@@ -27,8 +27,20 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
  *  }}}
  */
 trait ColorScheme extends Iterator[RGBColor] {
-    val colors =
-        Seq(RGBColor("F44336"),
+    def colors: Seq[RGBColor]
+
+    lazy val infiniteColors: Stream[RGBColor] = Stream.continually(colors.toStream).flatten
+    lazy val iterator = infiniteColors.iterator
+
+    def next: RGBColor = iterator.next
+    def hasNext: Boolean = true
+    def apply(n: Int): List[RGBColor] = this.take(n).toList
+}
+
+
+object DefaultColorScheme extends ColorScheme {
+    def colors = Seq(
+            RGBColor("F44336"),
             RGBColor("E91E63"),
             RGBColor("9C27B0"),
             RGBColor("673AB7"),
@@ -45,26 +57,26 @@ trait ColorScheme extends Iterator[RGBColor] {
             RGBColor("FF9800"),
             RGBColor("FF5722")
         )
-
-    var colorIterator = colors.iterator
-
-    def next = {
-        if (!colorIterator.hasNext) {
-            colorIterator = colors.iterator
-        }
-        colorIterator.next
-    }
-    def hasNext = true
-    def reset() = { colorIterator = colors.iterator }
-    def apply(n: Int): List[RGBColor] = colorIterator.take(n).toList
 }
 
+object BlueColorScheme    extends ColorScheme {
+    def colors = Seq(
+        RGBColor(0xE8EAF6),
+        RGBColor(0xC5CAE9),
+        RGBColor(0x9FA8DA),
+        RGBColor(0x7986CB),
+        RGBColor(0x5C6BC0),
+        RGBColor(0x3F51B5),
+        RGBColor(0x3949AB),
+        RGBColor(0x303F9F),
+        RGBColor(0x283593),
+        RGBColor(0x1A237E)
+    )
+}
 
-object DefaultColorScheme extends ColorScheme
-
-// object BlueColorScheme      extends ColorScheme {
-//     override val colors = Seq(...)
-// }
+object Test extends App {
+    println(BlueColorScheme(100))
+}
 // object RedColorScheme       extends ColorScheme {
 //     override val colors = Seq(...)
 // }

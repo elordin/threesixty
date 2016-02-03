@@ -6,7 +6,7 @@ import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
 import threesixty.visualizer.visualizations.Segment
-import threesixty.visualizer.util.DefaultColorScheme
+import threesixty.visualizer.util._
 
 import scala.xml.Elem
 
@@ -191,8 +191,6 @@ object PieChartConfig extends VisualizationCompanion {
             val oy = (if(yradStart < 0) radius else - radius + config.chartHeight) - yradStart * (math.max(0, dy * (getMaxRadiusY - getMaxRadiusX))) / 2.0
 
             (config.borderLeft + ox, config.borderTop + oy)
-
-            // (config.width / 2, config.height / 2)
         }
 
         /**
@@ -258,7 +256,7 @@ object PieChartConfig extends VisualizationCompanion {
                     radius + 20,
                     value,
                     Some(config.fontSize),
-                    Some(DefaultColorScheme.next))
+                    Some(BlueColorScheme.next))
 
                 result = segment :: result
             }
