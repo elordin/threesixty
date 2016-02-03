@@ -5,12 +5,12 @@ window.addEventListener('load', function (e) {
      var requestText = {
         "type": "visualization",
         "visualization": {
-            "type": "piechart",
+            "type": "pichart",
             "args": {
                 
                 "width": 300,
                 "height": 300,
-                "ids": ["data1"],
+                "ids": ["4ec0cdbe-32b6-4b30-8be2-6f07efeecf0b"],
                 "borderRight": 0,
                 "borderTop": 10,
                 "borderLeft": 25,
@@ -20,7 +20,7 @@ window.addEventListener('load', function (e) {
             }
         },
         "processor": [],
-        "data": ["data1", "data2"]
+        "data": ["4ec0cdbe-32b6-4b30-8be2-6f07efeecf0b"]
     }
     
     

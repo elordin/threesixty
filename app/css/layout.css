@@ -2,11 +2,18 @@
 /*  Top Level Layout  */
 /* ****************** */
 
+html,
+body {
+    height: 100%;
+}
+
 header {
     background: #4DAF50;
     border-top: 32px solid #323232;
     height: 64px;
-    margin: 0 0 0 64px;
+    overflow: hidden;
+    margin-left: 64px;
+    padding-left: 28px;
 }
 
 aside {
@@ -17,9 +24,21 @@ aside {
     position: absolute;
 }
 
-main {
-    margin: 0 0 0 92px;
+aside.extended {
+    position: relative;
 }
+
+nav {
+    overflow: hidden;
+    margin-left: 64px;
+}
+
+main {
+    overflow: hidden;
+    margin-left: 64px;
+    padding-left: 28px;
+}
+
 
 
 
@@ -30,7 +49,7 @@ main {
 header h1 {
     display: inline-block;
     color: white;
-    margin: 18px 28px;
+    margin: 18px 0;
     font-size: 1.5em;
     font-weight: 100;
 }
@@ -73,8 +92,6 @@ aside a.selected {
     padding: 8px 10px;
 }
 
-
-
 .nav-item {
     display: inline-block;
     width: 100%;
@@ -102,7 +119,7 @@ aside a.selected {
 }
 
 .nav-description.visible {
-    display: inline;
+    display: inline-block;
 }
 
 .nav-content-container {
@@ -128,4 +145,10 @@ main h2 {
 }
 
 
+/* ****************** */
+/*    Media Query     */
+/* ****************** */
 
+@media screen and (min-width: 800px) {
+    
+}
