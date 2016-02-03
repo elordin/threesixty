@@ -7,7 +7,7 @@ import threesixty.processor.{ProcessingStep, ProcessingMethod, ProcessingStrateg
 
 
 /** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
-trait VisualizationCompanion extends UsageInfo {
+trait VisualizationCompanion extends VisualizationDecider with UsageInfo  {
     /** Verbose name of the visualization */
     def name: String
 
