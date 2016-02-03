@@ -14,16 +14,45 @@ class DataTestSpec extends FunSpec {
 
     describe("InputData") {
         describe("when created without data") {
-            it("should throw an IllegalArgumentException") {
-                intercept[IllegalArgumentException] {
-                    val data = InputData("", "", Nil, CompleteInputMetadata(
-                            Timeframe(new Timestamp(0), new Timestamp(1)),
-                            Reliability.Unknown,
-                            Resolution.Low,
-                            Scaling.Ordinal,
-                            ActivityType("something")
+            describe("should throw an IllegalArgumentException") {
+                it("when the data is empty") {
+                    intercept[IllegalArgumentException] {
+                        val data = InputData("", "", Nil, CompleteInputMetadata(
+                                Timeframe(new Timestamp(0), new Timestamp(1)),
+                                Reliability.Unknown,
+                                Resolution.Low,
+                                Scaling.Ordinal,
+                                ActivityType("something"),
+                                1
+                            )
                         )
-                    )
+                    }
+                }
+                it("when metadata specifies an empty dataset") {
+                    intercept[IllegalArgumentException] {
+                        val data = InputData("", "", List(DataPoint(new Timestamp(0), DoubleValue(5.0))), CompleteInputMetadata(
+                                Timeframe(new Timestamp(0), new Timestamp(1)),
+                                Reliability.Unknown,
+                                Resolution.Low,
+                                Scaling.Ordinal,
+                                ActivityType("something"),
+                                0
+                            )
+                        )
+                    }
+                }
+                it("when length of datapoints differs from the metadata field") {
+                    intercept[IllegalArgumentException] {
+                        val data = InputData("", "", List(DataPoint(new Timestamp(0), DoubleValue(5.0))), CompleteInputMetadata(
+                                Timeframe(new Timestamp(0), new Timestamp(1)),
+                                Reliability.Unknown,
+                                Resolution.Low,
+                                Scaling.Ordinal,
+                                ActivityType("something"),
+                                5
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -49,7 +78,8 @@ class DataTestSpec extends FunSpec {
                     Reliability.Unknown,
                     Resolution.Low,
                     Scaling.Ordinal,
-                    ActivityType("something")
+                    ActivityType("something"),
+                    2
                 )
             )
 

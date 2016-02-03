@@ -252,7 +252,9 @@ VISUALIZATION
             ).convertTo[Set[Identifier]]
 
 
-        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
+        val metadata = dataIDs.map {
+            id => dbAdapter.getMetadata(id)
+        }
 
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
             (procStratOption, vizConfigOption) match {
@@ -266,6 +268,7 @@ VISUALIZATION
                     println("Both missing"); (???, ???)       // TODO deduction
             }
 
+        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
 
         // Apply processing Methods
         processingStrategy(dataPool)

@@ -43,7 +43,8 @@ class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
             val resolution = Resolution.High
             val reliability = Reliability.Device
             val scaling = Scaling.Ordinal
-            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
+            val size = dataPoints.length
+            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
 
             val inputDataSet = InputData(identifier.toString, measurement, dataPoints, inputMetadta)
 

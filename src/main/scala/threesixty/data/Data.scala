@@ -182,10 +182,10 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     }
 
     implicit val incompleteInputMetadataFormat = jsonFormat(IncompleteInputMetadata.apply,
-        "timeframe", "reliability", "resolution", "scaling", "activityType")
+        "timeframe", "reliability", "resolution", "scaling", "activityType", "size")
 
     implicit val completeInputMetadataFormat = jsonFormat(CompleteInputMetadata.apply,
-        "timeframe", "reliability", "resolution", "scaling", "activityType")
+        "timeframe", "reliability", "resolution", "scaling", "activityType", "size")
 
     implicit val unsafeInputDataJsonFormat = jsonFormat(UnsafeInputData.apply,
         "id", "measurement", "dataPoints", "metadata")

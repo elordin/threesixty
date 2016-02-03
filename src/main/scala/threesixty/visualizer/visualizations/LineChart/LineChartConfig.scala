@@ -191,7 +191,7 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                     config.chartWidth,
                     config.chartHeight,
                     xScale(xScale.step),
-                    xScale(xScale.step),
+                    yScale(yScale.step),
                     xOffset = xScale(xScale.nextBreakpoint(dataMinX)),
                     yOffset = yScale(yScale.nextBreakpoint(dataMinY))))
                 .withAxis(HorizontalAxis(

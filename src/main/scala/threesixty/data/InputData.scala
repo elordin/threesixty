@@ -55,6 +55,7 @@ case class InputData(
 	val metadata: CompleteInputMetadata
 ) extends InputDataLike {
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")
+    require(dataPoints.size == metadata.size, "Metadata incompatible with data.")
 }
 
 

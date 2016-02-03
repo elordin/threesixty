@@ -32,8 +32,9 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
             val resolution = Resolution.Middle
             val reliability = Reliability.Device
             val scaling = Scaling.Ordinal
+            val size = 5
 
-            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
+            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
 
             Await.result(CassandraAdapter.inputMetadataSets.store(inputMetadta, identifier), Duration.Inf)
 
@@ -44,6 +45,7 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
                     result.scaling should be (scaling)
                     result.timeframe should be (timeframe)
                     result.activityType should be (activityType)
+                    result.size should be (size)
                 case None => fail("Did not receive an input metadata result from the database.")
             }
         }

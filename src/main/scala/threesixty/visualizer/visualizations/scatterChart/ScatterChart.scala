@@ -98,11 +98,9 @@ object ScatterChartConfig extends VisualizationCompanion {
 
         // TODO Performance optimization, get both in one run
         val dataMinMaxX: (Double, Double) =
-            (data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).min }).min,
-            data.map({ d => d.dataPoints.map({ p => p.timestamp.getTime }).max }).max)
-        val dataMinMaxY: (Double, Double) =
-            (data.map({ d => d.dataPoints.map({ p => p.value.value }).min }).min,
-            data.map({ d => d.dataPoints.map({ p => p.value.value }).max }).max)
+            (joinedDatasets.map(_.map({ case (dp: TaggedDataPoint, _: TaggedDataPoint) => dp.value.value}).min).min,
+            joinedDatasets.map(_.map({ case (dp: TaggedDataPoint, _: TaggedDataPoint) => dp.value.value}).max).min)
+        val dataMinMaxY: (Double, Double) = dataMinMaxX
         val dataMinX: Double = dataMinMaxX._1
         val dataMaxX: Double = dataMinMaxX._2
         val dataMinY: Double = dataMinMaxY._1
@@ -128,7 +126,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                 if (v > xScale.inMax) {
                     init
                 } else {
-                    construct(xScale.nextBreakpoint(v), init ++ Seq((xScale.format(v                                                          ), xScale(v))))
+                    construct(xScale.nextBreakpoint(v), init ++ Seq((xScale.format(v), xScale(v))))
                 }
             }
             construct(xScale.nextBreakpoint(xScale.inMin), Seq())
@@ -147,6 +145,7 @@ object ScatterChartConfig extends VisualizationCompanion {
         }
 
         def toSVG: Elem = {
+            /*
             val displayData = data.map {
                 dataset => ProcessedData(dataset.id, dataset.dataPoints.filter {
                     dataPoint =>
@@ -156,6 +155,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                         dataPoint.value.value <= yScale.inMax
                 })
             }
+            */
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
 
             /*
@@ -164,13 +164,13 @@ object ScatterChartConfig extends VisualizationCompanion {
 
             val zippedData = xdata.dataPoints.zip(ydata.dataPoints)
             */
-            (<g id="datapoints">
-                { for { dataset <- data } yield  {
+            (<g id="datapoints" transform={ s"translate$chartOrigin" }>
+                { for { dataPoints <- joinedDatasets } yield  {
                     val color = DefaultColorScheme.next
-                    for { datapoint <- dataset.dataPoints } yield
+                    for { (datapoint1, datapoint2) <- dataPoints } yield
                         <circle
-                            cx={ (chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString }
-                            cy={ (chartOrigin._2 - yScale(datapoint.value.value)).toString }
+                            cx={ (xScale(datapoint1.value.value)).toString }
+                            cy={ (-yScale(datapoint2.value.value)).toString }
                             fill={ color.toHexString }
                             r="2" />
                 } }
@@ -180,8 +180,8 @@ object ScatterChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    xAxisLabels.size,
-                    yAxisLabels.size,
+                    xScale(xScale.step),
+                    yScale(yScale.step),
                     xOffset = xScale(xScale.nextBreakpoint(dataMinX)),
                     yOffset = yScale(yScale.nextBreakpoint(dataMinY))
                     ))

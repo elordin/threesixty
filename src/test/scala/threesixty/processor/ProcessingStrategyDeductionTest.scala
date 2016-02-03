@@ -33,7 +33,7 @@ class ProcessingStrategyDeductionTest extends FunSpec{
   val scal0 = Scaling.Ordinal
   val act0 = new ActivityType("Testing my new Device, take 1")
   act0.setDescription("short run without elan")
-  val metadata0 = new CompleteInputMetadata(timeframe0,rel0,res0,scal0,act0)
+  val metadata0 = new CompleteInputMetadata(timeframe0,rel0,res0,scal0,act0,dataPoints0.length)
   var inputData = new InputData(id0,measurement0, dataPoints0, metadata0 )
 
 
@@ -54,12 +54,12 @@ class ProcessingStrategyDeductionTest extends FunSpec{
   val scal1 = Scaling.Ordinal
   val act1 = new ActivityType("Testing my new Device, take 2")
   act1.setDescription("short run with elan")
-  val metadata1 = new CompleteInputMetadata(timeframe1,rel1,res1,scal1,act1)
+  val metadata1 = new CompleteInputMetadata(timeframe1,rel1,res1,scal1,act1,dataPoints1.length)
   var inputData1 = new InputData(id1,measurement1, dataPoints1, metadata1 )
 
   //varying metadata Resolution
   val id2 = new Identifier("testdata2")
-  val metadata2 = new CompleteInputMetadata(timeframe1,rel1,Resolution.Low,scal1,act1)
+  val metadata2 = new CompleteInputMetadata(timeframe1,rel1,Resolution.Low,scal1,act1,dataPoints1.length)
   var inputData2 = new InputData(id2,measurement1, dataPoints1, metadata2 )
 
 
