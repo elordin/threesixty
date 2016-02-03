@@ -33,16 +33,20 @@ selectTodayInDayList();
 
 
 function updateCurrentWeekdays() {
-    var firstDayOfWeek = selectedDate.getDate() - selectedDate.getDay();
+    var firstDayOfWeek = selectedDate.getDate() - selectedDate.getDay() + 1;
+    if (selectedDate.getDay() == 0) {
+        firstDayOfWeek = selectedDate.getDate() - 6;
+    }
+    
     var currentDate = new Date(selectedDate);
     
-    sunday = new Date(currentDate.setDate(firstDayOfWeek))
-    monday = new Date(currentDate.setDate(sunday.getDate() + 1))
-    tuesday = new Date(currentDate.setDate(monday.getDate() + 1))
-    wednesday = new Date(currentDate.setDate(tuesday.getDate() + 1))
-    thursday = new Date(currentDate.setDate(wednesday.getDate() + 1))
-    friday = new Date(currentDate.setDate(thursday.getDate() + 1))
-    saturday = new Date(currentDate.setDate(friday.getDate() + 1))
+    monday = new Date(currentDate.setDate(firstDayOfWeek));
+    tuesday = new Date(currentDate.setDate(monday.getDate() + 1));
+    wednesday = new Date(currentDate.setDate(tuesday.getDate() + 1));
+    thursday = new Date(currentDate.setDate(wednesday.getDate() + 1));
+    friday = new Date(currentDate.setDate(thursday.getDate() + 1));
+    saturday = new Date(currentDate.setDate(friday.getDate() + 1));
+    sunday = new Date(currentDate.setDate(saturday.getDate() + 1));
     
     updateWeekdayNumbers();
 }
@@ -107,7 +111,6 @@ $('.day-link').click(function () {
     
     return false;
 });
-
 
 $('#previous-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() - 7);
