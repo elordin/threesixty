@@ -21,25 +21,33 @@ var friday = new Date();
 var saturday = new Date();
 var sunday = new Date();
 
-loadCurrentWeekDays();
+updateCurrentWeekdays();
+
+selectedDate = new Date();
 selectTodayInDayList();
 
 /* ****************** */
 /*    Days Loading    */
 /* ****************** */
 
-function loadCurrentWeekDays() {    
-    var dayInMonth = selectedDate.getDate(),
-        weekday = selectedDate.getDay();
+
+
+function updateCurrentWeekdays() {
+    var firstDayOfWeek = selectedDate.getDate() - selectedDate.getDay();
+    var currentDate = new Date(selectedDate);
     
-    monday.setDate(dayInMonth - weekday + 1);
-    tuesday.setDate(monday.getDate() + 1);
-    wednesday.setDate(monday.getDate() + 2);
-    thursday.setDate(monday.getDate() + 3);
-    friday.setDate(monday.getDate() + 4);
-    saturday.setDate(monday.getDate() + 5);
-    sunday.setDate(monday.getDate() + 6);
+    sunday = new Date(currentDate.setDate(firstDayOfWeek))
+    monday = new Date(currentDate.setDate(sunday.getDate() + 1))
+    tuesday = new Date(currentDate.setDate(monday.getDate() + 1))
+    wednesday = new Date(currentDate.setDate(tuesday.getDate() + 1))
+    thursday = new Date(currentDate.setDate(wednesday.getDate() + 1))
+    friday = new Date(currentDate.setDate(thursday.getDate() + 1))
+    saturday = new Date(currentDate.setDate(friday.getDate() + 1))
     
+    updateWeekdayNumbers();
+}
+
+function updateWeekdayNumbers() {
     getLabelForDayItem($("#monday")).replaceWith('<p>' + monday.getDate() + '</p>');
     getLabelForDayItem($("#tuesday")).replaceWith('<p>' + tuesday.getDate() + '</p>');
     getLabelForDayItem($("#wednesday")).replaceWith('<p>' + wednesday.getDate() + '</p>');
@@ -71,10 +79,8 @@ function updateDateTitle() {
 
 
 
-
-
 /* ****************** */
-/*   Days Selection   */
+/*   Day Selection    */
 /* ****************** */
 
 $('.day-link').click(function () {
@@ -82,7 +88,6 @@ $('.day-link').click(function () {
     $(this).parent().addClass('selected');
     
     var dateClicked = $(this).children().first().text();
-    
     if (dateClicked == monday.getDate().toString()) {
         selectedDate = monday;
     } else if (dateClicked == tuesday.getDate().toString()) {
@@ -95,18 +100,18 @@ $('.day-link').click(function () {
         selectedDate = friday;
     } else if (dateClicked == saturday.getDate().toString()) {
         selectedDate = saturday;
-    } else {
+    } else if (dateClicked == sunday.getDate().toString()) {
         selectedDate = sunday;
     }
-    
     updateDateTitle();
     
     return false;
 });
 
+
 $('#previous-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() - 7);
-    loadCurrentWeekDays();
+    updateCurrentWeekdays();
     updateDateTitle();
     
     return false;
@@ -114,8 +119,44 @@ $('#previous-week').click(function () {
 
 $('#next-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() + 7);
-    loadCurrentWeekDays();
+    updateCurrentWeekdays();
     updateDateTitle();
     
     return false;
 });
+
+
+
+
+/* ****************** */
+/*  Loading Diagrams  */
+/* ****************** */
+
+/*
+var requestText = {
+    "type": "visualization",
+    "visualization": {
+        "type": "linechart",
+        "args": {
+            "ids": ["25d89f4b-bf5e-4511-b986-7500d28b4000"],
+            "width": 330,
+            "height": 300,
+        }
+    },
+    "processor": [],
+    "data": ["25d89f4b-bf5e-4511-b986-7500d28b4000"]
+}
+
+requestText = JSON.stringify(requestText);
+
+$.ajax({
+    url: 'http://localhost:8080',
+    method: 'POST',
+    data: requestText,
+    dataType: 'json',
+    complete: function (answer) {
+        $('#date-activity').empty().html(answer.responseText);
+    }
+});
+*/
+

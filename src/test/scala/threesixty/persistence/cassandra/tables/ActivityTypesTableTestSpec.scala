@@ -22,6 +22,11 @@ class ActivityTypesTableTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
     }
 
+    override def afterAll(): Unit = {
+        super.afterAll()
+        Await.result(CassandraAdapter.autotruncate().future(), 5.seconds)
+    }
+
     describe("Inserting a new activity type without description") {
         it("should store and load the activity name correctly") {
 

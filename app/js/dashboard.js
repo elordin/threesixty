@@ -5,47 +5,21 @@ window.addEventListener('load', function (e) {
      var requestText = {
         "type": "visualization",
         "visualization": {
-            "type": "pichart",
+            "type": "piechart",
             "args": {
                 
                 "width": 300,
                 "height": 300,
-                "ids": ["4ec0cdbe-32b6-4b30-8be2-6f07efeecf0b"],
+                "ids": ["25d89f4b-bf5e-4511-b986-7500d28b4000"],
                 "borderRight": 0,
                 "borderTop": 10,
                 "borderLeft": 25,
-                "innerRadiusPercent": 0.5,
-                "angleStart": 50,
-                "angleEnd": 360
+                "innerRadiusPercent": 0.5
             }
         },
         "processor": [],
-        "data": ["4ec0cdbe-32b6-4b30-8be2-6f07efeecf0b"]
+        "data": ["25d89f4b-bf5e-4511-b986-7500d28b4000"]
     }
-    
-    
-    
-    /*
-    var requestText = {
-        "type": "visualization",
-        "visualization": {
-            "type": "linechart",
-            "args": {
-                
-                "width": 300,
-                "height": 300,
-                "ids": ["22b8f0b0-4451-483d-ae79-c61030e1fb29"],
-                "optYMin": 30,
-                "optUnitX": "minutes10",
-                "minDistanceY": 10.0,
-                "borderRight": 15,
-                "borderTop": 10
-            }
-        },
-        "processor": [],
-        "data": ["22b8f0b0-4451-483d-ae79-c61030e1fb29"]
-    }
-    */
     
     requestText = JSON.stringify(requestText);
     
