@@ -97,7 +97,7 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
  *  @param frequency Desired max. time-distance between datapoints.
  */
 case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
     /**
      *  Creates a new dataset with ID as specified in idMapping.

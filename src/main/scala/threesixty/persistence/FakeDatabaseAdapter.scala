@@ -137,4 +137,6 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
             case success => success
         }
 
+    def getMetadata(id: Identifier): Option[CompleteInputMetadata] = ???
+
 }

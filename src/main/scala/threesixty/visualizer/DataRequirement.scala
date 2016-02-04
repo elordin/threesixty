@@ -23,6 +23,8 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
                            val excludedProcessingMethods: Option[List[ProcessingMethod]] = None,
                            val requiredGoal: Option[Goal] = None) {
 
+    // def missingMethods(data: InputData, procStrat: ProcessingStrategy): Set[ProcessingMethod]
+
     /**
       *  Method to determine if the input data fulfills the requirement
       *

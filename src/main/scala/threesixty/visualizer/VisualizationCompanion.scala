@@ -14,9 +14,7 @@ trait VisualizationCompanion extends UsageInfo {
     /** Conversion from String to [[threesixty.visualizer.VisualizationConfig]]. */
     def fromString: (String) => VisualizationConfig
 
-
     val metadata: VisualizationMetadata
-
 
     def degreeOfFit(inputMetadata: CompleteInputMetadata*): Double = ???
     def degreeOfFit(processingStrategy: ProcessingStrategy, inputMetadata: CompleteInputMetadata*): Double = ???

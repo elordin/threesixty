@@ -49,6 +49,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Right(data.id)
     }
 
+//vv author Markus . ^^ author Stefan ................................//
 
     /**
       *  Attempts to append data to a data set of given id.
@@ -69,7 +70,6 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
 
     }
 
-//vv author Markus . ^^ author Stefan ................................//
 
 
     /**

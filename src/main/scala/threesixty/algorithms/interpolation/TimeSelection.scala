@@ -93,7 +93,7 @@ object TimeSelection extends ProcessingMethodCompanion {
   *
   */ //groupby() bei Listen :-)
 case class TimeSelection(from: Timestamp, to: Timestamp, idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
     /**
       *  Creates a new dataset with ID as specified in idMapping.

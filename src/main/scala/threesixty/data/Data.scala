@@ -75,7 +75,7 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     import Data._
     import metadata._
 
-    implicit object FiniteDurationJsoNFormat extends JsonFormat[FiniteDuration] {
+    implicit object FiniteDurationJsonFormat extends JsonFormat[FiniteDuration] {
         def write(d:FiniteDuration) = JsNumber(d.toMillis)
 
         def read(v: JsValue) = v match {

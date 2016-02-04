@@ -6,6 +6,7 @@ import threesixty.persistence.DatabaseAdapter
 
 import threesixty.data.{DataPool, UnsafeInputData}
 import threesixty.data.Data.Identifier
+import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.algorithms.interpolation.LinearInterpolation
 
 import spray.http.HttpResponse
@@ -97,15 +98,12 @@ VISUALIZATION
 
             val requestType: String = json.fields("type").convertTo[String]
 
-            val result: EngineResponse =
-                (requestType) match {
-                    case "visualization" => processVisualizationRequest(json)
-                    case "data"          => processDataRequest(json)
-                    case "help"          => processHelpRequest(json)
-                    case _               => ErrorResponse(Engine.toErrorJson(s"Unknown type: $requestType"))
-                }
-
-            result
+            (requestType) match {
+                case "visualization" => processVisualizationRequest(json)
+                case "data"          => processDataRequest(json)
+                case "help"          => processHelpRequest(json)
+                case _               => ErrorResponse(Engine.toErrorJson(s"Unknown type: $requestType"))
+            }
         } catch {
             case e:JsonParser.ParsingException  => ErrorResponse(Engine.toErrorJson("Invalid JSON"))
             case e:NoSuchElementException       => ErrorResponse(Engine.toErrorJson("type parameter missing"))
@@ -113,6 +111,11 @@ VISUALIZATION
     }
 
 
+    /**
+     *  Distinguishes between the types of data operation
+     *  @param json Request with field action defining what action should be taken
+     *  @return Result of the requested action or ErrorResponse on failure.
+     */
     def processDataRequest(json: JsObject): EngineResponse = {
         try {
             val action =  json.fields("action").convertTo[String]
@@ -128,6 +131,13 @@ VISUALIZATION
     }
 
 
+    /**
+     *  Inserts data from a request into the database.
+     *  Missing metadata values are deduced.
+     *
+     *  @param json JsObject assumed to hold data, a JSON encoded set of InputData
+     *  @return SuccessResponse on success, ErrorResponse on failure
+     */
     def processDataInsertRequest(json: JsObject): EngineResponse = {
         try {
             val data = json.fields("data").convertTo[UnsafeInputData]
@@ -146,6 +156,12 @@ VISUALIZATION
         }
     }
 
+    /**
+     *  Retrieves data from the database and passes it along.
+     *
+     *  @param json JsObject assumed to hold an "id" of the requested dataset.
+     *  @return SuccessResponse on success or ErrorResponse on failure
+     */
     def processDataGetRequest(json: JsObject): EngineResponse = {
         try {
             val id = json.fields("id").convertTo[Identifier]
@@ -160,7 +176,7 @@ VISUALIZATION
             case e: DeserializationException =>
                 ErrorResponse(Engine.toErrorJson("invalid format"))
             case e: NoSuchElementException   =>
-                ErrorResponse(Engine.toErrorJson("data parameter missing"))
+                ErrorResponse(Engine.toErrorJson("data id parameter missing"))
         }
     }
 
@@ -176,9 +192,9 @@ VISUALIZATION
     def processHelpRequest(json: JsObject): EngineResponse =
         json.fields.get("for").map({
             case JsString(forJson) => forJson.toLowerCase match {
-                case "data" => ???
-                case "data-insert" => ???
-                case "data-get" => ???
+                case "data" => ??? // TODO
+                case "data-insert" => ??? // TODO
+                case "data-get" => ??? // TODO
 
                 case "visualizer" =>
                     HelpResponse(visualizer.usage)
@@ -247,25 +263,46 @@ VISUALIZATION
                 return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Parameter missing
         }
 
-        val dataIDs:Set[Identifier] = json.fields.getOrElse("data",
-                return ErrorResponse(Engine.toErrorJson("data parameter missing.").toString)
-            ).convertTo[Set[Identifier]]
+        // Get data ids from json
+        val dataIDsOption: Option[Seq[Identifier]] =
+            json.fields.get("data").map(_.convertTo[Seq[Identifier]])
 
+        // Get metadata for passed ids or None if no ids were given
+        val metadataOption: Option[Seq[(Identifier, CompleteInputMetadata)]] =
+            dataIDsOption.map(_.map { id: Identifier =>
+                (id, dbAdapter.getMetadata(id).getOrElse(
+                    return ErrorResponse(Engine.toErrorJson(s"No data for $id not found.").toString)
+                ))})
 
-        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
-
+        // Get processingStrategy and visualizationConfig and deduce missing ones
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
-            (procStratOption, vizConfigOption) match {
-                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) =>
+            (procStratOption, vizConfigOption, metadataOption) match {
+                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig), _) =>
                     (procStrat, vizConfig)
-                case (Some(procStrat), None) =>
-                    println("Viz missing"); (procStrat, ???) // TODO deduction
-                case (None, Some(vizConfig)) =>
-                    println("ProcStrat missing"); (???, vizConfig) // TODO deduction
-                case (None, None) =>
-                    println("Both missing"); (???, ???)       // TODO deduction
+                case (Some(procStrat), None, Some(metadata)) =>
+                    (procStrat, visualizer.deduce(procStrat, metadata: _*))
+                case (Some(procStrat), None, None) =>
+                    // Load Metadata
+                    val metadata: Seq[(Identifier, CompleteInputMetadata)] = procStrat.steps flatMap {
+                        step: ProcessingStep => step.method.idMapping.keys map {
+                            id: Identifier => (id, dbAdapter.getMetadata(id).getOrElse {
+                                    return ErrorResponse(Engine.toErrorJson(s"No data for $id found."))
+                                })
+                        } toSeq
+                    }
+                    (procStrat, visualizer.deduce(procStrat, metadata: _*))
+                case (None, Some(vizConfig), Some(metadata)) =>
+                    (processor.deduce(vizConfig, metadata: _*), vizConfig)
+                case (None, None, Some(metadata)) =>
+                    (processor.deduce(metadata: _*), visualizer.deduce(metadata: _*))
+                    case _ => return ErrorResponse(
+                        Engine.toErrorJson("Requires either a definition of both processor and visualization or ids."))
             }
 
+        // Prune unnecessary ids
+        val requiredIDs = ???
+
+        val dataPool: DataPool = new DataPool(requiredIDs, dbAdapter)
 
         // Apply processing Methods
         processingStrategy(dataPool)

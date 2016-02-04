@@ -82,7 +82,7 @@ object ScatterChartConfig extends VisualizationCompanion {
     case class ScatterChart(config: ScatterChartConfig, val data: ProcessedData*) extends Visualization(data: _*) {
         require(data.size == 2, "Scatter chart can only be applied to two sets of data.")
 
-        // Nested Loop Join
+        // Nested Loop Join // Sort Merge ? // Hash Join ?
         val joinedDatasets: Seq[List[(TaggedDataPoint, TaggedDataPoint)]] =
             data.tail.map {
                 dataset => data.head.dataPoints.flatMap {

@@ -62,7 +62,6 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                 "    fontSizeTitle      Int       (optional) - Font size of the title\n" +
                 "    fontSize           Int       (optional) - Font size of labels\n"
 
-
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
 

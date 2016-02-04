@@ -34,7 +34,7 @@ object Accumulation extends ProcessingMethodCompanion {
     def usage = """ Use responsibly """ // TODO
 
     def apply(jsonString: String): Accumulation = {
-        implicit val akkumulationFormat =
+        implicit val accumulationFormat =
             jsonFormat( { idm: Map [Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
 
         jsonString.parseJson.convertTo[Accumulation]
@@ -97,7 +97,7 @@ object Accumulation extends ProcessingMethodCompanion {
   *  @author Jens Wöhrle
   */
 case class Accumulation(idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
     /**
       *  Creates a new dataset with ID as specified in idMapping.

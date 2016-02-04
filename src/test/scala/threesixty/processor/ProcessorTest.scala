@@ -39,6 +39,7 @@ class ProcessorTestSpec extends FunSpec {
                         def insertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
                         def appendData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
                         def appendOrInsertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
+                        def getMetadata(id:Identifier):Option[CompleteInputMetadata] = throw new NotImplementedError
                     })
 
                 pool.pushData(Set[ProcessedData](sampleData))

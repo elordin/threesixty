@@ -2,9 +2,11 @@ package threesixty.persistence
 
 import threesixty.data.InputData
 import threesixty.data.Data.Identifier
-
+import threesixty.data.metadata.CompleteInputMetadata
 
 trait DatabaseAdapter {
+
+    // def getDatasetInRange(id:Identifier, from: Timestamp, to: Timestamp)
 
     /**
      *  Retrieves a data set from the storage
@@ -35,5 +37,7 @@ trait DatabaseAdapter {
      *  @return Either Right(id), new id of inserted data or dataset appended to, or Left(errormsg) on error
      */
     def appendOrInsertData(data:InputData):Either[String, Identifier]
+
+    def getMetadata(id: Identifier): Option[CompleteInputMetadata]
 
 }

@@ -74,9 +74,7 @@ object BlueColorScheme    extends ColorScheme {
     )
 }
 
-object Test extends App {
-    println(BlueColorScheme(100))
-}
+
 // object RedColorScheme       extends ColorScheme {
 //     override val colors = Seq(...)
 // }

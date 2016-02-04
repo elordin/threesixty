@@ -3,13 +3,17 @@ package threesixty.processor
 import threesixty.engine.UsageInfo
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
+import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.visualizer.VisualizationConfig
 
 import spray.json._
 import DefaultJsonProtocol._
 
 
-sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+
+
+sealed trait ProcessingMethod {
+    def idMapping: Map[Identifier, Identifier]
     def asProcessingStep: ProcessingStep = ProcessingStep(this, idMapping.keys.toSet)
 }
 
@@ -23,8 +27,8 @@ sealed abstract class ProcessingMethod(idMapping: Map[Identifier, Identifier]) {
  *  @param Single instance of ProcessedData it requires
  *  @return Set of ProcessedData, possibly including artificially created data
  */
-abstract class SingleProcessingMethod(idMapping: Map[Identifier, Identifier])
-  extends ProcessingMethod(idMapping: Map[Identifier, Identifier])
+trait SingleProcessingMethod
+  extends ProcessingMethod
   with Function1[ProcessedData, Set[ProcessedData]]
 
 
@@ -36,8 +40,8 @@ abstract class SingleProcessingMethod(idMapping: Map[Identifier, Identifier])
  *  @param Set of ProcessedData that is going to process
  *  @return Set of ProcessedData, possibly including artificially created data
  */
-abstract class MultiProcessingMethod(idMapping: Map[Identifier, Identifier])
-  extends ProcessingMethod(idMapping: Map[Identifier, Identifier])
+trait MultiProcessingMethod
+  extends ProcessingMethod
   with Function1[Set[ProcessedData], Set[ProcessedData]]
 
 
@@ -156,7 +160,7 @@ class Processor extends ProcessingMixins with UsageInfo {
     }
 
     /**
-     *  Deduces the best fitting Processingstrategy for a given Set of InputData.
+     *  Deduces the best fitting ProcessingStrategy for a given Set of InputData.
      */
     def deduce(data: Set[InputData]): ProcessingStrategy = {
         ProcessingStrategy(processingInfos.values.par.map({
@@ -173,5 +177,9 @@ class Processor extends ProcessingMixins with UsageInfo {
             info => (info, info.degreeOfFit(data, vizConf))
         }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
     }
+
+
+    def deduce(metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
+    def deduce(vizConf: VisualizationConfig, metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
 
 }
