@@ -3,9 +3,11 @@ package threesixty.persistence.cassandra.tables
 import java.sql.Timestamp
 import java.util.UUID
 
+import com.datastax.driver.core.ConsistencyLevel
 import com.websudos.phantom.CassandraTable
 import com.websudos.phantom.connectors.RootConnector
 import com.websudos.phantom.dsl._
+import threesixty.data.Data._
 import threesixty.data.metadata._
 import threesixty.persistence.cassandra.CassandraAdapter
 
@@ -29,6 +31,7 @@ class InputMetadataTable extends CassandraTable[InputMetadataSets, CompleteInput
         val resultResolution = Resolution.withName(resolution(row))
         val resultReliability = Reliability.withName(reliability(row))
         val resultScaling = Scaling.withName(scaling(row))
+        val resultSize = size(row)
 
         val resultTimeframe = Await.result(CassandraAdapter.timeframes
             .getTimeframeByIdentifier(timeframeId(row)), Duration.Inf) match {
@@ -42,18 +45,18 @@ class InputMetadataTable extends CassandraTable[InputMetadataSets, CompleteInput
             case None => new ActivityType("Not defined")
         }
 
-        val resultSize = size(row)
-
         CompleteInputMetadata(resultTimeframe, resultReliability, resultResolution, resultScaling, resultActivityType, resultSize)
     }
 }
 
 abstract class InputMetadataSets extends InputMetadataTable with RootConnector {
 
-     /** stores a given Metadata object in the database
+    /** stores a given Metadata object in the database
+      *
       * @param inputMetadata the metadata to store
-      * @param identifier(opt) give identifier with which the metadata is stored in the table
-      * @return returns an awaitable future object*/
+      * @param identifier    (opt) give identifier with which the metadata is stored in the table
+      * @return an awaitable future object
+      */
     def store(inputMetadata: CompleteInputMetadata, identifier: UUID = UUID.randomUUID): Future[ResultSet] = {
         val timeframeId = UUID.randomUUID()
         val activityTypeId = UUID.randomUUID()
@@ -72,17 +75,21 @@ abstract class InputMetadataSets extends InputMetadataTable with RootConnector {
             .future()
     }
 
-  /**
-    * calls Method fromRow()
-    */
-
     def getInputMetadataByIdentifier(identifier: UUID): Future[Option[CompleteInputMetadata]] = {
         select.where(_.identifier eqs identifier).one()
     }
 
-    def getTimeframeId(identifier: UUID):  Future[Option[UUID]] ={
-    select(_.timeframeId).where(_.identifier eqs identifier).one()
+    def getTimeframeId(identifier: UUID): Future[Option[UUID]] = {
+        select(_.timeframeId).where(_.identifier eqs identifier).one()
 
+    }
+
+    def updateSizeForIdentifier(identifier: UUID, newSize: Int): Future[ResultSet] = {
+        update
+            .where(_.identifier eqs identifier)
+            .modify(_.size setTo newSize)
+            .consistencyLevel_=(ConsistencyLevel.ALL)
+            .future()
     }
 
 }
