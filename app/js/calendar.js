@@ -22,15 +22,13 @@ var saturday = new Date();
 var sunday = new Date();
 
 updateCurrentWeekdays();
-
-selectedDate = new Date();
 selectTodayInDayList();
+
+
 
 /* ****************** */
 /*    Days Loading    */
 /* ****************** */
-
-
 
 function updateCurrentWeekdays() {
     var firstDayOfWeek = selectedDate.getDate() - selectedDate.getDay() + 1;
@@ -135,7 +133,6 @@ $('#next-week').click(function () {
 /*  Loading Diagrams  */
 /* ****************** */
 
-/*
 var requestText = {
     "type": "visualization",
     "visualization": {
@@ -143,7 +140,7 @@ var requestText = {
         "args": {
             "ids": ["25d89f4b-bf5e-4511-b986-7500d28b4000"],
             "width": 330,
-            "height": 300,
+            "height": 300
         }
     },
     "processor": [],
@@ -161,5 +158,4 @@ $.ajax({
         $('#date-activity').empty().html(answer.responseText);
     }
 });
-*/
 
