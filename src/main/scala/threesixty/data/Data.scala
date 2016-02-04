@@ -75,20 +75,6 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     import Data._
     import metadata._
 
-    implicit object FiniteDurationJsoNFormat extends JsonFormat[FiniteDuration] {
-        def write(d:FiniteDuration) = JsNumber(d.toMillis)
-
-        def read(v: JsValue) = v match {
-            case JsString(s) =>
-                val d = Duration(s)
-                if (d.isFinite) {
-                    FiniteDuration(d.toMillis, d.unit)
-                } else {
-                    deserializationError("Infinite duration not allowed.")
-                }
-            case _ => deserializationError("Timestamp expected")
-        }
-    }
 
     implicit object TimestampJsonFormat extends JsonFormat[Timestamp] {
         def write(t:Timestamp) = JsNumber(t.getTime)
@@ -168,7 +154,7 @@ object DataJsonProtocol extends DefaultJsonProtocol {
 
         def read(v: JsValue) = v match {
             case JsObject(fields) =>
-                val valueType = fields.getOrElse("type", deserializationError("missing key type")).convertTo[String]
+                val valueType = fields.get("type").map(_.convertTo[String]).getOrElse("double")
                 valueType.toLowerCase match {
                     case "int" => DataPoint(
                         fields.getOrElse("timestamp", deserializationError("missing key timestamp")).convertTo[Timestamp],
