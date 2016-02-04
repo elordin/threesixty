@@ -1,5 +1,6 @@
 package threesixty.processor
 
+import threesixty.algorithms.interpolation.Aggregation
 import threesixty.engine.UsageInfo
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier
@@ -10,10 +11,9 @@ import spray.json._
 import DefaultJsonProtocol._
 
 
-
-
 sealed trait ProcessingMethod {
     def idMapping: Map[Identifier, Identifier]
+    def companion: ProcessingMethodCompanion
     def asProcessingStep: ProcessingStep = ProcessingStep(this, idMapping.keys.toSet)
 }
 
@@ -163,9 +163,10 @@ class Processor extends ProcessingMixins with UsageInfo {
      *  Deduces the best fitting ProcessingStrategy for a given Set of InputData.
      */
     def deduce(data: Set[InputData]): ProcessingStrategy = {
-        ProcessingStrategy(processingInfos.values.par.map({
+            ProcessingStrategy(processingInfos.values.par.map({
             info => (info, info.degreeOfFit(data))
         }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
+
     }
 
     /**
