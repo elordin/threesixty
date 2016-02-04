@@ -15,6 +15,7 @@ import scala.xml.Elem
  */
 abstract class Visualization(data: ProcessedData*) extends Renderable {
 
+
     override def toString(): String = toSVG.toString
 
 }
