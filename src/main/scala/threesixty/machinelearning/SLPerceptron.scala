@@ -83,7 +83,7 @@ import scala.util.{Success, Failure}
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait withPerceptron extends VisualizationCompanion {
+trait PerceptronVizMixin extends VisualizationCompanion {
 
     final val ENCODING_LENGTH = 12
     final def encodeMetadata(metadata: CompleteInputMetadata): Seq[Boolean] = Seq(

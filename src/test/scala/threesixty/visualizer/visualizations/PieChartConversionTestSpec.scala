@@ -29,7 +29,7 @@ class PieChartConversionTestSpec extends FunSpec {
 
         it("should have all values set correctly") {
             val expectedResult = PieChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
                 _title = Some("Title"),
@@ -82,7 +82,7 @@ class PieChartConversionTestSpec extends FunSpec {
 
         it("should have all values set correctly") {
             val expectedResult = PieChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
                 _title = Some("Title"),

@@ -18,12 +18,12 @@ class TestDataForDatabase extends FunSpec {
 
     /*
      * This method is only used to fill the database with some test data
-     *
+     */
     describe("Generating test data and inserting them into database") {
         it ("Generates heart rate data") {
 
             databaseAdabter.insertData(data)
         }
     }
-    */
+
 }

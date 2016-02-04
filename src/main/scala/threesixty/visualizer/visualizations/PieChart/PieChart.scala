@@ -6,7 +6,7 @@ import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
 import threesixty.visualizer.visualizations.Segment
-import threesixty.visualizer.util.DefaultColorScheme
+import threesixty.visualizer.util._
 
 import scala.xml.Elem
 
@@ -256,7 +256,7 @@ object PieChartConfig extends VisualizationCompanion {
                     radius + 20,
                     value,
                     Some(config.fontSize),
-                    Some(DefaultColorScheme.next))
+                    Some(BlueColorScheme.next))
 
                 result = segment :: result
             }
@@ -283,7 +283,8 @@ object PieChartConfig extends VisualizationCompanion {
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
             val segments = calculateSegments
 
-            (<g class="segments">
+            (<g class="segments"
+                transform={ s"translate$calculateOrigin" }>
                 {for (seg <- segments) yield
                     seg.getSVGElement
                 }

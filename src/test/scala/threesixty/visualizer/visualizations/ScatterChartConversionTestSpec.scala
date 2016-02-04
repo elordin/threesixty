@@ -12,10 +12,10 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "optXMin": 20,
-                "optXMax": 500,
-                "optYMin": 10.0,
-                "optYMax": 123.456,
+                "xMin": 20,
+                "xMax": 500,
+                "yMin": 10.0,
+                "yMax": 123.456,
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "title": "Title",
@@ -26,19 +26,19 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "distanceTitle": 15,
                 "minDistanceX": 50,
                 "minDistanceY": 50,
-                "optUnitX": 100.0,
-                "optUnitY": 10.0,
+                "xUnit": 100.0,
+                "yUnit": 10.0,
                 "fontSizeTitle": 40,
                 "fontSize": 20
             }"""
 
         it("should have all values set correctly") {
             val expectedResult = new ScatterChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMin = Some(new Timestamp(20)),
-                optXMax = Some(new Timestamp(500)),
+                optXMin = Some(20),
+                optXMax = Some(500),
                 optYMin = Some(10.0),
                 optYMax = Some(123.456),
                 _xLabel = Some("X-Axis"),
@@ -51,7 +51,7 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 _distanceTitle = Some(15),
                 _minDistanceX = Some(50),
                 _minDistanceY = Some(50),
-                optUnitX = Some("milliseconds10"),
+                optUnitX = Some(10),
                 optUnitY = Some(10.0),
                 _fontSizeTitle = Some(40),
                 _fontSize = Some(20)
@@ -67,8 +67,8 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "optXMax": 500,
-                "optYMin": 10.0,
+                "xMax": 500,
+                "yMin": 10.0,
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "title": "Title",
@@ -77,7 +77,7 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "borderLeft": 50,
                 "distanceTitle": 15,
                 "minDistanceY": 50,
-                "optUnitY": 10.0,
+                "yUnit": 10.0,
                 "fontSizeTitle": 40,
                 "fontSize": 20
             }"""
@@ -86,17 +86,17 @@ class ScatterChartConversionTestSpec extends FunSpec {
             val convertedConfig = ScatterChartConfig(jsonString)
             assert(convertedConfig.optXMin == None)
             assert(convertedConfig.optYMax == None)
-            assert(convertedConfig._borderRight == 50)
-            assert(convertedConfig._minDistanceX == 20)
+            assert(convertedConfig.borderRight == 50)
+            assert(convertedConfig.minDistanceX == 20)
             assert(convertedConfig.optUnitX == None)
         }
 
         it("should have all values set correctly") {
             val expectedResult = new ScatterChartConfig(
-                ids = Set("abc", "123"),
+                ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMax = Some(new Timestamp(500)),
+                optXMax = Some(500),
                 optYMin = Some(10.0),
                 _xLabel = Some("X-Axis"),
                 _yLabel = Some("Y-Axis"),

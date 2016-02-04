@@ -64,10 +64,10 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
 
   //constants used as test parameters
-  val lineChart = LineChartConfig(Set(), 768, 1024)
-  val barChart = BarChartConfig(Set(), 768, 1024)
-  val pieChart = PieChartConfig(Set(), 768, 1024)
-  val scatter = ScatterChartConfig(Set(), 768, 1024)
+  val lineChart = LineChartConfig(Seq.empty, 768, 1024)
+  val barChart = BarChartConfig(Seq.empty, 768, 1024)
+  val pieChart = PieChartConfig(Seq.empty, 768, 1024)
+  val scatter = ScatterChartConfig(Seq.empty, 768, 1024)
 
 
   //unfortunately, scala arithmethic causes standard implemenation to fail

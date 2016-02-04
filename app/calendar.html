@@ -4,12 +4,12 @@
     <title>360° Fitness Platform</title>
     <link rel="stylesheet" href="css/normalize.min.css">
     <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/calendar.css">
 </head>
     
 <body>
 
     <aside id="sidebar">    
-        
         <div id="burger-container" class="nav-item">
             <button id="burger-button">
                 <img id="burger-image" class="nav-image" src="img/menu.png">
@@ -69,26 +69,86 @@
                 </div>
             </a>
         </div>
-
     </aside>
     
     
     <header>
-        
         <h1>Calendar</h1>
-
     </header>
+    
+    
+    <nav>
+        <div class="day-container">
+            <div class="day-item">
+                <a id="previous-week" href="#">
+                    <img src="img/previous.png">
+                </a>
+            </div>
+            
+            <div id="monday" class="day-item">
+                <a class="day-link" href="#">
+                    <p>31</p>
+                </a>
+            </div>
+            
+            <div id="tuesday" class="day-item">
+                <a class="day-link" href="#">
+                    <p>1</p>
+                </a>
+            </div>
+            
+            <div id="wednesday" class="day-item">
+                <a class="day-link" href="#">
+                    <p>2</p>
+                </a>
+            </div>
+            
+            <div id="thursday" class="day-item">
+                <a class="day-link" href="#">
+                    <p>3</p>
+                </a>
+            </div>
+            
+            <div id="friday" class="day-item">
+                <a class="day-link" href="#">
+                    <p>4</p>
+                </a>
+            </div>
+            
+            <div id="saturday" class="day-item">
+                <a class="day-link" href="#">
+                    <p>5</p>
+                </a>
+            </div>
+            
+            <div id="sunday" class="day-item">
+                <a class="day-link" href="#">
+                    <p>6</p>
+                </a>
+            </div>
+            
+            <div class="day-item">
+                <a id="next-week" href="#">
+                    <img src="img/next.png">
+                </a>
+            </div>
+        </div>
+    </nav>
+    
     
     
     <main>
         
+        <h1 class="date-title">Sunday, 31. March 2016</h1>
+        <pre id="date-activity"></pre>
         
+        <h1 class="week-title">Week Overview</h1>
             
     </main>
     
     
-    
     <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/navigation.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/calendar.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

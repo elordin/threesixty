@@ -42,7 +42,7 @@ class VisDeductionTestSpec extends  FunSpec{
 
   //creating example Visualizations
   val lineChart = LineChartConfig(
-    ids = Set("abc", "123"),
+    ids = Seq("abc", "123"),
     height = 1024,
     width = 768,
     optXMin = Some(new Timestamp(100000)),
@@ -63,7 +63,7 @@ class VisDeductionTestSpec extends  FunSpec{
   )
 
   val pieChart = new PieChartConfig(
-    ids = Set("a"),
+    ids = Seq("a"),
     height = 1024,
     width = 768,
     _title = Some("Title"),

@@ -19,7 +19,7 @@ class DataGeneratorTest extends FunSpec{
   var points = data.dataPoints
 
 
-  describe("Heart Rate example data"){
+  describe("Heart Rate example data") {
 
     it("heart rate is continious")
     { var diff0 = 0.0
