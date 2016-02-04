@@ -148,6 +148,7 @@ object Clustering extends ProcessingMethodCompanion {
 case class Clustering(idMapping: Map[Identifier, Identifier])
     extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
+    def companion : ProcessingMethodCompanion = Clustering
     def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ??? // TODO implement
 
 }

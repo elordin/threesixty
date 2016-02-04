@@ -95,6 +95,8 @@ object TimeSelection extends ProcessingMethodCompanion {
 case class TimeSelection(from: Timestamp, to: Timestamp, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
+    def companion: ProcessingMethodCompanion = TimeSelection
+
     /**
       *  Creates a new dataset with ID as specified in idMapping.
       *  Creates new Dataset reduced to its time frame, defined in the arguments

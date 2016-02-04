@@ -99,6 +99,8 @@ object Accumulation extends ProcessingMethodCompanion {
 case class Accumulation(idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
+    def companion: ProcessingMethodCompanion = Accumulation
+
     /**
       *  Creates a new dataset with ID as specified in idMapping.
       *  Inserts interpolated values along the original ones into
