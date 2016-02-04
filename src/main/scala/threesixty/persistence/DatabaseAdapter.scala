@@ -4,6 +4,7 @@ import threesixty.data.InputData
 import threesixty.data.Data.Identifier
 import threesixty.data.metadata.CompleteInputMetadata
 
+
 trait DatabaseAdapter {
 
     // def getDatasetInRange(id:Identifier, from: Timestamp, to: Timestamp)
@@ -38,6 +39,13 @@ trait DatabaseAdapter {
      */
     def appendOrInsertData(data:InputData):Either[String, Identifier]
 
-    def getMetadata(id: Identifier): Option[CompleteInputMetadata]
+
+    /**
+     *  Gets only the metadata for a datset with given ID.
+     *
+     *  @param identifier ID of data whose metadata is requested
+     *  @param Some[CompleteInputMetadata] of the requested dataset or None on error
+     */
+    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata]
 
 }

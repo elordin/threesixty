@@ -9,13 +9,13 @@ import threesixty.data.metadata._
 import scala.util.Random
 
 /**
-* Created by Markus on 30.01.2016.
-*/
+ * Created by Markus on 30.01.2016.
+ */
 class ExampleDataGenerator {
 
     def exampleHeartRate(
             min: Int = 48,
-            max : Int = 225,
+            max: Int = 225,
             steps: Int,
             startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())
     ): InputData = {
@@ -24,11 +24,13 @@ class ExampleDataGenerator {
         val measurement = "Heart Rate"
         val timeframe = Timeframe(startTime, new Timestamp(startTime.getTime() + steps * 1000))
         val activityType = ActivityType("nothing special")
-        activityType.setDescription("everyday tracking heartrate")
+            activityType.setDescription("everyday tracking heartrate")
         val resolution = Resolution.High
         val reliability = Reliability.Device
         val scaling = Scaling.Ordinal
-        val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
+        val size = steps
+
+        val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
 
         var dataPoints : List[DataPoint] = List()
         val random = new Random()
@@ -55,7 +57,6 @@ class ExampleDataGenerator {
             }
 
             InputData(identifier.toString, measurement, dataPoints, inputMetadta)
-
 
         }
 

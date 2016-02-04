@@ -40,7 +40,8 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
     val resolution = Resolution.High
     val reliability = Reliability.Device
     val scaling = Scaling.Ordinal
-    val inputMetadata = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
+    val msize = dataPoints.length
+    val inputMetadata = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, msize)
 
     val inputDataSet = InputData(identifier.toString, measurement, dataPoints, inputMetadata)
 
@@ -103,7 +104,7 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
             CassandraAdapter.appendOrInsertData(inputDataSet)
 
             assert(inputMetadata equals CassandraAdapter.getMetadata(id))
-            assert(CassandraAdapter.getDatapointsLength(id) == 4)
+            assert(CassandraAdapter.getDatapointsLength(id) == Right(4))
         }
 
     }

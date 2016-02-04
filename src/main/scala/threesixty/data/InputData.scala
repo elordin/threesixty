@@ -55,10 +55,7 @@ case class InputData(
 	val metadata: CompleteInputMetadata
 ) extends InputDataLike {
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")
-
-    // def addNewDataPoints(pts: List[DataPoint]): InputData =
-        // this.copy(dataPoints = this.dataPoints ++ pts,
-                // metadata = this.metadata.copy(size = this.metadata.size + pts.length))
+    require(dataPoints.size == metadata.size, "Metadata incompatible with data.")
 }
 
 

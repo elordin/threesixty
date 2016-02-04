@@ -74,7 +74,6 @@ object BlueColorScheme    extends ColorScheme {
     )
 }
 
-
 // object RedColorScheme       extends ColorScheme {
 //     override val colors = Seq(...)
 // }

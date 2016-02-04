@@ -23,6 +23,7 @@ class InputMetadataTable extends CassandraTable[InputMetadataSets, CompleteInput
     object scaling extends StringColumn(this)
     object timeframeId extends UUIDColumn(this)
     object activityTypeId extends UUIDColumn(this)
+    object size extends IntColumn(this)
 
     def fromRow(row: Row): CompleteInputMetadata = {
         val resultResolution = Resolution.withName(resolution(row))
@@ -41,7 +42,9 @@ class InputMetadataTable extends CassandraTable[InputMetadataSets, CompleteInput
             case None => new ActivityType("Not defined")
         }
 
-        CompleteInputMetadata(resultTimeframe, resultReliability, resultResolution, resultScaling, resultActivityType)
+        val resultSize = size(row)
+
+        CompleteInputMetadata(resultTimeframe, resultReliability, resultResolution, resultScaling, resultActivityType, resultSize)
     }
 }
 
@@ -64,6 +67,7 @@ abstract class InputMetadataSets extends InputMetadataTable with RootConnector {
             .value(_.scaling, inputMetadata.scaling.toString)
             .value(_.activityTypeId, activityTypeId)
             .value(_.timeframeId, timeframeId)
+            .value(_.size, inputMetadata.size)
             .consistencyLevel_=(ConsistencyLevel.ALL)
             .future()
     }

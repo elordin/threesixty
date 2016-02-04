@@ -183,8 +183,8 @@ object BarChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    0,
-                    yAxisLabels.size))
+                    1,
+                    yScale(yScale.step)))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
