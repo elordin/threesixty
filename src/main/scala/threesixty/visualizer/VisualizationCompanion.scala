@@ -6,7 +6,7 @@ import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.engine.UsageInfo
 import threesixty.processor.{ProcessingStep, ProcessingMethod, ProcessingStrategy}
 
-import scala.util.parsing.combinator.token.StdTokens.Identifier
+//import scala.util.parsing.combinator.token.StdTokens.Identifier
 
 
 /** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */

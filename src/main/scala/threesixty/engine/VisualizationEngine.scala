@@ -266,7 +266,7 @@ VISUALIZATION
                 case (None, Some(vizConfig)) =>
                     println("ProcStrat missing"); (processor.deduce(dataPool.inputDatasets,vizConfig), vizConfig)
                 case (None, None) =>
-                    println("Both missing"); (???, ???)       // TODO deduction
+                    println("Both missing"); deduceVisAndProc(dataPool)       // TODO deduction
             }
 
 
@@ -277,7 +277,7 @@ VISUALIZATION
         VisualizationResponse(visualizationConfig(dataPool))
     }
 
-    private def deduceVis(dataPool: DataPool, processingStrategy: ProcessingStrategy) : (ProcessingStrategy, VisualizationConfig) = {
+     def deduceVis(dataPool: DataPool, processingStrategy: ProcessingStrategy) : (ProcessingStrategy, VisualizationConfig) = {
         //filter, which Visualizations return a Some(.) when asked for isMatching
         val possibleVis = visualizer.visualizationInfos.values.filter(_.isMatching(dataPool.inputDatasets.toList, processingStrategy.steps.head).isDefined).toList
 
@@ -292,7 +292,7 @@ VISUALIZATION
         (processingStrategy,visConfig)
     }
 
-    private def deduceVisAndProc(dataPool: DataPool) : (ProcessingStrategy, VisualizationConfig) = {
+     def deduceVisAndProc(dataPool: DataPool) : (ProcessingStrategy, VisualizationConfig) = {
         val dataIds = dataPool.dataIDs.toSeq
         val inputDataSet = dataPool.inputDatasets
         val procStratCompanions = processor.processingInfos.values.toList
@@ -306,7 +306,7 @@ VISUALIZATION
         //go through procStrats x VisConfigs and yield where degreeOfFit is max
         for(x <- 0 until procStratCompanions.length){
             for(y <- 0 until visConfigs.length){
-                tempvalue = procStratCompanions(x).degreeOfFit(inputDataSet,visConfigs(y)
+                tempvalue = procStratCompanions(x).degreeOfFit(inputDataSet,visConfigs(y))
                   if (tempvalue > maxvalue) {
                       maxvalue = tempvalue
                       maxX = x
@@ -316,7 +316,7 @@ VISUALIZATION
         }
         val idMap = dataPool.dataIDs.map({ dataIDs => (dataIDs, dataIDs) }).toMap
         val procStrat = ProcessingStrategy(procStratCompanions(maxX).default(idMap))
-        
+
         (procStrat,visConfigs(maxY))
 
     }
