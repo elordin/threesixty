@@ -113,6 +113,7 @@ object Aggregation extends ProcessingMethodCompanion {
 case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
+    def companion: ProcessingMethodCompanion = Aggregation
     /**
       *  Creates a new dataset with ID as specified in idMapping.
       *  Creates new Dataset, but with aggregated Data which can directly used for

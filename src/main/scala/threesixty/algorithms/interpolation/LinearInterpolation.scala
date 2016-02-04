@@ -99,6 +99,7 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
 case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
+    def companion: ProcessingMethodCompanion = LinearInterpolation
     /**
      *  Creates a new dataset with ID as specified in idMapping.
      *  Inserts interpolated values along the original ones into
