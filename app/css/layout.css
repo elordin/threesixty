@@ -144,11 +144,8 @@ main h2 {
     font-weight: 400;
 }
 
-
-/* ****************** */
-/*    Media Query     */
-/* ****************** */
-
-@media screen and (min-width: 800px) {
-    
+pre {
+    width: 330px;
+    height: 300px;
+    margin: 0 0 0 -28px;
 }
