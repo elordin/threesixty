@@ -97,6 +97,8 @@ object SplineInterpolation extends ProcessingMethodCompanion {
 case class SplineInterpolation(idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
+    def companion: ProcessingMethodCompanion = SplineInterpolation
+
     /**
       *  Created a new dataset with ID as specified in idMapping.
       *  Inserts interpolated values along the original ones into
