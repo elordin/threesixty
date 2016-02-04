@@ -1,6 +1,7 @@
 package threesixty.engine
 
 import threesixty.processor.{Processor, ProcessingStrategy, ProcessingStep}
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.{Visualizer, VisualizationConfig}
 import threesixty.persistence.DatabaseAdapter
 
@@ -12,6 +13,8 @@ import spray.http.HttpResponse
 import spray.json._
 
 import threesixty.data.DataJsonProtocol._
+
+import scala.util.Random
 
 
 object VisualizationEngine {
@@ -259,9 +262,9 @@ VISUALIZATION
                 case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) =>
                     (procStrat, vizConfig)
                 case (Some(procStrat), None) =>
-                    println("Viz missing"); (procStrat, ???) // TODO deduction
+                    println("Viz missing"); deduceVis(dataPool,procStrat)
                 case (None, Some(vizConfig)) =>
-                    println("ProcStrat missing"); (???, vizConfig) // TODO deduction
+                    println("ProcStrat missing"); (processor.deduce(dataPool.inputDatasets,vizConfig), vizConfig)
                 case (None, None) =>
                     println("Both missing"); (???, ???)       // TODO deduction
             }
@@ -273,4 +276,49 @@ VISUALIZATION
         // return Visualization
         VisualizationResponse(visualizationConfig(dataPool))
     }
+
+    private def deduceVis(dataPool: DataPool, processingStrategy: ProcessingStrategy) : (ProcessingStrategy, VisualizationConfig) = {
+        //filter, which Visualizations return a Some(.) when asked for isMatching
+        val possibleVis = visualizer.visualizationInfos.values.filter(_.isMatching(dataPool.inputDatasets.toList, processingStrategy.steps.head).isDefined).toList
+
+        val dataIds = dataPool.dataIDs.toSeq
+        var visConfig = if (possibleVis.isEmpty)
+            { LineChartConfig.default(dataIds,1024,1024)
+            }
+        else {
+            var compan = possibleVis(Random.nextInt(possibleVis.length))
+             compan.default(dataIds,1024,1024)
+        }
+        (processingStrategy,visConfig)
+    }
+
+    private def deduceVisAndProc(dataPool: DataPool) : (ProcessingStrategy, VisualizationConfig) = {
+        val dataIds = dataPool.dataIDs.toSeq
+        val inputDataSet = dataPool.inputDatasets
+        val procStratCompanions = processor.processingInfos.values.toList
+        val visConfigs =  visualizer.visualizationInfos.values.map( comp => comp.default(dataIds,1024,1024)).toList
+
+        var maxvalue = 0.0
+        var tempvalue = 0.0
+        var maxX = 0
+        var maxY = 0
+
+        //go through procStrats x VisConfigs and yield where degreeOfFit is max
+        for(x <- 0 until procStratCompanions.length){
+            for(y <- 0 until visConfigs.length){
+                tempvalue = procStratCompanions(x).degreeOfFit(inputDataSet,visConfigs(y)
+                  if (tempvalue > maxvalue) {
+                      maxvalue = tempvalue
+                      maxX = x
+                      maxY = y
+                  }
+            }
+        }
+        val idMap = dataPool.dataIDs.map({ dataIDs => (dataIDs, dataIDs) }).toMap
+        val procStrat = ProcessingStrategy(procStratCompanions(maxX).default(idMap))
+        
+        (procStrat,visConfigs(maxY))
+
+    }
+
 }
