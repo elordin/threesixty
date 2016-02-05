@@ -1,8 +1,11 @@
 package threesixty.visualizer.visualizations.LineChart
 
-import threesixty.data.Data.Timestamp
+import threesixty.data.Data._
 import org.scalatest._
+import threesixty.data.DataJsonProtocol.TimestampJsonFormat
+import threesixty.visualizer.util.{GreenColorScheme, Border}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
+import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
 
 class LineChartConversionTestSpec extends FunSpec {
@@ -12,24 +15,25 @@ class LineChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "xMin": 100000,
-                "xMax": 200000,
-                "yMin": 10.0,
-                "yMax": 123.456,
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
+                "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
+                "colorScheme": "green",
                 "title": "Title",
-                "borderTop": 100,
-                "borderBottom": 50,
-                "borderLeft": 50,
-                "borderRight": 50,
-                "distanceTitle": 15,
-                "minDistanceX": 50,
-                "minDistanceY": 50,
-                "xUnit": "30 seconds",
-                "yUnit": 10.0,
-                "fontSizeTitle": 40,
-                "fontSize": 20
+                "titleVerticalOffset": 50,
+                "titleFontSize": 18,
+                "xlabel": "X-Label",
+                "ylabel": "Y-Label",
+                "minDistanceX": 30,
+                "minDistanceY": 40,
+                "fontSize": 10,
+                "fontFamily": "FontFamily",
+                "xMin": 1000,
+                "xMax": 2000,
+                "yMin": -10,
+                "yMax": 50.5,
+                "xUnit": "one month",
+                "yUnit": 20.5,
+                "radius": 4,
+                "lineStrokeWidth": 3
             }"""
 
         it("should have all values set correctly") {
@@ -37,25 +41,27 @@ class LineChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMin = Some(new Timestamp(100000)),
-                optXMax = Some(new Timestamp(200000)),
-                optYMin = Some(10.0),
-                optYMax = Some(123.456),
-                _xLabel = Some("X-Axis"),
-                _yLabel = Some("Y-Axis"),
+                _border = Some(Border(200,100,150,25)),
+                _colorScheme = Some("green"),
                 _title = Some("Title"),
-                _borderTop = Some(100),
-                _borderBottom = Some(50),
-                _borderLeft = Some(50),
-                _borderRight = Some(50),
-                _distanceTitle = Some(15),
-                _minDistanceX = Some(50),
-                _minDistanceY = Some(50),
-                optUnitX = Some("30 seconds"),
-                optUnitY = Some(10.0),
-                _fontSizeTitle = Some(40),
-                _fontSize = Some(20)
+                _titleVerticalOffset = Some(50),
+                _titleFontSize = Some(18),
+                _xLabel = Some("X-Label"),
+                _yLabel = Some("Y-Label"),
+                _minPxBetweenXGridPoints = Some(30),
+                _minPxBetweenYGridPoints = Some(40),
+                _fontSize = Some(10),
+                _fontFamily = Some("FontFamily"),
+                _xMin = Some(new Timestamp(1000)),
+                _xMax = Some(new Timestamp(2000)),
+                _yMin = Some(-10),
+                _yMax = Some(50.5),
+                _xUnit = Some("one month"),
+                _yUnit = Some(20.5),
+                _radius = Some(4),
+                _lineStrokeWidth = Some(3)
             )
+
             assertResult(expectedResult) {
                 LineChartConfig(jsonString)
             }
@@ -67,38 +73,53 @@ class LineChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "xMax": 200000,
-                "yMin": 10.0,
-                "yMax": 123.456,
-                "yLabel": "Y-Axis",
                 "title": "Title",
-                "borderTop": 100,
-                "borderBottom": 50,
-                "borderRight": 50,
-                "minDistanceX": 50,
-                "minDistanceY": 50,
-                "xMax": "30 seconds"
+                "titleVerticalOffset": 50,
+                "ylabel": "Y-Label",
+                "minDistanceX": 30,
+                "fontSize": 10,
+                "fontFamily": "FontFamily",
+                "xMin": 1000,
+                "yMax": 50.5,
+                "xUnit": "one month",
+                "radius": 4,
             }"""
 
         it("should have the default values where none were given") {
             val convertedConfig = LineChartConfig(jsonString)
-            assert(convertedConfig.optXMin == None)
+            assert(convertedConfig.border.top == 50)
+            assert(convertedConfig.border.bottom == 50)
+            assert(convertedConfig.border.left == 50)
+            assert(convertedConfig.border.right == 50)
+            assert(convertedConfig.colorScheme == None)
+            assert(convertedConfig.titleFontSize == 20)
             assert(convertedConfig.xLabel == "")
-            assert(convertedConfig.borderLeft == 50)
-            assert(convertedConfig.distanceTitle == 10)
-            assert(convertedConfig.optUnitY == None)
-            assert(convertedConfig.fontSizeTitle == 20)
-            assert(convertedConfig.fontSize == 12)
-
+            assert(convertedConfig.minPxBetweenXGridPoints == 20)
+            assert(convertedConfig._xMax == None)
+            assert(convertedConfig._yMin == None)
+            assert(convertedConfig._yUnit == None)
+            assert(convertedConfig.lineStrokeWidth == 2)
         }
 
-        it("should have the correct values where they were given") {
-            val convertedConfig = LineChartConfig(jsonString)
-            assert(convertedConfig.ids == Set("abc", "123"))
-            assert(convertedConfig.height == 1024)
-            assert(convertedConfig.width == 768)
-            assert(convertedConfig.optYMax == Some(123.456))
-            assert(convertedConfig._title == "Title")
+        it("should have all values set correctly") {
+            val expectedResult = LineChartConfig(
+                ids = Seq("abc", "123"),
+                height = 1024,
+                width = 768,
+                _title = Some("Title"),
+                _titleVerticalOffset = Some(50),
+                _yLabel = Some("Y-Label"),
+                _minPxBetweenYGridPoints = Some(40),
+                _fontSize = Some(10),
+                _fontFamily = Some("FontFamily"),
+                _xMin = Some(new Timestamp(1000)),
+                _yMax = Some(50.5),
+                _xUnit = Some("one month"),
+                _radius = Some(4)
+            )
+            assertResult(expectedResult) {
+                LineChartConfig(jsonString)
+            }
         }
     }
 

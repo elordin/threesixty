@@ -14,6 +14,7 @@ import threesixty.data.metadata._
 import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.processor.{ProcessingStrategy, Processor, ProcessingStep}
+import threesixty.visualizer.util.Border
 import threesixty.visualizer.visualizations.{scatterChart, barChart, pieChart, lineChart}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
@@ -54,21 +55,18 @@ class VisDeductionTestSpec extends  FunSpec {
     ids = Seq("abc", "123"),
     height = 1024,
     width = 768,
-    optXMin = Some(new Timestamp(100000)),
-    optXMax = Some(new Timestamp(200000)),
-    optYMin = Some(10.0),
-    optYMax = Some(123.456),
+    _xMin = Some(new Timestamp(100000)),
+    _xMax = Some(new Timestamp(200000)),
+    _yMin = Some(10.0),
+    _yMax = Some(123.456),
     _xLabel = Some("X-Axis"),
     _yLabel = Some("Y-Axis"),
     _title = Some("Title"),
-    _borderTop = Some(100),
-    _borderBottom = Some(50),
-    _borderLeft = Some(50),
-    _borderRight = Some(50),
-    _minDistanceX = Some(50),
-    _minDistanceY = Some(50),
-    optUnitX = Some("seconds30"),
-    optUnitY = Some(10.0)
+    _border = Some(Border(100,50,50,50)),
+    _minPxBetweenXGridPoints = Some(50),
+    _minPxBetweenYGridPoints = Some(50),
+    _xUnit = Some("seconds30"),
+    _yUnit = Some(10.0)
   )
 
   val pieChart = new PieChartConfig(
@@ -76,20 +74,9 @@ class VisDeductionTestSpec extends  FunSpec {
     height = 1024,
     width = 768,
     _title = Some("Title"),
-    _borderTop = Some(100),
-    _borderBottom = Some(50),
-    _borderLeft = Some(50),
-    _borderRight = Some(50),
-    _distanceTitle = Some(50),
-    _angleStart = None,
-    _angleEnd = None,
-    _radius = None,
-    _innerRadiusPercent = None,
-    _showValues = Some(true),
-    _fontSizeTitle = None,
-    _fontSize = None,
-    _widthLegendSymbol = None,
-    _distanceLegend = None
+    _border = Some(Border(100,50,50,50)),
+    _titleVerticalOffset = Some(50),
+    _showValues = Some(true)
   )
   val dataPool = new DataPool(Set("data1"), FakeDatabaseAdapter)
   val idMap = dataPool.dataIDs.map({ dataIDs => (dataIDs, dataIDs) }).toMap
@@ -117,7 +104,7 @@ class VisDeductionTestSpec extends  FunSpec {
       assert(pieReq.resolution == None)
       assert(pieReq.scaling == None)
       assert(pieReq.excludedProcessingMethods == None)
-      assert(pieReq.requiredProcessingMethods == None)
+      assert(pieReq.requiredProcessingMethods == Some(List(Aggregation)))
 
     }
 

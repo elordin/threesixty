@@ -1,55 +1,54 @@
 package threesixty.visualizer.visualizations.barChart
 
 import org.scalatest.FunSpec
+import threesixty.visualizer.util.{DefaultColorScheme, Border}
 
 class BarChartConversionTestSpec extends FunSpec {
 
     describe("A BarChartConfig created from a JSON String with all arguments") {
         val jsonString = """{
-                "ids": ["abc", "123"],
+                "ids": ["123"],
                 "height": 1024,
                 "width": 768,
-                "optYMin": 10.0,
-                "optYMax": 123.456,
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
+                "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
+                "colorScheme": "green",
                 "title": "Title",
-                "borderTop": 100,
-                "borderBottom": 50,
-                "borderLeft": 50,
-                "borderRight": 50,
-                "distanceTitle": 15,
+                "titleVerticalOffset": 50,
+                "titleFontSize": 18,
+                "xlabel": "X-Label",
+                "ylabel": "Y-Label",
+                "minDistanceY": 40,
+                "fontSize": 10,
+                "fontFamily": "FontFamily",
+                "yMin": -10,
+                "yMax": 50.5,
+                "yUnit": 20.5,
                 "widthBar": 20,
                 "distanceBetweenBars": 50,
-                "showValues": true,
-                "minDistanceY": 50,
-                "optUnitY": 10.0,
-                "fontSizeTitle": 40,
-                "fontSize": 20
+                "showValues": true
             }"""
 
         it("should have all values set correctly") {
             val expectedResult = BarChartConfig(
-                ids = Seq("abc", "123"),
+                ids = Seq("123"),
                 height = 1024,
                 width = 768,
-                optYMin = Some(10.0),
-                optYMax = Some(123.456),
-                _xLabel = Some("X-Axis"),
-                _yLabel = Some("Y-Axis"),
+                _border = Some(Border(200,100,150,25)),
+                _colorScheme = Some("green"),
                 _title = Some("Title"),
-                _borderTop = Some(100),
-                _borderBottom = Some(50),
-                _borderLeft = Some(50),
-                _borderRight = Some(50),
-                _distanceTitle = Some(15),
+                _titleVerticalOffset = Some(50),
+                _titleFontSize = Some(18),
+                _xLabel = Some("X-Label"),
+                _yLabel = Some("Y-Label"),
+                _minPxBetweenYGridPoints = Some(40),
+                _fontSize = Some(10),
+                _fontFamily = Some("FontFamily"),
+                _yMin = Some(-10),
+                _yMax = Some(50.5),
+                _yUnit = Some(20.5),
                 _widthBar = Some(20),
                 _distanceBetweenBars = Some(50),
-                _showValues = Some(true),
-                _minDistanceY = Some(50),
-                optUnitY = Some(10.0),
-                _fontSizeTitle = Some(40),
-                _fontSize = Some(20)
+                _showValues = Some(true)
             )
             assertResult(expectedResult) {
                 BarChartConfig(jsonString)
@@ -58,52 +57,45 @@ class BarChartConversionTestSpec extends FunSpec {
     }
 
     describe("A BarChartConfig created from a JSON String with arguments missing") {
-        val jsonString =
-            """{
-                "ids": ["abc", "123"],
+        val jsonString = """{
+                "ids": ["123"],
                 "height": 1024,
                 "width": 768,
-                "optYMin": 10.0,
-                "optYMax": 123.456,
-                "xLabel": "X-Axis",
+                "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
                 "title": "Title",
-                "borderTop": 100,
-                "borderLeft": 50,
-                "borderRight": 50,
-                "widthBar": 20,
-                "showValues": true,
-                "optUnitY": 10.0,
-                "fontSizeTitle": 40,
-                "fontSize": 20
+                "titleFontSize": 18,
+                "ylabel": "Y-Label",
+                "fontSize": 10,
+                "fontFamily": "FontFamily",
+                "yMax": 50.5,
+                "widthBar": 20
             }"""
 
         it("should have the default values where none were given") {
             val convertedConfig = BarChartConfig(jsonString)
-            assert(convertedConfig.yLabel == "")
-            assert(convertedConfig.borderBottom == 50)
-            assert(convertedConfig.distanceTitle == 10)
-            // assert(convertedConfig.distanceBetweenBars == None)
-            assert(convertedConfig.minDistanceY == 20)
-
+            assert(convertedConfig.colorScheme == Some(DefaultColorScheme))
+            assert(convertedConfig.titleVerticalOffset == 20)
+            assert(convertedConfig.xLabel == "")
+            assert(convertedConfig.minPxBetweenYGridPoints == 20)
+            assert(convertedConfig._yMin == None)
+            assert(convertedConfig._yUnit == None)
+            assert(convertedConfig._distanceBetweenBars == None)
+            assert(convertedConfig.showValues == false)
         }
 
         it("should have all values set correctly") {
             val expectedResult = new BarChartConfig(
-                ids = Seq("abc", "123"),
+                ids = Seq("123"),
                 height = 1024,
                 width = 768,
-                optYMin = Some(10.0),
-                optYMax = Some(123.456),
-                _xLabel = Some("X-Axis"),
+                _border = Some(Border(200,100,150,25)),
                 _title = Some("Title"),
-                _borderTop = Some(100),
-                _borderLeft = Some(50),
-                _borderRight = Some(50),
-                _widthBar = Some(20),
-                _showValues = Some(true),
-                optUnitY = Some(10.0),
-                _fontSizeTitle = Some(40),
-                _fontSize = Some(20)
+                _titleFontSize = Some(18),
+                _yLabel = Some("Y-Label"),
+                _fontSize = Some(10),
+                _fontFamily = Some("FontFamily"),
+                _yMax = Some(50.5),
+                _widthBar = Some(20)
             )
             assertResult(expectedResult) {
                 BarChartConfig(jsonString)

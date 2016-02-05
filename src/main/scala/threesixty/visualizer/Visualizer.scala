@@ -1,6 +1,6 @@
 package threesixty.visualizer
 
-import threesixty.visualizer.util.{Grid, Axis}
+import threesixty.visualizer.util.{Legend, Grid, Axis}
 import threesixty.engine.UsageInfo
 import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.data.Data.Identifier
@@ -134,15 +134,13 @@ case class SVGXML(elems: Elem*) {
     def prepend(renderable: Renderable): SVGXML = prepend(renderable.toSVG)
 
     /** Appends a title */
-    def withTitle(text: String, x: Int, y: Int, fontSize: Int): SVGXML =
+    def withTitle(text: String, x: Int, y: Int, fontSize: Int, fontFamily: String): SVGXML =
         if (text != "") {
             append(<text  x={ x.toString }
                         y={ y.toString }
-                        font-family="Roboto, Segoe UI, Sans-Serif"
-                        font-weight="100"
+                        font-family={fontFamily}
                         font-size={ fontSize.toString }
-                        text-anchor="middle">{ text }
-                </text>)
+                        text-anchor="middle">{text}</text>)
         } else {
             this
         }
@@ -152,8 +150,8 @@ case class SVGXML(elems: Elem*) {
 
     /** Appends an axis */
     def withAxis(axis: Axis): SVGXML = append(axis)
-
-    // def withLegend(legend: Legend): SVGXML = ???
+    /** Appends a legend */
+    def withLegend(legend: Legend): SVGXML = append(legend)
 }
 object SVGXML {
     implicit def unpimpMulti(pimped: SVGXML): Seq[Elem] = pimped.elems

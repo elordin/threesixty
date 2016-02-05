@@ -13,9 +13,11 @@ import scala.xml.Elem
  * @param width the width of the bar
  * @param height the height of the bar (can also be negative)
  * @param description the description displayed for the bar
+ * @param classes the classes for this svg element
  * @param showValues iff the value should be shown to
  * @param value the shown value
  * @param fontSize the font size of labels
+ * @param fontFamily the font family of labels
  * @param color the color of the bar
  *
  * @author Thomas Engel
@@ -26,9 +28,11 @@ case class BarElement(
     val width: Double,
     val height: Double,
     val description: String,
+    val classes: Set[String],
     val showValues: Boolean = false,
     val value: String = "",
-    val fontSize: Option[Int] = None,
+    val fontSize: Int = 12,
+    val fontFamily: String = "Roboto, Segoe UI",
     val color: Option[RGBColor] = None
   ) {
 
@@ -38,18 +42,13 @@ case class BarElement(
     private def getColor: String = color.map(_.toHexString).getOrElse("")
 
     /**
-     * @return the string for the font size or an empty string if no font size was set
-     */
-    private def getFontSize: String = fontSize.map(_.toString).getOrElse("")
-
-    /**
      * @return the svg element for the bar
      */
     def getSVGElement: Elem = {
         val (dpx, dpy) = calculateDescriptionAnchorPoint
         val (vpx, vpy) = calculateValueAnchorPoint
 
-        <g class={identifier}>
+        <g class={identifier.replace(' ', '_') + " " + (classes.map(_.replace(' ', '_')) mkString " ") }>
             <path
                 class="bar"
                 fill={getColor}
@@ -58,18 +57,16 @@ case class BarElement(
                 class="description"
                 x={dpx.toString}
                 y={dpy.toString}
-                font-family="Roboto, Segoe UI"
-                font-weight="100"
-                font-size={getFontSize}
+                font-family={fontFamily}
+                font-size={fontSize.toString}
                 text-anchor="middle">{description}</text>
             {if (showValues)
                 <text
                     class="value"
                     x={vpx.toString}
                     y={vpy.toString}
-                    font-family="Roboto, Segoe UI"
-                    font-weight="100"
-                    font-size={getFontSize}
+                    font-family={fontFamily}
+                    font-size={fontSize.toString}
                     text-anchor="middle">{value}</text>
             }
         </g>
@@ -96,7 +93,7 @@ case class BarElement(
      */
     def calculateValueAnchorPoint: (Double, Double) = {
         val barMiddle = (xLeft + width / 2.0, height)
-        val offset = if(height < 0) -10 else 5 + fontSize.getOrElse(15)
+        val offset = if(height < 0) -10 else 5 + fontSize
 
         (barMiddle._1, barMiddle._2 + offset)
     }
@@ -106,7 +103,7 @@ case class BarElement(
      */
     def calculateDescriptionAnchorPoint: (Double, Double) = {
         val baseMiddle = (xLeft + width / 2.0, 0)
-        val offset = if(height < 0) 5 + fontSize.getOrElse(15) else - 10
+        val offset = if(height < 0) 5 + fontSize else - 10
 
         (baseMiddle._1, baseMiddle._2 + offset)
     }
