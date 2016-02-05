@@ -3,10 +3,9 @@ package threesixty.ProcessingMethods.clustering
 import threesixty.data.metadata.{Reliability, Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Identifier
-import threesixty.tags.{ClusterTag, NoiseTag}
-import threesixty.processor.{MultiProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
+import threesixty.data.tags.{ClusterTag, NoiseTag}
+import threesixty.processor.{SingleProcessingMethod, MultiProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
 
-import clustering._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
@@ -49,10 +48,10 @@ object Clustering extends ProcessingMethodCompanion {
         }
     }
 
-    def manhattanDistance = genericManhattanDistance[TaggedDataPoint, Double](
-        { tdp: TaggedDataPoint => tdp.value },
-        { tdp: TaggedDataPoint => tdp.timestamp.getTime.toDouble }
-    )
+    def manhattanDistance = ??? // genericManhattanDistance[TaggedDataPoint, Double](
+        // { tdp: TaggedDataPoint => tdp.value },
+        // { tdp: TaggedDataPoint => tdp.timestamp.getTime.toDouble }
+    // )
 
     def genericEuclidianDistance[D, V <% Double]: DistanceFunctionSelector[D, V] = {
         selectors => {
@@ -66,10 +65,10 @@ object Clustering extends ProcessingMethodCompanion {
         }
     }
 
-    def euclidianDistance = genericEuclidianDistance[TaggedDataPoint, Double](
-        { tdp: TaggedDataPoint => tdp.value },
-        { tdp: TaggedDataPoint => tdp.timestamp.getTime.toDouble }
-    )
+    def euclidianDistance = ??? //  genericEuclidianDistance[TaggedDataPoint, Double](
+        // { tdp: TaggedDataPoint => tdp.value },
+        // { tdp: TaggedDataPoint => tdp.timestamp.getTime.toDouble }
+    // )
 
 
     def dbscan[D](dataset: Set[D],
@@ -152,16 +151,28 @@ object Clustering extends ProcessingMethodCompanion {
 
 case class Clustering(idMapping: Map[Identifier, Identifier], minPts: Int, epsilon: Double)
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    import Clustering._
 
     def companion = Clustering
 
-    def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = {
+    def apply(dataInput: ProcessedData): Set[ProcessedData] = {
         val clusteringResult: Map[TaggedDataPoint, Classification] =
-            Clustering.dbscan[TaggedDataPoint](dataInput.dataPoints,
+            Clustering.dbscan[TaggedDataPoint](dataInput.dataPoints.toSet,
                 euclidianDistance)(minPts, epsilon)
-        clusteringResult.toList.map {
-            case (p, Cluster(id))   => p.copy(tags = p.tags + ClusterTag())
-            case (p, Noise)         => p.copy(tags = p.tags + NoiseTag)
+        val newID = idMapping.getOrElse(dataInput.id,
+            throw new NoSuchElementException(s"No idMapping for $dataInput.id specified"))
+        if (newID == dataInput.id) {
+            Set(ProcessedData(newID,
+                clusteringResult.toList.map {
+                    case (p, Cluster(id))   => p.copy(tags = p.tags + ClusterTag(id))
+                    case (p, Noise)         => p.copy(tags = p.tags + NoiseTag)
+                }))
+        } else {
+            Set(dataInput, ProcessedData(newID,
+                clusteringResult.toList.map {
+                    case (p, Cluster(id))   => p.copy(tags = p.tags + ClusterTag(id))
+                    case (p, Noise)         => p.copy(tags = p.tags + NoiseTag)
+                }))
         }
     }
 

@@ -1,6 +1,6 @@
 package threesixty.ProcessingMethods.clustering
 
-import threesixty.ProcessingMethods.Clustering.{Classification, Cluster, Noise, Unclassified}
+import Clustering.{Classification, Cluster, Noise, Unclassified}
 
 private[clustering] object DBSCAN {
     /**
