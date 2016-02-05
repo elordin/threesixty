@@ -48,8 +48,8 @@ object PieChartConfig extends VisualizationCompanion {
                 "    valueLabelRadiusPercent:   Double      (optional) - The radius to place the value label in percent\n" +
                 "    segmentLabelLineColor:     String      (optional) - The color of the line connecting the segment with the label\n" +
                 "    showValues:                Boolean     (optional) - If values should be shown\n" +
-                "    angleStart:                Int         (optional) - The start angle\n" +
-                "    angleEnd:                  Int         (optional) - The end angle\n" +
+                "    angleStart:                Int         (optional) - The start angle in the range: -360° ... 360°\n" +
+                "    angleEnd:                  Int         (optional) - The end angle in the range: -360° ... 360°\n" +
                 "    radius:                    Double      (optional) - The radius\n" +
                 "    innerRadiusPercent:        Double      (optional) - Radius for cutting out a circle in percent of the radius\n"
 
@@ -209,13 +209,6 @@ object PieChartConfig extends VisualizationCompanion {
         }
 
         /**
-          * @return the difference between the start and end angle
-          */
-        private def getDeltaAngles: Double = {
-            config.angleEnd - config.angleStart
-        }
-
-        /**
           * @return the total sum of all the values contained in the data
           */
         private def calculateSumValues: Double = {
@@ -254,7 +247,7 @@ object PieChartConfig extends VisualizationCompanion {
             var result: List[Segment] = List.empty
 
             var sAngle: Double = config.angleStart
-            val deltaAngle = getDeltaAngles
+            val deltaAngle = config.getDeltaAngles
 
             val percentMap = calculatePercentValues
             val valueMap = getRealValues
@@ -349,8 +342,8 @@ object PieChartConfig extends VisualizationCompanion {
  * @param _valueLabelRadiusPercent the radius to place the value label in percent
  * @param _segmentLabelLineColor the color of the line connecting the label for a segment with the segment
  * @param _showValues if values should be shown to a segment
- * @param _angleStart the start angle
- * @param _angleEnd the end angle
+ * @param _angleStart the start angle. -360 <= angle <= 360
+ * @param _angleEnd the end angle. -360 <= angle <= 360
  * @param _radius the radius
  * @param _innerRadiusPercent the inner radius that is cutted out in percent
  */
@@ -427,12 +420,29 @@ case class PieChartConfig(
     /**
      * @return the start angle
      */
-    def angleStart: Int = _angleStart.getOrElse(90) % 360
+    def angleStart: Int =_angleStart.getOrElse(90)
+
+    require(-360 <= angleStart && angleStart <= 360, "Value for angleStart is out of range (-360° ... 360°).")
 
     /**
      * @return the end angle
      */
-    def angleEnd: Int = _angleEnd.getOrElse(-270) % 360
+    def angleEnd: Int = {
+        var angle = _angleEnd.getOrElse(-270)
+        if(math.abs(angle - angleStart) > 360) {
+            angle = angle - math.signum(angle - angleStart) * 360
+        }
+        angle
+    }
+
+    require(-360 <= angleEnd && angleEnd <= 360, "Value for angleEnd is out of range (-360° ... 360°).")
+
+    /**
+      * @return the difference between the start and end angle
+      */
+    private def getDeltaAngles: Double = {
+        angleEnd - angleStart
+    }
 
     /**
       * Calculates the list of [[Segment]]s and returns the
