@@ -57,8 +57,12 @@ case class InputData(
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")
 	require(dataPoints.size == metadata.size, "Metadata incompatible with data points.")
 
+    implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
+        def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
+    }
+
     def addNewDataPoints(newDataPoints: List[DataPoint]): InputData = {
-        this.copy(dataPoints = this.dataPoints ++ newDataPoints,
+        this.copy(dataPoints = (this.dataPoints ++ newDataPoints).sortBy(_.timestamp),
             metadata = this.metadata.copy(size = this.metadata.size + newDataPoints.length))
     }
 }
