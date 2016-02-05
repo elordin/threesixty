@@ -1,15 +1,12 @@
-package threesixty.ProcessingMethods.interpolation
-
-import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
-import threesixty.data.Data.{Identifier, Timestamp}
-import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags._
-import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
-import threesixty.ProcessingMethods.statistics.StatisticalAnalysis
+package threesixty.ProcessingMethods.TimeSelection
 
 import spray.json._
+import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
+import threesixty.data.Implicits.timestamp2Long
+import threesixty.data.metadata.{Resolution, Scaling}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig

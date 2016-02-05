@@ -68,8 +68,8 @@ object PieChartConfig extends VisualizationCompanion {
 
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
-            requiredProcessingMethods = None, //TODO Aggregation
-            requiredGoal = None //TODO NoGoal
+            requiredProcessingMethods = None //TODO Aggregation
+
         )))
 
 

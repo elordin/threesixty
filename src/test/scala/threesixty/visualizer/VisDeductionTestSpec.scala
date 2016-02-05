@@ -4,7 +4,10 @@ import java.sql.Timestamp
 import java.util.UUID
 
 import org.scalatest.FunSpec
-import threesixty.ProcessingMethods.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
+import threesixty.ProcessingMethods.Accumulation.Accumulation
+import threesixty.ProcessingMethods.Aggregation.Aggregation
+import threesixty.ProcessingMethods.TimeSelection.TimeSelection
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.data.Data._
 import threesixty.data.{DataPool, InputData, DataPoint}
 import threesixty.data.metadata._
@@ -109,13 +112,11 @@ class VisDeductionTestSpec extends  FunSpec {
       assert(lineReq.scaling == Some(Scaling.Ordinal))
       assert(lineReq.requiredProcessingMethods == None)
       assert(lineReq.excludedProcessingMethods == None)
-      assert(lineReq.requiredGoal == None)
 
       var pieReq = pieChartMeta.requirementList.head
       assert(pieReq.resolution == None)
       assert(pieReq.scaling == None)
       assert(pieReq.excludedProcessingMethods == None)
-      assert(pieReq.requiredGoal == None)
       assert(pieReq.requiredProcessingMethods == None)
 
     }
