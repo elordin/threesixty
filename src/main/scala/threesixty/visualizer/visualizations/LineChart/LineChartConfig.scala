@@ -175,26 +175,28 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
             (<g class="data">
                 { for { dataset <- displayData } yield {
                     val colorString: String = if(config.colorScheme.isDefined) config.colorScheme.get.next.toString else ""
-                    if(config.radius > 0) {
-                        <g class={s"datapoints-${dataset.id}"}>
-                            {for {datapoint <- dataset.dataPoints} yield {
-                                <circle
-                                class={datapoint.tags.map(_.toString.replace(' ', '_')) mkString " "}
-                                fill={colorString}
-                                stroke={colorString}
-                                cx={(chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString}
-                                cy={(chartOrigin._2 - yScale(datapoint.value.value)).toString}
-                                r={config.radius.toString}/>
-                        }}
-                        </g>
-                    }
-                    if(config.lineStrokeWidth > 0) {
+                    <g class={dataset.id}>
+                        {if (config.radius > 0)
+                            <g class={s"datapoints-${dataset.id}"}>
+                                {for {datapoint <- dataset.dataPoints} yield {
+                                    <circle
+                                    class={datapoint.tags.map(_.toString.replace(' ', '_')) mkString " "}
+                                    fill={colorString}
+                                    stroke={colorString}
+                                    cx={(chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString}
+                                    cy={(chartOrigin._2 - yScale(datapoint.value.value)).toString}
+                                    r={config.radius.toString}/>
+                            }}
+                            </g>
+                        }
+                        {if(config.lineStrokeWidth > 0)
                             <path
                             stroke={colorString}
                             fill="none"
                             stroke-width={config.lineStrokeWidth.toString}
                             d={calculatePath(dataset)}/>
-                    }
+                        }
+                    </g>
                 } }
             </g>: SVGXML)
                 .withGrid(Grid(
