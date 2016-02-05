@@ -2,10 +2,12 @@ package threesixty.visualizer
 
 import threesixty.visualizer.util.{Grid, Axis}
 import threesixty.engine.UsageInfo
+import threesixty.data.metadata.CompleteInputMetadata
+import threesixty.data.Data.Identifier
 
 import spray.json._
 import DefaultJsonProtocol._
-import threesixty.processor.{ProcessingMethod, ProcessingMethodCompanion}
+import threesixty.processor.{ProcessingMethod, ProcessingMethodCompanion, ProcessingStrategy}
 
 import scala.xml.Elem
 
@@ -96,6 +98,9 @@ class Visualizer extends VisualizationMixins with UsageInfo {
 
         conversion(args)
     }
+
+    def deduce(metadata: (Identifier, CompleteInputMetadata)*): VisualizationConfig = ???
+    def deduce(procStrat: ProcessingStrategy, metadata: (Identifier, CompleteInputMetadata)*): VisualizationConfig = ???
 
 }
 

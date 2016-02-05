@@ -3,8 +3,7 @@ package threesixty.visualizer
 import threesixty.data.{InputData, DataPool}
 import threesixty.data.metadata.Resolution.Resolution
 import threesixty.data.metadata.Scaling.Scaling
-import threesixty.goals.Goal
-import threesixty.processor.{ProcessingStep, ProcessingMethod}
+import threesixty.processor.{ProcessingStrategy, ProcessingStep, ProcessingMethod}
 
 /**
  * This class contains the input data requirements for a visualization type.
@@ -13,15 +12,17 @@ import threesixty.processor.{ProcessingStep, ProcessingMethod}
  * @param scaling the required scaling
  * @param requiredProcessingMethods a list of required processing methods
  * @param excludedProcessingMethods a list of processing methods that can not be applied
- * @param requiredGoal the required goal
  *
  * @author Thomas Engel
  */
-case class DataRequirement(val resolution: Option[Resolution] = None,
-                           val scaling: Option[Scaling] = None,
-                           val requiredProcessingMethods: Option[List[ProcessingMethod]] = None,
-                           val excludedProcessingMethods: Option[List[ProcessingMethod]] = None,
-                           val requiredGoal: Option[Goal] = None) {
+case class DataRequirement(
+    val resolution: Option[Resolution] = None,
+    val scaling: Option[Scaling] = None,
+    val requiredProcessingMethods: Option[List[ProcessingMethod]] = None,
+    val excludedProcessingMethods: Option[List[ProcessingMethod]] = None
+) {
+
+    // def missingMethods(data: InputData, procStrat: ProcessingStrategy): Set[ProcessingMethod]
 
     /**
       *  Method to determine if the input data fulfills the requirement
@@ -63,13 +64,22 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
                 case None => true
             }
 
-            val goal = requiredGoal match {
-                case Some(g) => true //TODO if goals shall be implemented. check for "Equality" of gaols
-                case None => true
-            }
-
-            matchResolution && matchScaling && procNotExcluded && goal
+            matchResolution && matchScaling && procNotExcluded
         }
+    }
+
+    /**
+      * Returns ProcessingSteps, that are required but not yet part of the ProcessingStrategy */
+    def missingMethods(strategy: ProcessingStrategy) : Option[List[ProcessingMethod]] = {
+       if (strategy == null){
+           requiredProcessingMethods
+       }
+        else {
+        requiredProcessingMethods match {
+           case Some(reqList) => Some(reqList.diff(strategy.steps).toList)
+           case None => None
+         }
+       }
     }
 
 

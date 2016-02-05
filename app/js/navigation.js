@@ -3,9 +3,7 @@ var $aside = $('aside');
 var $description = $('.nav-description');
 
 $(window).load(checkWindowWidth);
-
 $(window).resize(checkWindowWidth);
-
 
 function checkWindowWidth() {
     if (mediaQuery.matches) {
@@ -14,11 +12,20 @@ function checkWindowWidth() {
     } else {
         hideSideMenu();
         $aside.removeClass('extended');
-        
     }
 }
 
+$("#burger-button").click(function (event) {
+    toggleNavigationWidth();
+});
 
+function toggleNavigationWidth() {
+    if ($aside.width() == 64) {
+        showSideMenu();
+    } else {
+        hideSideMenu();
+    }
+}
 
 function showSideMenu() {
     $aside.width('264px');
@@ -28,17 +35,4 @@ function showSideMenu() {
 function hideSideMenu() {
     $aside.width('64px');
     $description.removeClass('visible');
-}
-
-$("#burger-button").click(function (event) {
-    toggleNavigationWidth();
-});
-
-
-function toggleNavigationWidth() {
-    if ($aside.width() == 64) {
-        showSideMenu();
-    } else {
-        hideSideMenu();
-    }
 }

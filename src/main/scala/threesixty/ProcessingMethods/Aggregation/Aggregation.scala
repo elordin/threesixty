@@ -1,15 +1,14 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.Aggregation
 
-import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import spray.json.DefaultJsonProtocol._
+import spray.json._
+import threesixty.ProcessingMethods.statistics.StatisticalAnalysis
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
+import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.tags._
-import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
-import threesixty.algorithms.statistics.StatisticalAnalysis
-
-import spray.json._
-import DefaultJsonProtocol._
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
 // import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
@@ -111,7 +110,7 @@ object Aggregation extends ProcessingMethodCompanion {
   *
   */ //groupby() bei Listen :-)
 case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
     def companion: ProcessingMethodCompanion = Aggregation
     /**

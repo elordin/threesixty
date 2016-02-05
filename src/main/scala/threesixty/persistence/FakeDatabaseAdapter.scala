@@ -50,7 +50,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                1000000
             )
         ),
         "data1" -> InputData(
@@ -61,7 +62,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                5000
             )
         ),
         "data2" -> InputData(
@@ -72,7 +74,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                2500
             )
         ),
         "data3" -> InputData(
@@ -83,7 +86,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                400
             )
         ),
         "lineTest" -> InputData (
@@ -98,7 +102,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something new")
+                ActivityType("something new"),
+                4
             )
         )
     )
@@ -130,6 +135,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
     }
 
+    def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData] = ???
+
 
     def appendOrInsertData(data: InputData):Either[String, Identifier] =
         appendData(data) match {
@@ -137,4 +144,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
             case success => success
         }
 
+
+    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] =
+        database.get(identifier).map(_.metadata)
 }

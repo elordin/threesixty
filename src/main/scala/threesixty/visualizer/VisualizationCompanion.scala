@@ -1,9 +1,12 @@
 package threesixty.visualizer
 
+import threesixty.data.Data.Identifier
 import threesixty.data.{ InputData, DataPool }
 import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.engine.UsageInfo
 import threesixty.processor.{ProcessingStep, ProcessingMethod, ProcessingStrategy}
+
+//import scala.util.parsing.combinator.token.StdTokens.Identifier
 
 
 /** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
@@ -14,12 +17,15 @@ trait VisualizationCompanion extends UsageInfo {
     /** Conversion from String to [[threesixty.visualizer.VisualizationConfig]]. */
     def fromString: (String) => VisualizationConfig
 
+def default(ids: Seq[Identifier], height: Int, width: Int): VisualizationConfig
 
     val metadata: VisualizationMetadata
 
 
     def degreeOfFit(inputMetadata: CompleteInputMetadata*): Double = ???
     def degreeOfFit(processingStrategy: ProcessingStrategy, inputMetadata: CompleteInputMetadata*): Double = ???
+
+
 
 
     /**

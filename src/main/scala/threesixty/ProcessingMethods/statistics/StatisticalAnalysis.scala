@@ -1,4 +1,4 @@
-package threesixty.algorithms.statistics
+package threesixty.ProcessingMethods.statistics
 
 import threesixty.data.Data.Timestamp
 

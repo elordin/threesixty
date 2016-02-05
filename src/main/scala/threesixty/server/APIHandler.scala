@@ -1,12 +1,13 @@
 package threesixty.server
 
+import threesixty.persistence.cassandra.CassandraAdapter
+import threesixty.ProcessingMethods.Accumulation.Accumulation
+import threesixty.ProcessingMethods.Aggregation.Aggregation
+import threesixty.ProcessingMethods.TimeSelection.TimeSelection
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
-import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
-import threesixty.data.Data.Identifier
-import threesixty.data.InputData
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.visualizer.visualizations._
 
 import akka.actor.{Actor, Props}
@@ -28,9 +29,12 @@ object APIHandler {
 
     val config: Config = ConfigFactory.load
 
-    @throws[ConfigException]("if config doesn't contain database.uri") // TODO
-    val dbURI: String =
-        config.getString("database.uri")
+    @throws[ConfigException]("if config doesn't contain database.address") // TODO
+    val dbAddress: String =
+        config.getString("database.address")
+    @throws[ConfigException]("if config doesn't contain database.keyspace") // TODO
+    val dbKeyspace: String =
+        config.getString("database.keyspace")
 
     val debug: Boolean = try {
         config.getBoolean("debug")
@@ -46,7 +50,7 @@ object APIHandler {
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin
-            with scatterChart.Mixin and FakeDatabaseAdapter
+            with scatterChart.Mixin and CassandraAdapter
 
     def props: Props = Props(new APIHandler)
 }

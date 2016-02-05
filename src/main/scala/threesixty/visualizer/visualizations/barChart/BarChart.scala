@@ -52,6 +52,7 @@ object BarChartConfig extends VisualizationCompanion {
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
+    def default(ids: Seq[Identifier], height: Int, width: Int) = BarChartConfig(ids,height, width)
     /**
      *  Public constructor that parses JSON into a configuration
      *  @param jsonString representation of the config
@@ -183,8 +184,8 @@ object BarChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    0,
-                    yAxisLabels.size))
+                    1,
+                    yScale(yScale.step)))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,

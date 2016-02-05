@@ -1,8 +1,11 @@
 package threesixty.processor
 
 import org.scalatest.FunSpec
-import threesixty.algorithms.Clustering
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.ProcessingMethods.Accumulation.Accumulation
+import threesixty.ProcessingMethods.Aggregation.Aggregation
+import threesixty.ProcessingMethods.TimeSelection.TimeSelection
+import threesixty.ProcessingMethods.clustering.Clustering
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.data.Data._
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
@@ -33,7 +36,7 @@ class ProcessingStrategyDeductionTest extends FunSpec{
   val scal0 = Scaling.Ordinal
   val act0 = new ActivityType("Testing my new Device, take 1")
   act0.setDescription("short run without elan")
-  val metadata0 = new CompleteInputMetadata(timeframe0,rel0,res0,scal0,act0)
+  val metadata0 = new CompleteInputMetadata(timeframe0,rel0,res0,scal0,act0,dataPoints0.length)
   var inputData = new InputData(id0,measurement0, dataPoints0, metadata0 )
 
 
@@ -54,12 +57,12 @@ class ProcessingStrategyDeductionTest extends FunSpec{
   val scal1 = Scaling.Ordinal
   val act1 = new ActivityType("Testing my new Device, take 2")
   act1.setDescription("short run with elan")
-  val metadata1 = new CompleteInputMetadata(timeframe1,rel1,res1,scal1,act1)
+  val metadata1 = new CompleteInputMetadata(timeframe1,rel1,res1,scal1,act1,dataPoints1.length)
   var inputData1 = new InputData(id1,measurement1, dataPoints1, metadata1 )
 
   //varying metadata Resolution
   val id2 = new Identifier("testdata2")
-  val metadata2 = new CompleteInputMetadata(timeframe1,rel1,Resolution.Low,scal1,act1)
+  val metadata2 = new CompleteInputMetadata(timeframe1,rel1,Resolution.Low,scal1,act1,dataPoints1.length)
   var inputData2 = new InputData(id2,measurement1, dataPoints1, metadata2 )
 
 
@@ -173,6 +176,57 @@ class ProcessingStrategyDeductionTest extends FunSpec{
     }
 
   }
+  /* //TODO
+   this test has to be adapted, as soon as someone has changed parameter in computeDegreeOfFit for any of the methods*/
+  describe("deduce best-possible ProcessingStrategy"){
+    it("should do this for no given Vis"){
+      val inputdataSet= Set(inputData)
+      val processor = new Processor         with LinearInterpolation.Mixin
+        with Aggregation.Mixin
+        with Accumulation.Mixin
+        with TimeSelection.Mixin
 
+      val deducedProcessingStrategy0 = processor.deduce(inputdataSet).steps.map(_.method.companion).head
+      val dedicatedProcessingStrategy0 = LinearInterpolation
+
+      assert(deducedProcessingStrategy0 equals dedicatedProcessingStrategy0)
+
+      val processor1 = new Processor with Accumulation.Mixin
+        with Aggregation.Mixin
+        with LinearInterpolation.Mixin
+        with TimeSelection.Mixin
+      val dedicatedProcessingStrategy1 = Accumulation
+      val deducedProcessingStreategy1 = processor1.deduce(inputdataSet).steps.map(_.method.companion).head
+
+      assert(dedicatedProcessingStrategy1 equals deducedProcessingStreategy1)
+
+    }
+
+    it("should do this for a given Vis"){
+      val inputdataSet= Set(inputData)
+      val processor = new Processor         with LinearInterpolation.Mixin
+        with Aggregation.Mixin
+        with Accumulation.Mixin
+        with TimeSelection.Mixin
+
+      val deducedProcessingStrategy0 = processor.deduce(inputdataSet).steps.map(_.method.companion).head
+      val dedicatedProcessingStrategy0 = LinearInterpolation
+
+      assert(deducedProcessingStrategy0 equals dedicatedProcessingStrategy0)
+
+      val LinValue = LinearInterpolation.computeDegreeOfFit(inputData,lineChart)
+      val aggValue = Aggregation.computeDegreeOfFit(inputData,lineChart)
+      val accValue = Accumulation.computeDegreeOfFit(inputData,lineChart)
+      val tiSelValue = TimeSelection.computeDegreeOfFit(inputData, lineChart)
+      println("LinValue: " + LinValue)
+      println("aggValue: " + aggValue)
+      println("accValue: " + accValue)
+      println("tiSelValue: " + tiSelValue)
+
+
+
+
+    }
+  }
 }
 

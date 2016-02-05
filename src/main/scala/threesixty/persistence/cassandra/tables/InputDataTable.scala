@@ -23,9 +23,7 @@ class InputDataTable extends CassandraTable[InputDatasets, InputData] {
     implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
         def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
     }
-/**
-  * this method is just for internal use.
-  * it is called via getXYZ-methods in child classes*/
+
     def fromRow(row: Row): InputData = {
         val resultIdentifier = identifier(row).toString
         val resultMeasurement = measurement(row)
@@ -81,6 +79,5 @@ abstract class InputDatasets extends InputDataTable with RootConnector {
 
     def getMetadataID(identifier: UUID):  Future[Option[UUID]] ={
         select(_.inputMetadataId).where(_.identifier eqs identifier).one()
-
     }
 }

@@ -40,8 +40,11 @@ object Timeframe {
 case class Timeframe(val start: Timestamp, val end: Timestamp) {
     require(start != null, "Null value for start not allowed")
     require(end != null, "Null value for end not allowed")
-    require(start.before(end), "Start must be before the end.")
-    require(!end.before(start), "Start must be before the end or equal.")
+    require(!end.before(start), "End of timeframe must not be before the start.")
 
     def length: Long = end.getTime - start.getTime
+
+    def isInRange(timestamp: Timestamp): Boolean = {
+        timestamp.getTime >= this.start.getTime && timestamp.getTime <= this.end.getTime
+    }
 }
