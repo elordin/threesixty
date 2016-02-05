@@ -2,7 +2,7 @@ package threesixty.algorithms.clustering
 
 import threesixty.algorithms.Clustering.{Classification, Cluster, Noise, Unclassified}
 
-private[algorithms] object DBSCAN {
+private[clustering] object DBSCAN {
     /**
      *  DBSCAN density-based clustering algorithm by Ester, Kriegel, Sander and Xu.
      *  http://www.dbs.ifi.lmu.de/Publikationen/Papers/KDD-96.final.frame.pdf

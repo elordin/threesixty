@@ -3,7 +3,6 @@ package threesixty.visualizer
 import threesixty.data.{InputData, DataPool}
 import threesixty.data.metadata.Resolution.Resolution
 import threesixty.data.metadata.Scaling.Scaling
-import threesixty.goals.Goal
 import threesixty.processor.{ProcessingStrategy, ProcessingStep, ProcessingMethod}
 
 /**
@@ -13,15 +12,15 @@ import threesixty.processor.{ProcessingStrategy, ProcessingStep, ProcessingMetho
  * @param scaling the required scaling
  * @param requiredProcessingMethods a list of required processing methods
  * @param excludedProcessingMethods a list of processing methods that can not be applied
- * @param requiredGoal the required goal
  *
  * @author Thomas Engel
  */
-case class DataRequirement(val resolution: Option[Resolution] = None,
-                           val scaling: Option[Scaling] = None,
-                           val requiredProcessingMethods: Option[List[ProcessingMethod]] = None,
-                           val excludedProcessingMethods: Option[List[ProcessingMethod]] = None,
-                           val requiredGoal: Option[Goal] = None) {
+case class DataRequirement(
+    val resolution: Option[Resolution] = None,
+    val scaling: Option[Scaling] = None,
+    val requiredProcessingMethods: Option[List[ProcessingMethod]] = None,
+    val excludedProcessingMethods: Option[List[ProcessingMethod]] = None
+) {
 
     /**
       *  Method to determine if the input data fulfills the requirement
@@ -63,12 +62,7 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
                 case None => true
             }
 
-            val goal = requiredGoal match {
-                case Some(g) => true //TODO if goals shall be implemented. check for "Equality" of gaols
-                case None => true
-            }
-
-            matchResolution && matchScaling && procNotExcluded && goal
+            matchResolution && matchScaling && procNotExcluded
         }
     }
 
