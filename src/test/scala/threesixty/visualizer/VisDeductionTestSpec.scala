@@ -88,9 +88,11 @@ class VisDeductionTestSpec extends  FunSpec {
     _widthLegendSymbol = None,
     _distanceLegend = None
   )
+  val dataPool = new DataPool(Set("data1"), FakeDatabaseAdapter)
+  val idMap = dataPool.dataIDs.map({ dataIDs => (dataIDs, dataIDs) }).toMap
 
-  val linInt = new LinearInterpolation(4, null)
-  val linIntStep = new ProcessingStep(linInt, null)
+  val linInt = new LinearInterpolation(4,idMap)
+  val linIntStep = linInt.asProcessingStep
 
 
   val lineChartMeta = LineChartConfig.metadata
@@ -152,9 +154,20 @@ class VisDeductionTestSpec extends  FunSpec {
       val res1 = PieChartConfig.isMatching(ListOfInputdata, linIntStep)
       assert(res1 == None) //because pieChart does not work on 2 InputData
     }
+
+    it("should compute MissingMethods for a given ProcessingStrategy"){
+      val requirement = PieChartConfig.metadata.requirementList.head
+      val wrongStrategy = ProcessingStrategy(linIntStep)
+
+      assert(requirement.missingMethods(null) equals requirement.requiredProcessingMethods)
+      assert(requirement.missingMethods(wrongStrategy) equals requirement.requiredProcessingMethods)
+    }
+
   }
 
-  describe("Deduction ALgorithms") {
+
+
+  describe("Deduction Algorithms") {
 
     val visEngine = VisualizationEngine using
       new Processor   with LinearInterpolation.Mixin

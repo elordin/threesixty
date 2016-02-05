@@ -26,6 +26,8 @@ def default(ids: Seq[Identifier], height: Int, width: Int): VisualizationConfig
     def degreeOfFit(processingStrategy: ProcessingStrategy, inputMetadata: CompleteInputMetadata*): Double = ???
 
 
+
+
     /**
      *  Method to determine if a list of input data fulfills the requirements of the visualization
      *
