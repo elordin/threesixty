@@ -1,5 +1,6 @@
 package threesixty.visualizer.visualizations.barChart
 
+import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.data.Data.{DoubleValue, Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{Tag, AggregationTag}
@@ -70,7 +71,7 @@ object BarChartConfig extends VisualizationCompanion {
 
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
-            requiredProcessingMethods = None //TODO Aggregation
+            requiredProcessingMethods = Some(List(Aggregation))
         )))
 
 
