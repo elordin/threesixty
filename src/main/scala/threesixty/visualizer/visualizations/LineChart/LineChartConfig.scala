@@ -172,6 +172,7 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                         {
                             for { datapoint <- dataset.dataPoints } yield {
                                 <circle
+                                    class={datapoint.tags.map(_.toString.replace(' ','_')) mkString " " }
                                     fill={ color.toString }
                                     stroke={ color.toString }
                                     cx={ (chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString }

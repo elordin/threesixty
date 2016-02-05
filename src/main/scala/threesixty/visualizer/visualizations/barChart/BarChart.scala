@@ -150,16 +150,17 @@ object BarChartConfig extends VisualizationCompanion {
             var leftOffset = distanceBetweenBars
 
             for(point <- displayData.dataPoints) {
-                var description = point.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString
+                val description = point.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString
 
                 var element = new BarElement(
-                    description.replace(' ', '_'),
+                    description,
                     leftOffset,
                     widthBar,
                     chartOrigin._2 - yScale(point.value.value),
                     description,
+                    point.tags.map(_.toString),
                     config.showValues,
-                    point.value.value.toString,
+                    point.value.toString,
                     Some(config.fontSize),
                     Some(DefaultColorScheme.next))
 

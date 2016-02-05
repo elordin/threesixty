@@ -230,6 +230,12 @@ object PieChartConfig extends VisualizationCompanion {
                     p.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString -> p.value.value / total) (collection.breakOut): Map[String, Double]
         }
 
+        private def getTags: Map[String, Set[Tag]] = {
+            displayData.dataPoints.map(
+                (p: TaggedDataPoint) =>
+                    p.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString -> p.tags) (collection.breakOut): Map[String, Set[Tag]]
+        }
+
         /**
          * @return the calculated the list of [[Segment]]s
          */
@@ -241,6 +247,7 @@ object PieChartConfig extends VisualizationCompanion {
 
             val percentMap = calculatePercentValues
             val valueMap = getRealValues
+            val tagMap = getTags
 
             for(entry <- percentMap) {
                 val dAngle = entry._2 * deltaAngle
@@ -253,6 +260,7 @@ object PieChartConfig extends VisualizationCompanion {
                 val segment = new Segment(
                     entry._1,
                     entry._1,
+                    tagMap.get(entry._1).get.map(_.toString),
                     start,
                     end,
                     radius,
@@ -295,7 +303,7 @@ object PieChartConfig extends VisualizationCompanion {
             </g>: SVGXML)
                 .append(<g class="legend">
                     {for (i <- 0 until segments.size) yield
-                            <path class={"Legend" + segments(i).id}
+                            <path class={"Legend" + segments(i).identifier.replace(' ', '_')}
                                   d={calculateLegendRectangle(i)}
                                   stroke={segments(i).getColor}
                                   stroke-width="0"

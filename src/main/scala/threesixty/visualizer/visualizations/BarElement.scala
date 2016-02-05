@@ -13,6 +13,7 @@ import scala.xml.Elem
  * @param width the width of the bar
  * @param height the height of the bar (can also be negative)
  * @param description the description displayed for the bar
+ * @param classes the classes for this svg element
  * @param showValues iff the value should be shown to
  * @param value the shown value
  * @param fontSize the font size of labels
@@ -26,6 +27,7 @@ case class BarElement(
     val width: Double,
     val height: Double,
     val description: String,
+    val classes: Set[String],
     val showValues: Boolean = false,
     val value: String = "",
     val fontSize: Option[Int] = None,
@@ -49,7 +51,7 @@ case class BarElement(
         val (dpx, dpy) = calculateDescriptionAnchorPoint
         val (vpx, vpy) = calculateValueAnchorPoint
 
-        <g class={identifier}>
+        <g class={identifier.replace(' ', '_') + " " + classes.map(_.replace(' ', '_')) mkString " "}>
             <path
                 class="bar"
                 fill={getColor}

@@ -20,7 +20,7 @@ class SegmentTestSpec extends FunSpec {
     }
 
     describe("A Segment with large arc flat and sweep flag") {
-        val segment = new Segment("id", "description", 270, 45, 1, 0.5, 1.5, "value", Some(10))
+        val segment = new Segment("id", "description", Set.empty, 270, 45, 1, 0.5, 1.5, "value", Some(10))
 
         it("should calculate the correct delta angle") {
             assert(segment.calculateDeltaAngles == -225)
@@ -54,7 +54,7 @@ class SegmentTestSpec extends FunSpec {
     }
 
     describe("A Segment without large arc flag and without sweep flag") {
-        val segment = new Segment("id", "description", 45, 135, 1, 0.5, 1.5, "value", Some(10))
+        val segment = new Segment("id", "description", Set.empty, 45, 135, 1, 0.5, 1.5, "value", Some(10))
 
         it("should calculate the correct delta angle") {
             assert(segment.calculateDeltaAngles == 90)

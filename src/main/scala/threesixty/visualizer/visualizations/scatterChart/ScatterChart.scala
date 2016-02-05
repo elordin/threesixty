@@ -130,7 +130,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                 if (v > xScale.inMax) {
                     init
                 } else {
-                    construct(xScale.nextBreakpoint(v), init ++ Seq((xScale.format(v                                                          ), xScale(v))))
+                    construct(xScale.nextBreakpoint(v), init ++ Seq((xScale.format(v), xScale(v))))
                 }
             }
             construct(xScale.nextBreakpoint(xScale.inMin), Seq())
@@ -170,7 +170,9 @@ object ScatterChartConfig extends VisualizationCompanion {
                 { for { dataset <- data } yield  {
                     val color = DefaultColorScheme.next
                     for { datapoint <- dataset.dataPoints } yield
+                        //TODO Adapt class when joined datapoints are used
                         <circle
+                            class={datapoint.tags.map(_.toString.replace(' ', '_')) mkString " " }
                             cx={ (chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString }
                             cy={ (chartOrigin._2 - yScale(datapoint.value.value)).toString }
                             fill={ color.toHexString }

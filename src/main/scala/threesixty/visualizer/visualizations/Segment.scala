@@ -50,8 +50,9 @@ object Segment {
 /**
   * This class is used to generate a svg element for a circle segment.
   *
-  * @param id the id for the corresponding svg element
-  * @param description the description displayed for the bar
+  * @param identifier the class for the corresponding svg element
+  * @param description the description displayed for the segment
+  * @param classes the classes for the svg element
   * @param angleStart the start angle
   * @param angleEnd the end angle
   * @param radius the radius
@@ -64,8 +65,9 @@ object Segment {
   * @author Thomas Engel
   */
 case class Segment(
-    val id: String,
+    val identifier: String,
     val description: String,
+    val classes: Set[String],
     val angleStart: Double,
     val angleEnd: Double,
     val radius: Double,
@@ -82,7 +84,7 @@ case class Segment(
     def getSVGElement: Elem = {
         val (tlpx, tlpy) = calculateValueLabelAnchorPoint
 
-        <g id={id}>
+        <g class={identifier.replace(' ', '_') + " " + classes.map(_.replace(' ', '_')) mkString " " }>
             <path class="segment"
                   fill={getColor}
                   d={calculatePath} />
