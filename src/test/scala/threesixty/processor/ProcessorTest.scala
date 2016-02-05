@@ -7,7 +7,7 @@ import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.tags.Tag
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 import threesixty.persistence.DatabaseAdapter
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 
 
 class ProcessorTestSpec extends FunSpec {

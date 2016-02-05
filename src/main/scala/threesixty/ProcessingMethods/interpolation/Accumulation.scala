@@ -1,10 +1,10 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags.{Tag, Interpolated, Original}
+import threesixty.data.tags.{Accumulated, Tag, Interpolated, Original}
 import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
 
 import spray.json._
@@ -20,27 +20,28 @@ import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 // import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
-object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixins {
+object Accumulation extends ProcessingMethodCompanion {
 
     trait Mixin extends ProcessingMixins {
         abstract override def processingInfos: Map[String, ProcessingMethodCompanion] =
-            super.processingInfos + ("linearinterpolation" -> LinearInterpolation)
+            super.processingInfos + ("accumulation" -> Accumulation)
     }
 
-    def name = "Linear Interpolation"
+    def name = "Accumulation"
 
     def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
 
     def usage = """ Use responsibly """ // TODO
 
-    def apply(jsonString: String): LinearInterpolation = {
-        implicit val linearInterpolationFormat =
-            jsonFormat(LinearInterpolation.apply, "frequency", "idMapping")
-        jsonString.parseJson.convertTo[LinearInterpolation]
+    def apply(jsonString: String): Accumulation = {
+        implicit val akkumulationFormat =
+            jsonFormat( { idm: Map [Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
+
+        jsonString.parseJson.convertTo[Accumulation]
     }
 
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
-        LinearInterpolation(1, idMapping).asProcessingStep
+        Accumulation(idMapping).asProcessingStep
 
     def computeDegreeOfFit(inputData: InputData): Double = {
 
@@ -91,24 +92,24 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
 
 
 /**
- *  Linear interpolator
- *
- *  @author Thomas Weber
- *  @param frequency Desired max. time-distance between datapoints.
- */
-case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identifier])
+  *  Accumulator
+  *
+  *  @author Jens Wöhrle
+  */
+case class Accumulation(idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
-    def companion: ProcessingMethodCompanion = LinearInterpolation
+    def companion: ProcessingMethodCompanion = Accumulation
+
     /**
-     *  Creates a new dataset with ID as specified in idMapping.
-     *  Inserts interpolated values along the original ones into
-     *  this new dataset and adds tags to identify interpolated
-     *  and original values.
-     *
-     *  @param data Data to interpolate
-     *  @return One element Set containing the new dataset
-     */
+      *  Creates a new dataset with ID as specified in idMapping.
+      *  Inserts interpolated values along the original ones into
+      *  this new dataset and adds tags to identify interpolated
+      *  and original values.
+      *
+      *  @param data Data to interpolate
+      *  @return One element Set containing the new dataset
+      */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
 
@@ -123,25 +124,9 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
           * @param list of datapoints
           * @return list of datapoints with interpolated values and Tnterpolation-tags
           */
-        def linearInterpolated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
+        def akkumulated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
             case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
-
-                if (t2 - t1 > frequency) {
-
-                    val m = ((v2.value - v1.value) / (t2 - t1))
-                    val b = v1.value - m * t1
-
-                    def interpolFunc(x: Int): TaggedDataPoint =
-                        TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
-
-                    TaggedDataPoint(t1, v1, tags1 + Original) ::
-                      Range(t1.toInt + frequency, t2.toInt, frequency).map(interpolFunc).toList ++
-                        linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
-
-                } else {
-                    TaggedDataPoint(t1, v1, tags1 + Original) ::
-                      linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
-                }
+                TaggedDataPoint(t1, v1, tags1 + Accumulated) :: akkumulated( TaggedDataPoint(t2, v1.value + v2.value, tags2 + Accumulated) :: ds )
 
             case otherwise => otherwise
         }
@@ -150,6 +135,6 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
 
         val newID = idMapping(data.id)
 
-        Set(data.copy(id = newID, dataPoints = linearInterpolated(orderedDataPoints)))
+        Set(data.copy(id = newID, dataPoints = akkumulated(orderedDataPoints)))
     }
 }

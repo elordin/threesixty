@@ -1,47 +1,43 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags.{Accumulated, Tag, Interpolated, Original}
+import threesixty.data.tags._
 import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
+import threesixty.ProcessingMethods.statistics.StatisticalAnalysis
 
 import spray.json._
-import DefaultJsonProtocol._
+import threesixty.data.DataJsonProtocol._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
-object Accumulation extends ProcessingMethodCompanion {
+object TimeSelection extends ProcessingMethodCompanion {
 
     trait Mixin extends ProcessingMixins {
         abstract override def processingInfos: Map[String, ProcessingMethodCompanion] =
-            super.processingInfos + ("accumulation" -> Accumulation)
+            super.processingInfos + ("timeselection" -> TimeSelection)
     }
 
-    def name = "Accumulation"
+    def name = "TimeSelection"
 
     def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
 
     def usage = """ Use responsibly """ // TODO
 
-    def apply(jsonString: String): Accumulation = {
-        implicit val akkumulationFormat =
-            jsonFormat( { idm: Map [Identifier, Identifier] => Accumulation.apply(idm) }, "idMapping")
-
-        jsonString.parseJson.convertTo[Accumulation]
+    def apply(jsonString: String): TimeSelection = {
+        implicit val timeselectionFormat =
+            jsonFormat(TimeSelection.apply, "from", "to", "idMapping")
+        jsonString.parseJson.convertTo[TimeSelection]
     }
 
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
-        Accumulation(idMapping).asProcessingStep
+        TimeSelection(new Timestamp(0), new Timestamp(0), idMapping).asProcessingStep
 
     def computeDegreeOfFit(inputData: InputData): Double = {
 
@@ -51,10 +47,10 @@ object Accumulation extends ProcessingMethodCompanion {
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.size >= 5) {
+        if (inputData.dataPoints.length >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.size >= 50) {
+        if (inputData.dataPoints.length >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
@@ -73,13 +69,9 @@ object Accumulation extends ProcessingMethodCompanion {
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-//             case _:HeatLineChartConfig      => 1.0
             case _:BarChartConfig           => 0.8
-//             case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.2
-//             case _:ScatterColorChartConfig  => 0.2
-//             case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.0
             //default
             case _                          => 0.5
@@ -92,49 +84,30 @@ object Accumulation extends ProcessingMethodCompanion {
 
 
 /**
-  *  Accumulator
+  *  Timeframe Selection
   *
   *  @author Jens Wöhrle
-  */
-case class Accumulation(idMapping: Map[Identifier, Identifier])
+  *  @param from Timestamp from which day
+  *  @param to Timestamp until which day
+  *
+  *
+  */ //groupby() bei Listen :-)
+case class TimeSelection(from: Timestamp, to: Timestamp, idMapping: Map[Identifier, Identifier])
     extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
-    def companion: ProcessingMethodCompanion = Accumulation
+    def companion: ProcessingMethodCompanion = TimeSelection
 
     /**
       *  Creates a new dataset with ID as specified in idMapping.
-      *  Inserts interpolated values along the original ones into
-      *  this new dataset and adds tags to identify interpolated
-      *  and original values.
+      *  Creates new Dataset reduced to its time frame, defined in the arguments
       *
       *  @param data Data to interpolate
       *  @return One element Set containing the new dataset
       */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
-
-        /**
-          * Interpolation function.
-          * For each combination of two points it creates the linear
-          * equation paramters m (slope) and b (offset).
-          * It the generates the appropriate number of intermediary points
-          * with the corresponding values and tags and inserts them into
-          * the list of datapoints.
-          *
-          * @param list of datapoints
-          * @return list of datapoints with interpolated values and Tnterpolation-tags
-          */
-        def akkumulated: List[TaggedDataPoint] => List[TaggedDataPoint] = {
-            case d1@TaggedDataPoint(t1, v1, tags1) :: (d2@TaggedDataPoint(t2, v2, tags2) :: ds) =>
-                TaggedDataPoint(t1, v1, tags1 + Accumulated) :: akkumulated( TaggedDataPoint(t2, v1.value + v2.value, tags2 + Accumulated) :: ds )
-
-            case otherwise => otherwise
-        }
-
-        val orderedDataPoints = data.dataPoints.sortBy(d => timestamp2Long(d.timestamp))
-
+        val l = data.dataPoints.filter(  { dt: TaggedDataPoint => dt.timestamp <= to && from <= dt.timestamp } )
         val newID = idMapping(data.id)
-
-        Set(data.copy(id = newID, dataPoints = akkumulated(orderedDataPoints)))
+        Set( ProcessedData(newID, l))
     }
 }

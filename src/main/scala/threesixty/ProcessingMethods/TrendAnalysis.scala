@@ -1,4 +1,4 @@
-package threesixty.algorithms
+package threesixty.ProcessingMethods
 
 object TrendAnalysis {
 

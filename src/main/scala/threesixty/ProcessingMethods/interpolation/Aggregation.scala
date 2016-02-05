@@ -1,4 +1,4 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
@@ -6,7 +6,7 @@ import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags._
 import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
-import threesixty.algorithms.statistics.StatisticalAnalysis
+import threesixty.ProcessingMethods.statistics.StatisticalAnalysis
 
 import spray.json._
 import DefaultJsonProtocol._
