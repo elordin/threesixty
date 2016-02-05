@@ -87,14 +87,9 @@ abstract class VisualizationConfig(
     def colorScheme: Option[ColorScheme] = ColorScheme.getColorScheme(_colorScheme.getOrElse("default"))
 
     /**
-     * @return the default horizontal offset of the title
-     */
-    def titleHorizontalOffsetDefault: Int = 20
-
-    /**
      * @return the default vertical offset of the title
      */
-    def titleVerticalOffsetDefault: Int = 0
+    def titleVerticalOffsetDefault: Int = 20
 
     /**
       * @return the default font size of the title

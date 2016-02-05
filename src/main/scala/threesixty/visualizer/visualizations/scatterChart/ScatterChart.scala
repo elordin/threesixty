@@ -37,7 +37,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                 "    title:                     String      (optional) - Diagram title\n" +
                 "    titleVerticalOffset:       Int         (optional) - The vertical offset of the title\n" +
                 "    titleFontSize:             Int         (optional) - The font size of the title\n" +
-                "    xLabel:                    String      (optional) - The label for the x-axis\n" +
+                "    xlabel:                    String      (optional) - The label for the x-axis\n" +
                 "    ylabel:                    String      (optional) - The label for the y-axis\n" +
                 "    minDistanceX:              Int         (optional) - The minimum number of px between two grid points on the x-axis\n" +
                 "    minDistanceY:              Int         (optional) - The minimum number of px between two grid points on the y-axis\n" +
@@ -67,7 +67,7 @@ object ScatterChartConfig extends VisualizationCompanion {
             "border",
             "colorScheme",
             "title", "titleVerticalOffset", "titleFontSize",
-            "xLabel", "yLabel", "minDistanceX", "minDistanceY",
+            "xlabel", "ylabel", "minDistanceX", "minDistanceY",
             "fontSize", "fontFamily",
             "xMin", "xMax", "yMin", "yMax",
             "xUnit", "yUnit",

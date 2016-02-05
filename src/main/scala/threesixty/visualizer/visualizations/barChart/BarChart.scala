@@ -38,7 +38,7 @@ object BarChartConfig extends VisualizationCompanion {
                 "    title:                     String      (optional) - Diagram title\n" +
                 "    titleVerticalOffset:       Int         (optional) - The vertical offset of the title\n" +
                 "    titleFontSize:             Int         (optional) - The font size of the title\n" +
-                "    xLabel:                    String      (optional) - The label for the x-axis\n" +
+                "    xlabel:                    String      (optional) - The label for the x-axis\n" +
                 "    ylabel:                    String      (optional) - The label for the y-axis\n" +
                 "    minDistanceY:              Int         (optional) - The minimum number of px between two grid points on the y-axis\n" +
                 "    fontSize:                  Int         (optional) - The font size\n" +
@@ -65,7 +65,7 @@ object BarChartConfig extends VisualizationCompanion {
             "border",
             "colorScheme",
             "title", "titleVerticalOffset", "titleFontSize",
-            "xLabel", "yLabel", "minDistanceY",
+            "xlabel", "ylabel", "minDistanceY",
             "fontSize", "fontFamily",
             "yMin", "yMax", "yUnit",
             "widthBar", "distanceBetweenBars", "showValues")

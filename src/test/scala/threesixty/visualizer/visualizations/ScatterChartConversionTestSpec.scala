@@ -2,6 +2,9 @@ package threesixty.visualizer.visualizations
 
 import org.scalatest.FunSpec
 import threesixty.data.Data.Timestamp
+import threesixty.visualizer.util.{GreenColorScheme, Border}
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
+import threesixty.visualizer.visualizations.pieChart.PieChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
 
@@ -12,49 +15,50 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "xMin": 20,
-                "xMax": 500,
-                "yMin": 10.0,
-                "yMax": 123.456,
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
+                "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
+                "colorScheme": "green",
                 "title": "Title",
-                "borderTop": 100,
-                "borderBottom": 50,
-                "borderLeft": 50,
-                "borderRight": 50,
-                "distanceTitle": 15,
-                "minDistanceX": 50,
-                "minDistanceY": 50,
-                "xUnit": 100.0,
-                "yUnit": 10.0,
-                "fontSizeTitle": 40,
-                "fontSize": 20
+                "titleVerticalOffset": 50,
+                "titleFontSize": 18,
+                "xlabel": "X-Label",
+                "ylabel": "Y-Label",
+                "minDistanceX": 30,
+                "minDistanceY": 40,
+                "fontSize": 10,
+                "fontFamily": "FontFamily",
+                "xMin": -20.4,
+                "xMax": 30,
+                "yMin": -10,
+                "yMax": 50.5,
+                "xUnit": 25,
+                "yUnit": 20.5,
+                "radius": 4
             }"""
 
+
         it("should have all values set correctly") {
-            val expectedResult = new ScatterChartConfig(
+            val expectedResult = ScatterChartConfig(
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMin = Some(20),
-                optXMax = Some(500),
-                optYMin = Some(10.0),
-                optYMax = Some(123.456),
-                _xLabel = Some("X-Axis"),
-                _yLabel = Some("Y-Axis"),
+                _border = Some(Border(200,100,150,25)),
+                _colorScheme = Some("green"),
                 _title = Some("Title"),
-                _borderTop = Some(100),
-                _borderBottom = Some(50),
-                _borderLeft = Some(50),
-                _borderRight = Some(50),
-                _distanceTitle = Some(15),
-                _minDistanceX = Some(50),
-                _minDistanceY = Some(50),
-                optUnitX = Some(10),
-                optUnitY = Some(10.0),
-                _fontSizeTitle = Some(40),
-                _fontSize = Some(20)
+                _titleVerticalOffset = Some(50),
+                _titleFontSize = Some(18),
+                _xLabel = Some("X-Label"),
+                _yLabel = Some("Y-Label"),
+                _minPxBetweenXGridPoints = Some(30),
+                _minPxBetweenYGridPoints = Some(40),
+                _fontSize = Some(10),
+                _fontFamily = Some("FontFamily"),
+                _xMin = Some(-20.4),
+                _xMax = Some(30),
+                _yMin = Some(-10),
+                _yMax = Some(50.5),
+                _xUnit = Some(25),
+                _yUnit = Some(20.5),
+                _radius = Some(4)
             )
             assertResult(expectedResult) {
                 ScatterChartConfig(jsonString)
@@ -67,48 +71,43 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "xMax": 500,
-                "yMin": 10.0,
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "title": "Title",
-                "borderTop": 100,
-                "borderBottom": 50,
-                "borderLeft": 50,
-                "distanceTitle": 15,
-                "minDistanceY": 50,
-                "yUnit": 10.0,
-                "fontSizeTitle": 40,
-                "fontSize": 20
+                "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
+                "colorScheme": "green",
+                "xlabel": "X-Label",
+                "minDistanceX": 30,
+                "fontFamily": "FontFamily",
+                "xMax": 30,
+                "yMin": -10,
+                "yUnit": 20.5
             }"""
 
         it("should have the default values where none were given") {
             val convertedConfig = ScatterChartConfig(jsonString)
-            assert(convertedConfig.optXMin == None)
-            assert(convertedConfig.optYMax == None)
-            assert(convertedConfig.borderRight == 50)
-            assert(convertedConfig.minDistanceX == 20)
-            assert(convertedConfig.optUnitX == None)
+            assert(convertedConfig.title == "")
+            assert(convertedConfig.titleVerticalOffset == 20)
+            assert(convertedConfig.titleFontSize == 20)
+            assert(convertedConfig.yLabel == "")
+            assert(convertedConfig.fontSize == 12)
+            assert(convertedConfig.minPxBetweenYGridPoints == 20)
+            assert(convertedConfig._xMin == None)
+            assert(convertedConfig._yMax == None)
+            assert(convertedConfig._xUnit == None)
+            assert(convertedConfig.radius == 2)
         }
 
         it("should have all values set correctly") {
-            val expectedResult = new ScatterChartConfig(
+            val expectedResult = ScatterChartConfig(
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                optXMax = Some(500),
-                optYMin = Some(10.0),
-                _xLabel = Some("X-Axis"),
-                _yLabel = Some("Y-Axis"),
-                _title = Some("Title"),
-                _borderTop = Some(100),
-                _borderBottom = Some(50),
-                _borderLeft = Some(50),
-                _distanceTitle = Some(15),
-                _minDistanceY = Some(50),
-                optUnitY = Some(10.0),
-                _fontSizeTitle = Some(40),
-                _fontSize = Some(20)
+                _border = Some(Border(200,100,150,25)),
+                _colorScheme = Some("green"),
+                _xLabel = Some("X-Label"),
+                _minPxBetweenXGridPoints = Some(30),
+                _fontFamily = Some("FontFamily"),
+                _xMax = Some(30),
+                _yMin = Some(-10),
+                _yUnit = Some(20.5)
             )
             assertResult(expectedResult) {
                 ScatterChartConfig(jsonString)
