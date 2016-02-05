@@ -17,6 +17,15 @@ object      Original                                    extends InterpolationTag
     override def toString(): String = "original"
 }
 
+
+trait ClusteringTag                                     extends Tag
+object NoiseTag                                         extends ClusteringTag {
+    override def toString(): String = "noise"
+}
+case class ClusterTag(id: Int)                          extends ClusteringTag {
+    override def toString(): String = "cluster-" + id
+}
+
 /**
  *  Describes the origin of data, either a single set of InputData, multiple
  *  sets or entirely artificially created.
@@ -33,9 +42,9 @@ object      ArtificialOrigin                            extends OriginTag {
 }
 
 /**
- * Describes the name of the aggregation
+ *  Describes the name of the aggregation
  *
- * @param name name of the aggregated data
+ *  @param name name of the aggregated data
  */
 case class AggregationTag(val name: String)             extends Tag {
     override def toString() = name
@@ -49,3 +58,5 @@ object      Accumulated                                 extends ChangedDataTag {
 object      TimeAggregated                              extends ChangedDataTag {
     override def toString(): String = "timeaggregated"
 }
+
+

@@ -64,6 +64,8 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
+    def default(ids: Seq[Identifier], width: Int, height: Int) =
+        LineChartConfig(ids,height,width)
 
     /**
      *  Public constructor that parses JSON into a LineChartConfig

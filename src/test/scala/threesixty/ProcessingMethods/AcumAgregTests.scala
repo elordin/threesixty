@@ -1,8 +1,9 @@
-package threesixty.algorithms
+package threesixty.ProcessingMethods
 
 import org.scalatest.FunSpec
+import threesixty.ProcessingMethods.Accumulation.Accumulation
 
-import threesixty.algorithms.interpolation.{Accumulation, LinearInterpolation}
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Timestamp
 import threesixty.data.tags.{Accumulated, Tag, Original, Interpolated}
@@ -12,11 +13,11 @@ import threesixty.data.tags.{Accumulated, Tag, Original, Interpolated}
 class AcumAgregSpec extends FunSpec {
 
     describe("Accumulation") {
-        val interpolator = Accumulation(Map("SomeID" -> "SomeID"))
+        val interpolator = new Accumulation(Map("SomeID" -> "SomeID"))
 
 
         describe("easy case") {
-            val interpolator = Accumulation(Map("SomeID" -> "SomeID"))
+            val interpolator = new Accumulation(Map("SomeID" -> "SomeID"))
 
             describe("from (0,0) to (3, 3)") {
                 val sampleData = new ProcessedData("SomeID", List(

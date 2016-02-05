@@ -53,6 +53,8 @@ object ScatterChartConfig extends VisualizationCompanion {
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
+
+  def default(ids: Seq[Identifier], height: Int, width: Int) = ScatterChartConfig(ids, height, width)
     /**
      *  Public constructor that parses JSON into a configuration
      *  @param jsonString representation of the config

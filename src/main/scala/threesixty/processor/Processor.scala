@@ -1,6 +1,6 @@
 package threesixty.processor
 
-import threesixty.algorithms.interpolation.Aggregation
+import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.engine.UsageInfo
 import threesixty.data.{InputData, ProcessedData}
 import threesixty.data.Data.Identifier

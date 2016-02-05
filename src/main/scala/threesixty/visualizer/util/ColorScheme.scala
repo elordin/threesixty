@@ -74,21 +74,92 @@ object BlueColorScheme    extends ColorScheme {
     )
 }
 
-// object RedColorScheme       extends ColorScheme {
-//     override val colors = Seq(...)
-// }
-// object GreenColorScheme     extends ColorScheme {
-//     override val colors = Seq(...)
-// }
-// object YellowColorScheme    extends ColorScheme {
-//     override val colors = Seq(...)
-// }
-// object OrangeColorScheme    extends ColorScheme {
-//     override val colors = Seq(...)
-// }
-// object PurpleColorScheme    extends ColorScheme {
-//     override val colors = Seq(...)
-// }
-// object PinkColorScheme      extends ColorScheme {
-//     override val colors = Seq(...)
-// }
+object RedColorScheme       extends ColorScheme {
+    def colors = Seq(
+        RGBColor(0xFFEBEE),
+        RGBColor(0xFFCDD2),
+        RGBColor(0xEF9A9A),
+        RGBColor(0xE57373),
+        RGBColor(0xEF5350),
+        RGBColor(0xF44336),
+        RGBColor(0xE53935),
+        RGBColor(0xD32F2F),
+        RGBColor(0xC62828),
+        RGBColor(0xB71C1C)
+    )
+}
+
+object GreenColorScheme     extends ColorScheme {
+    def colors = Seq(
+        RGBColor(0xE8F5E9),
+        RGBColor(0xC8E6C9),
+        RGBColor(0xA5D6A7),
+        RGBColor(0x81C784),
+        RGBColor(0x66BB6A),
+        RGBColor(0x4CAF50),
+        RGBColor(0x43A047),
+        RGBColor(0x388E3C),
+        RGBColor(0x2E7D32),
+        RGBColor(0x1B5E20)
+    )
+}
+
+object YellowColorScheme    extends ColorScheme {
+    def colors = Seq(
+        RGBColor(0xFFFDE7),
+        RGBColor(0xFFF9C4),
+        RGBColor(0xFFF59D),
+        RGBColor(0xFFF176),
+        RGBColor(0xFFEE58),
+        RGBColor(0xFFEB3B),
+        RGBColor(0xFDD835),
+        RGBColor(0xFBC02D),
+        RGBColor(0xF9A825),
+        RGBColor(0xF57F17)
+    )
+}
+
+object OrangeColorScheme    extends ColorScheme {
+    def colors = Seq(
+        RGBColor(0xFFF3E0),
+        RGBColor(0xFFE0B2),
+        RGBColor(0xFFCC80),
+        RGBColor(0xFFB74D),
+        RGBColor(0xFFA726),
+        RGBColor(0xFF9800),
+        RGBColor(0xFB8C00),
+        RGBColor(0xF57C00),
+        RGBColor(0xEF6C00),
+        RGBColor(0xE65100)
+    )
+}
+
+object PurpleColorScheme    extends ColorScheme {
+    def colors = Seq(
+        RGBColor(0xF3E5F5),
+        RGBColor(0xE1BEE7),
+        RGBColor(0xCE93D8),
+        RGBColor(0xBA68C8),
+        RGBColor(0xAB47BC),
+        RGBColor(0x9C27B0),
+        RGBColor(0x8E24AA),
+        RGBColor(0x7B1FA2),
+        RGBColor(0x6A1B9A),
+        RGBColor(0x4A148C)
+    )
+}
+
+object PinkColorScheme      extends ColorScheme {
+    def colors = Seq(
+        RGBColor(0xFCE4EC),
+        RGBColor(0xF8BBD0),
+        RGBColor(0xF48FB1),
+        RGBColor(0xF06292),
+        RGBColor(0xEC407A),
+        RGBColor(0xE91E63),
+        RGBColor(0xD81B60),
+        RGBColor(0xC2185B),
+        RGBColor(0xAD1457),
+        RGBColor(0x880E4F)
+    )
+}

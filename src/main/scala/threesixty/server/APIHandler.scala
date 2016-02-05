@@ -1,13 +1,13 @@
 package threesixty.server
 
 import threesixty.persistence.cassandra.CassandraAdapter
+import threesixty.ProcessingMethods.Accumulation.Accumulation
+import threesixty.ProcessingMethods.Aggregation.Aggregation
+import threesixty.ProcessingMethods.TimeSelection.TimeSelection
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
-import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
-import threesixty.data.Data.Identifier
-import threesixty.data.InputData
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.visualizer.visualizations._
 
 import akka.actor.{Actor, Props}

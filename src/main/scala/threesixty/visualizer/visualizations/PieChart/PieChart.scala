@@ -50,6 +50,9 @@ object PieChartConfig extends VisualizationCompanion {
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
+
+    def default(ids: Seq[Identifier], height: Int, width: Int) = PieChartConfig(ids, height, width)
+
     /**
       *  Public constructor that parses JSON into a PieChartConfig
       *  @param jsonString representation of the config
@@ -65,8 +68,7 @@ object PieChartConfig extends VisualizationCompanion {
 
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
-            requiredProcessingMethods = None, //TODO Aggregation
-            requiredGoal = None //TODO NoGoal
+            requiredProcessingMethods = None //TODO Aggregation
         )))
 
 

@@ -1,14 +1,13 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.Accumulation
 
-import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
-import threesixty.data.Data.{Identifier, Timestamp}
-import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags.{Accumulated, Tag, Interpolated, Original}
-import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
-
+import spray.json.DefaultJsonProtocol._
 import spray.json._
-import DefaultJsonProtocol._
+import threesixty.data.Data.Identifier
+import threesixty.data.Implicits.timestamp2Long
+import threesixty.data.metadata.{Resolution, Scaling}
+import threesixty.data.tags.Accumulated
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
 // import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig

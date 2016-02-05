@@ -1,4 +1,4 @@
-package threesixty.algorithms.statistics
+package threesixty.ProcessingMethods.statistics
 
 import org.scalatest._
 import threesixty.data.{ProcessedData, TaggedDataPoint}

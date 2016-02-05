@@ -1,4 +1,4 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}

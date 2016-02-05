@@ -1,6 +1,6 @@
 package threesixty.processor
 
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 
 import org.scalatest.FunSpec
 
