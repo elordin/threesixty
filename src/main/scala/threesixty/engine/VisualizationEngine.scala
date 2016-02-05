@@ -111,7 +111,7 @@ VISUALIZATION
             result
         } catch {
             case e:JsonParser.ParsingException  => ErrorResponse(Engine.toErrorJson("Invalid JSON"))
-            case e:NoSuchElementException       => ErrorResponse(Engine.toErrorJson("type parameter missing"))
+            case e:NoSuchElementException       => ErrorResponse(Engine.toErrorJson(e.getMessage))
         }
     }
 
