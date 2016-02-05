@@ -205,7 +205,7 @@ case class TimeScalingYears10() extends TimeScalingYears("years10", 10)
 trait Scale[T] {
     def format(value: T): String
     def nextBreakpoint(value: T): T
-    def apply(value: T): Int
+    def apply(value: T): Long
 }
 
 object TimeScale {
@@ -293,7 +293,7 @@ case class TimeScale(inMin: Long, inMax: Long, outMin: Int, outMax: Int, unit: T
         case YEARS => "" // TODO
     }
     def nextBreakpoint(t: Long): Long = t - (t % step) + step
-    def apply(t: Long): Int = (((t - inMin).toDouble / (inMax - inMin).toDouble) * (outMax - outMin)).toInt
+    def apply(t: Long): Long = (((t - inMin).toDouble / (inMax - inMin).toDouble) * (outMax - outMin)).toLong
 }
 
 object ValueScale {
@@ -310,5 +310,5 @@ object ValueScale {
 case class ValueScale(inMin: Double, inMax: Double, outMin: Int, outMax: Int, step: Double) extends Scale[Double] {
     def format(v: Double): String = v.toString
     def nextBreakpoint(v: Double): Double = v - (v % step) + step
-    def apply(v: Double): Int = ((v - inMin) / (inMax - inMin) * (outMax - outMin)).toInt
+    def apply(v: Double): Long = ((v - inMin) / (inMax - inMin) * (outMax - outMin)).toLong
 }

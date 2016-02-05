@@ -112,7 +112,7 @@ object BarChartConfig extends VisualizationCompanion {
                 if (v > yScale.inMax) {
                     init
                 } else {
-                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v))))
+                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v).toInt)))
                 }
             }
             construct(yScale.nextBreakpoint(yScale.inMin), Seq())
@@ -184,8 +184,8 @@ object BarChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    1,
-                    yScale(yScale.step)))
+                    math.abs(config.chartWidth),
+                    math.abs(yScale(yScale.step).toInt)))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,

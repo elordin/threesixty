@@ -128,7 +128,7 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                 if (t > xScale.inMax) {
                     init
                 } else {
-                    construct(xScale.nextBreakpoint(t), init ++ Seq((xScale.format(t), xScale(t))))
+                    construct(xScale.nextBreakpoint(t), init ++ Seq((xScale.format(t), xScale(t).toInt)))
                 }
             }
             construct(xScale.nextBreakpoint(xScale.inMin), Seq())
@@ -140,7 +140,7 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                 if (v > yScale.inMax) {
                     init
                 } else {
-                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v))))
+                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v).toInt)))
                 }
             }
             construct(yScale.nextBreakpoint(yScale.inMin), Seq())
@@ -191,10 +191,10 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    xScale(xScale.step),
-                    yScale(yScale.step),
-                    xOffset = xScale(xScale.nextBreakpoint(dataMinX)),
-                    yOffset = yScale(yScale.nextBreakpoint(dataMinY))))
+                    math.abs(xScale(xScale.step).toInt),
+                    math.abs(yScale(yScale.step).toInt),
+                    xOffset = xScale(xScale.nextBreakpoint(dataMinX)).toInt,
+                    yOffset = yScale(yScale.nextBreakpoint(dataMinY)).toInt))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,

@@ -87,14 +87,7 @@ object ScatterChartConfig extends VisualizationCompanion {
         // Nested Loop Join // Sort Merge ? // Hash Join ?
         val joinedDatasets: Seq[List[(TaggedDataPoint, TaggedDataPoint)]] =
             data.tail.map {
-                dataset => data.head.dataPoints.flatMap {
-                    dp1: TaggedDataPoint => dataset.dataPoints.map {
-                        dp2: TaggedDataPoint => (dp1, dp2)
-                    }
-                } filter {
-                    case (dp1: TaggedDataPoint, dp2: TaggedDataPoint) =>
-                      dp1.timestamp.getTime == dp2.timestamp.getTime
-                }
+                dataset => data.head.equiJoin(dataset, _.timestamp.getTime)
             }
 
 
@@ -128,7 +121,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                 if (v > xScale.inMax) {
                     init
                 } else {
-                    construct(xScale.nextBreakpoint(v), init ++ Seq((xScale.format(v), xScale(v))))
+                    construct(xScale.nextBreakpoint(v), init ++ Seq((xScale.format(v), xScale(v).toInt)))
                 }
             }
             construct(xScale.nextBreakpoint(xScale.inMin), Seq())
@@ -140,7 +133,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                 if (v > yScale.inMax) {
                     init
                 } else {
-                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v))))
+                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v).toInt)))
                 }
             }
             construct(yScale.nextBreakpoint(yScale.inMin), Seq())
@@ -182,10 +175,10 @@ object ScatterChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    xScale(xScale.step),
-                    yScale(yScale.step),
-                    xOffset = xScale(xScale.nextBreakpoint(dataMinX)),
-                    yOffset = yScale(yScale.nextBreakpoint(dataMinY))
+                    math.abs(xScale(xScale.step).toInt),
+                    math.abs(yScale(yScale.step).toInt),
+                    xOffset = xScale(xScale.nextBreakpoint(dataMinX)).toInt,
+                    yOffset = yScale(yScale.nextBreakpoint(dataMinY)).toInt
                     ))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
