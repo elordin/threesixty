@@ -4,7 +4,7 @@ import threesixty.data.{InputData, DataPool}
 import threesixty.data.metadata.Resolution.Resolution
 import threesixty.data.metadata.Scaling.Scaling
 import threesixty.goals.Goal
-import threesixty.processor.{ProcessingStep, ProcessingMethod}
+import threesixty.processor.{ProcessingStrategy, ProcessingStep, ProcessingMethod}
 
 /**
  * This class contains the input data requirements for a visualization type.
@@ -70,6 +70,20 @@ case class DataRequirement(val resolution: Option[Resolution] = None,
 
             matchResolution && matchScaling && procNotExcluded && goal
         }
+    }
+
+    /**
+      * Returns ProcessingSteps, that are required but not yet part of the ProcessingStrategy */
+    def missingMethods(strategy: ProcessingStrategy) : Option[List[ProcessingMethod]] = {
+       if (strategy == null){
+           requiredProcessingMethods
+       }
+        else {
+        requiredProcessingMethods match {
+           case Some(reqList) => Some(reqList.diff(strategy.steps).toList)
+           case None => None
+         }
+       }
     }
 
 

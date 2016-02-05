@@ -2,7 +2,7 @@ package threesixty.processor
 
 import org.scalatest.FunSpec
 import threesixty.algorithms.Clustering
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
 import threesixty.data.Data._
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
@@ -173,6 +173,57 @@ class ProcessingStrategyDeductionTest extends FunSpec{
     }
 
   }
+  /* //TODO
+   this test has to be adapted, as soon as someone has changed parameter in computeDegreeOfFit for any of the methods*/
+  describe("deduce best-possible ProcessingStrategy"){
+    it("should do this for no given Vis"){
+      val inputdataSet= Set(inputData)
+      val processor = new Processor         with LinearInterpolation.Mixin
+        with Aggregation.Mixin
+        with Accumulation.Mixin
+        with TimeSelection.Mixin
 
+      val deducedProcessingStrategy0 = processor.deduce(inputdataSet).steps.map(_.method.companion).head
+      val dedicatedProcessingStrategy0 = LinearInterpolation
+
+      assert(deducedProcessingStrategy0 equals dedicatedProcessingStrategy0)
+
+      val processor1 = new Processor with Accumulation.Mixin
+        with Aggregation.Mixin
+        with LinearInterpolation.Mixin
+        with TimeSelection.Mixin
+      val dedicatedProcessingStrategy1 = Accumulation
+      val deducedProcessingStreategy1 = processor1.deduce(inputdataSet).steps.map(_.method.companion).head
+
+      assert(dedicatedProcessingStrategy1 equals deducedProcessingStreategy1)
+
+    }
+
+    it("should do this for a given Vis"){
+      val inputdataSet= Set(inputData)
+      val processor = new Processor         with LinearInterpolation.Mixin
+        with Aggregation.Mixin
+        with Accumulation.Mixin
+        with TimeSelection.Mixin
+
+      val deducedProcessingStrategy0 = processor.deduce(inputdataSet).steps.map(_.method.companion).head
+      val dedicatedProcessingStrategy0 = LinearInterpolation
+
+      assert(deducedProcessingStrategy0 equals dedicatedProcessingStrategy0)
+
+      val LinValue = LinearInterpolation.computeDegreeOfFit(inputData,lineChart)
+      val aggValue = Aggregation.computeDegreeOfFit(inputData,lineChart)
+      val accValue = Accumulation.computeDegreeOfFit(inputData,lineChart)
+      val tiSelValue = TimeSelection.computeDegreeOfFit(inputData, lineChart)
+      println("LinValue: " + LinValue)
+      println("aggValue: " + aggValue)
+      println("accValue: " + accValue)
+      println("tiSelValue: " + tiSelValue)
+
+
+
+
+    }
+  }
 }
 
