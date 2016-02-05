@@ -2,7 +2,7 @@ package threesixty.ProcessingMethods
 
 import org.scalatest._
 
-import Clustering._
+import threesixty.ProcessingMethods.clustering.Clustering._
 
 
 class DBSCANSpec extends FlatSpec {

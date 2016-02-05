@@ -22,7 +22,17 @@ class TimeframeTestSpec extends FlatSpec{
             DataPoint(min, 1),
             DataPoint(new Timestamp(600), 2),
             DataPoint(max, 3))
-        val inputdata = InputData("Data1", "", datapoints, null)
+
+        val metadata = CompleteInputMetadata(
+            Timeframe(new Timestamp(0), new Timestamp(1)),
+            Reliability.Unknown,
+            Resolution.Low,
+            Scaling.Ordinal,
+            ActivityType("something"),
+            3
+        )
+
+        val inputdata = InputData("Data1", "", datapoints, metadata)
 
         val timeframe = Timeframe.deduceInputData(inputdata.dataPoints)
 
@@ -38,10 +48,20 @@ class TimeframeTestSpec extends FlatSpec{
         val datapoints2 = List(DataPoint(new Timestamp(500), 1), DataPoint(new Timestamp(1000), 2))
         val datapoints3 = List(DataPoint(new Timestamp(900), 1), DataPoint(max, 2))
 
+        val metadata = CompleteInputMetadata(
+            Timeframe(new Timestamp(0), new Timestamp(1)),
+            Reliability.Unknown,
+            Resolution.Low,
+            Scaling.Ordinal,
+            ActivityType("something"),
+            2
+        )
+
+
         val inputdata = List(
-            InputData("Data1", "", datapoints1, null),
-            InputData("Data2", "", datapoints2, null),
-            InputData("Data3", "", datapoints3, null))
+            InputData("Data1", "", datapoints1, metadata),
+            InputData("Data2", "", datapoints2, metadata),
+            InputData("Data3", "", datapoints3, metadata))
 
         val timeframe = Timeframe.deduceInputData(inputdata)
 

@@ -22,6 +22,8 @@ case class DataRequirement(
     val excludedProcessingMethods: Option[List[ProcessingMethod]] = None
 ) {
 
+    // def missingMethods(data: InputData, procStrat: ProcessingStrategy): Set[ProcessingMethod]
+
     /**
       *  Method to determine if the input data fulfills the requirement
       *

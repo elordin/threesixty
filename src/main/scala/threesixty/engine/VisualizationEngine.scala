@@ -134,7 +134,7 @@ VISUALIZATION
     def processDataInsertRequest(json: JsObject): EngineResponse = {
         try {
             val data = json.fields("data").convertTo[UnsafeInputData]
-            dbAdapter.appendOrInsertData(data) match {
+            dbAdapter.insertData(data) match {
                 case Right(id) => SuccessResponse(JsObject(Map[String, JsValue](
                         "type" -> JsString("success"),
                         "id" -> JsString(id)

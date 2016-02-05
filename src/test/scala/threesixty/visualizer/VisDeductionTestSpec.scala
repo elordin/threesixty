@@ -44,10 +44,10 @@ class VisDeductionTestSpec extends  FunSpec {
   val resolution = Resolution.High
   val reliability = Reliability.Device
   val scaling = Scaling.Ordinal
-  val inputMetadata = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
+  val inputMetadata = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, dataPoints.length)
 
   val inputDataSet0 = InputData(identifier.toString, measurement, dataPoints, inputMetadata)
-  val inputDataSet1 = InputData(identifier1.toString, measurement, dataPoints ++ List(fifththDataPoint), inputMetadata)
+  val inputDataSet1 = InputData(identifier1.toString, measurement, dataPoints ++ List(fifththDataPoint), inputMetadata.copy(size = dataPoints.length + 1))
 
   //creating example Visualizations
   val lineChart = LineChartConfig(

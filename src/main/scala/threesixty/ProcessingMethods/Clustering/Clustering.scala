@@ -150,7 +150,7 @@ object Clustering extends ProcessingMethodCompanion {
 
 
 case class Clustering(idMapping: Map[Identifier, Identifier], minPts: Int, epsilon: Double)
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
     import Clustering._
 
     def companion = Clustering

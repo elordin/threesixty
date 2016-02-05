@@ -55,6 +55,22 @@ case class InputData(
 	val metadata: CompleteInputMetadata
 ) extends InputDataLike {
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")
+	require(dataPoints.size == metadata.size, "Metadata incompatible with data points.")
+
+    implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
+        def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
+    }
+
+    def addNewDataPoints(newDataPoints: List[DataPoint]): InputData = {
+        val pointsToAdd = newDataPoints.diff(this.dataPoints)
+        val newSize = this.dataPoints.length + pointsToAdd.length
+        val newStart = (this.dataPoints ++ pointsToAdd).minBy(_.timestamp).timestamp
+        val newEnd = (this.dataPoints ++ pointsToAdd).maxBy(_.timestamp).timestamp
+
+        this.copy(dataPoints = (this.dataPoints ++ pointsToAdd).sortBy(_.timestamp),
+            metadata = this.metadata.copy(size = newSize,
+                timeframe = this.metadata.timeframe.copy(start = newStart, end = newEnd)))
+    }
 }
 
 

@@ -62,7 +62,6 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                 "    fontSizeTitle      Int       (optional) - Font size of the title\n" +
                 "    fontSize           Int       (optional) - Font size of labels\n"
 
-
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
     def default(ids: Seq[Identifier], width: Int, height: Int) =
@@ -193,7 +192,7 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                     config.chartWidth,
                     config.chartHeight,
                     xScale(xScale.step),
-                    xScale(xScale.step),
+                    yScale(yScale.step),
                     xOffset = xScale(xScale.nextBreakpoint(dataMinX)),
                     yOffset = yScale(yScale.nextBreakpoint(dataMinY))))
                 .withAxis(HorizontalAxis(

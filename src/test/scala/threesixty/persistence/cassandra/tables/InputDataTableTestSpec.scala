@@ -22,7 +22,12 @@ class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
     override def beforeAll(): Unit = {
         super.beforeAll()
-        Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
+        Await.result(CassandraAdapter.autocreate.future(), Duration.Inf)
+    }
+
+    override def afterAll(): Unit = {
+        super.afterAll()
+        Await.result(CassandraAdapter.autotruncate().future(), Duration.Inf)
     }
 
     describe("Inserting an input data set") {
@@ -43,7 +48,8 @@ class InputDataTableTestSpec extends FunSpec with Matchers with ScalaFutures
             val resolution = Resolution.High
             val reliability = Reliability.Device
             val scaling = Scaling.Ordinal
-            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
+            val size = dataPoints.length
+            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
 
             val inputDataSet = InputData(identifier.toString, measurement, dataPoints, inputMetadta)
 

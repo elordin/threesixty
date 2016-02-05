@@ -21,7 +21,12 @@ class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
     override def beforeAll(): Unit = {
         super.beforeAll()
-        Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
+        Await.result(CassandraAdapter.autocreate.future(), Duration.Inf)
+    }
+
+    override def afterAll(): Unit = {
+        super.afterAll()
+        Await.result(CassandraAdapter.autotruncate().future(), Duration.Inf)
     }
 
     describe("Asking for data points with a specific inputDataId") {

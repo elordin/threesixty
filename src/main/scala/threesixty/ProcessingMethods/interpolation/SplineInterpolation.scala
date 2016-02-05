@@ -95,7 +95,7 @@ object SplineInterpolation extends ProcessingMethodCompanion {
   *  @author Jens Woehrle
   */
 case class SplineInterpolation(idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
     def companion: ProcessingMethodCompanion = SplineInterpolation
 

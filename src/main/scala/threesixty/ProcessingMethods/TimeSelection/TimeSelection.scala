@@ -90,7 +90,7 @@ object TimeSelection extends ProcessingMethodCompanion {
   *
   */ //groupby() bei Listen :-)
 case class TimeSelection(from: Timestamp, to: Timestamp, idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
     def companion: ProcessingMethodCompanion = TimeSelection
 
