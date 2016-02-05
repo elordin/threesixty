@@ -93,15 +93,14 @@ object PieChartConfig extends VisualizationCompanion {
       * @author Thomas Engel
      */
     case class PieChart(config: PieChartConfig, val data: ProcessedData*) extends Visualization(data: _*) {
-        //val displayData = data.headOption.getOrElse(null)
-        // TODO: for testing only!!!
+        val displayData = data.headOption.getOrElse(throw new IllegalArgumentException("There are no data to display."))
+        /*
         val displayData = new ProcessedData("aggregatedData", List(
             new TaggedDataPoint(new Timestamp(0), new DoubleValue(2), Set(new AggregationTag("Wert 1"))),
             new TaggedDataPoint(new Timestamp(0), new DoubleValue(10), Set(new AggregationTag("Wert 2"))),
             new TaggedDataPoint(new Timestamp(0), new DoubleValue(50), Set(new AggregationTag("Wert 3"))),
             new TaggedDataPoint(new Timestamp(0), new DoubleValue(20), Set(new AggregationTag("Wert 4")))))
-
-        require(displayData != null, "There are no data to display.")
+        */
 
         val radius = config._radius.getOrElse(calculateRadius)
         val innerRadiusPercent = config._innerRadiusPercent.getOrElse(0.0)
