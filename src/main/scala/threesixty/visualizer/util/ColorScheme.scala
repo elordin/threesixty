@@ -18,6 +18,24 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
     def toHexString: String = "#" + Integer.toHexString(red) + Integer.toHexString(green) + Integer.toHexString(blue)
 }
 
+object ColorScheme {
+    def getColorScheme(name: String): Option[ColorScheme] = {
+        val colorScheme = name.toLowerCase match {
+            case "none" => None
+            case "blue" => Some(BlueColorScheme)
+            case "red" => Some(RedColorScheme)
+            case "green" => Some(GreenColorScheme)
+            case "yellow" => Some(YellowColorScheme)
+            case "orange" => Some(OrangeColorScheme)
+            case "purple" => Some(PurpleColorScheme)
+            case "pink" => Some(PinkColorScheme)
+            case _ => Some(DefaultColorScheme)
+        }
+
+        colorScheme
+    }
+}
+
 /**
  *  __INFINITE__ (!) cyclic Iterator
  *

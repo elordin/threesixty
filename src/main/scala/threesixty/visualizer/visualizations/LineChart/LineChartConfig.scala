@@ -32,7 +32,7 @@ trait Mixin extends VisualizationMixins {
 /**
  *  The config class for a [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]].
  *
- *  @author Thomas Engel, Thomas Weber
+ *  @author Thomas {Engel, Weber}
  */
 object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
 
@@ -40,27 +40,28 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
 
     def usage = "LineChart\n" +
                 "  Parameters: \n" +
-                "    ids:               List[String]         - The data identifiers\n" +
-                "    height:            Int                  - Height of the diagram in px\n" +
-                "    width:             Int                  - Width of the diagram in px\n" +
-                "    xMin:              Timestamp (optional) - Minimum value of the x-axis\n" +
-                "    xMax:              Timestamp (optinmal) - Maximum value of the x-axis\n" +
-                "    yMin:              Double    (optional) - Minimum value of the y-axis\n" +
-                "    yMax:              Double    (optional) - Maximum value of the y-axis\n" +
-                "    xLabel:            String    (optional) - Label for the x-axis\n" +
-                "    yLabel:            String    (optional) - Label for the y-axis\n" +
-                "    title:             String    (optional) - Diagram title\n" +
-                "    borderTop:         Int       (optional) - Border to the top in px\n" +
-                "    borderBottom:      Int       (optional) - Border to the bottom in px\n" +
-                "    borderLeft:        Int       (optional) - Border to the left in px\n" +
-                "    borderRight:       Int       (optional) - Border to the right in px\n" +
-                "    distanceTitle      Int       (optional) - Distance between the title and the chart in px\n" +
-                "    minDistanceX       Int       (optional) - Minimum number of px between two control points on the x-axis\n" +
-                "    minDistanceY       Int       (optional) - Minimum number of px between two control points on the y-axis\n" +
-                "    xUnit              String    (optional) - Name of the desired unit on the x-axis\n" +
-                "    yUnit              Double    (optional) - Value of the desired unit on the y-axis\n" +
-                "    fontSizeTitle      Int       (optional) - Font size of the title\n" +
-                "    fontSize           Int       (optional) - Font size of labels\n"
+                "    ids:                       Set[String]            - The data identifiers\n" +
+                "    height:                    Int                    - Height of the diagram in px\n" +
+                "    width:                     Int                    - Width of the diagram in px\n" +
+                "    border:                    Border      (optional) - Border (top, bottom, left, right) in px\n" +
+                "    colorScheme:               String      (optional) - The color scheme\n" +
+                "    title:                     String      (optional) - Diagram title\n" +
+                "    titleVerticalOffset:       Int         (optional) - The vertical offset of the title\n" +
+                "    titleFontSize:             Int         (optional) - The font size of the title\n" +
+                "    xLabel:                    String      (optional) - The label for the x-axis\n" +
+                "    ylabel:                    String      (optional) - The label for the y-axis\n" +
+                "    minDistanceX:              Int         (optional) - The minimum number of px between two grid points on the x-axis\n" +
+                "    minDistanceY:              Int         (optional) - The minimum number of px between two grid points on the y-axis\n" +
+                "    fontSize:                  Int         (optional) - The font size\n" +
+                "    fontFamily:                String      (optional) - The font family\n" +
+                "    xMin:                      Timestamp   (optional) - The minimum value displayed on the x-axis\n" +
+                "    xMax:                      Timestamp   (optional) - The maximum value displayed on the x-axis\n" +
+                "    yMin:                      Double      (optional) - The minimum value displayed on the y-axis\n" +
+                "    yMax:                      Double      (optional) - The maximum value displayed on the y-axis\n" +
+                "    xUnit:                     String      (optional) - The unit on the x-axis\n" +
+                "    yUnit:                     Double      (optional) - The unit on the y-axis\n" +
+                "    radius:                    Int         (optional) - The radius of the displayed points\n" +
+                "    lineStrokeWidth:           Int         (optional) - The stroke width of the line connecting the points"
 
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
@@ -75,10 +76,16 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
      */
     def apply(jsonString: String): LineChartConfig = {
         implicit val lineChartConfigFormat = jsonFormat(LineChartConfig.apply,
-            "ids", "height", "width", "xMin", "xMax", "yMin", "yMax",
-            "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
-            "borderRight", "distanceTitle", "minDistanceX", "minDistanceY",
-            "xUnit", "yUnit", "fontSizeTitle", "fontSize")
+            "ids",
+            "height", "width",
+            "border",
+            "colorScheme",
+            "title", "titleVerticalOffset", "titleFontSize",
+            "xLabel", "yLabel", "minDistanceX", "minDistanceY",
+            "fontSize", "fontFamily",
+            "xMin", "xMax", "yMin", "yMax",
+            "xUnit", "yUnit",
+            "radius", "lineStrokeWidth")
         jsonString.parseJson.convertTo[LineChartConfig]
     }
 
@@ -108,19 +115,19 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
         val dataMaxX: Long = dataMinMaxX._2
         val dataMinY: Double = dataMinMaxY._1
         val dataMaxY: Double = dataMinMaxY._2
-        val chartOrigin = (config.borderLeft, config.height - config.borderBottom)
+        val chartOrigin = (config.border.left, config.height - config.border.bottom)
 
-        val xScale = config.optUnitX.map(
-                TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
-                    config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
-                    TimeScale(config.optXMin.map(_.getTime).getOrElse(dataMinX),
-                        config.optXMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth)
+        val xScale = config._xUnit.map(
+                TimeScale(config._xMin.map(_.getTime).getOrElse(dataMinX),
+                    config._xMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
+                    TimeScale(config._xMin.map(_.getTime).getOrElse(dataMinX),
+                        config._xMax.map(_.getTime).getOrElse(dataMaxX), 0, config.chartWidth)
             }
-        val yScale = config.optUnitY.map(
-                ValueScale(config.optYMin.getOrElse(dataMinY),
-                    config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
-                    ValueScale(config.optYMin.getOrElse(dataMinY),
-                        config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight)
+        val yScale = config._yUnit.map(
+                ValueScale(config._yMin.getOrElse(dataMinY),
+                    config._yMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
+                    ValueScale(config._yMin.getOrElse(dataMinY),
+                        config._yMax.getOrElse(dataMaxY), 0, config.chartHeight)
             }
 
         val xAxisLabels: Seq[(String, Int)] = {
@@ -167,25 +174,27 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
 
             (<g class="data">
                 { for { dataset <- displayData } yield {
-                    val color: RGBColor = DefaultColorScheme.next
-                    <g class={ s"datapoints-${dataset.id}" }>
-                        {
-                            for { datapoint <- dataset.dataPoints } yield {
+                    val colorString: String = if(config.colorScheme.isDefined) config.colorScheme.get.next.toString else ""
+                    if(config.radius > 0) {
+                        <g class={s"datapoints-${dataset.id}"}>
+                            {for {datapoint <- dataset.dataPoints} yield {
                                 <circle
-                                    class={datapoint.tags.map(_.toString.replace(' ','_')) mkString " " }
-                                    fill={ color.toString }
-                                    stroke={ color.toString }
-                                    cx={ (chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString }
-                                    cy={ (chartOrigin._2 - yScale(datapoint.value.value)).toString }
-                                    r="4" />
-                            }
-                        }
-                    </g>
-                    <path
-                        stroke={ color.toString }
-                        fill="none"
-                        stroke-width="2"
-                        d={ calculatePath(dataset) } />
+                                class={datapoint.tags.map(_.toString.replace(' ', '_')) mkString " "}
+                                fill={colorString}
+                                stroke={colorString}
+                                cx={(chartOrigin._1 + xScale(datapoint.timestamp.getTime)).toString}
+                                cy={(chartOrigin._2 - yScale(datapoint.value.value)).toString}
+                                r={config.radius.toString}/>
+                        }}
+                        </g>
+                    }
+                    if(config.lineStrokeWidth > 0) {
+                            <path
+                            stroke={colorString}
+                            fill="none"
+                            stroke-width={config.lineStrokeWidth.toString}
+                            d={calculatePath(dataset)}/>
+                    }
                 } }
             </g>: SVGXML)
                 .withGrid(Grid(
@@ -209,85 +218,96 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
                     height = config.chartHeight,
                     title = config.yLabel,
                     labels = yAxisLabels))
-                .withTitle(config.title, config.width / 2, config.borderTop - config.distanceTitle, config.fontSizeTitle)
+                .withTitle(
+                    config.title,
+                    config.width / 2,
+                    config.border.top - config.titleVerticalOffset,
+                    config.titleFontSize,
+                    config.fontFamily)
                 .withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
         }
 
     }
 }
 
-
 /**
- *  The config to create a [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]].
+ * The config to create a [[threesixty.visualizer.visualizations.lineChart.LineChartConfig.LineChart]].
  *
- *  @param ids set of ids which are to be displayed in the visualization
- *  @param height the height
- *  @param width the width
- *  @param optXMin the minimum value displayed on the x-coordinate
- *  @param optXMax the maximum value displayed on the x-coordinate
- *  @param optYMin the minimum value displayed on the y-coordinate
- *  @param optYMax the maximum value displayed on the y-coordinate
- *  @param _xLabel the label on the x-axis
- *  @param _yLabel the label on the y-axis
- *  @param _title the title
- *  @param _borderTop the border to the top
- *  @param _borderBottom the border to the bottom
- *  @param _borderLeft the border to the left
- *  @param _borderRight the border to the right
- *  @param _distanceTitle the distance between the title and the top of the chart
- *  @param _minDistanceX the minimal distance between two grid points on the x-axis
- *  @param _minDistanceY the minimal distance between two grid points on the y-axis
- *  @param optUnitX the unit of the x-axis
- *  @param optUnitY the unit of the y-axis
- *  @param _fontSizeTitle the font size of the title
- *  @param _fontSize the font size of labels
+ * @param ids ids set of ids which are to be displayed in the visualization
+ * @param height the height
+ * @param width the width
+ * @param _border the border
+ * @param _colorScheme the color scheme
+ * @param _title the title
+ * @param _titleVerticalOffset the vertical offset of the title
+ * @param _titleFontSize the font size of the title
+ * @param _xLabel the x-axis label
+ * @param _yLabel the y-axis label
+ * @param _minPxBetweenXGridPoints the minimum distance in px between two grid points on the x-axis
+ * @param _minPxBetweenYGridPoints the minimum distance in px between two grid points on the y-axis
+ * @param _fontSize the font size of labels
+ * @param _fontFamily the font family of labels
+ * @param _xMin the minimum value displayed on the x-coordinate
+ * @param _xMax the maximum value displayed on the x-coordinate
+ * @param _yMin the minimum value displayed on the y-coordinate
+ * @param _yMax the maximum value displayed on the y-coordinate
+ * @param _xUnit the unit of the x-axis
+ * @param _yUnit the unit of the y-axis
+ * @param _radius the radius of the points
+ * @param _lineStrokeWidth the stroke width of the line
  *
- *  @author Thomas Engel, Thomas Weber
+ * @author Thomas {Engel, Weber}
  */
 case class LineChartConfig(
-    val ids:            Seq[Identifier],
-    val height:         Int,
-    val width:          Int,
-    val optXMin:        Option[Timestamp] = None,
-    val optXMax:        Option[Timestamp] = None,
-    val optYMin:        Option[Double]    = None,
-    val optYMax:        Option[Double]    = None,
-    val _xLabel:        Option[String]    = None,
-    val _yLabel:        Option[String]    = None,
-    val _title:         Option[String]    = None,
-    val _borderTop:     Option[Int]       = None,
-    val _borderBottom:  Option[Int]       = None,
-    val _borderLeft:    Option[Int]       = None,
-    val _borderRight:   Option[Int]       = None,
-    val _distanceTitle: Option[Int]       = None,
-    val _minDistanceX:  Option[Int]       = None,
-    val _minDistanceY:  Option[Int]       = None,
-    val optUnitX:       Option[String]    = None,
-    val optUnitY:       Option[Double]    = None,
-    val _fontSizeTitle: Option[Int]       = None,
-    val _fontSize:      Option[Int]       = None
+    val ids:                        Seq[Identifier],
+    val height:                     Int,
+    val width:                      Int,
+    val _border:                    Option[Border]      = None,
+    val _colorScheme:               Option[String]      = None,
+    val _title:                     Option[String]      = None,
+    val _titleVerticalOffset:       Option[Int]         = None,
+    val _titleFontSize:             Option[Int]         = None,
+    val _xLabel:                    Option[String]      = None,
+    val _yLabel:                    Option[String]      = None,
+    val _minPxBetweenXGridPoints:   Option[Int]         = None,
+    val _minPxBetweenYGridPoints:   Option[Int]         = None,
+    val _fontSize:                  Option[Int]         = None,
+    val _fontFamily:                Option[String]      = None,
+
+    val _xMin:                      Option[Timestamp]   = None,
+    val _xMax:                      Option[Timestamp]   = None,
+    val _yMin:                      Option[Double]      = None,
+    val _yMax:                      Option[Double]      = None,
+    val _xUnit:                     Option[String]      = None,
+    val _yUnit:                     Option[Double]      = None,
+    val _radius:                    Option[Int]         = None,
+    val _lineStrokeWidth:           Option[Int]         = None
 ) extends VisualizationConfig(
-    ids,
-    height,
-    width,
-    _title,
-    _borderTop,
-    _borderBottom,
-    _borderLeft,
-    _borderRight,
-    _distanceTitle,
-    _fontSizeTitle,
-    _fontSize
+    ids = ids,
+    height = height,
+    width = width,
+    _border = _border,
+    _colorScheme = _colorScheme,
+    _title = _title,
+    _titleVerticalOffset = _titleVerticalOffset,
+    _titleFontSize = _titleFontSize,
+    _xLabel = _xLabel,
+    _yLabel = _yLabel,
+    _minPxBetweenXGridPoints = _minPxBetweenXGridPoints,
+    _minPxBetweenYGridPoints = _minPxBetweenYGridPoints,
+    _fontSize = _fontSize,
+    _fontFamily = _fontFamily
 ) {
 
-    def xLabel: String = _xLabel.getOrElse("")
-    def yLabel: String = _yLabel.getOrElse("")
+    /**
+     * @return the radius of the points
+     */
+    def radius: Int = _radius.getOrElse(2)
 
-    def minDistanceX: Int = _minDistanceX.getOrElse(20)
-    def minDistanceY: Int = _minDistanceY.getOrElse(20)
-
-    require(minDistanceX > 0, "Value for minDistanceX must be greater than 0.")
-    require(minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
+    /**
+     * @return the stroke width of the line
+     */
+    def lineStrokeWidth: Int = _lineStrokeWidth.getOrElse(2)
 
     /**
      *  Sets the [[Grid]] and returns the
