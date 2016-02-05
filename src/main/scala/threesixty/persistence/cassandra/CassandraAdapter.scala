@@ -57,7 +57,11 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       *  @param identifier ID of data whose metadata is requested
       *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
       */
-    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] = ???
+    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] = {
+        Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(UUID.fromString(identifier)), Duration.Inf)
+    }
+
+    
 
     /*
      * Inserts new data set into the database
@@ -66,7 +70,6 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Await.result(CassandraAdapter.inputDatasets.store(data), Duration.Inf)
         Right(data.id)
     }
-
 
     /*
      * Appends the data points which are not already stored to the data set
@@ -110,7 +113,9 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Await.result(CassandraAdapter.inputMetadataSets.updateSizeForIdentifier(identifier, newSize), Duration.Inf)
     }
 
-
+    /*
+     * Updates the time frame for input metadata entry
+     */
     private def updateTimeframeForMetadataIdentifier(identifier: UUID, newStart: Timestamp, newEnd: Timestamp) = {
         val timeframeID = Await.result(CassandraAdapter.inputMetadataSets.getTimeframeId(identifier), Duration.Inf)
         Await.result(CassandraAdapter.timeframes.updateTimeframe(timeframeID.get, newStart, newEnd), Duration.Inf)
