@@ -62,8 +62,14 @@ case class InputData(
     }
 
     def addNewDataPoints(newDataPoints: List[DataPoint]): InputData = {
-        this.copy(dataPoints = (this.dataPoints ++ newDataPoints).sortBy(_.timestamp),
-            metadata = this.metadata.copy(size = this.metadata.size + newDataPoints.length))
+        val pointsToAdd = newDataPoints.diff(this.dataPoints)
+        val newSize = this.dataPoints.length + pointsToAdd.length
+        val newStart = (this.dataPoints ++ pointsToAdd).minBy(_.timestamp).timestamp
+        val newEnd = (this.dataPoints ++ pointsToAdd).maxBy(_.timestamp).timestamp
+
+        this.copy(dataPoints = (this.dataPoints ++ pointsToAdd).sortBy(_.timestamp),
+            metadata = this.metadata.copy(size = newSize,
+                timeframe = this.metadata.timeframe.copy(start = newStart, end = newEnd)))
     }
 }
 
