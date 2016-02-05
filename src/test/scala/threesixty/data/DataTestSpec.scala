@@ -66,6 +66,41 @@ class DataTestSpec extends FunSpec {
                 }
             }
         }
+
+        val data1 = ProcessedData("data1", List(
+                TaggedDataPoint(new Timestamp(10), 1.0, Set()),
+                TaggedDataPoint(new Timestamp(20), 2.0, Set())
+            ))
+        describe("when joined with another dataset") {
+
+
+            val data2 = ProcessedData("data2", List(
+                    TaggedDataPoint(new Timestamp(40), 4.0, Set()),
+                    TaggedDataPoint(new Timestamp(20), 5.0, Set())
+                ))
+            describe("using a cross join") {
+                it("should have all combinations") {
+                    assertResult(data1.join(data2)) {
+                        List(
+                            (TaggedDataPoint(new Timestamp(10), 1.0, Set()), TaggedDataPoint(new Timestamp(40), 4.0, Set())),
+                            (TaggedDataPoint(new Timestamp(10), 1.0, Set()), TaggedDataPoint(new Timestamp(20), 5.0, Set())),
+                            (TaggedDataPoint(new Timestamp(20), 2.0, Set()), TaggedDataPoint(new Timestamp(40), 4.0, Set())),
+                            (TaggedDataPoint(new Timestamp(20), 2.0, Set()), TaggedDataPoint(new Timestamp(20), 5.0, Set()))
+                        )
+                    }
+                }
+            }
+
+            describe("using an equi join") {
+                it("should have the tuples that fulfill the predicate") {
+                    assertResult(data1.equiJoin(data2, _.timestamp.getTime)) {
+                        List(
+                            (TaggedDataPoint(new Timestamp(20), 2.0, Set()), TaggedDataPoint(new Timestamp(20), 5.0, Set()))
+                        )
+                    }
+                }
+            }
+        }
     }
 
     describe("The implicit conversion") {
