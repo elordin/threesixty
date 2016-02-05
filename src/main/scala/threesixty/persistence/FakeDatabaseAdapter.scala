@@ -135,6 +135,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
     }
 
+    def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData] = ???
+
 
     def appendOrInsertData(data: InputData):Either[String, Identifier] =
         appendData(data) match {

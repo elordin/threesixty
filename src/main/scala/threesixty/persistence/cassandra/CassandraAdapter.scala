@@ -61,7 +61,17 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(UUID.fromString(identifier)), Duration.Inf)
     }
 
-    
+    /**
+      * Retrieves a data set for a specific time range from the storage
+      *
+      * @param identifier Identifier of data to retreive
+      * @param from       The start timestamp of the range
+      * @param to         The end timestamp of the range
+      * @return           Either the data set (Left) or an error message (Right)
+      */
+    def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData] = ???
+
+
 
     /*
      * Inserts new data set into the database

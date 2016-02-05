@@ -1,7 +1,7 @@
 package threesixty.persistence
 
 import threesixty.data.InputData
-import threesixty.data.Data.Identifier
+import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.metadata.CompleteInputMetadata
 
 
@@ -13,7 +13,7 @@ trait DatabaseAdapter {
       * Retrieves a data set from the storage
       *
       * @param id Id of the data to retrieve
-      * @return Either the data set (Left) or Left(errormsg) on error
+      * @return Either the data set (Right) or Left(errormsg) on error
       */
     def getDataset(id: Identifier): Either[String, InputData]
 
@@ -26,20 +26,22 @@ trait DatabaseAdapter {
     def insertData(data: InputData): Either[String, Identifier]
 
     /**
-      *  Gets only the metadata for a datset with given ID.
-      *
-      *  @param identifier ID of data whose metadata is requested
-      *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
-      */
-    // def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata]
-
-
-    /**
      *  Gets only the metadata for a datset with given ID.
      *
      *  @param identifier ID of data whose metadata is requested
      *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
      */
     def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata]
+
+    /**
+      * Retrieves a data set for a specific time range from the storage
+      *
+      * @param identifier Identifier of data to retreive
+      * @param from       The start timestamp of the range
+      * @param to         The end timestamp of the range
+      * @return           Either the data set (Left) or an error message (Right)
+      */
+    def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData]
+
 
 }

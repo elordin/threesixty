@@ -38,9 +38,8 @@ class ProcessorTestSpec extends FunSpec {
                 val pool = new DataPool(Set("SomeId"), new DatabaseAdapter {
                         def getDataset(id:Identifier):Either[String, InputData] = Right(sampleData)
                         def insertData(data:InputData):Either[String, Identifier] = ???
-                        def appendData(data:InputData):Either[String, Identifier] = ???
-                        def appendOrInsertData(data:InputData):Either[String, Identifier] = ???
                         def getMetadata(identifier: Identifier):Option[CompleteInputMetadata] = ???
+                        def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData] = ???
                     })
 
                 pool.pushData(Set[ProcessedData](sampleData))
