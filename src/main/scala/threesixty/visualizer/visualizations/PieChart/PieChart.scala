@@ -45,6 +45,7 @@ object PieChartConfig extends VisualizationCompanion {
                 "    legendVerticalOffset:      Int         (optional) - The vertical offset of the legend\n" +
                 "    legendSymbolWidth:         Int         (optional) - The width of the legend symbol\n" +
                 "    showSegmentLabels:         Boolean     (optional) - If labels for a segment should be shown\n" +
+                "    valueLabelRadiusPercent:   Double      (optional) - The radius to place the value label in percent\n" +
                 "    segmentLabelLineColor:     String      (optional) - The color of the line connecting the segment with the label\n" +
                 "    showValues:                Boolean     (optional) - If values should be shown\n" +
                 "    angleStart:                Int         (optional) - The start angle\n" +
@@ -71,7 +72,7 @@ object PieChartConfig extends VisualizationCompanion {
             "title", "titleVerticalOffset", "titleFontSize",
             "fontSize", "fontFamily",
             "legendPosition", "legendHorizontalOffset", "legendVerticalOffset", "legendSymbolWidth",
-            "showSegmentLabels", "segmentLabelLineColor", "showValues",
+            "showSegmentLabels", "valueLabelRadiusPercent", "segmentLabelLineColor", "showValues",
             "angleStart", "angleEnd", "radius", "innerRadiusPercent")
         jsonString.parseJson.convertTo[PieChartConfig]
     }
@@ -105,10 +106,12 @@ object PieChartConfig extends VisualizationCompanion {
         val radius = config._radius.getOrElse(calculateRadius)
         val innerRadiusPercent = config._innerRadiusPercent.getOrElse(0.0)
         val innerRadius = radius * innerRadiusPercent
-        val labelRadius = radius * 1.05
+        val valueLabelRadiusPercent = config._valueLabelRadiusPercent.getOrElse(1.1)
+        val labelRadius = radius * valueLabelRadiusPercent
 
         require(radius > 0, "Value for radius must be greater than 0.")
         require(innerRadius >= 0, "Negative value for innerRadius is not allowed.")
+        require(labelRadius > 0, "Value for value label radius must be greater than 0.")
 
         /**
           * @return a list of important angles needed to calculate the radius
@@ -307,7 +310,6 @@ object PieChartConfig extends VisualizationCompanion {
                     config.border.top - config.titleVerticalOffset,
                     config.titleFontSize,
                     config.fontFamily)
-                .withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
 
             if(showLegend) {
                 val (xlegend, ylegend) = config.getLegendCoordinates
@@ -322,7 +324,7 @@ object PieChartConfig extends VisualizationCompanion {
                     config.fontFamily))
             }
 
-            svg
+            svg.withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
         }
     }
 }
@@ -346,6 +348,7 @@ object PieChartConfig extends VisualizationCompanion {
  * @param _legendVerticalOffset the vertical offset of the legend
  * @param _legendSymbolWidth the width of the legend symbols
  * @param _showSegmentLabels if a label should be shown to a segment
+ * @param _valueLabelRadiusPercent the radius to place the value label in percent
  * @param _segmentLabelLineColor the color of the line connecting the label for a segment with the segment
  * @param _showValues if values should be shown to a segment
  * @param _angleStart the start angle
@@ -370,6 +373,7 @@ case class PieChartConfig(
     val _legendSymbolWidth:         Option[Int]     = None,
 
     val _showSegmentLabels:         Option[Boolean] = None,
+    val _valueLabelRadiusPercent:   Option[Double]  = None,
     val _segmentLabelLineColor:     Option[String]  = None,
     val _showValues:                Option[Boolean] = None,
     val _angleStart:                Option[Int]     = None,

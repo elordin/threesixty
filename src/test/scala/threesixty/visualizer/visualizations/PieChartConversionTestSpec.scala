@@ -26,6 +26,7 @@ class PieChartConversionTestSpec extends FunSpec {
                 "legendVerticalOffset": 5,
                 "legendSymbolWidth": 25,
                 "showSegmentLabels": false,
+                "valueLabelRadiusPercent": 1.2,
                 "segmentLabelLineColor": "#223344",
                 "showValues": true,
                 "angleStart": 0,
@@ -51,6 +52,7 @@ class PieChartConversionTestSpec extends FunSpec {
                 _legendVerticalOffset = Some(5),
                 _legendSymbolWidth = Some(25),
                 _showSegmentLabels = Some(false),
+                _valueLabelRadiusPercent = Some(1.2),
                 _segmentLabelLineColor = Some("#223344"),
                 _showValues = Some(true),
                 _angleStart = Some(0),
@@ -88,6 +90,7 @@ class PieChartConversionTestSpec extends FunSpec {
             assert(convertedConfig.legendPosition == Some(LegendPositionType.RIGHT))
             assert(convertedConfig.legendVerticalOffset == 20)
             assert(convertedConfig.showSegmentLabels == true)
+            assert(convertedConfig._valueLabelRadiusPercent == None)
             assert(convertedConfig.segmentLabelLineColor == "#000000")
             assert(convertedConfig.angleStart == 90)
             assert(convertedConfig._radius == None)

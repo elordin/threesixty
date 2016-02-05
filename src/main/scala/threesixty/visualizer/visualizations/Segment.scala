@@ -91,7 +91,7 @@ case class Segment(
     def getSVGElement: Elem = {
         val (tlpx, tlpy) = calculateValueLabelAnchorPoint
 
-        <g class={identifier.replace(' ', '_') + " " + classes.map(_.replace(' ', '_')) mkString " " }>
+        <g class={identifier.replace(' ', '_') + " " + (classes.map(_.replace(' ', '_')) mkString " ") }>
             <path class="segment"
                   fill={getColor}
                   d={calculatePath} />

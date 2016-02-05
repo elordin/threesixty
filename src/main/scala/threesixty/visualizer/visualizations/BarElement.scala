@@ -48,7 +48,7 @@ case class BarElement(
         val (dpx, dpy) = calculateDescriptionAnchorPoint
         val (vpx, vpy) = calculateValueAnchorPoint
 
-        <g class={identifier.replace(' ', '_') + " " + classes.map(_.replace(' ', '_')) mkString " "}>
+        <g class={identifier.replace(' ', '_') + " " + (classes.map(_.replace(' ', '_')) mkString " ") }>
             <path
                 class="bar"
                 fill={getColor}

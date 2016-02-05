@@ -8,8 +8,8 @@ object LegendPositionType extends Enumeration {
     case class LegendPosition(val name: String)
     val TOP = new LegendPosition("top")
     val BOTTOM = new LegendPosition("bottom")
-    val RIGHT = new LegendPosition("left")
-    val LEFT = new LegendPosition("right")
+    val LEFT = new LegendPosition("left")
+    val RIGHT = new LegendPosition("right")
 }
 
 /**
@@ -19,7 +19,7 @@ object Legend {
     implicit def toXML(legend: Legend): Elem = legend.toSVG
 
     def getLegendPosition(name: String): Option[LegendPositionType.LegendPosition] = {
-        val result = name match {
+        val result = name.toLowerCase match {
             case LegendPositionType.TOP.name => Some(LegendPositionType.TOP)
             case LegendPositionType.BOTTOM.name => Some(LegendPositionType.BOTTOM)
             case LegendPositionType.LEFT.name => Some(LegendPositionType.LEFT)

@@ -224,9 +224,9 @@ abstract class VisualizationConfig(
         val (x, y) = legendPosition
             .getOrElse(throw new UnsupportedOperationException("Cannot calculate legend position because no legend position was set.")) match {
                 case LegendPositionType.TOP => (0, 0)
-                case LegendPositionType.BOTTOM => (0, border.bottom)
-                case LegendPositionType.LEFT => (0, border.top)
-                case LegendPositionType.RIGHT => (border.right, border.top)
+                case LegendPositionType.BOTTOM => (0, lowerLimit)
+                case LegendPositionType.LEFT => (0, upperLimit)
+                case LegendPositionType.RIGHT => (rightLimit, upperLimit)
                 case _ => throw new UnsupportedOperationException("Legend postion " + legendPosition.get.name + " is not supported.")
         }
 

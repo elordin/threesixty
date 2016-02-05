@@ -135,8 +135,7 @@ case class SVGXML(elems: Elem*) {
                         y={ y.toString }
                         font-family={fontFamily}
                         font-size={ fontSize.toString }
-                        text-anchor="middle">{ text }
-                </text>)
+                        text-anchor="middle">{text}</text>)
         } else {
             this
         }
