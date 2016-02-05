@@ -1,4 +1,4 @@
-package threesixty.algorithms
+package threesixty.ProcessingMethods
 
 import org.scalatest._
 

@@ -1,8 +1,8 @@
 package threesixty.processor
 
 import org.scalatest.FunSpec
-import threesixty.algorithms.Clustering
-import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
+import threesixty.ProcessingMethods.Clustering
+import threesixty.ProcessingMethods.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
 import threesixty.data.Data._
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._

@@ -1,8 +1,8 @@
-package threesixty.algorithms
+package threesixty.ProcessingMethods
 
 import org.scalatest.FunSpec
 
-import threesixty.algorithms.interpolation.{Accumulation, LinearInterpolation}
+import threesixty.ProcessingMethods.interpolation.{Accumulation, LinearInterpolation}
 import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Timestamp
 import threesixty.data.tags.{Accumulated, Tag, Original, Interpolated}

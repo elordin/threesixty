@@ -4,7 +4,7 @@ import java.sql.Timestamp
 import java.util.UUID
 
 import org.scalatest.FunSpec
-import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
+import threesixty.ProcessingMethods.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
 import threesixty.data.Data._
 import threesixty.data.{DataPool, InputData, DataPoint}
 import threesixty.data.metadata._

@@ -1,4 +1,4 @@
-package threesixty.algorithms
+package threesixty.ProcessingMethods
 
 import threesixty.data.metadata.{Reliability, Resolution, Scaling}
 import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}

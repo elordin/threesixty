@@ -4,7 +4,7 @@ import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
 import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
+import threesixty.ProcessingMethods.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
 import threesixty.data.Data.Identifier
 import threesixty.data.InputData
 import threesixty.visualizer.visualizations._

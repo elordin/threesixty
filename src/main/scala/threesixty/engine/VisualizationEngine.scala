@@ -7,7 +7,7 @@ import threesixty.persistence.DatabaseAdapter
 
 import threesixty.data.{DataPool, UnsafeInputData}
 import threesixty.data.Data.Identifier
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 
 import spray.http.HttpResponse
 import spray.json._
