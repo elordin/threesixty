@@ -29,11 +29,51 @@ case class UnsafeInputData(
 }
 
 
-trait InputDataLike {
+sealed trait Subset {
+    def from: Timestamp
+    def to: Timestamp
+}
+
+sealed trait InputDataSkeletonLike {
     def id: Identifier
     def measurement: String
-    def dataPoints: List[DataPoint]
     def metadata: CompleteInputMetadata
+}
+
+class InputDataSkeleton(
+    val id: Identifier,
+    val measurement: String,
+    val metadata: CompleteInputMetadata
+) extends InputDataSkeletonLike {
+    def subset(from: Option[Timestamp], to: Option[Timestamp]): InputDataSubsetSkeleton =
+        new InputDataSubsetSkeleton(id, measurement, metadata,
+            from.getOrElse(metadata.timeframe.start),
+            to.getOrElse(metadata.timeframe.end))
+}
+/*
+object InputDataSkeleton {
+    implicit def fill(skeleton: InputDataSkeleton): InputData = ???
+}
+*/
+
+class InputDataSubsetSkeleton(
+    override val id: Identifier,
+    override val measurement: String,
+    override val metadata: CompleteInputMetadata,
+    val from: Timestamp,
+    val to: Timestamp
+) extends InputDataSkeleton(id, measurement, metadata) with Subset {
+}
+
+/*
+object InputDataSubsetSkeleton {
+    implicit def fill(skeleton: InputDataSubsetSkeleton): InputDataSubset = ???
+}
+*/
+
+
+sealed trait InputDataLike extends InputDataSkeletonLike {
+    def dataPoints: List[DataPoint]
 }
 
 object InputDataLike {
@@ -49,13 +89,13 @@ object InputDataLike {
 
 
 case class InputData(
-	val id: Identifier,
-	val measurement: String, //heartrate, temperature etc
-	val dataPoints: List[DataPoint],
-	val metadata: CompleteInputMetadata
-) extends InputDataLike {
+    override val id: Identifier,
+    override val measurement: String, //heartrate, temperature etc
+    val dataPoints: List[DataPoint],
+    override val metadata: CompleteInputMetadata
+) extends InputDataSkeleton(id, measurement, metadata) with InputDataLike {
     require(dataPoints.size > 0, "Emtpy dataset not allowed.")
-	require(dataPoints.size == metadata.size, "Metadata incompatible with data points.")
+    require(dataPoints.size == metadata.size, "Metadata incompatible with data points.")
 
     implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
         def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
@@ -71,37 +111,24 @@ case class InputData(
             metadata = this.metadata.copy(size = newSize,
                 timeframe = this.metadata.timeframe.copy(start = newStart, end = newEnd)))
     }
+
+    override def subset(from: Option[Timestamp], to: Option[Timestamp]): InputDataSubset =
+        InputDataSubset(id, measurement, dataPoints.filter {
+            case DataPoint(t, _) =>
+                (!from.isDefined || t.getTime >= from.get.getTime) &&
+                (!to.isDefined   || t.getTime <= to.get.getTime)
+        }, metadata, from.getOrElse(metadata.timeframe.start), to.getOrElse(metadata.timeframe.end))
 }
 
 
-/*
-
-case class LazyInputData(
-    val id: Identifier,
-    val measurement: String,
-    val metadata: CompleteInputMetadata,
-    implicit val dbAdapter: DatabaseAdapter
-) extends InputDataLike with Iterator[DataPoint] {
-
-    def dataPoints = this
-
-    var currentTimestamp: Timestamp = new Timestamp(0)
-
-    var buffer: Seq[DataPoint] = Seq()
-
-    var bufferIterator = buffer.iterator
-
-    def refillBuffer(): Boolean = {
-        ???
-    }
-
-    def hasNext = if (bufferIterator.hasNext) {
-        true
-    } else {
-        refillBuffer()
-    }
-
-    def next = bufferIterator.next
+case class InputDataSubset(
+    override val id: Identifier,
+    override val measurement: String,
+    val dataPoints: List[DataPoint],
+    override val metadata: CompleteInputMetadata,
+    override val from: Timestamp,
+    override val to: Timestamp
+) extends InputDataSubsetSkeleton(id, measurement, metadata, from, to) with InputDataLike {
+    require(dataPoints.size > 0, "Emtpy dataset not allowed.")
 }
 
-*/

@@ -1,7 +1,7 @@
 package threesixty.ProcessingMethods.clustering
 
 import threesixty.data.metadata.{Reliability, Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.data.Data.Identifier
 import threesixty.data.tags.{ClusterTag, NoiseTag}
 import threesixty.processor.{SingleProcessingMethod, MultiProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
@@ -85,7 +85,7 @@ object Clustering extends ProcessingMethodCompanion {
 
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep = ??? // TODO
 
-    def computeDegreeOfFit(inputData: InputData): Double = {
+    def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
         var temp = 0.0
 
         val meta = inputData.metadata
@@ -107,17 +107,17 @@ object Clustering extends ProcessingMethodCompanion {
             temp+= 0.1
         }
 
-        if (inputData.dataPoints.size > 25) {
+        if (inputData.metadata.size > 25) {
             temp += 0.35
         }
-        else if (inputData.dataPoints.size >= 5) {
+        else if (inputData.metadata.size >= 5) {
             temp += 0.2
         }
 
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig): Double = {
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
 
         val visFactor =  targetVisualization match {
             //ideal

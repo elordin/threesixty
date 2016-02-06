@@ -2,7 +2,7 @@ package threesixty.processor
 
 import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.engine.UsageInfo
-import threesixty.data.{InputData, ProcessedData}
+import threesixty.data.{InputData, ProcessedData, InputDataSkeleton}
 import threesixty.data.Data.Identifier
 import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.visualizer.VisualizationConfig
@@ -55,9 +55,9 @@ trait ProcessingMethodCompanion extends UsageInfo {
       * recursive call of computeDegreeOfFit
       * Note: minimum dominates. => a set of InputData gets value of least suitable InputData within that set.
       */
-    def degreeOfFit(inputData: Set[InputData]): Double = {
-        require(inputData.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
-        inputData.map({ data => computeDegreeOfFit(data) }).min
+    def degreeOfFit(skeletons: InputDataSkeleton*): Double = {
+        require(skeletons.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
+        skeletons.map({ data => computeDegreeOfFit(data) }).min
     }
 
 
@@ -65,9 +65,9 @@ trait ProcessingMethodCompanion extends UsageInfo {
       * recursive call of computeDegreeOfFit for a given VisualizationType
       * Note: minimum dominates. => a set of InputData gets value of least suitable InputData within that set.
       */
-    def degreeOfFit (inputData: Set[InputData], targetVisualization: VisualizationConfig): Double = {
-        require(inputData.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
-        inputData.map({ data => computeDegreeOfFit(data, targetVisualization) }).min
+    def degreeOfFit (targetVisualization: VisualizationConfig, skeletons: InputDataSkeleton*): Double = {
+        require(skeletons.size > 0, "Empty inputdataSet in deduction of ProcessingStrategy not allowed.")
+        skeletons.map({ data => computeDegreeOfFit(targetVisualization, data) }).min
     }
 
     /**
@@ -78,7 +78,7 @@ trait ProcessingMethodCompanion extends UsageInfo {
       *
       *  @return Double in the interval [0;1] to indicate whether applying a ProcessingMethod on a certain InputData Set is suitable (1) or nonsense (0)
       */
-    def computeDegreeOfFit(inputData: InputData): Double
+    def computeDegreeOfFit(skeletons: InputDataSkeleton): Double
 
     /**
       *  Deduction method.
@@ -92,7 +92,7 @@ trait ProcessingMethodCompanion extends UsageInfo {
       *
       *  @return Double in the interval [0;1] to indicate whether applying a ProcessingMethod on a certain InputData Set is suitable (1) or nonsense (0)
       */
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig) : Double
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, skeletons: InputDataSkeleton) : Double
 }
 
 
@@ -162,9 +162,9 @@ class Processor extends ProcessingMixins with UsageInfo {
     /**
      *  Deduces the best fitting ProcessingStrategy for a given Set of InputData.
      */
-    def deduce(data: Set[InputData]): ProcessingStrategy = {
+    def deduce(data: InputDataSkeleton*): ProcessingStrategy = {
             ProcessingStrategy(processingInfos.values.par.map({
-            info => (info, info.degreeOfFit(data))
+            info => (info, info.degreeOfFit(data: _*))
         }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
 
     }
@@ -173,14 +173,14 @@ class Processor extends ProcessingMixins with UsageInfo {
      *  Deduces the best fitting Processingstrategy for a given Set of InputData
      *  and a Visualization.
      */
-    def deduce(data: Set[InputData], vizConf: VisualizationConfig): ProcessingStrategy = {
+    def deduce(vizConf: VisualizationConfig, data: InputDataSkeleton*): ProcessingStrategy = {
         ProcessingStrategy(processingInfos.values.par.map({
-            info => (info, info.degreeOfFit(data, vizConf))
+            info => (info, info.degreeOfFit(vizConf, data: _*))
         }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
     }
 
 
-    def deduce(metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
-    def deduce(vizConf: VisualizationConfig, metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
+    // def deduce(metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
+    // def deduce(vizConf: VisualizationConfig, metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
 
 }

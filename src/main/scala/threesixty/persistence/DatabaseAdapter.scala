@@ -1,6 +1,6 @@
 package threesixty.persistence
 
-import threesixty.data.InputData
+import threesixty.data.{InputData, InputDataSubset, InputDataSkeleton}
 import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.metadata.CompleteInputMetadata
 
@@ -31,7 +31,7 @@ trait DatabaseAdapter {
      *  @param identifier ID of data whose metadata is requested
      *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
      */
-    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata]
+    def getSkeleton(identifier: Identifier) : Option[InputDataSkeleton]
 
     /**
       * Retrieves a data set for a specific time range from the storage
@@ -41,7 +41,7 @@ trait DatabaseAdapter {
       * @param to         The end timestamp of the range
       * @return           Either the data set (Left) or an error message (Right)
       */
-    def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData]
+    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset]
 
 
 }

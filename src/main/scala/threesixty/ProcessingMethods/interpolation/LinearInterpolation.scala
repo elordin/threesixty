@@ -1,7 +1,7 @@
 package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
@@ -38,7 +38,7 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
         LinearInterpolation(1, idMapping).asProcessingStep
 
-    def computeDegreeOfFit(inputData: InputData): Double = {
+    def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
 
         var temp = 0.0
         val meta = inputData.metadata
@@ -46,10 +46,10 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.size >= 5) {
+        if (meta.size >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.size >= 50) {
+        if (meta.size >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
@@ -62,7 +62,7 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig ): Double = {
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
 
         val strategyFactor = computeDegreeOfFit(inputData)
         val visFactor = targetVisualization match {

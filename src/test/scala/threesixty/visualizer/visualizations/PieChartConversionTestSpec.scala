@@ -3,8 +3,8 @@ package threesixty.visualizer.visualizations
 import java.sql.Timestamp
 
 import org.scalatest.FunSpec
-import threesixty.visualizer.util.{LegendPositionType, Border}
-import threesixty.visualizer.util.LegendPositionType.LegendPosition
+import threesixty.visualizer.util.{LegendPositionType, GreenColorScheme, Border}
+import LegendPositionType.LegendPosition
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
 
 
@@ -41,7 +41,7 @@ class PieChartConversionTestSpec extends FunSpec {
                 height = 1024,
                 width = 768,
                 _border = Some(Border(200,100,150,25)),
-                _colorScheme = Some("green"),
+                _colorScheme = Some(GreenColorScheme),
                 _title = Some("Title"),
                 _titleVerticalOffset = Some(50),
                 _titleFontSize = Some(18),
@@ -102,7 +102,7 @@ class PieChartConversionTestSpec extends FunSpec {
                 height = 1024,
                 width = 768,
                 _border = Some(Border(200,100,150,25)),
-                _colorScheme = Some("green"),
+                _colorScheme = Some(GreenColorScheme),
                 _title = Some("Title"),
                 _titleVerticalOffset = Some(50),
                 _fontSize = Some(10),

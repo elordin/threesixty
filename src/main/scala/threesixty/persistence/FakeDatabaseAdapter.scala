@@ -2,7 +2,7 @@ package threesixty.persistence
 
 import java.util.UUID
 
-import threesixty.data.{InputData, DataPoint}
+import threesixty.data.{InputData, DataPoint, InputDataSkeleton, InputDataSubset}
 import threesixty.data.Data._
 import threesixty.data.Implicits._
 import threesixty.data.metadata._
@@ -135,8 +135,7 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
     }
 
-    def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData] = ???
-
+    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
 
     def appendOrInsertData(data: InputData):Either[String, Identifier] =
         appendData(data) match {
@@ -145,6 +144,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
 
 
-    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] =
-        database.get(identifier).map(_.metadata)
+    def getSkeleton(identifier: Identifier) : Option[InputDataSkeleton] =
+        database.get(identifier).map {
+            i: InputData => new InputDataSkeleton(i.id, i.measurement, i.metadata)
+        }
 }
