@@ -4,6 +4,7 @@
     <title>360° Fitness Platform</title>
     <link rel="stylesheet" href="css/normalize.min.css">
     <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/statistics.css">
 </head>
     
 <body>
@@ -74,14 +75,27 @@
     
     
     <header>
-        
         <h1>Statistics</h1>
-
+        <a id="refresh" href=""><img src=img/refresh.png></a>
     </header>
     
     
     <main>
         
+        <h1>Training</h1>
+        <pre id="training-diagram"></pre>
+        <div class="diagram-select-container">
+            <div class="diagram-select-item">
+                <a href="" class="selected">Bar Chart</a>
+            </div>
+            <div class="diagram-select-item">
+                <a href="">Pie Chart</a>
+            </div>
+        </div>
+        
+        
+        <h1>Body Weight</h1>
+        <pre id="weight-diagram"></pre>
         
             
     </main>
@@ -90,5 +104,6 @@
     
     <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/navigation.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/statistics.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>
