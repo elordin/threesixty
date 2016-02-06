@@ -168,7 +168,7 @@ object ScatterChartConfig extends VisualizationCompanion {
 
             val zippedData = xdata.dataPoints.zip(ydata.dataPoints)
             */
-            (<g id="datapoints" transform={ s"translate$chartOrigin" }>
+            (<g id="datapoints">
                 { for { dataPoints <- joinedDatasets } yield  {
                     val color = DefaultColorScheme.next
                     for { (dp1, dp2) <- dataPoints } yield
@@ -186,7 +186,7 @@ object ScatterChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    yAxisLabels.map(_._2),
+                    xAxisLabels.map(_._2),
                     yAxisLabels.map(_._2)
                     ))
                 .withAxis(HorizontalAxis(

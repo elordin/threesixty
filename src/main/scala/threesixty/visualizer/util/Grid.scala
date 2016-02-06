@@ -35,10 +35,10 @@ case class Grid(
                             fill="none"
                             stroke="#AAAAAA"
                             stroke-dasharray={ if (hDashed) hDashArray else "0" }
-                            x1={ (x + currY).toString }
-                            y1={ currY.toString }
+                            x1={ x.toString }
+                            y1={ (y - currY).toString }
                             x2={ (x + width).toString }
-                            y2={ currY.toString } />
+                            y2={ (y - currY).toString } />
                 }
             </g>
             <g class="vertical">
@@ -48,9 +48,9 @@ case class Grid(
                             fill="none"
                             stroke="#AAAAAA"
                             stroke-dasharray={ if (hDashed) hDashArray else "0" }
-                            x1={ currX.toString }
+                            x1={ (x + currX).toString }
                             y1={ y.toString }
-                            x2={ currX.toString }
+                            x2={ (x + currX).toString }
                             y2={ (y - height).toString }/>
                 }
             </g>
