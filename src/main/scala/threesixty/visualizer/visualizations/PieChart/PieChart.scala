@@ -275,6 +275,7 @@ object PieChartConfig extends VisualizationCompanion {
                     segmentLabelLineColor = config.segmentLabelLineColor,
                     value = value,
                     fontSize = config.fontSize,
+                    fontFamily = config.fontFamily,
                     color = color)
 
                 result = segment :: result

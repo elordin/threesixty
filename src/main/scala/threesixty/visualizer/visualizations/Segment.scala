@@ -94,16 +94,16 @@ case class Segment(
         <g class={identifier.replace(' ', '_') + " " + (classes.map(_.replace(' ', '_')) mkString " ") }>
             <path class="segment"
                   fill={getColor}
+                  stroke={getColor}
                   d={calculatePath} />
             {if(showValueLabel) {
                 <path class="valuePath"
                       stroke={segmentLabelLineColor.toString()}
                       d={calculateLabelPath}/>
                 <text class="value"
-                      x={tlpx.toString}
+                      x={(tlpx + calculateValueLabelAnchorDirection * 5).toString}
                       y={tlpy.toString}
                       font-family={fontFamily}
-                      font-weight={fontWeight.toString}
                       font-size={fontSize.toString}
                       text-anchor={calculateValueLabelAnchor}>{value}</text>
                 }
@@ -206,8 +206,15 @@ case class Segment(
       * @return the anchor text for the value label
       */
     def calculateValueLabelAnchor: String = {
-        val direction = math.signum(Segment.calculateXCoordinate(calculateAvgAngle, 1))
+        val direction = calculateValueLabelAnchorDirection
         if(direction < 0) "end" else "start"
+    }
+
+    /**
+     * @return the signum of the x-coordinate of the angle used to display the label
+     */
+    def calculateValueLabelAnchorDirection: Double = {
+        math.signum(Segment.calculateXCoordinate(calculateAvgAngle, 1))
     }
 
     /**
