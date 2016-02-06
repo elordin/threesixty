@@ -1,6 +1,7 @@
 package threesixty.server
 
 import threesixty.persistence.cassandra.CassandraAdapter
+import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.ProcessingMethods.Accumulation.Accumulation
 import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.ProcessingMethods.TimeSelection.TimeSelection
@@ -50,7 +51,7 @@ object APIHandler {
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin
-            with scatterChart.Mixin and CassandraAdapter
+            with scatterChart.Mixin and FakeDatabaseAdapter
 
     def props: Props = Props(new APIHandler)
 }

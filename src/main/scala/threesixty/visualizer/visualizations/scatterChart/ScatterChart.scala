@@ -186,10 +186,8 @@ object ScatterChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    math.abs(xScale(xScale.step).toInt),
-                    math.abs(yScale(yScale.step).toInt),
-                    xOffset = xScale(xScale.nextBreakpoint(dataMinX)).toInt,
-                    yOffset = yScale(yScale.nextBreakpoint(dataMinY)).toInt
+                    yAxisLabels.map(_._2),
+                    yAxisLabels.map(_._2)
                     ))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,

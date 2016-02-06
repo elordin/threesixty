@@ -18,28 +18,24 @@ case class Grid(
     y: Int,
     width: Int,
     height: Int,
-    xGapSize: Int,
-    yGapSize: Int,
-    xOffset: Int = 0,
-    yOffset: Int = 0,
+    xPositions: Seq[Int],
+    yPositions: Seq[Int],
     hDashed: Boolean = true,
     vDashed: Boolean = true,
     hDashArray: String = "5, 5",
     vDashArray: String = "5, 5"
 ) extends Renderable {
-    require(xGapSize > 0, "Grid horizontal gap must be greater than zero.")
-    require(yGapSize > 0, "Grid vertical gap must be greater than zero.")
 
     def toSVG: Elem =
         <g class="grid">
             <g class="horizontal">
                 {
-                    for { currY <- Range(y + yOffset, y - height, -1 * xGapSize).inclusive } yield
+                    for { currY <- yPositions } yield
                         <line
                             fill="none"
                             stroke="#AAAAAA"
                             stroke-dasharray={ if (hDashed) hDashArray else "0" }
-                            x1={ x.toString }
+                            x1={ (x + currY).toString }
                             y1={ currY.toString }
                             x2={ (x + width).toString }
                             y2={ currY.toString } />
@@ -47,7 +43,7 @@ case class Grid(
             </g>
             <g class="vertical">
                 {
-                    for { currX <- Range(x + xOffset, width, yGapSize).inclusive } yield
+                    for { currX <- xPositions } yield
                         <line
                             fill="none"
                             stroke="#AAAAAA"

@@ -194,8 +194,8 @@ object BarChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    math.abs(config.chartWidth),
-                    math.abs(yScale(yScale.step).toInt)))
+                    Seq(),
+                    yAxisLabels.map(_._2)))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
