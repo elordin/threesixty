@@ -5,7 +5,7 @@ import threesixty.data.metadata.IncompleteInputMetadata
 
 import java.sql.{Timestamp => JSQLTimestamp}
 
-import threesixty.visualizer.util.Border
+import threesixty.visualizer.util.{OptBorder, Border}
 
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import spray.json._
@@ -89,7 +89,7 @@ object DataJsonProtocol extends DefaultJsonProtocol {
 
     implicit val timeframeJsonFormat = jsonFormat(Timeframe.apply, "start", "end")
 
-    implicit val borderJsonFormat = jsonFormat(Border.apply, "top", "bottom", "left", "right") //TODO: reicht das??
+    implicit val borderJsonFormat = jsonFormat(OptBorder.apply, "top", "bottom", "left", "right")
 
     implicit object ReliabilityJsonFormat extends JsonFormat[Reliability.Value] {
         def write(r: Reliability.Value) = JsString(r.toString)

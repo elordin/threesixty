@@ -244,7 +244,7 @@ case class ScatterChartConfig(
     val ids:                        Seq[Identifier],
     val height:                     Int,
     val width:                      Int,
-    val _border:                    Option[Border]      = None,
+    val _border:                    Option[OptBorder]      = None,
     val _colorScheme:               Option[String]      = None,
     val _title:                     Option[String]      = None,
     val _titleVerticalOffset:       Option[Int]         = None,
