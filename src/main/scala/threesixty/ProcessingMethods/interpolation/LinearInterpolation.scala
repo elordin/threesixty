@@ -11,13 +11,9 @@ import spray.json._
 import DefaultJsonProtocol._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
 object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixins {
@@ -72,13 +68,9 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-//             case _:HeatLineChartConfig      => 1.0
             case _:BarChartConfig           => 0.8
-//             case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.2
-//             case _:ScatterColorChartConfig  => 0.2
-//             case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.0
             //default
             case _                          => 0.5
@@ -131,11 +123,14 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
                     val m = ((v2.value - v1.value) / (t2 - t1))
                     val b = v1.value - m * t1
 
-                    def interpolFunc(x: Int): TaggedDataPoint =
+                    def interpolFunc(x: Long): TaggedDataPoint =
                         TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
 
+
+                    val diff: Int = (t2 - t1).toInt
+
                     TaggedDataPoint(t1, v1, tags1 + Original) ::
-                      Range(t1.toInt + frequency, t2.toInt, frequency).map(interpolFunc).toList ++
+                        (for { i <- 1 to diff / frequency } yield { interpolFunc(t1 + i * frequency) }).toList ++
                         linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
 
                 } else {
