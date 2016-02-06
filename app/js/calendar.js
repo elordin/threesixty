@@ -138,13 +138,20 @@ var requestText = {
     "visualization": {
         "type": "linechart",
         "args": {
-            "ids": ["25d89f4b-bf5e-4511-b986-7500d28b4000"],
+            "ids": ["1874ba06-24c5-4d04-9d8a-1afd0aee9b77"],
             "width": 330,
-            "height": 300
+            "height": 200,
+            "border": {
+                "top": 10, 
+                "bottom": 10, 
+                "left": 60, 
+                "right": 20
+            },
+            "xUnit": "7 days"
         }
     },
     "processor": [],
-    "data": ["25d89f4b-bf5e-4511-b986-7500d28b4000"]
+    "data": ["1874ba06-24c5-4d04-9d8a-1afd0aee9b77"]
 }
 
 requestText = JSON.stringify(requestText);

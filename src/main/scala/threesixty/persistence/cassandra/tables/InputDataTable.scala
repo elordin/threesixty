@@ -48,12 +48,6 @@ class InputDataTable extends CassandraTable[InputDatasets, InputData] {
 
 abstract class InputDatasets extends InputDataTable with RootConnector {
 
-    /**
-      * stores a given InputData in the database
-      * @param inputData which InputData to store
-      * @return returns an awaitable future object
-      *
-      * acts like controller who delegates storage of associated Metadata, too*/
     def store(inputData: InputData): Future[ResultSet] = {
         val inputMetadataId = UUID.randomUUID()
 

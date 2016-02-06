@@ -4,10 +4,7 @@ import threesixty.data.InputData
 import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.metadata.CompleteInputMetadata
 
-
 trait DatabaseAdapter {
-
-    // def getDatasetInRange(id:Identifier, from: Timestamp, to: Timestamp)
 
     /**
       * Retrieves a data set from the storage
@@ -42,6 +39,5 @@ trait DatabaseAdapter {
       * @return           Either the data set (Left) or an error message (Right)
       */
     def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData]
-
 
 }
