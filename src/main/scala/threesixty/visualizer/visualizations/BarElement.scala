@@ -33,13 +33,13 @@ case class BarElement(
     val value: String = "",
     val fontSize: Int = 12,
     val fontFamily: String = "Roboto, Segoe UI",
-    val color: Option[RGBColor] = None
+    val color: RGBColor = threesixty.visualizer.util.RGBColor.TRANSPARENT
   ) {
 
     /**
      * @return the string for the color or an empty string if no color was set
      */
-    private def getColor: String = color.map(_.toHexString).getOrElse("")
+    private def getColor: String = color.toHexString
 
     /**
      * @return the svg element for the bar

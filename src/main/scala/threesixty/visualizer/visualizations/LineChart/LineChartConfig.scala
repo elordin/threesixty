@@ -12,6 +12,7 @@ import threesixty.visualizer.{
     VisualizationMetadata,
     VisualizationMixins}
 import threesixty.visualizer.util._
+import ColorScheme.ColorSchemeJsonFormat
 
 import threesixty.visualizer.SVGXML
 
@@ -173,7 +174,7 @@ object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
 
             (<g class="data">
                 { for { dataset <- displayData } yield {
-                    val colorString: String = if(config.colorScheme.isDefined) config.colorScheme.get.next.toString else ""
+                    val colorString: String = config.colorScheme.next.toString
                     <g class={dataset.id}>
                         {if (config.radius > 0)
                             <g class={s"datapoints-${dataset.id}"}>
@@ -262,7 +263,7 @@ case class LineChartConfig(
     val height:                     Int,
     val width:                      Int,
     val _border:                    Option[Border]      = None,
-    val _colorScheme:               Option[String]      = None,
+    val _colorScheme:               Option[ColorScheme] = None,
     val _title:                     Option[String]      = None,
     val _titleVerticalOffset:       Option[Int]         = None,
     val _titleFontSize:             Option[Int]         = None,

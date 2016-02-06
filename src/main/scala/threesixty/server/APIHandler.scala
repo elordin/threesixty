@@ -51,7 +51,7 @@ object APIHandler {
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin
-            with scatterChart.Mixin and FakeDatabaseAdapter
+            with scatterChart.Mixin and CassandraAdapter
 
     def props: Props = Props(new APIHandler)
 }

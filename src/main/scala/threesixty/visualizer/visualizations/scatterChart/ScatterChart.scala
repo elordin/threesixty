@@ -7,6 +7,7 @@ import threesixty.data.metadata.Scaling
 import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
 import threesixty.visualizer.util._
+import ColorScheme.ColorSchemeJsonFormat
 
 import scala.xml.Elem
 import scala.annotation.tailrec
@@ -245,7 +246,7 @@ case class ScatterChartConfig(
     val height:                     Int,
     val width:                      Int,
     val _border:                    Option[Border]      = None,
-    val _colorScheme:               Option[String]      = None,
+    val _colorScheme:               Option[ColorScheme] = None,
     val _title:                     Option[String]      = None,
     val _titleVerticalOffset:       Option[Int]         = None,
     val _titleFontSize:             Option[Int]         = None,
@@ -256,8 +257,8 @@ case class ScatterChartConfig(
     val _fontSize:                  Option[Int]         = None,
     val _fontFamily:                Option[String]      = None,
 
-    val _xMin:                      Option[Double]   = None,
-    val _xMax:                      Option[Double]   = None,
+    val _xMin:                      Option[Double]      = None,
+    val _xMax:                      Option[Double]      = None,
     val _yMin:                      Option[Double]      = None,
     val _yMax:                      Option[Double]      = None,
     val _xUnit:                     Option[Double]      = None,

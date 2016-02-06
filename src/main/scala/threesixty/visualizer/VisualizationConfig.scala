@@ -3,7 +3,7 @@ package threesixty.visualizer
 import threesixty.data.{InputData, DataPool}
 import threesixty.data.Data.Identifier
 import threesixty.processor.{ProcessingStep, ProcessingMethod}
-import threesixty.visualizer.util.{Border, LegendPositionType, ColorScheme, Legend}
+import threesixty.visualizer.util.{Border, LegendPositionType, ColorScheme, DefaultColorScheme, Legend}
 
 /**
  * Generic Configuration for a [[threesixty.visualizer.Visualization]].
@@ -32,59 +32,44 @@ abstract class VisualizationConfig(
     ids:                        Seq[Identifier],
     height:                     Int,
     width:                      Int,
-    _border:                    Option[Border]  = None,
-    _colorScheme:               Option[String]  = None,
-    _title:                     Option[String]  = None,
-    _titleVerticalOffset:       Option[Int]     = None,
-    _titleFontSize:             Option[Int]     = None,
-    _xLabel:                    Option[String]  = None,
-    _yLabel:                    Option[String]  = None,
-    _minPxBetweenXGridPoints:   Option[Int]     = None,
-    _minPxBetweenYGridPoints:   Option[Int]     = None,
-    _fontSize:                  Option[Int]     = None,
-    _fontFamily:                Option[String]  = None,
-    _legendPosition:            Option[String]  = None,
-    _legendHorizontalOffset:    Option[Int]     = None,
-    _legendVerticalOffset:      Option[Int]     = None,
-    _legendSymbolWidth:         Option[Int]     = None
+    _border:                    Option[Border]      = None,
+    _colorScheme:               Option[ColorScheme] = None,
+    _title:                     Option[String]      = None,
+    _titleVerticalOffset:       Option[Int]         = None,
+    _titleFontSize:             Option[Int]         = None,
+    _xLabel:                    Option[String]      = None,
+    _yLabel:                    Option[String]      = None,
+    _minPxBetweenXGridPoints:   Option[Int]         = None,
+    _minPxBetweenYGridPoints:   Option[Int]         = None,
+    _fontSize:                  Option[Int]         = None,
+    _fontFamily:                Option[String]      = None,
+    _legendPosition:            Option[String]      = None,
+    _legendHorizontalOffset:    Option[Int]         = None,
+    _legendVerticalOffset:      Option[Int]         = None,
+    _legendSymbolWidth:         Option[Int]         = None
 ) extends Function1[DataPool, Visualization] {
 
     require(height > 0, "Value for height must be greater than 0.")
     require(width > 0, "Value for width must be greater than 0.")
 
-    /**
-      * @return the default value for borderTop
-      */
-    def borderTopDefault: Int = 100
-
-    /**
-      * @return the default value for borderBottom
-      */
-    def borderBottomDefault: Int = 50
-
-    /**
-      * @return the default value for borderLeft
-      */
-    def borderLeftDefault: Int = 50
-
-    /**
-      * @return the default value for borderRight
-      */
-    def borderRightDefault: Int = 50
+    val BORDER_TOP_DEFAULT: Int = 100
+    val BORDER_BOTTOM_DEFAULT: Int = 50
+    val BORDER_LEFT_DEFAULT: Int = 50
+    val BORDER_RIGHT_DEFAULT: Int = 50
 
     /**
      * @return the border
      */
-    def border: Border = _border.getOrElse(Border(
-        top = borderTopDefault,
-        bottom = borderBottomDefault,
-        left = borderLeftDefault,
-        right = borderRightDefault))
+    def border:Border = _border.getOrElse(Border(
+        top = BORDER_TOP_DEFAULT,
+        bottom = BORDER_BOTTOM_DEFAULT,
+        left = BORDER_LEFT_DEFAULT,
+        right = BORDER_RIGHT_DEFAULT))
 
     /**
      * @return the color scheme
      */
-    def colorScheme: Option[ColorScheme] = ColorScheme.getColorScheme(_colorScheme.getOrElse("default"))
+    def colorScheme: ColorScheme = _colorScheme.getOrElse(DefaultColorScheme)
 
     /**
      * @return the default vertical offset of the title

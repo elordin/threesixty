@@ -1,9 +1,15 @@
 package threesixty.visualizer.util
 
+import spray.json._
+
 
 object RGBColor {
     val BLACK = RGBColor(0, 0, 0)
     val WHITE = RGBColor(255, 255, 255)
+    object TRANSPARENT extends RGBColor(255, 255, 255) {
+        override def toString(): String = "transparent"
+        override def toHexString: String = toString
+    }
 
     @throws[NumberFormatException]
     def apply(hex: String):RGBColor = apply(Integer.parseInt(hex, 16))
@@ -19,20 +25,21 @@ case class RGBColor(red: Int, green: Int, blue: Int) {
 }
 
 object ColorScheme {
-    def getColorScheme(name: String): Option[ColorScheme] = {
-        val colorScheme = name.toLowerCase match {
-            case "none" => None
-            case "blue" => Some(BlueColorScheme)
-            case "red" => Some(RedColorScheme)
-            case "green" => Some(GreenColorScheme)
-            case "yellow" => Some(YellowColorScheme)
-            case "orange" => Some(OrangeColorScheme)
-            case "purple" => Some(PurpleColorScheme)
-            case "pink" => Some(PinkColorScheme)
-            case _ => Some(DefaultColorScheme)
-        }
+    implicit object ColorSchemeJsonFormat extends JsonFormat[ColorScheme] {
+        def write(cs: ColorScheme) = JsArray(cs.colors.map { c: RGBColor => JsString(c.toHexString) }: _*)
 
-        colorScheme
+        def read(v: JsValue) = v match {
+            case JsString("default") => DefaultColorScheme
+            case JsString("default") => TransparentColorScheme
+            case JsString("blue")    => BlueColorScheme
+            case JsString("red")     => RedColorScheme
+            case JsString("green")   => GreenColorScheme
+            case JsString("yellow")  => YellowColorScheme
+            case JsString("orange")  => OrangeColorScheme
+            case JsString("purple")  => PurpleColorScheme
+            case JsString("pink")    => PinkColorScheme
+            case _ => deserializationError("Unknown color scheme. Consider using 'default' instead.")
+        }
     }
 }
 
@@ -44,7 +51,7 @@ object ColorScheme {
  *      ColorSchem(15) // returns a list of 15 colors
  *  }}}
  */
-trait ColorScheme extends Iterator[RGBColor] {
+trait ColorScheme             extends Iterator[RGBColor] {
     def colors: Seq[RGBColor]
 
     lazy val infiniteColors: Stream[RGBColor] = Stream.continually(colors.toStream).flatten
@@ -56,7 +63,7 @@ trait ColorScheme extends Iterator[RGBColor] {
 }
 
 
-object DefaultColorScheme extends ColorScheme {
+object DefaultColorScheme     extends ColorScheme {
     def colors = Seq(
             RGBColor("F44336"),
             RGBColor("E91E63"),
@@ -77,7 +84,7 @@ object DefaultColorScheme extends ColorScheme {
         )
 }
 
-object BlueColorScheme    extends ColorScheme {
+object BlueColorScheme        extends ColorScheme {
     def colors = Seq(
         RGBColor(0xE8EAF6),
         RGBColor(0xC5CAE9),
@@ -92,7 +99,7 @@ object BlueColorScheme    extends ColorScheme {
     )
 }
 
-object RedColorScheme       extends ColorScheme {
+object RedColorScheme         extends ColorScheme {
     def colors = Seq(
         RGBColor(0xFFEBEE),
         RGBColor(0xFFCDD2),
@@ -107,7 +114,7 @@ object RedColorScheme       extends ColorScheme {
     )
 }
 
-object GreenColorScheme     extends ColorScheme {
+object GreenColorScheme       extends ColorScheme {
     def colors = Seq(
         RGBColor(0xE8F5E9),
         RGBColor(0xC8E6C9),
@@ -122,7 +129,7 @@ object GreenColorScheme     extends ColorScheme {
     )
 }
 
-object YellowColorScheme    extends ColorScheme {
+object YellowColorScheme      extends ColorScheme {
     def colors = Seq(
         RGBColor(0xFFFDE7),
         RGBColor(0xFFF9C4),
@@ -137,7 +144,7 @@ object YellowColorScheme    extends ColorScheme {
     )
 }
 
-object OrangeColorScheme    extends ColorScheme {
+object OrangeColorScheme      extends ColorScheme {
     def colors = Seq(
         RGBColor(0xFFF3E0),
         RGBColor(0xFFE0B2),
@@ -152,7 +159,7 @@ object OrangeColorScheme    extends ColorScheme {
     )
 }
 
-object PurpleColorScheme    extends ColorScheme {
+object PurpleColorScheme      extends ColorScheme {
     def colors = Seq(
         RGBColor(0xF3E5F5),
         RGBColor(0xE1BEE7),
@@ -167,7 +174,7 @@ object PurpleColorScheme    extends ColorScheme {
     )
 }
 
-object PinkColorScheme      extends ColorScheme {
+object PinkColorScheme        extends ColorScheme {
     def colors = Seq(
         RGBColor(0xFCE4EC),
         RGBColor(0xF8BBD0),
@@ -180,4 +187,8 @@ object PinkColorScheme      extends ColorScheme {
         RGBColor(0xAD1457),
         RGBColor(0x880E4F)
     )
+}
+
+object TransparentColorScheme extends ColorScheme {
+    def colors = Seq(RGBColor.TRANSPARENT)
 }

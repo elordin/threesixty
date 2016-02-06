@@ -7,8 +7,11 @@ import threesixty.data.tags.{Tag, AggregationTag}
 import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
 import threesixty.visualizer.util._
-import spray.json._
 import threesixty.visualizer.visualizations.BarElement
+import ColorScheme.ColorSchemeJsonFormat
+
+import spray.json._
+
 import scala.annotation.tailrec
 import scala.xml.Elem
 
@@ -156,7 +159,7 @@ object BarChartConfig extends VisualizationCompanion {
 
             for(point <- displayData.dataPoints) {
                 val description = point.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString
-                val color = if(config.colorScheme.isDefined) Some(config.colorScheme.get.next) else None
+                val color = config.colorScheme.next
 
                 var element = new BarElement(
                     identifier = description,
@@ -246,23 +249,23 @@ case class BarChartConfig(
     val ids:                        Seq[Identifier],
     val height:                     Int,
     val width:                      Int,
-    val _border:                    Option[Border]  = None,
-    val _colorScheme:               Option[String]  = None,
-    val _title:                     Option[String]  = None,
-    val _titleVerticalOffset:       Option[Int]     = None,
-    val _titleFontSize:             Option[Int]     = None,
-    val _xLabel:                    Option[String]  = None,
-    val _yLabel:                    Option[String]  = None,
-    val _minPxBetweenYGridPoints:   Option[Int]     = None,
-    val _fontSize:                  Option[Int]     = None,
-    val _fontFamily:                Option[String]  = None,
+    val _border:                    Option[Border]      = None,
+    val _colorScheme:               Option[ColorScheme] = None,
+    val _title:                     Option[String]      = None,
+    val _titleVerticalOffset:       Option[Int]         = None,
+    val _titleFontSize:             Option[Int]         = None,
+    val _xLabel:                    Option[String]      = None,
+    val _yLabel:                    Option[String]      = None,
+    val _minPxBetweenYGridPoints:   Option[Int]         = None,
+    val _fontSize:                  Option[Int]         = None,
+    val _fontFamily:                Option[String]      = None,
 
-    val _yMin:                      Option[Double] = None,
-    val _yMax:                      Option[Double] = None,
-    val _yUnit:                     Option[Double] = None,
-    val _widthBar:                  Option[Double] = None,
-    val _distanceBetweenBars:       Option[Double] = None,
-    val _showValues:                Option[Boolean]= None
+    val _yMin:                      Option[Double]      = None,
+    val _yMax:                      Option[Double]      = None,
+    val _yUnit:                     Option[Double]      = None,
+    val _widthBar:                  Option[Double]      = None,
+    val _distanceBetweenBars:       Option[Double]      = None,
+    val _showValues:                Option[Boolean]     = None
 ) extends VisualizationConfig(
     ids = ids,
     height = height,
