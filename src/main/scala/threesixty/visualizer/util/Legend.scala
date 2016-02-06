@@ -34,7 +34,7 @@ object Legend {
 case class Legend(x: Int,
                   y: Int,
                   symbolWidth: Int,
-                  labels: Seq[(String, Option[RGBColor])],
+                  labels: Seq[(String, RGBColor)],
                   labelSize: Int = 12,
                   labelFontFamily: String = "Roboto, Segoe UI",
                   labelFontWeight: Int = 100
@@ -53,22 +53,15 @@ case class Legend(x: Int,
             " L " + x + " " + (yTop + symbolWidth)
     }
 
-    /**
-     * @param color the optional color
-     * @return the color string
-     */
-    private def toColorString(color: Option[RGBColor]): String = {
-        color.map(_.toString()).getOrElse("")
-    }
 
     def toSVG: Elem = {
         <g class="legend">
             {for (i <- 0 until labels.size) yield
                 <g class={"Legend" + labels(i)._1.replace(' ', '_')}>
                     <path d={calculateLegendRectangle(i)}
-                          stroke={toColorString(labels(i)._2)}
+                          stroke={ labels(i)._2.toString }
                           stroke-width="0"
-                          fill={toColorString(labels(i)._2)}/>
+                          fill={ labels(i)._2.toString }/>
                     <text x={(x + 2*symbolWidth).toString}
                           y={(y + (2 * i + 1) * symbolWidth).toString}
                           font-family={labelFontFamily}

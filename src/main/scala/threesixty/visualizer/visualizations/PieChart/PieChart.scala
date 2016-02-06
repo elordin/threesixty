@@ -9,6 +9,7 @@ import threesixty.visualizer._
 import threesixty.visualizer.util.LegendPositionType.LegendPosition
 import threesixty.visualizer.visualizations.Segment
 import threesixty.visualizer.util._
+import ColorScheme.ColorSchemeJsonFormat
 
 import scala.xml.Elem
 
@@ -260,7 +261,7 @@ object PieChartConfig extends VisualizationCompanion {
                 val end = sAngle
 
                 val value = if(config.showValues) valueMap.get(entry._1).get else math.round(1000*entry._2)/10.0 + " %"
-                val color = if(config.colorScheme.isDefined) Some(config.colorScheme.get.next) else None
+                val color = config.colorScheme.next
 
                 val segment = new Segment(
                     identifier = entry._1,
@@ -352,26 +353,26 @@ case class PieChartConfig(
     val ids:                        Seq[Identifier],
     val height:                     Int,
     val width:                      Int,
-    val _border:                    Option[Border]     = None,
-    val _colorScheme:               Option[String]  = None,
-    val _title:                     Option[String]  = None,
-    val _titleVerticalOffset:       Option[Int]     = None,
-    val _titleFontSize:             Option[Int]     = None,
-    val _fontSize:                  Option[Int]     = None,
-    val _fontFamily:                Option[String]  = None,
-    val _legendPosition:            Option[String]  = None,
-    val _legendHorizontalOffset:    Option[Int]     = None,
-    val _legendVerticalOffset:      Option[Int]     = None,
-    val _legendSymbolWidth:         Option[Int]     = None,
+    val _border:                    Option[Border]      = None,
+    val _colorScheme:               Option[ColorScheme] = None,
+    val _title:                     Option[String]      = None,
+    val _titleVerticalOffset:       Option[Int]         = None,
+    val _titleFontSize:             Option[Int]         = None,
+    val _fontSize:                  Option[Int]         = None,
+    val _fontFamily:                Option[String]      = None,
+    val _legendPosition:            Option[String]      = None,
+    val _legendHorizontalOffset:    Option[Int]         = None,
+    val _legendVerticalOffset:      Option[Int]         = None,
+    val _legendSymbolWidth:         Option[Int]         = None,
 
-    val _showSegmentLabels:         Option[Boolean] = None,
-    val _valueLabelRadiusPercent:   Option[Double]  = None,
-    val _segmentLabelLineColor:     Option[String]  = None,
-    val _showValues:                Option[Boolean] = None,
-    val _angleStart:                Option[Int]     = None,
-    val _angleEnd:                  Option[Int]     = None,
-    val _radius:                    Option[Double]  = None,
-    val _innerRadiusPercent:        Option[Double]  = None
+    val _showSegmentLabels:         Option[Boolean]     = None,
+    val _valueLabelRadiusPercent:   Option[Double]      = None,
+    val _segmentLabelLineColor:     Option[String]      = None,
+    val _showValues:                Option[Boolean]     = None,
+    val _angleStart:                Option[Int]         = None,
+    val _angleEnd:                  Option[Int]         = None,
+    val _radius:                    Option[Double]      = None,
+    val _innerRadiusPercent:        Option[Double]      = None
 ) extends VisualizationConfig(
     ids = ids,
     height = height,
@@ -388,15 +389,9 @@ case class PieChartConfig(
     _legendVerticalOffset = _legendVerticalOffset,
     _legendSymbolWidth = _legendSymbolWidth) {
 
-    /**
-     * @return a default value for borderTop
-     */
-    override def borderTopDefault: Int = 100
+    override val BORDER_TOP_DEFAULT: Int = 100
 
-    /**
-     * @return a default value for borderRight
-     */
-    override def borderRightDefault: Int = 150
+    override val BORDER_RIGHT_DEFAULT: Int = 150
 
     /**
      * @return the default legend position

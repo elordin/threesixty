@@ -82,7 +82,7 @@ case class Segment(
     val fontSize: Int = 12,
     val fontFamily: String = "Roboto, Segoe UI",
     val fontWeight: Int = 100,
-    val color: Option[RGBColor] = None
+    val color: RGBColor = RGBColor.TRANSPARENT
   ) {
 
     /**
@@ -93,8 +93,8 @@ case class Segment(
 
         <g class={identifier.replace(' ', '_') + " " + (classes.map(_.replace(' ', '_')) mkString " ") }>
             <path class="segment"
-                  fill={getColor}
-                  stroke={getColor}
+                  fill={ color.toString }
+                  stroke={ color.toString }
                   d={calculatePath} />
             {if(showValueLabel) {
                 <path class="valuePath"
@@ -111,12 +111,6 @@ case class Segment(
         </g>
     }
 
-    /**
-      * @return the string for the color or an empty string if no color was set
-      */
-    def getColor: String = {
-        if(color.isDefined) color.get.toHexString else ""
-    }
 
     /**
       * @return the angle difference
