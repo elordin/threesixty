@@ -30,13 +30,6 @@ object APIHandler {
 
     val config: Config = ConfigFactory.load
 
-    @throws[ConfigException]("if config doesn't contain database.address") // TODO
-    val dbAddress: String =
-        config.getString("database.address")
-    @throws[ConfigException]("if config doesn't contain database.keyspace") // TODO
-    val dbKeyspace: String =
-        config.getString("database.keyspace")
-
     val debug: Boolean = try {
         config.getBoolean("debug")
     } catch {

@@ -1,7 +1,7 @@
 package threesixty.visualizer.visualizations.barChart
 
 import org.scalatest.FunSpec
-import threesixty.visualizer.util.{DefaultColorScheme, GreenColorScheme, Border}
+import threesixty.visualizer.util.{GreenColorScheme, DefaultColorScheme, Border}
 
 class BarChartConversionTestSpec extends FunSpec {
 
@@ -73,7 +73,7 @@ class BarChartConversionTestSpec extends FunSpec {
 
         it("should have the default values where none were given") {
             val convertedConfig = BarChartConfig(jsonString)
-            assert(convertedConfig.colorScheme == Some(DefaultColorScheme))
+            assert(convertedConfig.colorScheme == DefaultColorScheme)
             assert(convertedConfig.titleVerticalOffset == 20)
             assert(convertedConfig.xLabel == "")
             assert(convertedConfig.minPxBetweenYGridPoints == 20)
