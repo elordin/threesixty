@@ -28,17 +28,20 @@ object ColorScheme {
     implicit object ColorSchemeJsonFormat extends JsonFormat[ColorScheme] {
         def write(cs: ColorScheme) = JsArray(cs.colors.map { c: RGBColor => JsString(c.toHexString) }: _*)
 
-        def read(v: JsValue) = v match {
-            case JsString("default") => DefaultColorScheme
-            case JsString("default") => TransparentColorScheme
-            case JsString("blue")    => BlueColorScheme
-            case JsString("red")     => RedColorScheme
-            case JsString("green")   => GreenColorScheme
-            case JsString("yellow")  => YellowColorScheme
-            case JsString("orange")  => OrangeColorScheme
-            case JsString("purple")  => PurpleColorScheme
-            case JsString("pink")    => PinkColorScheme
-            case _ => deserializationError("Unknown color scheme. Consider using 'default' instead.")
+        def read(js: JsValue): ColorScheme = js match {
+            case JsString(s) => s.toLowerCase match {
+                case "default"      => DefaultColorScheme
+                case "transparent"  => TransparentColorScheme
+                case "blue"         => BlueColorScheme
+                case "red"          => RedColorScheme
+                case "green"        => GreenColorScheme
+                case "yellow"       => YellowColorScheme
+                case "orange"       => OrangeColorScheme
+                case "purple"       => PurpleColorScheme
+                case "pink"         => PinkColorScheme
+                case _ => deserializationError("Unknown color scheme. Consider using 'default' instead.")
+            }
+            case _ => deserializationError("Invalid color scheme format.")
         }
     }
 }
