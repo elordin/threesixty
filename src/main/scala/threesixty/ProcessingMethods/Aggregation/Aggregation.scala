@@ -168,6 +168,10 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
         } else {
 
             val grouped = param match {
+                case "minute" =>
+                    data.dataPoints.groupBy( _.timestamp.getMinutes )
+                case "hour" =>
+                    data.dataPoints.groupBy( _.timestamp.getHours )
                 case "weekday" =>
                     data.dataPoints.groupBy( _.timestamp.getDay )
                 case "day" =>
@@ -179,7 +183,7 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
                 case "enum" =>
                     data.dataPoints.groupBy( _.value.value )
                 case default =>
-                    throw new IllegalArgumentException("Not matching argument given like 'weekday', 'month', 'year' BUT got: " + param )
+                    throw new IllegalArgumentException("Not matching argument given like 'minute', 'hour', 'weekday', 'month', 'year' BUT got: " + param )
             }
 
             var l = List[TaggedDataPoint]()
