@@ -23,11 +23,6 @@ class TimeframesTableTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autocreate.future(), Duration.Inf)
     }
 
-    override def afterAll(): Unit = {
-        super.afterAll()
-        Await.result(CassandraAdapter.autotruncate().future(), Duration.Inf)
-    }
-
     describe("Inserting a new time frame") {
         it("should store and load the time frame correctly") {
 

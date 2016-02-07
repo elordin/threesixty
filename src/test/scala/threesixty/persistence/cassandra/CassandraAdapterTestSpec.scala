@@ -45,11 +45,6 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autocreate().future(), Duration.Inf)
     }
 
-    override def afterAll(): Unit = {
-        super.afterAll()
-        Await.result(CassandraAdapter.autotruncate().future(), Duration.Inf)
-    }
-
     describe("inserting a new input data set") {
         it("should store and load the input data set correctly") {
 
@@ -118,5 +113,4 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
             }
         }
     }
-
 }

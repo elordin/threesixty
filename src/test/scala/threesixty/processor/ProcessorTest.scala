@@ -50,7 +50,7 @@ class ProcessorTestSpec extends FunSpec {
                         def insertData(data:InputData):Either[String, Identifier] = ???
                         def getMetadata(identifier: Identifier):Option[CompleteInputMetadata] = ???
                         def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
-                        def getSkeleton(identifier: threesixty.data.Data.Identifier): Option[InputDataSkeleton] = Some(sampleSkeleton)
+                        def getSkeleton(identifier: threesixty.data.Data.Identifier): Either[String, InputDataSkeleton] = Right(sampleSkeleton)
                     })
 
                 pool.pushData(Set[ProcessedData](sampleData))

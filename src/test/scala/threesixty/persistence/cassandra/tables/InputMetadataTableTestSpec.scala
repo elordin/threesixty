@@ -23,11 +23,6 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
         Await.result(CassandraAdapter.autocreate.future(), Duration.Inf)
     }
 
-    override def afterAll(): Unit = {
-        super.afterAll()
-        Await.result(CassandraAdapter.autotruncate().future(), Duration.Inf)
-    }
-
     describe("Inserting an input metadata set") {
         it("should store and load the input metadata set correctly") {
 
