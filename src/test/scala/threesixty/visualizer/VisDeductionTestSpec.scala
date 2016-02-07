@@ -51,7 +51,7 @@ class VisDeductionTestSpec extends  FunSpec {
     val inputDataSkeleton1 = new InputDataSkeleton(identifier1.toString, measurement, inputMetadata.copy(size = dataPoints.length + 1))
 
     val inputDataSet0 = inputDataSkeleton0.fill(List(firstDataPoint, secondDataPoint, thirdDataPoint, fourthDataPoint))
-    val inputDataSet1 = inputDataSkeleton1.fill(List(firstDataPoint, secondDataPoint, thirdDataPoint, fourthDataPoint))
+    val inputDataSet1 = inputDataSkeleton1.fill(List(firstDataPoint, secondDataPoint, thirdDataPoint, fourthDataPoint, fifththDataPoint))
 
     //creating example Visualizations
     val lineChart = LineChartConfig(
