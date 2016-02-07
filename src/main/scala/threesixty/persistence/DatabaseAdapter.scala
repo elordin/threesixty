@@ -28,7 +28,7 @@ trait DatabaseAdapter {
      *  @param identifier ID of data whose metadata is requested
      *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
      */
-    def getSkeleton(identifier: Identifier) : Option[InputDataSkeleton]
+    def getSkeleton(identifier: Identifier) : Either[String, InputDataSkeleton]
 
     /**
       * Retrieves a data set for a specific time range from the storage

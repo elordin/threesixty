@@ -1,6 +1,6 @@
 package threesixty.data
 
-import threesixty.data.Data.Identifier
+import threesixty.data.Data.{Identifier, Timestamp, DoubleValue}
 
 import threesixty.persistence.DatabaseAdapter
 
@@ -25,20 +25,31 @@ class DataPool(
 
     /** Reduces the amount of datapoints. */
     def prune(input: InputDataLike): InputDataLike = {
-        if (input.metadata.size > SIZE_THRESHOLD) {
-            val prunedDatapoints = ??? // TODO
+        if (input.dataPoints.size > SIZE_THRESHOLD) {
+            val groupSize = math.ceil(input.dataPoints.size / SIZE_THRESHOLD).toInt
+            val prunedDatapoints = input.dataPoints.grouped(groupSize).map({
+                pts => val (sumTime, sumValue) = pts.tail.foldLeft(
+                        (pts.head.timestamp.getTime, pts.head.value.value)
+                    )({
+                        (init, current) => (
+                            init._1 + current.timestamp.getTime,
+                            init._2 + current.value.value)
+                    })
+                    DataPoint(new Timestamp(sumTime / groupSize), DoubleValue(sumValue / groupSize))
+            }).toList
             InputDataSubset(
                 input.id,
                 input.measurement,
                 prunedDatapoints,
                 input.metadata,
-                ???,
-                ???
+                input.metadata.timeframe.start,
+                input.metadata.timeframe.end
             )
         } else {
             input
         }
     }
+
 
     // get data from db
     val inputDatasets: Seq[InputDataLike] =

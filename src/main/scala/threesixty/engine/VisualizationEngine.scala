@@ -236,6 +236,7 @@ VISUALIZATION
         }
 
         val procStratOption: Option[ProcessingStrategy] = try {
+
             json.fields.get("processor").map {
                 proc: JsValue => processor.toProcessingStrategy(proc.toString)
             }
@@ -249,23 +250,26 @@ VISUALIZATION
         val wrappedIDoption: Option[Seq[JsValue]] = json.fields.get("data").map(_.convertTo[Seq[JsValue]])
 
         val skeletonsOption: Option[Seq[InputDataSkeleton]] = wrappedIDoption.map(_.map {
-            case JsString(id) => dbAdapter.getSkeleton(id).getOrElse(
-                    return ErrorResponse(Engine.toErrorJson(s"No data for $id not found.").toString)
-                )
+            case JsString(id) => dbAdapter.getSkeleton(id) match {
+                    case Right(skeleton) => skeleton
+                    case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                }
             case jso:JsObject => {
                 val id = jso.fields.getOrElse("id",
                     return ErrorResponse(Engine.toErrorJson("Malformed entry in datalist."))
                 ).convertTo[Identifier]
                 if ((jso.fields contains "from") || (jso.fields contains "to")) {
-                    dbAdapter.getSkeleton(id).map(_.subset(
-                        jso.fields.get("from").map(_.convertTo[Timestamp]),
-                        jso.fields.get("to").map(_.convertTo[Timestamp]))).getOrElse(
-                        return ErrorResponse(Engine.toErrorJson(s"No data for $id not found.").toString)
-                    )
+                    dbAdapter.getSkeleton(id) match {
+                            case Right(skeleton) => skeleton.subset(
+                                jso.fields.get("from").map(_.convertTo[Timestamp]),
+                                jso.fields.get("to").map(_.convertTo[Timestamp]))
+                            case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                        }
                 } else {
-                    dbAdapter.getSkeleton(id).getOrElse(
-                        return ErrorResponse(Engine.toErrorJson(s"No data for $id not found.").toString)
-                    )
+                    dbAdapter.getSkeleton(id) match {
+                        case Right(skeleton) => skeleton
+                        case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                    }
                 }
             }
             case _ => return ErrorResponse(Engine.toErrorJson("Malformed entry in datalist."))
@@ -282,9 +286,10 @@ VISUALIZATION
                     // Load Metadata
                     val skeletons: Seq[InputDataSkeleton] = procStrat.steps flatMap {
                         step: ProcessingStep => step.method.idMapping.keys map {
-                            id: Identifier => dbAdapter.getSkeleton(id).getOrElse {
-                                    return ErrorResponse(Engine.toErrorJson(s"No data for $id found."))
-                                }
+                            id: Identifier => dbAdapter.getSkeleton(id)match {
+                                case Right(skeleton) => skeleton
+                                case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                            }
                         } toSeq
                     }
                     (procStrat, visualizer.deduce(procStrat, skeletons: _*))
@@ -299,9 +304,13 @@ VISUALIZATION
             }
 
 
-        val skeletons: Seq[InputDataSkeleton] = ???
+        // val skeletons: Seq[InputDataSkeleton] = processingStrategy.steps flatMap {
+        //     step => step.method.idMapping.keys
+        // }
 
-        val dataPool: DataPool = new DataPool(skeletons, dbAdapter)
+        val dataPool: DataPool = new DataPool(skeletonsOption.getOrElse(
+            return ErrorResponse(Engine.toErrorJson("Malformed or missing entry in datalist."))
+        ), dbAdapter)
 
         // Apply processing Methods
         processingStrategy(dataPool)
