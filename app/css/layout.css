@@ -20,7 +20,7 @@ aside {
     float: left;
     background: #323232;
     width: 64px;
-    height: 100%;
+    min-height: 100%;
     position: absolute;
 }
 
@@ -38,7 +38,6 @@ main {
     margin-left: 64px;
     padding-left: 28px;
 }
-
 
 
 
@@ -139,6 +138,22 @@ aside a.selected {
     height: 64px;
 }
 
+#menu-container {
+    height: calc(100vh - 64px);
+    min-height: 100%;
+}
+
+#nav-item-container {
+    overflow: auto;
+    padding-bottom: 64px;
+}
+
+#add-data {
+    position: relative;
+    height: 64px;
+    clear: both;
+}
+
 
 
 /* ****************** */
@@ -155,3 +170,22 @@ main h2 {
     font-size: 0.9em;
     font-weight: 400;
 }
+
+
+
+/* ****************** */
+/*       Footer       */
+/* ****************** */
+
+
+
+
+
+/* ****************** */
+/*   Media Queries    */
+/* ****************** */
+
+@media screen and (min-width: 800px) {
+    
+}
+
