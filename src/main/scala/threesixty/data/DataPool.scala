@@ -24,6 +24,7 @@ class DataPool(
     val SIZE_THRESHOLD = 100000
 
     /** Reduces the amount of datapoints. */
+/*
     def prune(input: InputDataLike): InputDataLike = {
         if (input.metadata.size > SIZE_THRESHOLD) {
             val prunedDatapoints = ??? // TODO
@@ -39,18 +40,19 @@ class DataPool(
             input
         }
     }
+*/
 
     // get data from db
     val inputDatasets: Seq[InputDataLike] =
         skeletons.distinct.map {
             case subsetSkeleton: InputDataSubsetSkeleton =>
                 databaseAdapter.getDatasetInRange(subsetSkeleton.id, subsetSkeleton.from, subsetSkeleton.to) match {
-                    case Right(subset: InputDataSubset) => prune(subset)
+                    case Right(subset: InputDataSubset) => subset
                     case Left(error: String)   => throw new NoSuchElementException(error)
                 }
             case fullsetSkeleton: InputDataSkeleton =>
                 databaseAdapter.getDataset(fullsetSkeleton.id) match {
-                    case Right(fullset: InputData) => prune(fullset)
+                    case Right(fullset: InputData) => fullset
                     case Left(error: String)    => throw new NoSuchElementException(error)
                 }
         }

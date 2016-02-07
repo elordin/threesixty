@@ -299,9 +299,13 @@ VISUALIZATION
             }
 
 
-        val skeletons: Seq[InputDataSkeleton] = ???
+        // val skeletons: Seq[InputDataSkeleton] = processingStrategy.steps flatMap {
+        //     step => step.method.idMapping.keys
+        // }
 
-        val dataPool: DataPool = new DataPool(skeletons, dbAdapter)
+        val dataPool: DataPool = new DataPool(skeletonsOption.getOrElse(
+            return ErrorResponse(Engine.toErrorJson("Malformed or missing entry in datalist."))
+        ), dbAdapter)
 
         // Apply processing Methods
         processingStrategy(dataPool)

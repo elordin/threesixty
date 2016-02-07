@@ -51,26 +51,6 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         }
     }
 
-    /**
-      *  Gets only the metadata for a datset with given ID.
-      *
-      *  @param identifier ID of data whose metadata is requested
-      *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
-      */
-    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] = {
-        Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(UUID.fromString(identifier)), Duration.Inf)
-    }
-
-    /**
-      * Retrieves a data set for a specific time range from the storage
-      *
-      * @param identifier Identifier of data to retreive
-      * @param from       The start timestamp of the range
-      * @param to         The end timestamp of the range
-      * @return           Either the data set (Left) or an error message (Right)
-      */
-    def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData] = ???
-
 
 
     /*
@@ -131,8 +111,28 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Await.result(CassandraAdapter.timeframes.updateTimeframe(timeframeID.get, newStart, newEnd), Duration.Inf)
     }
 
-
+    /**
+      * Retrieves a data set for a specific time range from the storage
+      *
+      * @param identifier Identifier of data to retreive
+      * @param from       The start timestamp of the range
+      * @param to         The end timestamp of the range
+      * @return           Either the data set (Left) or an error message (Right)
+      */
     def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
+
+
+
+    /**
+      *  Gets only the metadata for a datset with given ID.
+      *
+      *  @param identifier ID of data whose metadata is requested
+      *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
+      */
+    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] = {
+        Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(UUID.fromString(identifier)), Duration.Inf)
+    }
+
     def getSkeleton(identifier: threesixty.data.Data.Identifier): Option[threesixty.data.InputDataSkeleton] = ???
 }
 
