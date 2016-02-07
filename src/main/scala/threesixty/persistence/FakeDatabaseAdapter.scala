@@ -144,8 +144,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
 
 
-    def getSkeleton(identifier: Identifier) : Option[InputDataSkeleton] =
+    def getSkeleton(identifier: Identifier) : Either[String, InputDataSkeleton] =
         database.get(identifier).map {
-            i: InputData => new InputDataSkeleton(i.id, i.measurement, i.metadata)
-        }
+            i: InputData => Right(new InputDataSkeleton(i.id, i.measurement, i.metadata))
+        } getOrElse Left(s"No data for $identifier")
 }

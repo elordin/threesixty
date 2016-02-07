@@ -49,6 +49,9 @@ class InputDataSkeleton(
         new InputDataSubsetSkeleton(id, measurement, metadata,
             from.getOrElse(metadata.timeframe.start),
             to.getOrElse(metadata.timeframe.end))
+
+    def fill(dataPoints: List[DataPoint]): InputData =
+        InputData(id, measurement, dataPoints, metadata)
 }
 /*
 object InputDataSkeleton {

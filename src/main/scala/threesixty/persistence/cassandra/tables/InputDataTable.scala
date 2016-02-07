@@ -4,7 +4,7 @@ import java.sql.Timestamp
 import java.util.UUID
 
 import com.websudos.phantom.dsl._
-import threesixty.data.{DataPoint, InputData}
+import threesixty.data.{DataPoint, InputData, InputDataSkeleton}
 import threesixty.data.metadata._
 import threesixty.persistence.cassandra.CassandraAdapter
 
@@ -14,7 +14,7 @@ import scala.concurrent.{Await, Future}
 /**
   * Created by Stefan Cimander on 19.01.16.
   */
-class InputDataTable extends CassandraTable[InputDatasets, InputData] {
+class InputDataTable extends CassandraTable[InputDatasets, InputDataSkeleton] {
 
     object identifier extends UUIDColumn(this) with PartitionKey[UUID]
     object measurement extends StringColumn(this)
@@ -24,6 +24,7 @@ class InputDataTable extends CassandraTable[InputDatasets, InputData] {
         def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
     }
 
+    /*
     def fromRow(row: Row): InputData = {
         val resultIdentifier = identifier(row).toString
         val resultMeasurement = measurement(row)
@@ -43,6 +44,18 @@ class InputDataTable extends CassandraTable[InputDatasets, InputData] {
         }
 
         InputData(resultIdentifier, resultMeasurement, resultDataPoints, resultInputMetadata)
+    }
+    */
+
+    def fromRow(row: Row): InputDataSkeleton = {
+        val resultIdentifier = identifier(row).toString
+        val resultMeasurement = measurement(row)
+        val resultInputMetadata = Await.result(CassandraAdapter.inputMetadataSets
+            .getInputMetadataByIdentifier(inputMetadataId(row)), Duration.Inf) match {
+            case Some(inputMetadata) => inputMetadata
+            case None => null
+        }
+        new InputDataSkeleton(resultIdentifier, resultMeasurement, resultInputMetadata)
     }
 }
 
@@ -74,10 +87,21 @@ abstract class InputDatasets extends InputDataTable with RootConnector {
     /**
       * calls fromRow method*/
     def getInputDataByIdentifier(identifier: UUID): Future[Option[InputData]] = {
-        select.where(_.identifier eqs identifier).one()
+
+        getInputDataSkeletonByIdentifier(identifier).map(_.map({
+            skeleton: InputDataSkeleton  => {
+                skeleton fill Await.result(CassandraAdapter.dataPoints
+                    .getDataPointsWithInputDataId(UUID.fromString(skeleton.id)), Duration.Inf).toList
+            }
+        }))
+
+
     }
 
     def getMetadataID(identifier: UUID):  Future[Option[UUID]] ={
         select(_.inputMetadataId).where(_.identifier eqs identifier).one()
     }
+
+    def getInputDataSkeletonByIdentifier(identifier: UUID): Future[Option[InputDataSkeleton]] =
+        select.where(_.identifier eqs identifier).one()
 }

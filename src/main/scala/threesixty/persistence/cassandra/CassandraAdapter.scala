@@ -5,7 +5,7 @@ import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
 import threesixty.data.metadata.{Timeframe, CompleteInputMetadata}
-import threesixty.data.{DataPoint, InputData, InputDataSubset}
+import threesixty.data.{DataPoint, InputData, InputDataSubset, InputDataSkeleton}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.persistence.cassandra.tables._
 
@@ -133,7 +133,14 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(UUID.fromString(identifier)), Duration.Inf)
     }
 
-    def getSkeleton(identifier: threesixty.data.Data.Identifier): Option[threesixty.data.InputDataSkeleton] = ???
+    def getSkeleton(identifier: Identifier): Either[String, InputDataSkeleton] =
+        Await.result(CassandraAdapter.inputDatasets
+            .getInputDataSkeletonByIdentifier(UUID.fromString(identifier)), Duration.Inf) match {
+            case Some(result: InputDataSkeleton) => Right(result)
+            case None => Left("Failed to load data set with identifier: " + identifier)
+        }
+
+
 }
 
 object CassandraAdapter extends CassandraAdapter(CassandraConnector.keyspace)
