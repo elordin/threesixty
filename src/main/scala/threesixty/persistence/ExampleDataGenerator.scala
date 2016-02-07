@@ -64,35 +64,32 @@ class ExampleDataGenerator {
         }
 
 
-    def gaussianDatapoints(t: DateTime): List[DataPoint] = {
-        def gauss(e: Double, v: Double)(t: Long): Int =
-            (1 / math.sqrt(2 * math.Pi * math.pow(v, 2)) * math.exp(-1/2 * t - e / math.pow(v, 2))).toInt
+    def gaussianDatapoints(t: DateTime): List[Int] = {
+        def gauss(mean: Double, stdDev: Double)(t: Long): Double =
+            10000000 * (math.exp(math.pow((t - mean)/stdDev, 2) / -2.0 ) / math.sqrt(2.0 * math.Pi) / stdDev)
 
         val MIDNIGHT_START = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 0, 0)
         val MIDNIGHT_END = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 23, 59)
-        val MORNING_INTENSITY = 100
-        val MIDDAY_INTENSITY = 150
-        val EVENING_INTENSITY = 100
+        val MORNING_INTENSITY = 150
+        val MIDDAY_INTENSITY = 400
+        val EVENING_INTENSITY = 200
         val MORNING_TIMESTAMP = (MIDNIGHT_START.getMillis * 3 + MIDNIGHT_END.getMillis) / 4
-        val MIDDAY_TIMESTAMP = (MIDNIGHT_END.getMillis + MIDNIGHT_END.getMillis) / 2
-        val EVENING_TIMESTAMP = (MIDNIGHT_START.getMillis + MIDNIGHT_END.getMillis * 3) / 4
+        val MIDDAY_TIMESTAMP = (MIDNIGHT_START.getMillis * 3 + MIDNIGHT_END.getMillis * 4) / 7
+        val EVENING_TIMESTAMP = (MIDNIGHT_START.getMillis * 1 + MIDNIGHT_END.getMillis * 6) / 7
 
         val STEP = 10 * 60 * 1000
 
         (for { i <- 0 to ((MIDNIGHT_END.getMillis - MIDNIGHT_START.getMillis) / STEP).toInt } yield {
             val t: Long = MIDNIGHT_START.getMillis + i * STEP
-            DataPoint(new Timestamp(t), IntValue(
-                MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 4 * 60 * 60 * 1000)(t)
-                + MIDDAY_INTENSITY  * gauss(MIDDAY_TIMESTAMP,  4 * 60 * 60 * 1000)(t)
-                + EVENING_INTENSITY * gauss(EVENING_TIMESTAMP, 4 * 60 * 60 * 1000)(t)
-            ))
+            // DataPoint(new Timestamp(t), IntValue(
+            (
+                (MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 0.5 * 60 * 60 * 1000)(t)
+                 + MIDDAY_INTENSITY  * gauss(MIDDAY_TIMESTAMP,  2 * 60 * 60 * 1000)(t)
+                 + EVENING_INTENSITY * gauss(EVENING_TIMESTAMP, 2 * 60 * 60 * 1000)(t)) / 3
+                 + (if (t < (MIDDAY_TIMESTAMP + MIDNIGHT_START.getMillis) / 2) 0 else Random.nextInt(25))
+            ).toInt
+            // ))
         }).toList
     }
 }
 
-object Test extends App {
-
-
-    (new ExampleDataGenerator).gaussianDatapoints(new DateTime()).map(println)
-
-}
