@@ -23,35 +23,13 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
 
     var generator = new ExampleDataGenerator()
     var now = new Timestamp(Calendar.getInstance().getTime.getTime)
-    var data = generator.exampleHeartRate(48, 225, 100, now)
 
-    /*
-     * This method is only used to fill the database with some test data
-     */
-    /*
-    describe("Generating test data and inserting them into database") {
-        it ("Generates heart rate data") {
-
-            CassandraAdapter.insertData(data)
-        }
-    }
-
-    describe("Retreiving data from the database") {
-        it ("should send the requested input data set") {
-
-            CassandraAdapter.getDataset(data.id) match {
-                case Right(data) => print(data)
-                case Left(msg) => fail(msg)
-            }
-        }
-    }
-    */
 
     describe("generating test data for the steps made in current month") {
         it ("should generate the step data and store it into the database") {
 
             val stepIdentifier = UUID.randomUUID().toString
-            val inputData = generator.generateStepsForCurrentMonthWithIdentifier("23551219-404e-42a7-bc95-95accb8affe5")
+            val inputData = generator.generateStepsForTodayWithIdentifier("23551219-404e-42a7-bc95-95accb8affe5")
 
             CassandraAdapter.insertData(inputData)
         }

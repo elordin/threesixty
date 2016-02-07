@@ -4,7 +4,7 @@ import java.sql.Timestamp
 import java.util.{UUID, Calendar}
 
 import org.joda.time.DateTime
-import threesixty.data.Data.Identifier
+import threesixty.data.Data.{IntValue, Identifier}
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
 import threesixty.data.Data.IntValue
@@ -15,75 +15,86 @@ import scala.util.Random
 
 class ExampleDataGenerator {
 
-    def exampleHeartRate(
-                            min: Int = 48,
-                            max: Int = 225,
-                            steps: Int,
-                            startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())
-                        ): InputData = {
+    val scaling = Scaling.Ordinal
+    val reliability = Reliability.Device
+    val resolution = Resolution.High
+    val activityType = new ActivityType("Everyday Life")
 
-        val identifier = UUID.randomUUID()
-        val measurement = "Heart Rate"
-        val timeframe = Timeframe(startTime, new Timestamp(startTime.getTime() + steps * 1000))
-        val activityType = ActivityType("nothing special")
-        activityType.setDescription("everyday tracking heartrate")
-        val resolution = Resolution.High
-        val reliability = Reliability.Device
-        val scaling = Scaling.Ordinal
-        val size = steps
-
-        val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
-
-        var dataPoints: List[DataPoint] = List()
-        val random = new Random()
-        var value = 75
-
-        for (i <- 0 until steps) {
-            var r = random.nextInt(5)
-            var delta = r match {
-                case 0 => -4
-                case 1 => -2
-                case 2 => -1
-                case 3 => 3
-                case 4 => 5
-            }
-
-            value += delta
-            if (value > max) {
-                value = max
-            }
-            else if (value < min) {
-                value = min
-            }
-            dataPoints = dataPoints ++ List(new DataPoint(new Timestamp(startTime.getTime + i * 1000), value))
+    /*
+    def generateStepsForMonth(month: DateTime, withIdentifier: Identifier): InputData = {
+        val dataPoints: List[DataPoint] = List()
+        for { day <- 1 until month.monthOfYear().getMaximumValue } {
+            val day = new DateTime(month.year.get, month.monthOfYear.get, day, 0, 0)
+            
         }
-        InputData(identifier.toString, measurement, dataPoints, inputMetadta)
+
+
+        ???
+    }
+    */
+
+    implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
+        def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
+    }
+
+    def generateStepsForTodayWithIdentifier(identifier: Identifier): InputData = {
+        val dataPoints = generateStepsForDate(new DateTime())
+
+        val startDate = dataPoints.minBy(_.timestamp).timestamp
+        val endDate = dataPoints.maxBy(_.timestamp).timestamp
+        val timeframe = Timeframe(startDate, endDate)
+        val metadata = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, dataPoints.length)
+
+        InputData(identifier, "Step Numbers", dataPoints, metadata)
+    }
+
+
+    def generateStepDataPointsForDay(day: DateTime): List[DataPoint] = {
+        gaussianDatapoints(day)
     }
 
 
 
-    def generateStepsForCurrentMonthWithIdentifier(identifier: Identifier): InputData = {
-        val today = DateTime.now()
-        val month = today.monthOfYear()
 
-        val dataPoints = generateStepsForDateWithIdentifier(identifier, today)
 
-        val startTime = dataPoints.minBy(_.timestamp.getTime).timestamp
-        val endTime = dataPoints.maxBy(_.timestamp.getTime).timestamp
-        val timeframe = Timeframe(startTime, new Timestamp(startTime.getTime()))
+    /*
+    def randomStepDataPoinstForDate(date: DateTime): List[DataPoint] = {
+        val year = date.year.get
+        val month = date.monthOfYear.get
+        val day = date.dayOfMonth.get
 
-        val activityType = new ActivityType("Everyday Life")
+        val startTime = new DateTime(year, month, day, 0, 0)
+        val endTime = new DateTime(year, month, day, 23, 59)
 
-        val size = dataPoints.length
-        val resolution = Resolution.Middle
-        val reliability = Reliability.Device
-        val scaling = Scaling.Ordinal
-        val metadata = new CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
+        val morningTimestamp = (3 * startTime.getMillis + endTime.getMillis) / 4
+        val middayTimestamp = (startTime.getMillis + endTime.getMillis) / 2
+        val eveningTimestamp = (startTime.getMillis + 3 * endTime.getMillis) / 4
 
-        new InputData(identifier, "Step Numbers", dataPoints, metadata)
+        val step = 1000 * 60 * 10
+        val morningIntensity = 10
+        val middayIntesity = 20
+        val eveningIntensity = 15
+
+        var t = startTime.getMillis
+        var dataPoints: List[DataPoint] = List()
+
+        while (t < endTime.getMillis) {
+
+            dataPoints ::= DataPoint(new Timestamp(t), IntValue(
+                (Random.nextGaussian() * morningIntensity + (morningTimestamp + t)
+                    + Random.nextGaussian() * middayIntesity + (middayTimestamp + t)
+                    + Random.nextGaussian() * eveningIntensity + (eveningTimestamp + t)).toInt
+            ))
+
+            t += step
+        }
+
+        dataPoints
     }
+    */
 
-    def generateStepsForDateWithIdentifier(identifier: Identifier, date: DateTime): List[DataPoint] = {
+
+    def generateStepsForDate(date: DateTime): List[DataPoint] = {
         var stepDataPoints: List[DataPoint] = List()
 
         val year = date.year.get
@@ -98,6 +109,7 @@ class ExampleDataGenerator {
                 val datetime = new DateTime(year, month, day, hour, minute * frequency)
 
                 val timestamp = new Timestamp(datetime.getMillis)
+
                 val stepValue = getRandomStepValueForHour(hour, frequency)
 
                 val dataPoint = new DataPoint(timestamp, stepValue)
@@ -147,6 +159,57 @@ class ExampleDataGenerator {
             ))
         }).toList
     }
+
+
+    /*
+    def exampleHeartRate(
+                            min: Int = 48,
+                            max: Int = 225,
+                            steps: Int,
+                            startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())
+                        ): InputData = {
+
+        val identifier = UUID.randomUUID()
+        val measurement = "Heart Rate"
+        val timeframe = Timeframe(startTime, new Timestamp(startTime.getTime() + steps * 1000))
+        val activityType = ActivityType("nothing special")
+        activityType.setDescription("everyday tracking heartrate")
+        val resolution = Resolution.High
+        val reliability = Reliability.Device
+        val scaling = Scaling.Ordinal
+        val size = steps
+
+        val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
+
+        var dataPoints: List[DataPoint] = List()
+        val random = new Random()
+        var value = 75
+
+        for (i <- 0 until steps) {
+            var r = random.nextInt(5)
+            var delta = r match {
+                case 0 => -4
+                case 1 => -2
+                case 2 => -1
+                case 3 => 3
+                case 4 => 5
+            }
+
+            value += delta
+            if (value > max) {
+                value = max
+            }
+            else if (value < min) {
+                value = min
+            }
+            dataPoints = dataPoints ++ List(new DataPoint(new Timestamp(startTime.getTime + i * 1000), value))
+        }
+        InputData(identifier.toString, measurement, dataPoints, inputMetadta)
+    }
+    */
+
+
+
 }
 
 object Test extends App {

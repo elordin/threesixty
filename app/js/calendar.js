@@ -133,28 +133,28 @@ $('#next-week').click(function () {
 /*  Loading Diagrams  */
 /* ****************** */
 
-var requestText = {
+var selectedDayRequest = {
     "type": "visualization",
     "visualization": {
         "type": "linechart",
         "args": {
-            "ids": ["75d21d1b-0ba4-4c0c-b1bd-fa624757d9c4"],
-            "width": 330,
-            "height": 200,
+            "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
+            "width": 512,
+            "height": 400,
+            "yMax": 350,
             "border": {
-                "top": 10, 
-                "bottom": 10, 
-                "left": 60, 
+                "top": 10,
+                "bottom": 10,
+                "left": 60,
                 "right": 20
-            },
-            "xUnit": "7 days"
+            }
         }
     },
     "processor": [],
-    "data": ["75d21d1b-0ba4-4c0c-b1bd-fa624757d9c4"]
+    "data": ["23551219-404e-42a7-bc95-95accb8affe5"]
 }
 
-requestText = JSON.stringify(requestText);
+requestText = JSON.stringify(selectedDayRequest);
 
 $.ajax({
     url: 'http://localhost:8080',
