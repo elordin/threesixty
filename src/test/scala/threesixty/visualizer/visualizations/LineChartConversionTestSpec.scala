@@ -3,7 +3,7 @@ package threesixty.visualizer.visualizations.LineChart
 import threesixty.data.Data._
 import org.scalatest._
 import threesixty.data.DataJsonProtocol.TimestampJsonFormat
-import threesixty.visualizer.util.{GreenColorScheme, Border}
+import threesixty.visualizer.util.{DefaultColorScheme, GreenColorScheme, Border}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
@@ -91,7 +91,7 @@ class LineChartConversionTestSpec extends FunSpec {
             assert(convertedConfig.border.bottom == 50)
             assert(convertedConfig.border.left == 50)
             assert(convertedConfig.border.right == 50)
-            assert(convertedConfig.colorScheme == None)
+            assert(convertedConfig.colorScheme == DefaultColorScheme)
             assert(convertedConfig.titleFontSize == 20)
             assert(convertedConfig.xLabel == "")
             assert(convertedConfig.minPxBetweenXGridPoints == 20)
