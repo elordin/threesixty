@@ -64,7 +64,7 @@ class ExampleDataGenerator {
         }
 
 
-    def gaussianDatapoints(t: DateTime): List[Int] = {
+    def gaussianDatapoints(t: DateTime): List[DataPoint] = {
         def gauss(mean: Double, stdDev: Double)(t: Long): Double =
             10000000 * (math.exp(math.pow((t - mean)/stdDev, 2) / -2.0 ) / math.sqrt(2.0 * math.Pi) / stdDev)
 
@@ -81,14 +81,12 @@ class ExampleDataGenerator {
 
         (for { i <- 0 to ((MIDNIGHT_END.getMillis - MIDNIGHT_START.getMillis) / STEP).toInt } yield {
             val t: Long = MIDNIGHT_START.getMillis + i * STEP
-            // DataPoint(new Timestamp(t), IntValue(
-            (
+            DataPoint(new Timestamp(t), IntValue((
                 (MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 0.5 * 60 * 60 * 1000)(t)
                  + MIDDAY_INTENSITY  * gauss(MIDDAY_TIMESTAMP,  2 * 60 * 60 * 1000)(t)
                  + EVENING_INTENSITY * gauss(EVENING_TIMESTAMP, 2 * 60 * 60 * 1000)(t)) / 3
                  + (if (t < (MIDDAY_TIMESTAMP + MIDNIGHT_START.getMillis) / 2) 0 else Random.nextInt(25))
-            ).toInt
-            // ))
+            ).toInt))
         }).toList
     }
 }
