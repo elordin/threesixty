@@ -24,28 +24,6 @@ class InputDataTable extends CassandraTable[InputDatasets, InputDataSkeleton] {
         def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
     }
 
-    /*
-    def fromRow(row: Row): InputData = {
-        val resultIdentifier = identifier(row).toString
-        val resultMeasurement = measurement(row)
-
-        val dataPointsSequence = Await.result(CassandraAdapter.dataPoints
-            .getDataPointsWithInputDataId(UUID.fromString(resultIdentifier)), Duration.Inf)
-
-        var resultDataPoints = List[DataPoint]()
-        for (dataPoint <- dataPointsSequence) resultDataPoints ++=  List(dataPoint)
-
-        resultDataPoints = resultDataPoints.sortBy(_.timestamp)
-
-        val resultInputMetadata = Await.result(CassandraAdapter.inputMetadataSets
-            .getInputMetadataByIdentifier(inputMetadataId(row)), Duration.Inf) match {
-            case Some(inputMetadata) => inputMetadata
-            case None => null
-        }
-
-        InputData(resultIdentifier, resultMeasurement, resultDataPoints, resultInputMetadata)
-    }
-    */
 
     def fromRow(row: Row): InputDataSkeleton = {
         val resultIdentifier = identifier(row).toString
@@ -53,7 +31,7 @@ class InputDataTable extends CassandraTable[InputDatasets, InputDataSkeleton] {
         val resultInputMetadata = Await.result(CassandraAdapter.inputMetadataSets
             .getInputMetadataByIdentifier(inputMetadataId(row)), Duration.Inf) match {
             case Some(inputMetadata) => inputMetadata
-            case None => null
+            case None => throw new NoSuchElementException(s"No metadata found for $resultIdentifier")
         }
         new InputDataSkeleton(resultIdentifier, resultMeasurement, resultInputMetadata)
     }
@@ -91,7 +69,7 @@ abstract class InputDatasets extends InputDataTable with RootConnector {
         getInputDataSkeletonByIdentifier(identifier).map(_.map({
             skeleton: InputDataSkeleton  => {
                 skeleton fill Await.result(CassandraAdapter.dataPoints
-                    .getDataPointsWithInputDataId(UUID.fromString(skeleton.id)), Duration.Inf).toList
+                    .getDataPointsWithInputDataId(UUID.fromString(skeleton.id)), Duration.Inf).toList.sortBy(_.timestamp.getTime)
             }
         }))
 

@@ -30,10 +30,14 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       * @return Either the data set (Left) or Left(errormsg) on error
       */
     def getDataset(id: Identifier): Either[String, InputData] = {
-        Await.result(CassandraAdapter.inputDatasets
-            .getInputDataByIdentifier(UUID.fromString(id)), Duration.Inf) match {
-            case Some(result) => Right(result)
-            case None => Left("Failed to load data set with identifier: " + id)
+        try {
+            Await.result(CassandraAdapter.inputDatasets
+                .getInputDataByIdentifier(UUID.fromString(id)), Duration.Inf) match {
+                case Some(result) => Right(result)
+                case None => Left("Failed to load data set with identifier: " + id)
+            }
+        } catch {
+            case e: NoSuchElementException => Left(e.getMessage)
         }
     }
 
@@ -134,10 +138,14 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
     }
 
     def getSkeleton(identifier: Identifier): Either[String, InputDataSkeleton] =
-        Await.result(CassandraAdapter.inputDatasets
-            .getInputDataSkeletonByIdentifier(UUID.fromString(identifier)), Duration.Inf) match {
-            case Some(result: InputDataSkeleton) => Right(result)
-            case None => Left("Failed to load data set with identifier: " + identifier)
+        try {
+            Await.result(CassandraAdapter.inputDatasets
+                .getInputDataSkeletonByIdentifier(UUID.fromString(identifier)), Duration.Inf) match {
+                case Some(result: InputDataSkeleton) => Right(result)
+                case None => Left("Failed to load data set with identifier: " + identifier)
+            }
+        } catch {
+            case e: NoSuchElementException => Left(e.getMessage)
         }
 
 
