@@ -5,7 +5,7 @@ import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
 import threesixty.data.metadata.{Timeframe, CompleteInputMetadata}
-import threesixty.data.{DataPoint, InputData}
+import threesixty.data.{DataPoint, InputData, InputDataSubset}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.persistence.cassandra.tables._
 
@@ -130,6 +130,10 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         val timeframeID = Await.result(CassandraAdapter.inputMetadataSets.getTimeframeId(identifier), Duration.Inf)
         Await.result(CassandraAdapter.timeframes.updateTimeframe(timeframeID.get, newStart, newEnd), Duration.Inf)
     }
+
+
+    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
+    def getSkeleton(identifier: threesixty.data.Data.Identifier): Option[threesixty.data.InputDataSkeleton] = ???
 }
 
 object CassandraAdapter extends CassandraAdapter(CassandraConnector.keyspace)

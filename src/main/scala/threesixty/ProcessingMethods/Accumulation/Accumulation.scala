@@ -6,17 +6,13 @@ import threesixty.data.Data.Identifier
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.tags.Accumulated
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
 object Accumulation extends ProcessingMethodCompanion {
@@ -42,7 +38,7 @@ object Accumulation extends ProcessingMethodCompanion {
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
         Accumulation(idMapping).asProcessingStep
 
-    def computeDegreeOfFit(inputData: InputData): Double = {
+    def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
 
         var temp = 0.0
         val meta = inputData.metadata
@@ -50,10 +46,10 @@ object Accumulation extends ProcessingMethodCompanion {
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.size >= 5) {
+        if (meta.size >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.size >= 50) {
+        if (meta.size >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
@@ -66,7 +62,7 @@ object Accumulation extends ProcessingMethodCompanion {
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig ): Double = {
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
 
         val strategyFactor = computeDegreeOfFit(inputData)
         val visFactor = targetVisualization match {

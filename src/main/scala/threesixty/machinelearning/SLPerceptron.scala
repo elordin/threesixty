@@ -74,6 +74,7 @@ case class SLPerceptron(val neuron: Neuron, val alpha: Double = 0.1, val thresho
 
 
 import threesixty.visualizer.VisualizationCompanion
+import threesixty.data.InputDataSkeleton
 import threesixty.data.metadata._
 import Resolution._
 import Reliability._
@@ -86,28 +87,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait PerceptronVizMixin extends VisualizationCompanion {
 
     final val ENCODING_LENGTH = 12
-    final def encodeMetadata(metadata: CompleteInputMetadata): Seq[Boolean] = Seq(
-        metadata.reliability == Device,
-        metadata.reliability == User,
-        metadata.reliability == Unknown,
-        metadata.resolution  == High,
-        metadata.resolution  == Low,
-        metadata.resolution  == Middle,
-        metadata.scaling     == Nominal,
-        metadata.scaling     == Ordinal,
-        metadata.timeframe.length > 3600000L,
-        metadata.timeframe.length > 86400000L,
-        metadata.timeframe.length > 604800000L,
-        metadata.timeframe.length > 2419200000L
+    final def encodeMetadata(skeleton: InputDataSkeleton): Seq[Boolean] = Seq(
+        skeleton.metadata.reliability == Device,
+        skeleton.metadata.reliability == User,
+        skeleton.metadata.reliability == Unknown,
+        skeleton.metadata.resolution  == High,
+        skeleton.metadata.resolution  == Low,
+        skeleton.metadata.resolution  == Middle,
+        skeleton.metadata.scaling     == Nominal,
+        skeleton.metadata.scaling     == Ordinal,
+        skeleton.metadata.timeframe.length > 3600000L,
+        skeleton.metadata.timeframe.length > 86400000L,
+        skeleton.metadata.timeframe.length > 604800000L,
+        skeleton.metadata.timeframe.length > 2419200000L
     )
 
-    def train(chooseThis: Boolean, datasets: CompleteInputMetadata*): Unit = {
+    def train(chooseThis: Boolean, skeletons: InputDataSkeleton*): Unit = {
         val trainingsFuture =
-            datasets.foldLeft(Future[SLPerceptron] { this.perceptron } ) {
-                (future: Future[SLPerceptron], metadata: CompleteInputMetadata) =>
+            skeletons.foldLeft(Future[SLPerceptron] { this.perceptron } ) {
+                (future: Future[SLPerceptron], skeletons: InputDataSkeleton) =>
                     future.andThen {
                         case Success(newPerceptron: SLPerceptron) =>
-                            newPerceptron.train(chooseThis, encodeMetadata(metadata): _*)
+                            newPerceptron.train(chooseThis, encodeMetadata(skeletons): _*)
                         case Failure(_) => this.perceptron
                     }
             }
@@ -119,9 +120,9 @@ trait PerceptronVizMixin extends VisualizationCompanion {
 
     var perceptron = SLPerceptron(Neuron((for { _ <- 1 to ENCODING_LENGTH } yield 0.5): _*))
 
-    abstract override def degreeOfFit(inputMetadata: CompleteInputMetadata*): Double =
-        (super.degreeOfFit(inputMetadata: _*) + inputMetadata.map({
-            imd: CompleteInputMetadata => perceptron.run(encodeMetadata(imd): _*)
-        }).sum / inputMetadata.size) / 2
+    abstract override def degreeOfFit(skeletons: InputDataSkeleton*): Double =
+        (super.degreeOfFit(skeletons: _*) + skeletons.map({
+            imd: InputDataSkeleton => perceptron.run(encodeMetadata(imd): _*)
+        }).sum / skeletons.size) / 2
 
 }

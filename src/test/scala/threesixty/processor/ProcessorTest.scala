@@ -2,7 +2,7 @@ package threesixty.processor
 
 import org.scalatest.FunSpec
 
-import threesixty.data.{ProcessedData, DataPoint, InputData, DataPool}
+import threesixty.data.{ProcessedData, DataPoint, InputData, DataPool, InputDataSkeleton, InputDataSubset}
 import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.tags.Tag
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
@@ -35,11 +35,22 @@ class ProcessorTestSpec extends FunSpec {
                     ProcessingStep(interpolator, Set("SomeId"))
                 )
 
-                val pool = new DataPool(Set("SomeId"), new DatabaseAdapter {
+                val sampleSkeleton = new InputDataSkeleton(
+                    "SomeId", "", CompleteInputMetadata(
+                    Timeframe(new Timestamp(0), new Timestamp(1)),
+                    Reliability.Unknown,
+                    Resolution.Low,
+                    Scaling.Ordinal,
+                    ActivityType("something"),
+                    2
+                ))
+
+                val pool = new DataPool(Seq(sampleSkeleton), new DatabaseAdapter {
                         def getDataset(id:Identifier):Either[String, InputData] = Right(sampleData)
                         def insertData(data:InputData):Either[String, Identifier] = ???
                         def getMetadata(identifier: Identifier):Option[CompleteInputMetadata] = ???
-                        def getDataSetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputData] = ???
+                        def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
+                        def getSkeleton(identifier: threesixty.data.Data.Identifier): Option[InputDataSkeleton] = Some(sampleSkeleton)
                     })
 
                 pool.pushData(Set[ProcessedData](sampleData))

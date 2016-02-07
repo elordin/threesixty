@@ -1,6 +1,6 @@
 package threesixty.visualizer
 
-import threesixty.data.{InputData, DataPool}
+import threesixty.data.{InputDataSkeleton, DataPool}
 import threesixty.data.metadata.Resolution.Resolution
 import threesixty.data.metadata.Scaling.Scaling
 import threesixty.processor.{ProcessingMethodCompanion, ProcessingStrategy, ProcessingStep, ProcessingMethod}
@@ -32,7 +32,7 @@ case class DataRequirement(
       *  @param procMeth the processing step
       *  @return true if the input data fulfills the requirement
       */
-    def isMatchingData(data: InputData, procMeth: ProcessingStep): Boolean = {
+    def isMatchingData(skeleton: InputDataSkeleton, procMeth: ProcessingStep): Boolean = {
         //TODO Use ProcessingStrategy here instead of ProcessingStep!!!
 
         val procIsDemanded = requiredProcessingMethods match {
@@ -49,13 +49,13 @@ case class DataRequirement(
 
             // match resolution requirement
             val matchResolution = resolution match {
-                case Some(res) => res == data.metadata.resolution
+                case Some(res) => res == skeleton.metadata.resolution
                 case None => true
             }
 
             // match scaling requirement
             val matchScaling = scaling match {
-                case Some(scal) => scal == data.metadata.scaling
+                case Some(scal) => scal == skeleton.metadata.scaling
                 case None => true
             }
 

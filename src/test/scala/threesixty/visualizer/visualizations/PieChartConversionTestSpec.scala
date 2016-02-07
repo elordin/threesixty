@@ -3,8 +3,8 @@ package threesixty.visualizer.visualizations
 import java.sql.Timestamp
 
 import org.scalatest.FunSpec
-import threesixty.visualizer.util.{GreenColorScheme, LegendPositionType, Border}
-import threesixty.visualizer.util.LegendPositionType.LegendPosition
+import threesixty.visualizer.util.{LegendPositionType, GreenColorScheme, Border}
+import LegendPositionType.LegendPosition
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
 
 

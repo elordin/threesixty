@@ -27,14 +27,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
 object APIHandler {
-
-    val config: Config = ConfigFactory.load
-
-    val debug: Boolean = try {
-        config.getBoolean("debug")
-    } catch {
-        case _:ConfigException => false
-    }
+    val DEBUG = true
 
     lazy val engine: Engine = VisualizationEngine using
         new Processor   with LinearInterpolation.Mixin
@@ -79,7 +72,7 @@ class APIHandler extends Actor {
                     peer ! HttpResponse(
                         status = StatusCodes.InternalServerError,
                         entity = HttpEntity(`application/json`,
-                            s"""{ "error": "${if (APIHandler.debug) t.getMessage else "Internal Server Error" }" }"""),
+                            s"""{ "error": "${if (APIHandler.DEBUG) t.getMessage else "Internal Server Error" }" }"""),
                         headers = List(`Access-Control-Allow-Origin`(AllOrigins))
                     )
             }

@@ -1,15 +1,18 @@
 package threesixty.visualizer
 
 import threesixty.visualizer.util.{Legend, Grid, Axis}
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.engine.UsageInfo
-import threesixty.data.metadata.CompleteInputMetadata
+import threesixty.data.InputDataSkeleton
 import threesixty.data.Data.Identifier
 
 import spray.json._
 import DefaultJsonProtocol._
-import threesixty.processor.{ProcessingMethod, ProcessingMethodCompanion, ProcessingStrategy}
+import threesixty.processor.{ProcessingStrategy, ProcessingStep}
 
 import scala.xml.Elem
+import scala.util.Random
+
 
 
 trait Renderable {
@@ -99,8 +102,20 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         conversion(args)
     }
 
-    def deduce(metadata: (Identifier, CompleteInputMetadata)*): VisualizationConfig = ???
-    def deduce(procStrat: ProcessingStrategy, metadata: (Identifier, CompleteInputMetadata)*): VisualizationConfig = ???
+    def deduce(skeletons: InputDataSkeleton*): VisualizationConfig = ???
+    def deduce(procStrat: ProcessingStrategy, skeletons: InputDataSkeleton*): VisualizationConfig = {
+        val possibleVis = visualizationInfos.values.filter({
+            viz: VisualizationCompanion => procStrat.steps.map({
+                step: ProcessingStep => viz.isMatching(step, skeletons: _*)
+            }).forall(_.isDefined)
+        })
+
+        if (possibleVis.isEmpty) {
+            LineChartConfig.default(skeletons.map(_.id),1024,1024)
+        } else {
+            possibleVis.toList(Random.nextInt(possibleVis.size)).default(skeletons.map(_.id),1024,1024)
+        }
+    }
 
 }
 
