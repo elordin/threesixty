@@ -36,7 +36,7 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
     }
 
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
-        LinearInterpolation(1, idMapping).asProcessingStep
+        LinearInterpolation(1000, idMapping).asProcessingStep
 
     def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
 

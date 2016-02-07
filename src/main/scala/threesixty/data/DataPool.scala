@@ -21,7 +21,7 @@ class DataPool(
 
     require(skeletons.size > 0, "Empty Set if Input Data is not allowed.")
 
-    val SIZE_THRESHOLD = 10000
+    val SIZE_THRESHOLD = 5000
 
     /** Reduces the amount of datapoints. */
     def prune(input: InputDataLike): InputDataLike = {
