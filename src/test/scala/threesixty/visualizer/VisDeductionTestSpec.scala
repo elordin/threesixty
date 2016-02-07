@@ -1,3 +1,4 @@
+/*
 package threesixty.visualizer
 
 import java.sql.Timestamp
@@ -203,3 +204,5 @@ class VisDeductionTestSpec extends  FunSpec {
 
 
 }
+
+*/

@@ -20,8 +20,6 @@ object CassandraConnector extends CassandraKeyspace {
     val dbKeyspace: String =
         config.getString("database.keyspace")
 
-    // val hosts = Seq("137.250.170.136")
-    // val hosts = Seq("localhost")
     val hosts = Seq(dbAddress)
 
     val keyspace = ContactPoints(hosts).keySpace(dbKeyspace)
