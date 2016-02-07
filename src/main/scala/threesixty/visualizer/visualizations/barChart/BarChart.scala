@@ -90,13 +90,6 @@ object BarChartConfig extends VisualizationCompanion {
     case class BarChart(config: BarChartConfig, data: ProcessedData*) extends Visualization(data: _*) {
 
         val displayData = data.headOption.getOrElse(throw new IllegalArgumentException("There are no data to display."))
-        /*
-        val displayData = new ProcessedData("aggregatedData", List(
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(2), Set(new AggregationTag("Wert 1"))),
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(-10), Set(new AggregationTag("Wert 2"))),
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(50), Set(new AggregationTag("Wert 3"))),
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(20), Set(new AggregationTag("Wert 4")))))
-         */
 
         // TODO Performance optimization, get both in one run
         val dataMinMaxY: (Double, Double) =
@@ -153,11 +146,11 @@ object BarChartConfig extends VisualizationCompanion {
          * @return the calculated list of [[BarElement]]s.
          */
         private def calculateBarElements: List[BarElement] = {
-            var result: List[BarElement] = List.empty
+            // var result: List[BarElement] = List.empty
             val (widthBar, distanceBetweenBars) = calculateWidthBarAndDistanceBetweenBars
             var leftOffset = distanceBetweenBars
 
-            for(point <- displayData.dataPoints) {
+            val result = for(point <- displayData.dataPoints) yield {
                 val description = point.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString
                 val color = config.colorScheme.next
 
@@ -165,18 +158,19 @@ object BarChartConfig extends VisualizationCompanion {
                     identifier = description,
                     xLeft = leftOffset,
                     width = widthBar,
-                    height = point.value.value,
+                    height = yScale(point.value.value),
                     description = description,
                     classes = point.tags.map(_.toString),
                     showValues = config.showValues,
                     value = point.value.toString,
                     fontSize = config.fontSize,
                     fontFamily = config.fontFamily,
-                    color = color)
+                    color = color
+                )
 
                 leftOffset += widthBar + distanceBetweenBars
 
-                result = element :: result
+                element
             }
 
             result.reverse

@@ -44,14 +44,14 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
     var database: Map[Identifier, InputData] = Map(
         "dataG" -> InputData(
             "dataG", "gaussian demodata",
-            generateGaussianDatapointSeries(72, 16, 100, 1000000, 1000000),
+            generateGaussianDatapointSeries(72, 16, 0, 100000000, 4000000),
             CompleteInputMetadata(
                 Timeframe(new Timestamp(23), new Timestamp(104)),
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
                 ActivityType("something"),
-                1000000
+                4000000
             )
         ),
         "data1" -> InputData(
@@ -135,7 +135,14 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
     }
 
-    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
+    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] =
+        database.get(identifier).map { completeSet => Right(InputDataSubset(
+            completeSet.id, completeSet.measurement,
+            completeSet.dataPoints.filter {
+                case DataPoint(t: Timestamp, _) => t.getTime >= from.getTime && t.getTime <= to.getTime
+            },
+            completeSet.metadata, from, to))
+        } getOrElse Left(s"No data for $identifier")
 
     def appendOrInsertData(data: InputData):Either[String, Identifier] =
         appendData(data) match {

@@ -77,8 +77,8 @@ case class BarElement(
      */
     def calculateBarPath: String = {
         val p1 = (xLeft, 0)
-        val p2 = (xLeft, height)
-        val p3 = (xLeft + width, height)
+        val p2 = (xLeft, -height)
+        val p3 = (xLeft + width, -height)
         val p4 = (xLeft + width, 0)
 
         "M " + p1._1 + " " + p1._2 +
@@ -105,6 +105,6 @@ case class BarElement(
         val baseMiddle = (xLeft + width / 2.0, 0)
         val offset = if(height < 0) 5 + fontSize else - 10
 
-        (baseMiddle._1, baseMiddle._2 + offset)
+        (baseMiddle._1, baseMiddle._2 - offset)
     }
 }
