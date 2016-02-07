@@ -7,12 +7,12 @@ import org.joda.time.DateTime
 import threesixty.data.Data.Identifier
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
+import threesixty.data.Data.IntValue
+
+import org.joda.time.DateTime
 
 import scala.util.Random
 
-/**
- * Created by Markus on 30.01.2016.
- */
 class ExampleDataGenerator {
 
     def exampleHeartRate(
@@ -62,8 +62,6 @@ class ExampleDataGenerator {
 
 
 
-
-
     def generateStepsForCurrentMonthWithIdentifier(identifier: Identifier): InputData = {
         val today = DateTime.now()
         val month = today.monthOfYear()
@@ -99,8 +97,6 @@ class ExampleDataGenerator {
             for {minute <- 0 until (60 / frequency)} {
                 val datetime = new DateTime(year, month, day, hour, minute * frequency)
 
-                println(datetime.minuteOfHour().get())
-
                 val timestamp = new Timestamp(datetime.getMillis)
                 val stepValue = getRandomStepValueForHour(hour, frequency)
 
@@ -108,11 +104,8 @@ class ExampleDataGenerator {
                 stepDataPoints = dataPoint :: stepDataPoints
 
                 sum += stepValue
-                // println("Hour " + hour + ", Minute: " + minute * frequency + ", Steps: " + stepValue)
             }
         }
-        // println("Sum: " + sum)
-
         stepDataPoints
     }
 
@@ -130,5 +123,34 @@ class ExampleDataGenerator {
     }
 
 
+    def gaussianDatapoints(t: DateTime): List[DataPoint] = {
+        def gauss(e: Double, v: Double)(t: Long): Int =
+            (1 / math.sqrt(2 * math.Pi * math.pow(v, 2)) * math.exp(-1/2 * t - e / math.pow(v, 2))).toInt
+
+        val MIDNIGHT_START = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 0, 0)
+        val MIDNIGHT_END = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 23, 59)
+        val MORNING_INTENSITY = 100
+        val MIDDAY_INTENSITY = 150
+        val EVENING_INTENSITY = 100
+        val MORNING_TIMESTAMP = (MIDNIGHT_START.getMillis * 3 + MIDNIGHT_END.getMillis) / 4
+        val MIDDAY_TIMESTAMP = (MIDNIGHT_END.getMillis + MIDNIGHT_END.getMillis) / 2
+        val EVENING_TIMESTAMP = (MIDNIGHT_START.getMillis + MIDNIGHT_END.getMillis * 3) / 4
+
+        val STEP = 10 * 60 * 1000
+
+        (for { i <- 0 to ((MIDNIGHT_END.getMillis - MIDNIGHT_START.getMillis) / STEP).toInt } yield {
+            val t: Long = MIDNIGHT_START.getMillis + i * STEP
+            DataPoint(new Timestamp(t), IntValue(
+                MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 4 * 60 * 60 * 1000)(t)
+                + MIDDAY_INTENSITY  * gauss(MIDDAY_TIMESTAMP,  4 * 60 * 60 * 1000)(t)
+                + EVENING_INTENSITY * gauss(EVENING_TIMESTAMP, 4 * 60 * 60 * 1000)(t)
+            ))
+        }).toList
+    }
+}
+
+object Test extends App {
+
+    (new ExampleDataGenerator).gaussianDatapoints(new DateTime()).map(println)
 
 }
