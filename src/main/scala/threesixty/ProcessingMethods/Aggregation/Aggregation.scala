@@ -150,21 +150,30 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
 
             var agdata = data.dataPoints.sortBy(d => -timestamp2Long((d.timestamp)))
 
-            var blocksize = 0
-            var datasize = 0
+            var blocksize = 1
+            var datasize = 1
 
             paramsplit(0) match {
                 case "datasize" =>
                     datasize = paramsplit(1).toInt
+
+                    require( datasize != 0, { datasize = 1; println("Datasize value of 0 is nt allowed, takes default 1")})
+
                     blocksize = math.ceil(agdata.length/datasize).toInt
                 case "blocksize" =>
                     blocksize = paramsplit(1).toInt
-                    datasize = math.ceil(agdata.length/datasize).toInt
+
+                    require( blocksize != 0, { blocksize = 1; println("Blocksize value of 0 is nt allowed, takes default 1")})
+                    
+                    datasize = math.ceil(agdata.length/blocksize).toInt
                 case default =>
                     throw new IllegalArgumentException("Not matching argument given like 'datasize' or 'blocksize' BUT got: " + paramsplit(0) )
             }
 
             var l = List[TaggedDataPoint]()
+
+
+
 
             for( i <- 0 until datasize ) {
                 val buf = agdata.splitAt(blocksize)
