@@ -164,7 +164,7 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
                     blocksize = paramsplit(1).toInt
 
                     require( blocksize != 0, { blocksize = 1; println("Blocksize value of 0 is nt allowed, takes default 1")})
-                    
+
                     datasize = math.ceil(agdata.length/blocksize).toInt
                 case default =>
                     throw new IllegalArgumentException("Not matching argument given like 'datasize' or 'blocksize' BUT got: " + paramsplit(0) )
