@@ -87,8 +87,8 @@
       <file leaf-file-name="ExampleDataGenerator.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.48423004">
-              <caret line="62" column="21" selection-start-line="62" selection-start-column="21" selection-end-line="62" selection-end-column="21" />
+            <state vertical-scroll-proportion="0.8460111">
+              <caret line="69" column="70" selection-start-line="69" selection-start-column="70" selection-end-line="69" selection-end-column="70" />
               <folding>
                 <element signature="e#32#57#0" expanded="true" />
               </folding>
@@ -1133,44 +1133,44 @@
       <workItem from="1454835137186" duration="7996000" />
       <workItem from="1454869408782" duration="155000" />
       <workItem from="1454870660142" duration="1465000" />
-      <workItem from="1454931920723" duration="2453000" />
+      <workItem from="1454931920723" duration="3689000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 14m 01s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 42m 30s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 15m 04s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 43m 01s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 16m 05s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 43m 18s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 17m 36s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 44m 02s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 18m 49s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 44m 18s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 20m 50s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 45m 09s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 21m 37s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 46m 44s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 23m 40s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 47m 37s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 25m 24s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 48m 30s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 29m 23s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 13h 49m 17s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27680000" />
+    <option name="totallyTimeSpent" value="28916000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -1582,8 +1582,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48423004">
-          <caret line="62" column="21" selection-start-line="62" selection-start-column="21" selection-end-line="62" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.8460111">
+          <caret line="69" column="70" selection-start-line="69" selection-start-column="70" selection-end-line="69" selection-end-column="70" />
           <folding>
             <element signature="e#32#57#0" expanded="true" />
           </folding>

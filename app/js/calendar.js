@@ -133,6 +133,10 @@ $('#next-week').click(function () {
 /*  Loading Diagrams  */
 /* ****************** */
 
+var startTime = selectedDate.getMilliseconds
+var endTime = startTime + 36000000 
+
+
 var selectedDayRequest = {
     "type": "visualization",
     "visualization": {
@@ -141,7 +145,7 @@ var selectedDayRequest = {
             "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
             "width": 512,
             "height": 400,
-            "yMax": 100,
+            "yMax": 200,
             "border": {
                 "top": 10,
                 "bottom": 10,
