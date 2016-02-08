@@ -27,7 +27,11 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
 
     def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
 
-    def usage = """ Use responsibly """ // TODO
+    def usage =
+        """ |Linear Interpolation(frequency, idmap), takes one additional argument.
+            |Hereby the frequency is the desired max distance between two points in ms
+            |The interpolated points will be tagged with interpolated,the others not
+        """.stripMargin
 
     def apply(jsonString: String): LinearInterpolation = {
         implicit val linearInterpolationFormat =
@@ -47,16 +51,16 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
             temp += 0.4
         }
         if (meta.size >= 5) {
-            temp += 0.2
+            temp += 1.0
         }
         if (meta.size >= 50) {
-            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
+            temp += 0.6 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
-            temp += 0.2
+            temp += 0.0
         }
         if (meta.resolution == Resolution.Middle) {
-            temp += 0.1
+            temp += 1.0
         }
 
         temp
@@ -71,7 +75,7 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
             case _:BarChartConfig           => 0.8
             //bad
             case _:ScatterChartConfig       => 0.2
-            case _:PieChartConfig           => 0.0
+            case _:PieChartConfig           => 0.1
             //default
             case _                          => 0.5
         }

@@ -84,7 +84,7 @@ wixProductId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
 wixProductUpgradeId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
 
 
-wixFile := File("deployment/wixconfig.xml")
+//wixFile := File("deployment/wixconfig.xml")
 
 //Command creating it
 //sbt windows:packageBin

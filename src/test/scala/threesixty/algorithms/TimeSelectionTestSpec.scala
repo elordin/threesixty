@@ -1,8 +1,9 @@
 package threesixty.algorithms
 
 import org.scalatest.FunSpec
+import threesixty.ProcessingMethods.TimeSelection.TimeSelection
 
-import threesixty.algorithms.interpolation.{TimeSelection, Aggregation, Accumulation, LinearInterpolation}
+
 import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Timestamp
 import threesixty.data.tags._
