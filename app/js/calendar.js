@@ -35,9 +35,9 @@ function updateCurrentWeekdays() {
     if (selectedDate.getDay() == 0) {
         firstDayOfWeek = selectedDate.getDate() - 6;
     }
-    
+
     var currentDate = new Date(selectedDate);
-    
+
     monday = new Date(currentDate.setDate(firstDayOfWeek));
     tuesday = new Date(currentDate.setDate(monday.getDate() + 1));
     wednesday = new Date(currentDate.setDate(tuesday.getDate() + 1));
@@ -45,7 +45,7 @@ function updateCurrentWeekdays() {
     friday = new Date(currentDate.setDate(thursday.getDate() + 1));
     saturday = new Date(currentDate.setDate(friday.getDate() + 1));
     sunday = new Date(currentDate.setDate(saturday.getDate() + 1));
-    
+
     updateWeekdayNumbers();
 }
 
@@ -81,7 +81,7 @@ function updateDateTitle() {
     var monthName = months[selectedDate.getMonth()];
     var year = selectedDate.getFullYear();
     var dayDescription = weekdayName + ', ' + dayInMonth + '. ' + monthName + ' '+ year;
-    
+
     $('.date-title').replaceWith('<h1 class="date-title">' + dayDescription + '</h1>')
 }
 
@@ -94,7 +94,7 @@ function updateDateTitle() {
 $('.day-link').click(function () {
     $('.day-item').removeClass('selected');
     $(this).parent().addClass('selected');
-    
+
     var dateClicked = $(this).children().first().text();
     if (dateClicked == monday.getDate().toString()) {
         selectedDate = monday;
@@ -112,7 +112,7 @@ $('.day-link').click(function () {
         selectedDate = sunday;
     }
     updateDayContent();
-    
+
     return false;
 });
 
@@ -120,7 +120,7 @@ $('#previous-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() - 7);
     updateCurrentWeekdays();
     updateDayContent();
-    
+
     return false;
 });
 
@@ -128,7 +128,7 @@ $('#next-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() + 7);
     updateCurrentWeekdays();
     updateDayContent();
-    
+
     return false;
 });
 
@@ -145,7 +145,7 @@ function updateDayDiagram() {
     var startTime = today.getTime()
     today.setHours(23,59,59,999)
     var endTime = Math.min(today.getTime(), (new Date()).getTime())
-    
+
     sendRequest(JSON.stringify({
         "type": "visualization",
         "visualization": {
@@ -176,7 +176,7 @@ function updateDayDiagram() {
             "to": endTime
         }]
     }), '#date-activity');
-    
+
     /*
     sendRequest(JSON.stringify({
         "type": "visualization",
@@ -208,18 +208,18 @@ function updateWeekDiagram() {
     if (selectedDate.getDay() == 0) {
         firstDayOfWeek = selectedDate.getDate() - 6;
     }
-    
+
     var currentDate = new Date(selectedDate);
-    
+
     monday = new Date(currentDate.setDate(firstDayOfWeek));
     sunday = new Date(currentDate.setDate(monday.getDate() + 6));
-    
+
     monday.setHours(0, 0, 0, 0)
     var startTime = monday.getTime()
     sunday.setHours(23, 59, 59, 999)
     var endTime = sunday.getTime()
-    
-    
+
+
     /*
     sendRequest(JSON.stringify({
         "type": "visualization",
@@ -253,7 +253,7 @@ function updateWeekDiagram() {
         }]
     }), '#week-activity');
     */
-    
+
     sendRequest(JSON.stringify({
         "type": "visualization",
         "visualization": {
@@ -291,8 +291,11 @@ function sendRequest(requestText, resultPlaceholder) {
         method: 'POST',
         data: requestText,
         dataType: 'json',
-        complete: function (answer) {
+        success: function (answer) {
             $(resultPlaceholder).empty().html(answer.responseText);
+        },
+        error: function () {
+            $(resultPlaceholder).empty().html('<span class="error">An Error occurred. Please try again later.</span>');
         }
     });
 }

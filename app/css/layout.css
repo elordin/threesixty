@@ -172,6 +172,16 @@ main h2 {
 }
 
 
+.error {
+    display: block;
+    background-color: #f2dede;
+    border: thin solid #a94442;
+    margin: 0 auto;
+    max-width: 32em;
+    padding: 1em;
+    color: #a94442;
+}
+
 
 /* ****************** */
 /*       Footer       */
@@ -186,6 +196,5 @@ main h2 {
 /* ****************** */
 
 @media screen and (min-width: 800px) {
-    
-}
 
+}
