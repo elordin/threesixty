@@ -1,6 +1,7 @@
 package threesixty.persistence
 
 import java.sql.Timestamp
+import java.util.{UUID, Calendar}
 import threesixty.data.Data.Identifier
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
@@ -66,53 +67,8 @@ class ExampleDataGenerator {
     }
 
 
-    /*
-    def generateStepsForDate(date: DateTime): List[DataPoint] = {
-        var stepDataPoints: List[DataPoint] = List()
-
-        val year = date.year.get
-        val month = date.monthOfYear.get
-        val day = date.dayOfMonth.get
-
-        val frequency = 10
-        for {hour <- 1 until 24} {
-            for {minute <- 0 until (60 / frequency)} {
-                val datetime = new DateTime(year, month, day, hour, minute * frequency)
-
-                val timestamp = new Timestamp(datetime.getMillis)
-
-                val stepValue = getRandomStepValueForHour(hour, frequency)
-
-                val dataPoint = new DataPoint(timestamp, stepValue)
-                stepDataPoints = dataPoint :: stepDataPoints
-            }
-        }
-        stepDataPoints
-    }
-
-    def getRandomStepValueForHour(hour: Int, frequency: Int): Int = {
-        var stepValue = 0
-        if (hour > 7 && hour < 23) {
-            if ((hour >= 9 && hour < 10) || (hour >= 12 && hour < 14) || (hour >= 17 && hour < 19)) {
-                stepValue = new Random().nextInt(frequency * 30)
-            } else {
-                stepValue = new Random().nextInt(frequency * 10)
-            }
-        }
-        stepValue
-    }
-    */
-
-
-
-
-    /*
-    def exampleHeartRate(
-                            min: Int = 48,
-                            max: Int = 225,
-                            steps: Int,
-                            startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())
-                        ): InputData = {
+    def exampleHeartRate(min: Int = 48, max: Int = 225, steps: Int,
+                         startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())): InputData = {
 
         val identifier = UUID.randomUUID()
         val measurement = "Heart Rate"
@@ -151,8 +107,5 @@ class ExampleDataGenerator {
         }
         InputData(identifier.toString, measurement, dataPoints, inputMetadta)
     }
-    */
-
-
 
 }
