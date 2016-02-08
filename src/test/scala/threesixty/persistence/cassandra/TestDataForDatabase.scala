@@ -29,7 +29,9 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
         it ("should generate the step data and store it into the database") {
 
             val stepIdentifier = UUID.randomUUID().toString
-            val inputData = generator.generateStepsForTodayWithIdentifier("23551219-404e-42a7-bc95-95accb8affe5")
+            val date = new DateTime(2016, 1, 31, 1, 1)
+
+            val inputData = generator.generateStepsForMonth(date, "23551219-404e-42a7-bc95-95accb8affe5")
 
             CassandraAdapter.insertData(inputData)
         }

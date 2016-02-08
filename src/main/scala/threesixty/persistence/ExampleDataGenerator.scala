@@ -23,36 +23,31 @@ class ExampleDataGenerator {
 
 
     def generateStepsForMonth(month: DateTime, withIdentifier: Identifier): InputData = {
-        val dataPoints: List[DataPoint] = List()
-        for { day <- 1 until month.dayOfMonth.get} {
+
+        var dataPoints: List[DataPoint] = List()
+        for { day <- 1 to month.dayOfMonth.get} {
             val date = new DateTime(month.year.get, month.monthOfYear.get, day, 0, 0)
-
+            dataPoints = dataPoints ++ gaussianDatapoints(date)
         }
-
-        ???
-    }
-
-
-    def generateStepsForTodayWithIdentifier(identifier: Identifier): InputData = {
-        val dataPoints = gaussianDatapoints(new DateTime())
 
         val startDate = dataPoints.minBy(_.timestamp).timestamp
         val endDate = dataPoints.maxBy(_.timestamp).timestamp
         val timeframe = Timeframe(startDate, endDate)
         val metadata = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, dataPoints.length)
-
-        InputData(identifier, "Step Numbers", dataPoints, metadata)
+        InputData(withIdentifier, "Step Numbers", dataPoints, metadata)
     }
 
     def gaussianDatapoints(t: DateTime): List[DataPoint] = {
+        val variation = 1 + new Random().nextDouble()
+
         def gauss(mean: Double, stdDev: Double)(t: Long): Double =
             10000000 * (math.exp(math.pow((t - mean)/stdDev, 2) / -2.0 ) / math.sqrt(2.0 * math.Pi) / stdDev)
 
         val MIDNIGHT_START = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 0, 0)
         val MIDNIGHT_END = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 23, 59)
-        val MORNING_INTENSITY = 200
-        val MIDDAY_INTENSITY = 700
-        val EVENING_INTENSITY = 300
+        val MORNING_INTENSITY = 180 * variation
+        val MIDDAY_INTENSITY = 650 * variation
+        val EVENING_INTENSITY = 270 * variation
         val MORNING_TIMESTAMP = (MIDNIGHT_START.getMillis * 5 + MIDNIGHT_END.getMillis * 2) / 7
         val MIDDAY_TIMESTAMP = (MIDNIGHT_START.getMillis * 4 + MIDNIGHT_END.getMillis * 5) / 9
         val EVENING_TIMESTAMP = (MIDNIGHT_START.getMillis * 1 + MIDNIGHT_END.getMillis * 6) / 7
@@ -62,7 +57,7 @@ class ExampleDataGenerator {
         (for { i <- 0 to ((MIDNIGHT_END.getMillis - MIDNIGHT_START.getMillis) / STEP).toInt } yield {
             val t: Long = MIDNIGHT_START.getMillis + i * STEP
             DataPoint(new Timestamp(t), IntValue((
-                (MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 1.2 * 60 * 60 * 1000)(t)
+                (MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 1.2  * 60 * 60 * 1000)(t)
                     + MIDDAY_INTENSITY  * gauss(MIDDAY_TIMESTAMP,  3 * 60 * 60 * 1000)(t)
                     + EVENING_INTENSITY * gauss(EVENING_TIMESTAMP, 1.6 * 60 * 60 * 1000)(t)) / 3
                     + (if (t < (MIDDAY_TIMESTAMP + MIDNIGHT_START.getMillis) / 2) 0 else Random.nextInt(10))

@@ -20,12 +20,13 @@ aside {
     float: left;
     background: #323232;
     width: 64px;
-    min-height: 100%;
-    position: absolute;
+    position: fixed;
+    bottom: 0;
 }
 
 aside.extended {
     position: relative;
+    height: 100%;
 }
 
 nav {
@@ -72,6 +73,7 @@ header h1 {
 /* ****************** */
 
 aside a {
+    height: 64px;
     display: inline-block;
     width: 100%;
     color: white;
@@ -127,10 +129,12 @@ aside a.selected {
     font-size: 24px;
     font-weight: 100;
     margin: 0 0 0 20px;
+    height: 0px;
 }
 
 .nav-description.visible {
     display: inline-block;
+    height: 64px;
 }
 
 .nav-content-container {
@@ -172,6 +176,16 @@ main h2 {
 }
 
 
+.error {
+    display: block;
+    background-color: #f2dede;
+    border: thin solid #a94442;
+    margin: 0 auto;
+    max-width: 32em;
+    padding: 1em;
+    color: #a94442;
+}
+
 
 /* ****************** */
 /*       Footer       */
@@ -186,6 +200,5 @@ main h2 {
 /* ****************** */
 
 @media screen and (min-width: 800px) {
-    
-}
 
+}

@@ -165,19 +165,23 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
 
             val grouped = param match {
                 case "minute" =>
-                    data.dataPoints.groupBy( _.timestamp.getMinutes )
+                    data.dataPoints.groupBy({ d => (d.timestamp.getYear, d.timestamp.getMonth, d.timestamp.getDate, d.timestamp.getHours, d.timestamp.getMinutes) }).toList.sortBy(_._1).reverse
                 case "hour" =>
-                    data.dataPoints.groupBy( _.timestamp.getHours )
+                    data.dataPoints.groupBy({ d => (d.timestamp.getYear, d.timestamp.getMonth, d.timestamp.getDate, d.timestamp.getHours) }).toList.sortBy(_._1).reverse
                 case "weekday" =>
-                    data.dataPoints.groupBy( _.timestamp.getDay )
+                    data.dataPoints.groupBy({ d => d.timestamp.getDay }).toList.sortBy(_._1).reverse
                 case "day" =>
+<<<<<<< HEAD
                     data.dataPoints.groupBy( { dt: TaggedDataPoint => (dt.timestamp.getDate, dt.timestamp.getMonth) } )
+=======
+                    data.dataPoints.groupBy({ d => (d.timestamp.getYear, d.timestamp.getMonth, d.timestamp.getDate) }).toList.sortBy(_._1).reverse
+>>>>>>> refs/remotes/origin/master
                 case "month" =>
-                    data.dataPoints.groupBy( _.timestamp.getMonth )
+                    data.dataPoints.groupBy({ d => (d.timestamp.getYear, d.timestamp.getMonth) }).toList.sortBy(_._1).reverse
                 case "year" =>
-                    data.dataPoints.groupBy( _.timestamp.getYear )
+                    data.dataPoints.groupBy( _.timestamp.getYear ).toList.sortBy(_._1).reverse
                 case "enum" =>
-                    data.dataPoints.groupBy( _.value.value )
+                    data.dataPoints.groupBy( _.value.value ).toList.sortBy(_._1).reverse
                 case default =>
                     throw new IllegalArgumentException("Not matching argument given like 'minute', 'hour', 'weekday', 'month', 'year' BUT got: " + param )
             }
