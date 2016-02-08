@@ -244,11 +244,12 @@ function sendRequest(requestText, resultPlaceholder) {
         url: 'http://localhost:8080',
         method: 'POST',
         data: requestText,
-        dataType: 'json',
+        dataType: 'html',
         success: function (answer) {
-            $(resultPlaceholder).empty().html(answer.responseText);
+            $(resultPlaceholder).empty().html(answer);
         },
-        error: function () {
+        error: function (response) {
+            console.log(response.responseText);
             $(resultPlaceholder).empty().html('<span class="error">An Error occurred. Please try again later.</span>');
         }
     });

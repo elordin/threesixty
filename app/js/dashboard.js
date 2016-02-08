@@ -27,11 +27,12 @@ window.addEventListener('load', function (e) {
         url: 'http://localhost:8080',
         method: 'POST',
         data: requestText,
-        dataType: 'json',
+        dataType: 'html',
         success: function (answer) {
-            $('#daily-activity').empty().html(answer.responseText);
+            $('#daily-activity').empty().html(answer);
         },
-        error: function () {
+        error: function (response) {
+            console.log(response.responseText);
             $('#daily-activity').empty().html('<span class="error">An Error occurred. Please try again later.</span>');
         }
     });
