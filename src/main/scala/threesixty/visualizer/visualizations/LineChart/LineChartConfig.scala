@@ -16,8 +16,6 @@ import ColorScheme.ColorSchemeJsonFormat
 
 import threesixty.visualizer.SVGXML
 
-import threesixty.machinelearning.PerceptronVizMixin
-
 import scala.xml.Elem
 import scala.annotation.tailrec
 
@@ -35,7 +33,7 @@ trait Mixin extends VisualizationMixins {
  *
  *  @author Thomas {Engel, Weber}
  */
-object LineChartConfig extends VisualizationCompanion with PerceptronVizMixin {
+object LineChartConfig extends VisualizationCompanion {
 
     def name = "LineChart"
 

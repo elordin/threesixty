@@ -20,25 +20,24 @@ class ExampleDataGenerator {
     val resolution = Resolution.High
     val activityType = new ActivityType("Everyday Life")
 
-    /*
-    def generateStepsForMonth(month: DateTime, withIdentifier: Identifier): InputData = {
-        val dataPoints: List[DataPoint] = List()
-        for { day <- 1 until month.monthOfYear().getMaximumValue } {
-            val day = new DateTime(month.year.get, month.monthOfYear.get, day, 0, 0)
-            
-        }
-
-
-        ???
-    }
-    */
-
     implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
         def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
     }
 
+
+    def generateStepsForMonth(month: DateTime, withIdentifier: Identifier): InputData = {
+        val dataPoints: List[DataPoint] = List()
+        for { day <- 1 until month.dayOfMonth.get} {
+            val date = new DateTime(month.year.get, month.monthOfYear.get, day, 0, 0)
+
+        }
+
+        ???
+    }
+
+
     def generateStepsForTodayWithIdentifier(identifier: Identifier): InputData = {
-        val dataPoints = generateStepsForDate(new DateTime())
+        val dataPoints = gaussianDatapoints(new DateTime())
 
         val startDate = dataPoints.minBy(_.timestamp).timestamp
         val endDate = dataPoints.maxBy(_.timestamp).timestamp
@@ -48,52 +47,34 @@ class ExampleDataGenerator {
         InputData(identifier, "Step Numbers", dataPoints, metadata)
     }
 
+    def gaussianDatapoints(t: DateTime): List[DataPoint] = {
+        def gauss(mean: Double, stdDev: Double)(t: Long): Double =
+            10000000 * (math.exp(math.pow((t - mean)/stdDev, 2) / -2.0 ) / math.sqrt(2.0 * math.Pi) / stdDev)
 
-    def generateStepDataPointsForDay(day: DateTime): List[DataPoint] = {
-        gaussianDatapoints(day)
+        val MIDNIGHT_START = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 0, 0)
+        val MIDNIGHT_END = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 23, 59)
+        val MORNING_INTENSITY = 350
+        val MIDDAY_INTENSITY = 400
+        val EVENING_INTENSITY = 350
+        val MORNING_TIMESTAMP = (MIDNIGHT_START.getMillis * 4 + MIDNIGHT_END.getMillis * 3) / 7
+        val MIDDAY_TIMESTAMP = (MIDNIGHT_START.getMillis * 3 + MIDNIGHT_END.getMillis * 3) / 6
+        val EVENING_TIMESTAMP = (MIDNIGHT_START.getMillis * 2 + MIDNIGHT_END.getMillis * 5) / 7
+
+        val STEP = 10 * 60 * 1000
+
+        (for { i <- 0 to ((MIDNIGHT_END.getMillis - MIDNIGHT_START.getMillis) / STEP).toInt } yield {
+            val t: Long = MIDNIGHT_START.getMillis + i * STEP
+            DataPoint(new Timestamp(t), IntValue((
+                (MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 1 * 60 * 60 * 1000)(t)
+                    + MIDDAY_INTENSITY  * gauss(MIDDAY_TIMESTAMP,  1.5 * 60 * 60 * 1000)(t)
+                    + EVENING_INTENSITY * gauss(EVENING_TIMESTAMP, 1.5 * 60 * 60 * 1000)(t)) / 3
+                    + (if (t < (MIDDAY_TIMESTAMP + MIDNIGHT_START.getMillis) / 2) 0 else Random.nextInt(10))
+                ).toInt))
+        }).toList
     }
-
-
-
 
 
     /*
-    def randomStepDataPoinstForDate(date: DateTime): List[DataPoint] = {
-        val year = date.year.get
-        val month = date.monthOfYear.get
-        val day = date.dayOfMonth.get
-
-        val startTime = new DateTime(year, month, day, 0, 0)
-        val endTime = new DateTime(year, month, day, 23, 59)
-
-        val morningTimestamp = (3 * startTime.getMillis + endTime.getMillis) / 4
-        val middayTimestamp = (startTime.getMillis + endTime.getMillis) / 2
-        val eveningTimestamp = (startTime.getMillis + 3 * endTime.getMillis) / 4
-
-        val step = 1000 * 60 * 10
-        val morningIntensity = 10
-        val middayIntesity = 20
-        val eveningIntensity = 15
-
-        var t = startTime.getMillis
-        var dataPoints: List[DataPoint] = List()
-
-        while (t < endTime.getMillis) {
-
-            dataPoints ::= DataPoint(new Timestamp(t), IntValue(
-                (Random.nextGaussian() * morningIntensity + (morningTimestamp + t)
-                    + Random.nextGaussian() * middayIntesity + (middayTimestamp + t)
-                    + Random.nextGaussian() * eveningIntensity + (eveningTimestamp + t)).toInt
-            ))
-
-            t += step
-        }
-
-        dataPoints
-    }
-    */
-
-
     def generateStepsForDate(date: DateTime): List[DataPoint] = {
         var stepDataPoints: List[DataPoint] = List()
 
@@ -102,8 +83,6 @@ class ExampleDataGenerator {
         val day = date.dayOfMonth.get
 
         val frequency = 10
-        var sum = 0
-
         for {hour <- 1 until 24} {
             for {minute <- 0 until (60 / frequency)} {
                 val datetime = new DateTime(year, month, day, hour, minute * frequency)
@@ -114,13 +93,10 @@ class ExampleDataGenerator {
 
                 val dataPoint = new DataPoint(timestamp, stepValue)
                 stepDataPoints = dataPoint :: stepDataPoints
-
-                sum += stepValue
             }
         }
         stepDataPoints
     }
-
 
     def getRandomStepValueForHour(hour: Int, frequency: Int): Int = {
         var stepValue = 0
@@ -133,32 +109,9 @@ class ExampleDataGenerator {
         }
         stepValue
     }
+    */
 
 
-    def gaussianDatapoints(t: DateTime): List[DataPoint] = {
-        def gauss(e: Double, v: Double)(t: Long): Int =
-            (1 / math.sqrt(2 * math.Pi * math.pow(v, 2)) * math.exp(-1/2 * t - e / math.pow(v, 2))).toInt
-
-        val MIDNIGHT_START = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 0, 0)
-        val MIDNIGHT_END = new DateTime(t.getYear, t.getMonthOfYear, t.getDayOfMonth, 23, 59)
-        val MORNING_INTENSITY = 100
-        val MIDDAY_INTENSITY = 150
-        val EVENING_INTENSITY = 100
-        val MORNING_TIMESTAMP = (MIDNIGHT_START.getMillis * 3 + MIDNIGHT_END.getMillis) / 4
-        val MIDDAY_TIMESTAMP = (MIDNIGHT_END.getMillis + MIDNIGHT_END.getMillis) / 2
-        val EVENING_TIMESTAMP = (MIDNIGHT_START.getMillis + MIDNIGHT_END.getMillis * 3) / 4
-
-        val STEP = 10 * 60 * 1000
-
-        (for { i <- 0 to ((MIDNIGHT_END.getMillis - MIDNIGHT_START.getMillis) / STEP).toInt } yield {
-            val t: Long = MIDNIGHT_START.getMillis + i * STEP
-            DataPoint(new Timestamp(t), IntValue(
-                MORNING_INTENSITY   * gauss(MORNING_TIMESTAMP, 4 * 60 * 60 * 1000)(t)
-                + MIDDAY_INTENSITY  * gauss(MIDDAY_TIMESTAMP,  4 * 60 * 60 * 1000)(t)
-                + EVENING_INTENSITY * gauss(EVENING_TIMESTAMP, 4 * 60 * 60 * 1000)(t)
-            ))
-        }).toList
-    }
 
 
     /*
@@ -209,11 +162,5 @@ class ExampleDataGenerator {
     */
 
 
-
-}
-
-object Test extends App {
-
-    (new ExampleDataGenerator).gaussianDatapoints(new DateTime()).map(println)
 
 }

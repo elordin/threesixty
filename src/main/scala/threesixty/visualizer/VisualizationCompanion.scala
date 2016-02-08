@@ -5,25 +5,24 @@ import threesixty.data.{ InputData, DataPool, InputDataSkeleton }
 import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.engine.UsageInfo
 import threesixty.processor.{ProcessingStep, ProcessingMethod, ProcessingStrategy}
-
-//import scala.util.parsing.combinator.token.StdTokens.Identifier
+import threesixty.decisionengine.visualizations.VisualizationDecisionMethod
 
 
 /** Trait for companion objects to  [[threesixty.visualizer.Visualization]]. */
-trait VisualizationCompanion extends UsageInfo {
+trait VisualizationCompanion extends VisualizationDecisionMethod with UsageInfo  {
     /** Verbose name of the visualization */
     def name: String
 
     /** Conversion from String to [[threesixty.visualizer.VisualizationConfig]]. */
     def fromString: (String) => VisualizationConfig
 
-def default(ids: Seq[Identifier], height: Int, width: Int): VisualizationConfig
+    def default(ids: Seq[Identifier], height: Int, width: Int): VisualizationConfig
 
     val metadata: VisualizationMetadata
 
 
-    def degreeOfFit(inputMetadata: InputDataSkeleton*): Double = ???
-    def degreeOfFit(processingStrategy: ProcessingStrategy, inputMetadata: InputDataSkeleton*): Double = ???
+    def degreeOfFit(inputMetadata: InputDataSkeleton*): Double = 0
+    def degreeOfFit(processingStrategy: ProcessingStrategy, inputMetadata: InputDataSkeleton*): Double = 0
 
     /**
      *  Method to determine if a list of input data fulfills the requirements of the visualization

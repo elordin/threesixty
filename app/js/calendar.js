@@ -141,13 +141,14 @@ var selectedDayRequest = {
             "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
             "width": 512,
             "height": 400,
-            "yMax": 350,
+            "yMax": 100,
             "border": {
                 "top": 10,
                 "bottom": 10,
-                "left": 60,
+                "left": 70,
                 "right": 20
-            }
+            },
+            "yUnit": 25.0
         }
     },
     "processor": [],
