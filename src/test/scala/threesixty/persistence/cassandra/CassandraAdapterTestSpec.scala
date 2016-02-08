@@ -113,4 +113,20 @@ class CassandraAdapterTestSpec extends FunSpec with Matchers with ScalaFutures
             }
         }
     }
+
+    describe("querying a data set with data points for a given range of time") {
+        it ("should load the data points within the given range") {
+
+            CassandraAdapter.insertData(inputDataSet)
+
+            val startTime = new Timestamp(1453227568330L)
+            val endTime = new Timestamp(1453227593147L)
+
+            CassandraAdapter.getDatasetInRange(identifier.toString, startTime, endTime) match {
+                case Right(resultInputDataSet) =>
+                    resultInputDataSet.dataPoints.length should be (2)
+                case Left(message) => fail(message)
+            }
+        }
+    }
 }

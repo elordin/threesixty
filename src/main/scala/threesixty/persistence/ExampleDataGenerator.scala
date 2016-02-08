@@ -1,10 +1,7 @@
 package threesixty.persistence
 
 import java.sql.Timestamp
-import java.util.{UUID, Calendar}
-
-import org.joda.time.DateTime
-import threesixty.data.Data.{IntValue, Identifier}
+import threesixty.data.Data.Identifier
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
 import threesixty.data.Data.IntValue

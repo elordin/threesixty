@@ -4,7 +4,7 @@ import java.util.UUID
 import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
-import threesixty.data.metadata.{Timeframe, CompleteInputMetadata}
+import threesixty.data.metadata._
 import threesixty.data.{DataPoint, InputData, InputDataSubset, InputDataSkeleton}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.persistence.cassandra.tables._
@@ -123,8 +123,30 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
       * @param to         The end timestamp of the range
       * @return           Either the data set (Left) or an error message (Right)
       */
-    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
+    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = {
+        val dataPoints = Await.result(CassandraAdapter.dataPoints.
+            getDataPointsWithInputDataId(UUID.fromString(identifier), from, to), Duration.Inf).toList
 
+
+
+
+
+        val startTime = dataPoints.minBy(_.timestamp).timestamp
+        val endTime = dataPoints.maxBy(_.timestamp).timestamp
+        val timeframe = Timeframe(startTime, endTime)
+        val metadataID = Await.result(CassandraAdapter.inputDatasets.getMetadataID(UUID.fromString(identifier)), Duration.Inf).get
+        val inputMetadata = CassandraAdapter.getMetadata(metadataID.toString) match {
+             case Some(original) => CompleteInputMetadata(timeframe, original.reliability,
+                 original.resolution, original.scaling, original.activityType, dataPoints.length)
+             case None => val activityType = ActivityType("Unknown Activity")
+                 CompleteInputMetadata(timeframe, Reliability.Unknown, Resolution.Middle, Scaling.Nominal, activityType, dataPoints.length)
+        }
+       Await.result(CassandraAdapter.inputDatasets.
+            getInputDataByIdentifier(UUID.fromString(identifier)), Duration.Inf) match {
+            case Some(original) => Right(InputDataSubset(identifier, original.measurement, dataPoints, inputMetadata, from, to))
+            case None => Left("It was not possible to load the data set in given range")
+        }
+    }
 
 
     /**
@@ -137,7 +159,7 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(UUID.fromString(identifier)), Duration.Inf)
     }
 
-    def getSkeleton(identifier: Identifier): Either[String, InputDataSkeleton] =
+    def getSkeleton(identifier: Identifier): Either[String, InputDataSkeleton] = {
         try {
             Await.result(CassandraAdapter.inputDatasets
                 .getInputDataSkeletonByIdentifier(UUID.fromString(identifier)), Duration.Inf) match {
@@ -147,7 +169,11 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
         } catch {
             case e: NoSuchElementException => Left(e.getMessage)
         }
+    }
 
+    implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
+        def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
+    }
 
 }
 

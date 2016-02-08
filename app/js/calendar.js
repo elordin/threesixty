@@ -133,9 +133,8 @@ $('#next-week').click(function () {
 /*  Loading Diagrams  */
 /* ****************** */
 
-var startTime = selectedDate.getMilliseconds
-var endTime = startTime + 36000000 
-
+var startTime = selectedDate.getTime()
+var endTime = startTime + 36000000
 
 var selectedDayRequest = {
     "type": "visualization",
@@ -146,17 +145,16 @@ var selectedDayRequest = {
             "width": 512,
             "height": 400,
             "yMax": 200,
-            "border": {
-                "top": 10,
-                "bottom": 10,
-                "left": 70,
-                "right": 20
+            "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
             },
             "yUnit": 25.0
         }
     },
     "processor": [],
-    "data": ["23551219-404e-42a7-bc95-95accb8affe5"]
+    "data": [{
+        "id": "23551219-404e-42a7-bc95-95accb8affe5",
+        "from": selectedDate.getTime()
+    }]
 }
 
 requestText = JSON.stringify(selectedDayRequest);
