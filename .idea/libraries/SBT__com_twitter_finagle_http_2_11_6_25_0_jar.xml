@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.ivy2/cache/com.twitter/finagle-http_2.11/jars/finagle-http_2.11-6.25.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.twitter/finagle-http_2.11/srcs/finagle-http_2.11-6.25.0-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

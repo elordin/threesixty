@@ -26,7 +26,12 @@ object Accumulation extends ProcessingMethodCompanion {
 
     def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
 
-    def usage = """ Use responsibly """ // TODO
+    def usage =
+        """ |Accumulation Function, no parameters
+            |This function is called to build out of a dataset its accumulated dataset.
+            |Accumulation.apply(1,2,3,4,5) = (1,3,6,10,15)
+            |Depending on the data, an aggregation is suggested in advance.
+        """.stripMargin
 
     def apply(jsonString: String): Accumulation = {
         implicit val accumulationFormat =
@@ -44,19 +49,19 @@ object Accumulation extends ProcessingMethodCompanion {
         val meta = inputData.metadata
 
         if (meta.scaling == Scaling.Ordinal) {
-            temp += 0.4
+            temp += 1.0
         }
         if (meta.size >= 5) {
-            temp += 0.2
+            temp += 1.0
         }
         if (meta.size >= 50) {
-            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
+            temp += 1.0 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
-            temp += 0.2
+            temp += 1.0
         }
         if (meta.resolution == Resolution.Middle) {
-            temp += 0.1
+            temp += 1.0
         }
 
         temp
@@ -69,13 +74,13 @@ object Accumulation extends ProcessingMethodCompanion {
             //good
             case _:LineChartConfig          => 1.0
 //             case _:HeatLineChartConfig      => 1.0
-            case _:BarChartConfig           => 0.8
+            case _:BarChartConfig           => 0.2
 //             case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.2
 //             case _:ScatterColorChartConfig  => 0.2
 //             case _:ProgressChartConfig      => 0.1
-            case _:PieChartConfig           => 0.0
+            case _:PieChartConfig           => 0.1
             //default
             case _                          => 0.5
         }

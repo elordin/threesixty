@@ -59,14 +59,39 @@ libraryDependencies ++= Seq(
   "io.spray" %% "spray-routing-shapeless2" % "1.3.3"
 )
 
+//Build Deploymenttools
 enablePlugins(JavaServerAppPackaging)
+enablePlugins(JavaAppPackaging)
+enablePlugins(SbtNativePackager)
+enablePlugins(UniversalPlugin)
 
 packageSummary in Linux := "360° - My personal health and fitness monitor"
 packageSummary in Windows := "360° - My personal health and fitness monitor"
 packageDescription := "Visualization engine for fitness data"
 
-maintainer in Windows := "Heroes of SE"
+maintainer in Windows := "Heroes of SE <se@openinnovator.net>"
 maintainer in Debian := "Heroes of SE <se@openinnovator.net>"
+
+
+
+
+//Windows Build
+enablePlugins(WindowsPlugin)
+
+mappings in Windows := (mappings in Universal).value
 
 wixProductId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
 wixProductUpgradeId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
+
+
+//wixFile := File("deployment/wixconfig.xml")
+
+//Command creating it
+//sbt windows:packageBin
+
+//DEBIAN/Linus
+enablePlugins(DebianPlugin)
+
+
+//Creates universal zip
+//sbt universal:packageBin

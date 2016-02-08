@@ -30,7 +30,7 @@ object SplineInterpolation extends ProcessingMethodCompanion {
 
     def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
 
-    def usage = """ Use responsibly """ // TODO
+    def usage = """ The spline interpolation is currently out of order """
 
     def apply(jsonString: String): SplineInterpolation = {
         implicit val splineInterpolationFormat =
@@ -50,16 +50,16 @@ object SplineInterpolation extends ProcessingMethodCompanion {
             temp += 0.4
         }
         if (meta.size >= 5) {
-            temp += 0.2
+            temp += 1.0
         }
         if (meta.size >= 50) {
-            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
+            temp += 0.6 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
-            temp += 0.2
+            temp += 0.0
         }
         if (meta.resolution == Resolution.Middle) {
-            temp += 0.1
+            temp += 1.0
         }
 
         temp
@@ -78,7 +78,7 @@ object SplineInterpolation extends ProcessingMethodCompanion {
             case _:ScatterChartConfig       => 0.2
             // case _:ScatterColorChartConfig  => 0.2
             // case _:ProgressChartConfig      => 0.1
-            case _:PieChartConfig           => 0.0
+            case _:PieChartConfig           => 0.1
             //default
             case _                          => 0.5
         }
