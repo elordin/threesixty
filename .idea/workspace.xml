@@ -2,11 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5c011ca-2a04-4eb7-bd44-7c8a0db214d5" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/css/calendar.css" afterPath="$PROJECT_DIR$/app/css/calendar.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/js/calendar.js" afterPath="$PROJECT_DIR$/app/js/calendar.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/DataPointTable.scala" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/DataPointTable.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/CassandraAdapterTestSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/CassandraAdapterTestSpec.scala" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala" afterPath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/DataPointsTableTestSpec.scala" afterPath="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/DataPointsTableTestSpec.scala" />
     </list>
     <ignored path="Threesixty.iws" />
@@ -82,21 +82,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="ExampleDataGenerator.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ExampleDataGenerator.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
-              <folding />
+            <state vertical-scroll-proportion="0.2032967">
+              <caret line="40" column="53" selection-start-line="40" selection-start-column="53" selection-end-line="40" selection-end-column="53" />
+              <folding>
+                <element signature="e#32#57#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DataPointsTableTestSpec.scala" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/DataPointsTableTestSpec.scala">
+      <file leaf-file-name="TestDataForDatabase.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8076923">
-              <caret line="84" column="9" selection-start-line="84" selection-start-column="9" selection-end-line="84" selection-end-column="9" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="31" column="47" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -160,12 +162,12 @@
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/InputMetadataTableTestSpec.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/TimeframesTableTestSpec.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/processor/ProcessorTest.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/tables/DataPointTable.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/DataPointsTableTestSpec.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/CassandraAdapterTestSpec.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/DataPointsTableTestSpec.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" />
       </list>
     </option>
   </component>
@@ -1179,9 +1181,9 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Application.Server" />
-        <item index="1" class="java.lang.String" itemvalue="ScalaTest.CassandraAdapterTestSpec" />
-        <item index="2" class="java.lang.String" itemvalue="ScalaTest.TestDataForDatabase" />
+        <item index="0" class="java.lang.String" itemvalue="ScalaTest.TestDataForDatabase" />
+        <item index="1" class="java.lang.String" itemvalue="Application.Server" />
+        <item index="2" class="java.lang.String" itemvalue="ScalaTest.CassandraAdapterTestSpec" />
         <item index="3" class="java.lang.String" itemvalue="ScalaTest.DataPointsTableTestSpec" />
         <item index="4" class="java.lang.String" itemvalue="ScalaTest.ScalaTests in 'cassandra'" />
       </list>
@@ -1239,7 +1241,7 @@
       <workItem from="1454835137186" duration="7996000" />
       <workItem from="1454869408782" duration="155000" />
       <workItem from="1454870660142" duration="1465000" />
-      <workItem from="1454931920723" duration="10016000" />
+      <workItem from="1454931920723" duration="13521000" />
     </task>
     <servers />
   </component>
@@ -1250,33 +1252,33 @@
     <history-entry file="CassandraAdapterTestSpec - 2016.02.08 at 15h 53m 37s.xml">
       <configuration name="CassandraAdapterTestSpec" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.02.08 at 15h 11m 47s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 17h 36m 16s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.02.08 at 15h 14m 24s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 17h 36m 46s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.02.08 at 15h 15m 01s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 17h 37m 59s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.02.08 at 15h 20m 54s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 17h 39m 17s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.02.08 at 15h 27m 34s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 17h 42m 30s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.02.08 at 15h 30m 48s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 17h 58m 29s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="DataPointsTableTestSpec - 2016.02.08 at 15h 39m 55s.xml">
-      <configuration name="DataPointsTableTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 18h 04m 44s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.08 at 15h 41m 10s.xml">
+    <history-entry file="TestDataForDatabase - 2016.02.08 at 18h 09m 22s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35243000" />
+    <option name="totallyTimeSpent" value="38748000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -1331,13 +1333,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/server/ServerActor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37937742">
-          <caret line="15" column="6" selection-start-line="15" selection-start-column="6" selection-end-line="15" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/server/Server.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7105263">
@@ -1627,14 +1622,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/data/InputData.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.32783884">
@@ -1655,14 +1642,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="25" column="5" selection-start-line="25" selection-start-column="5" selection-end-line="25" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="38" selection-start-line="3" selection-start-column="38" selection-end-line="3" selection-end-column="38" />
           <folding />
         </state>
       </provider>
@@ -1693,9 +1672,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/tables/DataPointsTableTestSpec.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8076923">
-          <caret line="84" column="9" selection-start-line="84" selection-start-column="9" selection-end-line="84" selection-end-column="9" />
+        <state vertical-scroll-proportion="1.9230769">
+          <caret line="81" column="69" selection-start-line="81" selection-start-column="69" selection-end-line="81" selection-end-column="69" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="31" column="47" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.7.jar!/scala/util/Random.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.20231214">
+          <caret line="7" column="6" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2032967">
+          <caret line="40" column="53" selection-start-line="40" selection-start-column="53" selection-end-line="40" selection-end-column="53" />
+          <folding>
+            <element signature="e#32#57#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

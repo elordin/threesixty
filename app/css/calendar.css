@@ -71,7 +71,10 @@
 }
 
 #date-activity {
-    margin: 0 0 40px -28px;
+    margin: 0 0 40px -20px;
 }
 
+#week-activity {
+    margin: 0 0 0 -20px;
+}
 

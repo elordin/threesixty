@@ -80,7 +80,6 @@ class DataPointsTableTestSpec extends FunSpec with Matchers with ScalaFutures
                     results.contains(firstDataPoint) should be (false)
                     results.contains(secondDataPoint) should be (true)
                     results.contains(thirdDataPoint) should be (true)
-
             }
         }
     }

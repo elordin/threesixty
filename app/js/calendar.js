@@ -66,7 +66,13 @@ function getLabelForDayItem(dayItem) {
 function selectTodayInDayList() {
     var weekdayName = weekdays[selectedDate.getDay()];
     $('#' + weekdayName.toLowerCase()).addClass('selected');
+    updateDayContent();
+}
+
+function updateDayContent() {
     updateDateTitle();
+    updateDayDiagram();
+    updateWeekDiagram();
 }
 
 function updateDateTitle() {
@@ -105,7 +111,7 @@ $('.day-link').click(function () {
     } else if (dateClicked == sunday.getDate().toString()) {
         selectedDate = sunday;
     }
-    updateDateTitle();
+    updateDayContent();
     
     return false;
 });
@@ -113,7 +119,7 @@ $('.day-link').click(function () {
 $('#previous-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() - 7);
     updateCurrentWeekdays();
-    updateDateTitle();
+    updateDayContent();
     
     return false;
 });
@@ -121,7 +127,7 @@ $('#previous-week').click(function () {
 $('#next-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() + 7);
     updateCurrentWeekdays();
-    updateDateTitle();
+    updateDayContent();
     
     return false;
 });
@@ -133,39 +139,163 @@ $('#next-week').click(function () {
 /*  Loading Diagrams  */
 /* ****************** */
 
-var startTime = selectedDate.getTime()
-var endTime = startTime + 36000000
-
-var selectedDayRequest = {
-    "type": "visualization",
-    "visualization": {
-        "type": "linechart",
-        "args": {
-            "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
-            "width": 512,
-            "height": 400,
-            "yMax": 200,
-            "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
-            },
-            "yUnit": 25.0
-        }
-    },
-    "processor": [],
-    "data": [{
-        "id": "23551219-404e-42a7-bc95-95accb8affe5",
-        "from": selectedDate.getTime()
-    }]
+function updateDayDiagram() {
+    var today = selectedDate
+    today.setHours(0,0,0,0)
+    var startTime = today.getTime()
+    today.setHours(23,59,59,999)
+    var endTime = Math.min(today.getTime(), (new Date()).getTime())
+    
+    sendRequest(JSON.stringify({
+        "type": "visualization",
+        "visualization": {
+            "type": "barchart",
+            "args": {
+                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
+                "width": 512,
+                "height": 256,
+                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
+                },
+                "yUnit": 25.0,
+                "colorScheme": "green"
+            }
+        },
+        "processor": [{
+            "method": "aggregation",
+            "args": {
+                    "idMapping": {
+                            "23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"
+                     },
+                    "mode": "mean",
+                    "param": "hour"
+            }
+        }],
+        "data": [{
+            "id": "23551219-404e-42a7-bc95-95accb8affe5",
+            "from": startTime,
+            "to": endTime
+        }]
+    }), '#date-activity');
+    
+    /*
+    sendRequest(JSON.stringify({
+        "type": "visualization",
+        "visualization": {
+            "type": "linechart",
+            "args": {
+                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
+                "width": 512,
+                "height": 256,
+                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
+                },
+                "yUnit": 25.0,
+                "colorScheme": "green"
+            }
+        },
+        "processor": [],
+        "data": [{
+            "id": "23551219-404e-42a7-bc95-95accb8affe5",
+            "from": startTime,
+            "to": endTime
+        }]
+    }), '#date-activity');
+    */
 }
 
-requestText = JSON.stringify(selectedDayRequest);
 
-$.ajax({
-    url: 'http://localhost:8080',
-    method: 'POST',
-    data: requestText,
-    dataType: 'json',
-    complete: function (answer) {
-        $('#date-activity').empty().html(answer.responseText);
+function updateWeekDiagram() {
+    var firstDayOfWeek = selectedDate.getDate() - selectedDate.getDay() + 1;
+    if (selectedDate.getDay() == 0) {
+        firstDayOfWeek = selectedDate.getDate() - 6;
     }
-});
+    
+    var currentDate = new Date(selectedDate);
+    
+    monday = new Date(currentDate.setDate(firstDayOfWeek));
+    sunday = new Date(currentDate.setDate(monday.getDate() + 6));
+    
+    monday.setHours(0, 0, 0, 0)
+    var startTime = monday.getTime()
+    sunday.setHours(23, 59, 59, 999)
+    var endTime = sunday.getTime()
+    
+    
+    /*
+    sendRequest(JSON.stringify({
+        "type": "visualization",
+        "visualization": {
+            "type": "barchart",
+            "args": {
+                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
+                "width": 512,
+                "height": 256,
+                "yMax": 175,
+                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
+                },
+                "yUnit": 25.0,
+                "colorScheme": "green"
+            }
+        },
+        "processor": [{
+            "method": "aggregation",
+            "args": {
+                    "idMapping": {
+                            "23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"
+                     },
+                    "mode": "mean",
+                    "param": "weekday"
+            }
+        }],
+        "data": [{
+            "id": "23551219-404e-42a7-bc95-95accb8affe5",
+            "from": startTime,
+            "to": endTime
+        }]
+    }), '#week-activity');
+    */
+    
+    sendRequest(JSON.stringify({
+        "type": "visualization",
+        "visualization": {
+            "type": "linechart",
+            "args": {
+                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
+                "width": 512,
+                "height": 256,
+                "yMax": 175,
+                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
+                },
+                "yUnit": 25.0,
+                "colorScheme": "green"
+            }
+        },
+        "processor": [],
+        "data": [{
+            "id": "23551219-404e-42a7-bc95-95accb8affe5",
+            "from": startTime,
+            "to": endTime
+        }]
+    }), '#week-activity');
+}
+
+
+
+
+
+
+
+
+function sendRequest(requestText, resultPlaceholder) {
+    $.ajax({
+        url: 'http://localhost:8080',
+        method: 'POST',
+        data: requestText,
+        dataType: 'json',
+        complete: function (answer) {
+            $(resultPlaceholder).empty().html(answer.responseText);
+        }
+    });
+}
+
+
 
