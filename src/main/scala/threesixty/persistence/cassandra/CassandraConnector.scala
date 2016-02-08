@@ -1,5 +1,6 @@
 package threesixty.persistence.cassandra
 
+import com.typesafe.config.{ConfigException, ConfigFactory, Config}
 import com.websudos.phantom.connectors.{ContactPoints, KeySpace}
 
 /**
@@ -10,6 +11,16 @@ trait CassandraKeyspace {
 }
 
 object CassandraConnector extends CassandraKeyspace {
-    val hosts = Seq("137.250.170.136")
-    val keyspace = ContactPoints(hosts).keySpace("threesixty")
+    val config: Config = ConfigFactory.load
+
+    @throws[ConfigException]("if config doesn't contain database.address") // TODO
+    val dbAddress: String =
+        config.getString("database.address")
+    @throws[ConfigException]("if config doesn't contain database.keyspace") // TODO
+    val dbKeyspace: String =
+        config.getString("database.keyspace")
+
+    val hosts = Seq(dbAddress)
+
+    val keyspace = ContactPoints(hosts).keySpace(dbKeyspace)
 }

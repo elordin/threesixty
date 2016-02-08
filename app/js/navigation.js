@@ -1,23 +1,38 @@
-$("#burger-button").click(function (event) {
-    toggleNavigationWidth();
-    toggleNavigationDescription();
-});
+var mediaQuery = window.matchMedia('(min-width: 800px)');
+var $aside = $('aside');
+var $description = $('.nav-description');
 
+$(window).load(checkWindowWidth);
+$(window).resize(checkWindowWidth);
 
-function toggleNavigationWidth() {
-    var $aside = $("aside")
-    if ($aside.width() == 64) {
-        $aside.width("264px");
+function checkWindowWidth() {
+    if (mediaQuery.matches) {
+        showSideMenu();
+        $aside.addClass('extended');
     } else {
-        $aside.width("64px")
+        hideSideMenu();
+        $aside.removeClass('extended');
     }
 }
 
-function toggleNavigationDescription() {
-    var $description = $(".nav-description")
-    if ($description.hasClass("visible")) {
-        $description.removeClass("visible")
+$("#burger-button").click(function (event) {
+    toggleNavigationWidth();
+});
+
+function toggleNavigationWidth() {
+    if ($aside.width() == 64) {
+        showSideMenu();
     } else {
-        $description.addClass("visible")
+        hideSideMenu();
     }
+}
+
+function showSideMenu() {
+    $aside.width('264px');
+    $description.addClass('visible');
+}
+
+function hideSideMenu() {
+    $aside.width('64px');
+    $description.removeClass('visible');
 }

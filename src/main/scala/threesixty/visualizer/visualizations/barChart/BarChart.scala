@@ -1,13 +1,17 @@
 package threesixty.visualizer.visualizations.barChart
 
+import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.data.Data.{DoubleValue, Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{Tag, AggregationTag}
 import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
 import threesixty.visualizer.util._
-import spray.json._
 import threesixty.visualizer.visualizations.BarElement
+import ColorScheme.ColorSchemeJsonFormat
+
+import spray.json._
+
 import scala.annotation.tailrec
 import scala.xml.Elem
 
@@ -29,29 +33,29 @@ object BarChartConfig extends VisualizationCompanion {
 
     def usage = "BarChart\n" +
                 "  Parameters: \n" +
-                "    ids:                   Set[String]            - The data identifiers\n" +
-                "    height:                Int                    - Height of the diagram in px\n" +
-                "    width:                 Int                    - Width of the diagram in px\n" +
-                "    optYMin:               Double      (optional) - Minimum value of the y-axis\n" +
-                "    optYMax:               Double      (optional) - Maximum value of the y-axis\n" +
-                "    xLabel:                String      (optional) - Label for the x-axis\n" +
-                "    yLabel:                String      (optional) - Label for the y-axis\n" +
-                "    title:                 String      (optional) - Diagram title\n" +
-                "    borderTop:             Int         (optional) - Border to the top in px\n" +
-                "    borderBottom:          Int         (optional) - Border to the bottom in px\n" +
-                "    borderLeft:            Int         (optional) - Border to the left in px\n" +
-                "    borderRight:           Int         (optional) - Border to the right in px\n" +
-                "    distanceTitle          Int         (optional) - Distance between the title and the chart in px\n" +
-                "    widthBar               Double      (optional) - Width of a bar in px\n" +
-                "    distanceBetweenBars    Double      (optional) - Distance between two bars in px\n" +
-                "    showValues             Boolean     (optional) - If values should be shown\n" +
-                "    minDistanceY           Int         (optional) - Minimum number of px between two control points on the y-axis\n" +
-                "    optUnitY               Double      (optional) - Value of the desired unit on the y-axis\n" +
-                "    fontSizeTitle          Int         (optional) - Font size of the title\n" +
-                "    fontSize               Int         (optional) - Font size of labels\n"
+                "    ids:                       Set[String]            - The data identifiers\n" +
+                "    height:                    Int                    - Height of the diagram in px\n" +
+                "    width:                     Int                    - Width of the diagram in px\n" +
+                "    border:                    Border      (optional) - Border (top, bottom, left, right) in px\n" +
+                "    colorScheme:               String      (optional) - The color scheme\n" +
+                "    title:                     String      (optional) - Diagram title\n" +
+                "    titleVerticalOffset:       Int         (optional) - The vertical offset of the title\n" +
+                "    titleFontSize:             Int         (optional) - The font size of the title\n" +
+                "    xlabel:                    String      (optional) - The label for the x-axis\n" +
+                "    ylabel:                    String      (optional) - The label for the y-axis\n" +
+                "    minDistanceY:              Int         (optional) - The minimum number of px between two grid points on the y-axis\n" +
+                "    fontSize:                  Int         (optional) - The font size\n" +
+                "    fontFamily:                String      (optional) - The font family\n" +
+                "    yMin:                      Double      (optional) - The minimum value displayed on the y-axis\n" +
+                "    yMax:                      Double      (optional) - The maximum value displayed on the y-axis\n" +
+                "    yUnit:                     Double      (optional) - The unit on the y-axis\n" +
+                "    widthBar:                  Double      (optional) - The width of a bar\n" +
+                "    distanceBetweenBars:       Double      (optional) - The distance between two bars\n" +
+                "    showValues:                Boolean     (optional) - If the values for a bar should be shown"
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
+    def default(ids: Seq[Identifier], height: Int, width: Int) = BarChartConfig(ids,height, width)
     /**
      *  Public constructor that parses JSON into a configuration
      *  @param jsonString representation of the config
@@ -59,17 +63,21 @@ object BarChartConfig extends VisualizationCompanion {
      */
     def apply(jsonString: String): BarChartConfig = {
         implicit val barChartConfigFormat = jsonFormat(BarChartConfig.apply,
-            "ids", "height", "width", "optYMin", "optYMax",
-            "xLabel", "yLabel", "title", "borderTop", "borderBottom", "borderLeft",
-            "borderRight", "distanceTitle", "widthBar", "distanceBetweenBars", "showValues",
-            "minDistanceY", "optUnitY", "fontSizeTitle", "fontSize")
+            "ids",
+            "height", "width",
+            "border",
+            "colorScheme",
+            "title", "titleVerticalOffset", "titleFontSize",
+            "xlabel", "ylabel", "minDistanceY",
+            "fontSize", "fontFamily",
+            "yMin", "yMax", "yUnit",
+            "widthBar", "distanceBetweenBars", "showValues")
         jsonString.parseJson.convertTo[BarChartConfig]
     }
 
-
     val metadata = new VisualizationMetadata(
         List(DataRequirement(
-            requiredProcessingMethods = None //TODO Aggregation
+            requiredProcessingMethods = Some(List(Aggregation))
         )))
 
 
@@ -81,15 +89,7 @@ object BarChartConfig extends VisualizationCompanion {
      */
     case class BarChart(config: BarChartConfig, data: ProcessedData*) extends Visualization(data: _*) {
 
-        //val displayData = data.headOption.getOrElse(null)
-        // TODO: for testing only!!!
-        val displayData = new ProcessedData("aggregatedData", List(
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(2), Set(new AggregationTag("Wert 1"))),
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(-10), Set(new AggregationTag("Wert 2"))),
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(50), Set(new AggregationTag("Wert 3"))),
-            new TaggedDataPoint(new Timestamp(0), new DoubleValue(20), Set(new AggregationTag("Wert 4")))))
-
-        require(displayData != null, "There are no data to display.")
+        val displayData = data.headOption.getOrElse(throw new IllegalArgumentException("There are no data to display."))
 
         // TODO Performance optimization, get both in one run
         val dataMinMaxY: (Double, Double) =
@@ -98,11 +98,11 @@ object BarChartConfig extends VisualizationCompanion {
         val dataMinY: Double = dataMinMaxY._1
         val dataMaxY: Double = dataMinMaxY._2
 
-        val yScale = config.optUnitY.map(
-            ValueScale(config.optYMin.getOrElse(dataMinY),
-                config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
-            ValueScale(config.optYMin.getOrElse(dataMinY),
-                config.optYMax.getOrElse(dataMaxY), 0, config.chartHeight)
+        val yScale = config._yUnit.map(
+            ValueScale(config._yMin.getOrElse(dataMinY),
+                config._yMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
+            ValueScale(config._yMin.getOrElse(dataMinY),
+                config._yMax.getOrElse(dataMaxY), 0, config.chartHeight)
         }
 
         val yAxisLabels: Seq[(String, Int)] =  {
@@ -111,13 +111,16 @@ object BarChartConfig extends VisualizationCompanion {
                 if (v > yScale.inMax) {
                     init
                 } else {
-                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v))))
+                    construct(yScale.nextBreakpoint(v), init ++ Seq((yScale.format(v), yScale(v).toInt)))
                 }
             }
             construct(yScale.nextBreakpoint(yScale.inMin), Seq())
         }
 
-        val chartOrigin = (config.borderLeft, config.height - config.borderBottom)
+        /**
+         * @return the origin
+         */
+        private def calculateOrigin: (Int, Int) = (config.border.left, config.height - config.border.bottom)
 
         /**
          * @return a tuple containing the width of a bar and the distance between two bars
@@ -143,27 +146,31 @@ object BarChartConfig extends VisualizationCompanion {
          * @return the calculated list of [[BarElement]]s.
          */
         private def calculateBarElements: List[BarElement] = {
-            var result: List[BarElement] = List.empty
+            // var result: List[BarElement] = List.empty
             val (widthBar, distanceBetweenBars) = calculateWidthBarAndDistanceBetweenBars
             var leftOffset = distanceBetweenBars
 
-            for(point <- displayData.dataPoints) {
-                var description = point.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString
+            val result = for(point <- displayData.dataPoints) yield {
+                val description = point.tags.filter((t: Tag) => t.isInstanceOf[AggregationTag]).head.toString
+                val color = config.colorScheme.next
 
                 var element = new BarElement(
-                    description.replace(' ', '_'),
-                    leftOffset,
-                    widthBar,
-                    chartOrigin._2 - yScale(point.value.value),
-                    description,
-                    config.showValues,
-                    point.value.value.toString,
-                    Some(config.fontSize),
-                    Some(DefaultColorScheme.next))
+                    identifier = description,
+                    xLeft = leftOffset,
+                    width = widthBar,
+                    height = yScale(point.value.value),
+                    description = description,
+                    classes = point.tags.map(_.toString),
+                    showValues = config.showValues,
+                    value = point.value.toString,
+                    fontSize = config.fontSize,
+                    fontFamily = config.fontFamily,
+                    color = color
+                )
 
                 leftOffset += widthBar + distanceBetweenBars
 
-                result = element :: result
+                element
             }
 
             result.reverse
@@ -172,8 +179,9 @@ object BarChartConfig extends VisualizationCompanion {
 
         def toSVG: Elem = {
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+            val chartOrigin = calculateOrigin
 
-            (<g class="bars">
+            (<g class="bars" transform={ s"translate$chartOrigin" }>
                 {for (bar <- calculateBarElements) yield
                     bar.getSVGElement
                 }
@@ -183,8 +191,8 @@ object BarChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    0,
-                    yAxisLabels.size))
+                    Seq(),
+                    yAxisLabels.map(_._2)))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
@@ -196,87 +204,77 @@ object BarChartConfig extends VisualizationCompanion {
                     height = config.chartHeight,
                     title = config.yLabel,
                     labels = yAxisLabels))
-                .withTitle(config.title, config.width / 2, config.borderTop - config.distanceTitle, config.fontSizeTitle)
+                .withTitle(
+                    config.title,
+                    config.width / 2,
+                    config.border.top - config.titleVerticalOffset,
+                    config.titleFontSize,
+                    config.fontFamily)
                 .withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
         }
     }
 }
 
 /**
- *  Config for a [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]].
+ * Config for a [[threesixty.visualizer.visualizations.barChart.BarChartConfig.BarChart]].
  *  Acts as a factory.
  *
- *  @param ids set of ids which are to be displayed in the visualization
- *  @param height the height
- *  @param width the width
- *  @param optYMin the minimum value displayed on the y-coordinate
- *  @param optYMax the maximum value displayed on the y-coordinate
- *  @param _xLabel the label on the x-axis
- *  @param _yLabel the label on the y-axis
- *  @param _title the title
- *  @param _borderTop the border to the top
- *  @param _borderBottom the border to the bottom
- *  @param _borderLeft the border to the left
- *  @param _borderRight the border to the right
- *  @param _distanceTitle the distance between the title and the top of the chart
- *  @param _widthBar the width of a bar
- *  @param _distanceBetweenBars the distance between two bars
- *  @param _showValues iff the values for a bar should be shown
- *  @param _minDistanceY the minimal distance between two grid points on the y-axis
- *  @param optUnitY the unit of the y-axis
- *  @param _fontSizeTitle the font size of the title
- *  @param _fontSize the font size of labels
- *
- * @author Thomas Engel
+ * @param ids ids set of ids which are to be displayed in the visualization
+ * @param height the height
+ * @param width the width
+ * @param _border the border
+ * @param _colorScheme the color scheme
+ * @param _title the title
+ * @param _titleVerticalOffset the vertical offset of the title
+ * @param _titleFontSize the font size of the title
+ * @param _xLabel the x-axis label
+ * @param _yLabel the y-axis label
+ * @param _minPxBetweenYGridPoints the minimum distance in px between two grid points on the y-axis
+ * @param _fontSize the font size of labels
+ * @param _fontFamily the font family of labels
+ * @param _yMin the minimum value displayed on the y-coordinate
+ * @param _yMax the maximum value displayed on the y-coordinate
+ * @param _yUnit the unit of the y-axis
+ * @param _widthBar the width of a bar
+ * @param _distanceBetweenBars the distance between two bars
+ * @param _showValues iff the values for a bar should be shown
  */
 case class BarChartConfig(
-     val ids:                    Seq[Identifier],
-     val height:                 Int,
-     val width:                  Int,
-     val optYMin:                Option[Double] = None,
-     val optYMax:                Option[Double] = None,
-     val _xLabel:                 Option[String] = None,
-     val _yLabel:                 Option[String] = None,
-     val _title:                  Option[String] = None,
-     val _borderTop:              Option[Int]    = None,
-     val _borderBottom:           Option[Int]    = None,
-     val _borderLeft:             Option[Int]    = None,
-     val _borderRight:            Option[Int]    = None,
-     val _distanceTitle:          Option[Int]    = None,
-     val _widthBar:               Option[Double] = None,
-     val _distanceBetweenBars:    Option[Double] = None,
-     val _showValues:             Option[Boolean]= None,
-     val _minDistanceY:           Option[Int]    = None,
-     val optUnitY:               Option[Double] = None,
-     val _fontSizeTitle:          Option[Int]    = None,
-     val _fontSize:               Option[Int]    = None
-) extends VisualizationConfig(
-    ids,
-    height,
-    width,
-    _title,
-    _borderTop,
-    _borderBottom,
-    _borderLeft,
-    _borderRight,
-    _distanceTitle,
-    _fontSizeTitle,
-    _fontSize
-) {
-    /**
-     * @return the label on the x-axis or an empty string
-     */
-    def xLabel: String = _xLabel.getOrElse("")
-    /**
-     * @return the label on the y-axis or an empty string
-     */
-    def yLabel: String = _yLabel.getOrElse("")
+    val ids:                        Seq[Identifier],
+    val height:                     Int,
+    val width:                      Int,
+    val _border:                    Option[Border]      = None,
+    val _colorScheme:               Option[ColorScheme] = None,
+    val _title:                     Option[String]      = None,
+    val _titleVerticalOffset:       Option[Int]         = None,
+    val _titleFontSize:             Option[Int]         = None,
+    val _xLabel:                    Option[String]      = None,
+    val _yLabel:                    Option[String]      = None,
+    val _minPxBetweenYGridPoints:   Option[Int]         = None,
+    val _fontSize:                  Option[Int]         = None,
+    val _fontFamily:                Option[String]      = None,
 
-    /**
-     * @return the minDistanceY or a default value
-     */
-    def minDistanceY: Int = _minDistanceY.getOrElse(20)
-    require(minDistanceY > 0, "Value for minDistanceY must be greater than 0.")
+    val _yMin:                      Option[Double]      = None,
+    val _yMax:                      Option[Double]      = None,
+    val _yUnit:                     Option[Double]      = None,
+    val _widthBar:                  Option[Double]      = None,
+    val _distanceBetweenBars:       Option[Double]      = None,
+    val _showValues:                Option[Boolean]     = None
+) extends VisualizationConfig(
+    ids = ids,
+    height = height,
+    width = width,
+    _border = _border,
+    _colorScheme = _colorScheme,
+    _title = _title,
+    _titleVerticalOffset = _titleVerticalOffset,
+    _titleFontSize = _titleFontSize,
+    _xLabel = _xLabel,
+    _yLabel = _yLabel,
+    _minPxBetweenYGridPoints = _minPxBetweenYGridPoints,
+    _fontSize = _fontSize,
+    _fontFamily = _fontFamily
+) {
 
     /**
      * @return showValues or false

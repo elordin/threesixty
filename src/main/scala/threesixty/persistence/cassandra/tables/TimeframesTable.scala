@@ -60,15 +60,10 @@ abstract class Timeframes extends TimeframesTable with RootConnector {
         val startTime = new DateTime(start.getTime())
         val endTime = new DateTime(end.getTime())
 
-        //update starttime
         update.where(_.identifier eqs identifier).modify( _.startTime setTo startTime)
           .consistencyLevel_=(ConsistencyLevel.ALL).future()
-        //update endTime
 
-        var res = update.where(_.identifier eqs identifier).modify( _.endTime setTo endTime)
+        update.where(_.identifier eqs identifier).modify( _.endTime setTo endTime)
           .consistencyLevel_=(ConsistencyLevel.ALL).future()
-
-
-        res
     }
 }

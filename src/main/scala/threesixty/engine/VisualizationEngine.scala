@@ -1,12 +1,11 @@
 package threesixty.engine
 
-import threesixty.processor.{Processor, ProcessingStrategy, ProcessingStep}
+import threesixty.processor.{Processor, ProcessingStrategy, ProcessingStep, ProcessingMethodCompanion}
 import threesixty.visualizer.{Visualizer, VisualizationConfig}
 import threesixty.persistence.DatabaseAdapter
 
-import threesixty.data.{DataPool, UnsafeInputData}
-import threesixty.data.Data.Identifier
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.data.{DataPool, UnsafeInputData, InputDataSkeleton}
+import threesixty.data.Data.{Identifier, Timestamp}
 
 import spray.http.HttpResponse
 import spray.json._
@@ -108,7 +107,7 @@ VISUALIZATION
             result
         } catch {
             case e:JsonParser.ParsingException  => ErrorResponse(Engine.toErrorJson("Invalid JSON"))
-            case e:NoSuchElementException       => ErrorResponse(Engine.toErrorJson("type parameter missing"))
+            case e:NoSuchElementException       => ErrorResponse(Engine.toErrorJson(e.getMessage))
         }
     }
 
@@ -131,7 +130,7 @@ VISUALIZATION
     def processDataInsertRequest(json: JsObject): EngineResponse = {
         try {
             val data = json.fields("data").convertTo[UnsafeInputData]
-            dbAdapter.appendOrInsertData(data) match {
+            dbAdapter.insertData(data) match {
                 case Right(id) => SuccessResponse(JsObject(Map[String, JsValue](
                         "type" -> JsString("success"),
                         "id" -> JsString(id)
@@ -237,6 +236,7 @@ VISUALIZATION
         }
 
         val procStratOption: Option[ProcessingStrategy] = try {
+
             json.fields.get("processor").map {
                 proc: JsValue => processor.toProcessingStrategy(proc.toString)
             }
@@ -247,25 +247,70 @@ VISUALIZATION
                 return ErrorResponse(Engine.toErrorJson(e.getMessage).toString) // Should be: Parameter missing
         }
 
-        val dataIDs:Set[Identifier] = json.fields.getOrElse("data",
-                return ErrorResponse(Engine.toErrorJson("data parameter missing.").toString)
-            ).convertTo[Set[Identifier]]
+        val wrappedIDoption: Option[Seq[JsValue]] = json.fields.get("data").map(_.convertTo[Seq[JsValue]])
 
+        val skeletonsOption: Option[Seq[InputDataSkeleton]] = wrappedIDoption.map(_.map {
+            case JsString(id) => dbAdapter.getSkeleton(id) match {
+                    case Right(skeleton) => skeleton
+                    case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                }
+            case jso:JsObject => {
+                val id = jso.fields.getOrElse("id",
+                    return ErrorResponse(Engine.toErrorJson("Malformed entry in datalist."))
+                ).convertTo[Identifier]
+                if ((jso.fields contains "from") || (jso.fields contains "to")) {
+                    dbAdapter.getSkeleton(id) match {
+                            case Right(skeleton) => skeleton.subset(
+                                jso.fields.get("from").map(_.convertTo[Timestamp]),
+                                jso.fields.get("to").map(_.convertTo[Timestamp]))
+                            case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                        }
+                } else {
+                    dbAdapter.getSkeleton(id) match {
+                        case Right(skeleton) => skeleton
+                        case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                    }
+                }
+            }
+            case _ => return ErrorResponse(Engine.toErrorJson("Malformed entry in datalist."))
+        })
 
-        val dataPool: DataPool = new DataPool(dataIDs, dbAdapter)
-
+        // Get processingStrategy and visualizationConfig and deduce missing ones
         val (processingStrategy, visualizationConfig): (ProcessingStrategy, VisualizationConfig) =
-            (procStratOption, vizConfigOption) match {
-                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig)) =>
+            (procStratOption, vizConfigOption, skeletonsOption) match {
+                case (Some(procStrat:ProcessingStrategy), Some(vizConfig:VisualizationConfig), _) =>
                     (procStrat, vizConfig)
-                case (Some(procStrat), None) =>
-                    println("Viz missing"); (procStrat, ???) // TODO deduction
-                case (None, Some(vizConfig)) =>
-                    println("ProcStrat missing"); (???, vizConfig) // TODO deduction
-                case (None, None) =>
-                    println("Both missing"); (???, ???)       // TODO deduction
+                case (Some(procStrat), None, Some(skeletons)) =>
+                    (procStrat, visualizer.deduce(procStrat, skeletons: _*))
+                case (Some(procStrat), None, None) =>
+                    // Load Metadata
+                    val skeletons: Seq[InputDataSkeleton] = procStrat.steps flatMap {
+                        step: ProcessingStep => step.method.idMapping.keys map {
+                            id: Identifier => dbAdapter.getSkeleton(id)match {
+                                case Right(skeleton) => skeleton
+                                case Left(error) => return ErrorResponse(Engine.toErrorJson(s"No data for $id not found: $error").toString)
+                            }
+                        } toSeq
+                    }
+                    (procStrat, visualizer.deduce(procStrat, skeletons: _*))
+                case (None, Some(vizConfig), Some(skeletons)) =>
+                    (processor.deduce(vizConfig, skeletons: _*), vizConfig)
+                case (None, None, Some(skeletons)) =>
+                    val viz = visualizer.deduce(skeletons: _*)
+                    val procStrat = processor.deduce(viz, skeletons: _*)
+                    (procStrat, viz)
+                case _ => return ErrorResponse(
+                    Engine.toErrorJson("Requires either a definition of both processor and visualization or ids."))
             }
 
+
+        // val skeletons: Seq[InputDataSkeleton] = processingStrategy.steps flatMap {
+        //     step => step.method.idMapping.keys
+        // }
+
+        val dataPool: DataPool = new DataPool(skeletonsOption.getOrElse(
+            return ErrorResponse(Engine.toErrorJson("Malformed or missing entry in datalist."))
+        ), dbAdapter)
 
         // Apply processing Methods
         processingStrategy(dataPool)
@@ -273,4 +318,25 @@ VISUALIZATION
         // return Visualization
         VisualizationResponse(visualizationConfig(dataPool))
     }
+
+
+    def deduceVisAndProc(skeletons: InputDataSkeleton*) : (ProcessingStrategy, VisualizationConfig) = {
+        val dataIds = skeletons.map(_.id)
+
+        val procStratCompanions = processor.processingInfos.values.toList
+        val visConfigs = visualizer.visualizationInfos.values.map( comp => comp.default(dataIds,1024,1024)).toList
+
+        //go through procStrats x VisConfigs and yield where degreeOfFit is max
+        val (_, resultProcStrat, resultVizConf): (Double, ProcessingMethodCompanion, VisualizationConfig) = procStratCompanions.flatMap({
+            companion: ProcessingMethodCompanion => visConfigs.map {
+                visConf => (companion.degreeOfFit(visConf, skeletons: _*), companion, visConf)
+            }
+        }).maxBy(_._1)
+
+        val idMap = skeletons.map { skeleton => (skeleton.id, skeleton.id) } toMap
+
+        (ProcessingStrategy(resultProcStrat.default(idMap)), resultVizConf)
+
+    }
+
 }

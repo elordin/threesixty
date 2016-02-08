@@ -2,12 +2,12 @@ package threesixty.processor
 
 import org.scalatest.FunSpec
 
-import threesixty.data.{ProcessedData, DataPoint, InputData, DataPool}
+import threesixty.data.{ProcessedData, DataPoint, InputData, DataPool, InputDataSkeleton, InputDataSubset}
 import threesixty.data.Data.{Timestamp, Identifier}
 import threesixty.data.tags.Tag
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 import threesixty.persistence.DatabaseAdapter
-import threesixty.algorithms.interpolation.LinearInterpolation
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 
 
 class ProcessorTestSpec extends FunSpec {
@@ -24,7 +24,8 @@ class ProcessorTestSpec extends FunSpec {
                         Reliability.Unknown,
                         Resolution.Low,
                         Scaling.Ordinal,
-                        ActivityType("something")
+                        ActivityType("something"),
+                        2
                     )
                 )
 
@@ -34,11 +35,22 @@ class ProcessorTestSpec extends FunSpec {
                     ProcessingStep(interpolator, Set("SomeId"))
                 )
 
-                val pool = new DataPool(Set("SomeId"), new DatabaseAdapter {
+                val sampleSkeleton = new InputDataSkeleton(
+                    "SomeId", "", CompleteInputMetadata(
+                    Timeframe(new Timestamp(0), new Timestamp(1)),
+                    Reliability.Unknown,
+                    Resolution.Low,
+                    Scaling.Ordinal,
+                    ActivityType("something"),
+                    2
+                ))
+
+                val pool = new DataPool(Seq(sampleSkeleton), new DatabaseAdapter {
                         def getDataset(id:Identifier):Either[String, InputData] = Right(sampleData)
-                        def insertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
-                        def appendData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
-                        def appendOrInsertData(data:InputData):Either[String, Identifier] = throw new NotImplementedError
+                        def insertData(data:InputData):Either[String, Identifier] = ???
+                        def getMetadata(identifier: Identifier):Option[CompleteInputMetadata] = ???
+                        def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = ???
+                        def getSkeleton(identifier: threesixty.data.Data.Identifier): Either[String, InputDataSkeleton] = Right(sampleSkeleton)
                     })
 
                 pool.pushData(Set[ProcessedData](sampleData))
@@ -59,4 +71,5 @@ class ProcessorTestSpec extends FunSpec {
             }
         }
     }
+
 }

@@ -1,0 +1,27 @@
+.diagram-select-container {
+    margin: 0 0 40px -28px;
+    padding-left: 28px;
+    height: 40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    background: #eee;
+}
+
+.diagram-select-item {
+    flex-basis: 80px;
+    flex-grow: 1;
+}
+
+.diagram-select-item a {
+    display: inline-block;
+    text-decoration: none;
+    color: black;
+    font-size: 1.3em;
+    font-weight: 400;
+    margin-top: 8px;
+}
+
+.diagram-select-item a.selected {
+    color: #388E3C;
+}

@@ -46,70 +46,71 @@ object Segment {
     }
 }
 
-
 /**
-  * This class is used to generate a svg element for a circle segment.
-  *
-  * @param id the id for the corresponding svg element
-  * @param description the description displayed for the bar
-  * @param angleStart the start angle
-  * @param angleEnd the end angle
-  * @param radius the radius
-  * @param innerRadius the radius of the circle which is cutted out
-  * @param valueRadius the radius of the circle where the value is shown
-  * @param value the shown value
-  * @param fontSize the font size of labels
-  * @param color the color of the bar
-  *
-  * @author Thomas Engel
-  */
-case class Segment(val id: String,
-                   val description: String,
-                   val angleStart: Double,
-                   val angleEnd: Double,
-                   val radius: Double,
-                   val innerRadius: Double,
-                   val valueRadius: Double,
-                   val value: String,
-                   val fontSize: Option[Int] = None,
-                   val color: Option[RGBColor] = None) {
+ * This class is used to generate a svg element for a circle segment.
+ *
+ * @param identifier the class for the corresponding svg element
+ * @param description the description displayed for the segment
+ * @param classes the classes for the svg element
+ * @param angleStart the start angle
+ * @param angleEnd the end angle
+ * @param radius the radius
+ * @param innerRadius the radius of the circle which is cutted out
+ * @param showValueLabel if the value label should be shown
+ * @param valueRadius the radius of the circle where the value is shown
+ * @param segmentLabelLineColor the color of the line connecting the segment with the description label
+ * @param value the shown value
+ * @param fontSize the font size of labels
+ * @param fontFamily the font family
+ * @param fontWeight the font weight
+ * @param color the color of the bar
+ *
+ * @author Thomas Engel
+ */
+case class Segment(
+    val identifier: String,
+    val description: String,
+    val classes: Set[String],
+    val angleStart: Double,
+    val angleEnd: Double,
+    val radius: Double,
+    val innerRadius: Double,
+    val showValueLabel: Boolean,
+    val valueRadius: Double,
+    val segmentLabelLineColor: String = "#000000",
+    val value: String,
+    val fontSize: Int = 12,
+    val fontFamily: String = "Roboto, Segoe UI",
+    val fontWeight: Int = 100,
+    val color: RGBColor = RGBColor.TRANSPARENT
+  ) {
 
     /**
-      * @return the svg element representing the circle segment
-      */
+     * @return the svg element representing the circle segment
+     */
     def getSVGElement: Elem = {
         val (tlpx, tlpy) = calculateValueLabelAnchorPoint
 
-        <g id={id}>
+        <g class={identifier.replace(' ', '_') + " " + (classes.map(_.replace(' ', '_')) mkString " ") }>
             <path class="segment"
-                  fill={getColor}
+                  fill={ color.toString }
+                  stroke={ color.toString }
                   d={calculatePath} />
-            <path class="valuePath"
-                  stroke="#000000"
-                  d={calculateLabelPath}/>
-            <text class="value"
-                  x={tlpx.toString}
-                  y={tlpy.toString}
-                  font-family="Roboto, Segoe UI"
-                  font-weight="100"
-                  font-size={getFontSize}
-                  text-anchor={calculateValueLabelAnchor}>{value}</text>
+            {if(showValueLabel) {
+                <path class="valuePath"
+                      stroke={segmentLabelLineColor.toString()}
+                      d={calculateLabelPath}/>
+                <text class="value"
+                      x={(tlpx + calculateValueLabelAnchorDirection * 5).toString}
+                      y={tlpy.toString}
+                      font-family={fontFamily}
+                      font-size={fontSize.toString}
+                      text-anchor={calculateValueLabelAnchor}>{value}</text>
+                }
+            }
         </g>
     }
 
-    /**
-      * @return the string for the color or an empty string if no color was set
-      */
-    def getColor: String = {
-        if(color.isDefined) color.get.toHexString else ""
-    }
-
-    /**
-      * @return the string for the font size or an empty string if no font size was set
-      */
-    def getFontSize: String = {
-        if(fontSize.isDefined) fontSize.get.toString else ""
-    }
 
     /**
       * @return the angle difference
@@ -199,8 +200,15 @@ case class Segment(val id: String,
       * @return the anchor text for the value label
       */
     def calculateValueLabelAnchor: String = {
-        val direction = math.signum(Segment.calculateXCoordinate(calculateAvgAngle, 1))
+        val direction = calculateValueLabelAnchorDirection
         if(direction < 0) "end" else "start"
+    }
+
+    /**
+     * @return the signum of the x-coordinate of the angle used to display the label
+     */
+    def calculateValueLabelAnchorDirection: Double = {
+        math.signum(Segment.calculateXCoordinate(calculateAvgAngle, 1))
     }
 
     /**

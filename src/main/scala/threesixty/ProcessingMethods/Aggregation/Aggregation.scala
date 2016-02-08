@@ -1,24 +1,19 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.Aggregation
 
-import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import spray.json.DefaultJsonProtocol._
+import spray.json._
+import threesixty.ProcessingMethods.statistics.StatisticalAnalysis
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
+import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.tags._
-import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
-import threesixty.algorithms.statistics.StatisticalAnalysis
-
-import spray.json._
-import DefaultJsonProtocol._
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
+import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
 object Aggregation extends ProcessingMethodCompanion {
@@ -43,7 +38,7 @@ object Aggregation extends ProcessingMethodCompanion {
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
         Aggregation("mean", "d-1000", idMapping).asProcessingStep
 
-    def computeDegreeOfFit(inputData: InputData): Double = {
+    def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
 
         var temp = 0.0
         val meta = inputData.metadata
@@ -51,10 +46,10 @@ object Aggregation extends ProcessingMethodCompanion {
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.length >= 5) {
+        if (meta.size >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.length >= 50) {
+        if (meta.size >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
@@ -67,7 +62,7 @@ object Aggregation extends ProcessingMethodCompanion {
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig ): Double = {
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
 
         val strategyFactor = computeDegreeOfFit(inputData)
         val visFactor = targetVisualization match {
@@ -111,8 +106,9 @@ object Aggregation extends ProcessingMethodCompanion {
   *
   */ //groupby() bei Listen :-)
 case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
+    def companion: ProcessingMethodCompanion = Aggregation
     /**
       *  Creates a new dataset with ID as specified in idMapping.
       *  Creates new Dataset, but with aggregated Data which can directly used for
@@ -168,6 +164,10 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
         } else {
 
             val grouped = param match {
+                case "minute" =>
+                    data.dataPoints.groupBy( _.timestamp.getMinutes )
+                case "hour" =>
+                    data.dataPoints.groupBy( _.timestamp.getHours )
                 case "weekday" =>
                     data.dataPoints.groupBy( _.timestamp.getDay )
                 case "day" =>
@@ -179,7 +179,7 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
                 case "enum" =>
                     data.dataPoints.groupBy( _.value.value )
                 case default =>
-                    throw new IllegalArgumentException("Not matching argument given like 'weekday', 'month', 'year' BUT got: " + param )
+                    throw new IllegalArgumentException("Not matching argument given like 'minute', 'hour', 'weekday', 'month', 'year' BUT got: " + param )
             }
 
             var l = List[TaggedDataPoint]()

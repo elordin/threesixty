@@ -5,6 +5,8 @@ import threesixty.data.metadata.IncompleteInputMetadata
 
 import java.sql.{Timestamp => JSQLTimestamp}
 
+import threesixty.visualizer.util.Border
+
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import spray.json._
 
@@ -75,20 +77,6 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     import Data._
     import metadata._
 
-    implicit object FiniteDurationJsoNFormat extends JsonFormat[FiniteDuration] {
-        def write(d:FiniteDuration) = JsNumber(d.toMillis)
-
-        def read(v: JsValue) = v match {
-            case JsString(s) =>
-                val d = Duration(s)
-                if (d.isFinite) {
-                    FiniteDuration(d.toMillis, d.unit)
-                } else {
-                    deserializationError("Infinite duration not allowed.")
-                }
-            case _ => deserializationError("Timestamp expected")
-        }
-    }
 
     implicit object TimestampJsonFormat extends JsonFormat[Timestamp] {
         def write(t:Timestamp) = JsNumber(t.getTime)
@@ -100,6 +88,8 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     }
 
     implicit val timeframeJsonFormat = jsonFormat(Timeframe.apply, "start", "end")
+
+    implicit val borderJsonFormat = jsonFormat(Border.apply, "top", "bottom", "left", "right") //TODO: reicht das??
 
     implicit object ReliabilityJsonFormat extends JsonFormat[Reliability.Value] {
         def write(r: Reliability.Value) = JsString(r.toString)
@@ -168,7 +158,7 @@ object DataJsonProtocol extends DefaultJsonProtocol {
 
         def read(v: JsValue) = v match {
             case JsObject(fields) =>
-                val valueType = fields.getOrElse("type", deserializationError("missing key type")).convertTo[String]
+                val valueType = fields.get("type").map(_.convertTo[String]).getOrElse("double")
                 valueType.toLowerCase match {
                     case "int" => DataPoint(
                         fields.getOrElse("timestamp", deserializationError("missing key timestamp")).convertTo[Timestamp],
@@ -182,15 +172,50 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     }
 
     implicit val incompleteInputMetadataFormat = jsonFormat(IncompleteInputMetadata.apply,
-        "timeframe", "reliability", "resolution", "scaling", "activityType")
+        "timeframe", "reliability", "resolution", "scaling", "activityType", "size")
 
     implicit val completeInputMetadataFormat = jsonFormat(CompleteInputMetadata.apply,
-        "timeframe", "reliability", "resolution", "scaling", "activityType")
+        "timeframe", "reliability", "resolution", "scaling", "activityType", "size")
 
     implicit val unsafeInputDataJsonFormat = jsonFormat(UnsafeInputData.apply,
         "id", "measurement", "dataPoints", "metadata")
 
+/*
+    implicit val inputDataSkeletonJsonFormat = jsonFormat(InputDataSkeleton.apply,
+        "id", "measurement", "metadata")
+
+    implicit val inputDataSubsetSkeletonJsonFormat = jsonFormat(InputDataSubsetSkeleton.apply,
+        "id", "measurement", "metadata", "from", "to")
+*/
+/*
+    implicit object InputDataSkeletonLikeJsonFormat extends JsonFromat[InputDataSkeletonLike] {
+
+    }
+*/
+
     implicit val inputDataJsonFormat = jsonFormat(InputData.apply,
         "id", "measurement", "dataPoints", "metadata")
 
+    implicit val inputDataSubsetJsonFormat = jsonFormat(InputDataSubset.apply,
+        "id", "measurement", "dataPoints", "metadata", "from", "to")
+
+/*
+    implicit object InputDataLikeJsonFormat extends JsonFormat[InputDataLike] {
+        def write(idl: InputDataLike): JsValue = Map[String, JsValue](
+            "id" -> idl.id.toJson,
+            "measurement" -> idl.measurement.toJson,
+            "dataPoints" -> idl.dataPoints.toJson,
+            "metadata" -> idl.metadata.toJson
+        )
+
+        def read(jsv: JsValue): InputDataLike = {
+            case jso: JsObject =>
+                if (jso.fields.contains("from") && jso.fields.contains("to"))
+                    jso.convertTo[InputDataSubset]
+                else
+                    jso.convertTo[InputData]
+            case _ => deserializationError("Invalid format for data.")
+        }
+    }
+*/
 }

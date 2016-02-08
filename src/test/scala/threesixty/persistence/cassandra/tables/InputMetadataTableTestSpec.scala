@@ -20,12 +20,7 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
 
     override def beforeAll(): Unit = {
         super.beforeAll()
-        Await.result(CassandraAdapter.autocreate.future(), 5.seconds)
-    }
-
-    override def afterAll(): Unit = {
-        super.afterAll()
-        Await.result(CassandraAdapter.autotruncate.future(), 5.seconds)
+        Await.result(CassandraAdapter.autocreate.future(), Duration.Inf)
     }
 
     describe("Inserting an input metadata set") {
@@ -37,8 +32,9 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
             val resolution = Resolution.Middle
             val reliability = Reliability.Device
             val scaling = Scaling.Ordinal
+            val size = 5
 
-            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType)
+            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
 
             Await.result(CassandraAdapter.inputMetadataSets.store(inputMetadta, identifier), Duration.Inf)
 
@@ -49,6 +45,7 @@ class InputMetadataTableTestSpec extends FunSpec with Matchers with ScalaFutures
                     result.scaling should be (scaling)
                     result.timeframe should be (timeframe)
                     result.activityType should be (activityType)
+                    result.size should be (size)
                 case None => fail("Did not receive an input metadata result from the database.")
             }
         }

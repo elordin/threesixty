@@ -24,7 +24,7 @@ class ServerTestSpec(_system:ActorSystem) extends TestKit(_system)
         describe("when receiving a HttpRequest using POST") {
             it("must respond with a HttpResponse with non-empty body") {
                 apiHandler ! HttpRequest(method = POST, entity = HttpEntity(`application/json`, "{}"))
-                expectMsgClass[HttpResponse](1.seconds, classOf[HttpResponse])
+                expectMsgClass[HttpResponse](2.seconds, classOf[HttpResponse])
             }
 
             describe("if thre request had an empty body") {

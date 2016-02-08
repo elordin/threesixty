@@ -4,7 +4,7 @@ import java.sql.Timestamp
 import java.util.UUID
 
 import com.websudos.phantom.dsl._
-import threesixty.data.{DataPoint, InputData}
+import threesixty.data.{DataPoint, InputData, InputDataSkeleton}
 import threesixty.data.metadata._
 import threesixty.persistence.cassandra.CassandraAdapter
 
@@ -14,7 +14,7 @@ import scala.concurrent.{Await, Future}
 /**
   * Created by Stefan Cimander on 19.01.16.
   */
-class InputDataTable extends CassandraTable[InputDatasets, InputData] {
+class InputDataTable extends CassandraTable[InputDatasets, InputDataSkeleton] {
 
     object identifier extends UUIDColumn(this) with PartitionKey[UUID]
     object measurement extends StringColumn(this)
@@ -23,39 +23,22 @@ class InputDataTable extends CassandraTable[InputDatasets, InputData] {
     implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
         def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
     }
-/**
-  * this method is just for internal use.
-  * it is called via getXYZ-methods in child classes*/
-    def fromRow(row: Row): InputData = {
+
+
+    def fromRow(row: Row): InputDataSkeleton = {
         val resultIdentifier = identifier(row).toString
         val resultMeasurement = measurement(row)
-
-        val dataPointsSequence = Await.result(CassandraAdapter.dataPoints
-            .getDataPointsWithInputDataId(UUID.fromString(resultIdentifier)), Duration.Inf)
-
-        var resultDataPoints = List[DataPoint]()
-        for (dataPoint <- dataPointsSequence) resultDataPoints ++=  List(dataPoint)
-
-        resultDataPoints = resultDataPoints.sortBy(_.timestamp)
-
         val resultInputMetadata = Await.result(CassandraAdapter.inputMetadataSets
             .getInputMetadataByIdentifier(inputMetadataId(row)), Duration.Inf) match {
             case Some(inputMetadata) => inputMetadata
-            case None => null
+            case None => throw new NoSuchElementException(s"No metadata found for $resultIdentifier")
         }
-
-        InputData(resultIdentifier, resultMeasurement, resultDataPoints, resultInputMetadata)
+        new InputDataSkeleton(resultIdentifier, resultMeasurement, resultInputMetadata)
     }
 }
 
 abstract class InputDatasets extends InputDataTable with RootConnector {
 
-    /**
-      * stores a given InputData in the database
-      * @param inputData which InputData to store
-      * @return returns an awaitable future object
-      *
-      * acts like controller who delegates storage of associated Metadata, too*/
     def store(inputData: InputData): Future[ResultSet] = {
         val inputMetadataId = UUID.randomUUID()
 
@@ -76,11 +59,21 @@ abstract class InputDatasets extends InputDataTable with RootConnector {
     /**
       * calls fromRow method*/
     def getInputDataByIdentifier(identifier: UUID): Future[Option[InputData]] = {
-        select.where(_.identifier eqs identifier).one()
+
+        getInputDataSkeletonByIdentifier(identifier).map(_.map({
+            skeleton: InputDataSkeleton  => {
+                skeleton fill Await.result(CassandraAdapter.dataPoints
+                    .getDataPointsWithInputDataId(UUID.fromString(skeleton.id)), Duration.Inf).toList.sortBy(_.timestamp.getTime)
+            }
+        }))
+
+
     }
 
     def getMetadataID(identifier: UUID):  Future[Option[UUID]] ={
         select(_.inputMetadataId).where(_.identifier eqs identifier).one()
-
     }
+
+    def getInputDataSkeletonByIdentifier(identifier: UUID): Future[Option[InputDataSkeleton]] =
+        select.where(_.identifier eqs identifier).one()
 }

@@ -2,7 +2,7 @@ package threesixty.persistence
 
 import java.util.UUID
 
-import threesixty.data.{InputData, DataPoint}
+import threesixty.data.{InputData, DataPoint, InputDataSkeleton, InputDataSubset}
 import threesixty.data.Data._
 import threesixty.data.Implicits._
 import threesixty.data.metadata._
@@ -44,13 +44,14 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
     var database: Map[Identifier, InputData] = Map(
         "dataG" -> InputData(
             "dataG", "gaussian demodata",
-            generateGaussianDatapointSeries(72, 16, 100, 1000000, 1000000),
+            generateGaussianDatapointSeries(72, 16, 0, 100000000, 4000000),
             CompleteInputMetadata(
                 Timeframe(new Timestamp(23), new Timestamp(104)),
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                4000000
             )
         ),
         "data1" -> InputData(
@@ -61,7 +62,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                5000
             )
         ),
         "data2" -> InputData(
@@ -72,7 +74,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                2500
             )
         ),
         "data3" -> InputData(
@@ -83,7 +86,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something")
+                ActivityType("something"),
+                400
             )
         ),
         "lineTest" -> InputData (
@@ -98,7 +102,8 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
                 Reliability.Unknown,
                 Resolution.Low,
                 Scaling.Ordinal,
-                ActivityType("something new")
+                ActivityType("something new"),
+                4
             )
         )
     )
@@ -130,6 +135,14 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
         }
     }
 
+    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] =
+        database.get(identifier).map { completeSet => Right(InputDataSubset(
+            completeSet.id, completeSet.measurement,
+            completeSet.dataPoints.filter {
+                case DataPoint(t: Timestamp, _) => t.getTime >= from.getTime && t.getTime <= to.getTime
+            },
+            completeSet.metadata, from, to))
+        } getOrElse Left(s"No data for $identifier")
 
     def appendOrInsertData(data: InputData):Either[String, Identifier] =
         appendData(data) match {
@@ -137,4 +150,9 @@ object FakeDatabaseAdapter extends DatabaseAdapter {
             case success => success
         }
 
+
+    def getSkeleton(identifier: Identifier) : Either[String, InputDataSkeleton] =
+        database.get(identifier).map {
+            i: InputData => Right(new InputDataSkeleton(i.id, i.measurement, i.metadata))
+        } getOrElse Left(s"No data for $identifier")
 }

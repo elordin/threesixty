@@ -1,7 +1,7 @@
-package threesixty.algorithms.interpolation
+package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
@@ -11,13 +11,9 @@ import spray.json._
 import DefaultJsonProtocol._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
 object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixins {
@@ -40,9 +36,9 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
     }
 
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
-        LinearInterpolation(1, idMapping).asProcessingStep
+        LinearInterpolation(1000, idMapping).asProcessingStep
 
-    def computeDegreeOfFit(inputData: InputData): Double = {
+    def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
 
         var temp = 0.0
         val meta = inputData.metadata
@@ -50,10 +46,10 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.size >= 5) {
+        if (meta.size >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.size >= 50) {
+        if (meta.size >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
@@ -66,19 +62,15 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig ): Double = {
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
 
         val strategyFactor = computeDegreeOfFit(inputData)
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-//             case _:HeatLineChartConfig      => 1.0
             case _:BarChartConfig           => 0.8
-//             case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.2
-//             case _:ScatterColorChartConfig  => 0.2
-//             case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.0
             //default
             case _                          => 0.5
@@ -97,8 +89,9 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
  *  @param frequency Desired max. time-distance between datapoints.
  */
 case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
 
+    def companion: ProcessingMethodCompanion = LinearInterpolation
     /**
      *  Creates a new dataset with ID as specified in idMapping.
      *  Inserts interpolated values along the original ones into
@@ -130,11 +123,14 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
                     val m = ((v2.value - v1.value) / (t2 - t1))
                     val b = v1.value - m * t1
 
-                    def interpolFunc(x: Int): TaggedDataPoint =
+                    def interpolFunc(x: Long): TaggedDataPoint =
                         TaggedDataPoint(new Timestamp(x), m * x + b, Set[Tag](Interpolated))
 
+
+                    val diff: Int = (t2 - t1).toInt
+
                     TaggedDataPoint(t1, v1, tags1 + Original) ::
-                      Range(t1.toInt + frequency, t2.toInt, frequency).map(interpolFunc).toList ++
+                        (for { i <- 1 to diff / frequency } yield { interpolFunc(t1 + i * frequency) }).toList ++
                         linearInterpolated(TaggedDataPoint(t2, v2, tags2 + Original) :: ds)
 
                 } else {

@@ -18,16 +18,12 @@ import scala.concurrent.Future
   */
 class DataPointsTable extends CassandraTable[DataPoints, DataPoint] {
 
-    object identifier extends UUIDColumn(this) with PrimaryKey[UUID]
-    object timestamp extends DateTimeColumn(this)
+    object timeStamp extends DateTimeColumn(this) with ClusteringOrder[DateTime] with Ascending
     object value extends DoubleColumn(this)
     object inputDataId extends UUIDColumn(this) with PartitionKey[UUID]
 
-    /**
-      * this method is just for internal use.
-      * it is called via getXYZ-methods in child classes*/
     def fromRow(row: Row): DataPoint = {
-        val resultTimestamp = new Timestamp(timestamp(row).getMillis)
+        val resultTimestamp = new Timestamp(timeStamp(row).getMillis)
         val resultValue = DoubleValue(value(row))
 
         DataPoint(resultTimestamp, resultValue)
@@ -38,28 +34,35 @@ abstract class DataPoints extends DataPointsTable with RootConnector {
 
     /**
       * stores a given DataPoint in the database
-      * @param dataPoint which dataPoint to store
+      *
+      * @param dataPoint   which dataPoint to store
       * @param inputDataId connect dataPoint to an InputData
-      *@param identifier(opt) give identifier with which the dataPoint is stored in the table
-      * @return returns an awaitable future object*/
+      * @param identifier  (opt) give identifier with which the dataPoint is stored in the table
+      * @return an awaitable future object
+      */
     def store(dataPoint: DataPoint, inputDataId: UUID, identifier: UUID = UUID.randomUUID()): Future[ResultSet] = {
-        val dateTime = new DateTime(dataPoint.timestamp.getTime());
+        val dateTime = new DateTime(dataPoint.timestamp.getTime);
 
-
-        insert.value(_.identifier, identifier)
-            .value(_.timestamp, dateTime)
+        insert
+            .value(_.timeStamp, dateTime)
             .value(_.inputDataId, inputDataId)
             .value(_.value, dataPoint.value.value)
             .consistencyLevel_=(ConsistencyLevel.ALL)
             .future()
     }
 
-    def getDataPointWithIdentifier(identifier: UUID): Future[Option[DataPoint]] = {
-        select.where(_.identifier eqs identifier).allowFiltering().one()
-    }
-
     def getDataPointsWithInputDataId(inputDataId: UUID): Future[Seq[DataPoint]] = {
         select.where(_.inputDataId eqs inputDataId).fetch()
+    }
+
+    def getDataPointsWithInputDataId(inputDataId: UUID, start: Timestamp, end: Timestamp)
+    : Future[Seq[DataPoint]] = {
+        select
+            .where(_.inputDataId eqs inputDataId)
+            .and(_.timeStamp gte new DateTime(start.getTime))
+            .and(_.timeStamp lte new DateTime(end.getTime))
+            .allowFiltering()
+            .fetch()
     }
 
 }

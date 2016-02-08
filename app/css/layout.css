@@ -2,23 +2,41 @@
 /*  Top Level Layout  */
 /* ****************** */
 
+html,
+body {
+    height: 100%;
+}
+
 header {
     background: #4DAF50;
     border-top: 32px solid #323232;
     height: 64px;
-    margin: 0 0 0 64px;
+    overflow: hidden;
+    margin-left: 64px;
+    padding-left: 28px;
 }
 
 aside {
     float: left;
     background: #323232;
     width: 64px;
-    height: 801px;
+    min-height: 100%;
     position: absolute;
 }
 
+aside.extended {
+    position: relative;
+}
+
+nav {
+    overflow: hidden;
+    margin-left: 64px;
+}
+
 main {
-    margin: 0 0 0 92px;
+    overflow: hidden;
+    margin-left: 64px;
+    padding-left: 28px;
 }
 
 
@@ -30,9 +48,21 @@ main {
 header h1 {
     display: inline-block;
     color: white;
-    margin: 18px 28px;
+    margin: 18px 0;
     font-size: 1.5em;
     font-weight: 100;
+}
+
+#refresh {
+    float: right;
+    height: 64px;
+    width: 64px;
+}
+
+#refresh img {
+    width: 34px;
+    height: 34px;
+    padding: 15px;
 }
 
 
@@ -73,8 +103,6 @@ aside a.selected {
     padding: 8px 10px;
 }
 
-
-
 .nav-item {
     display: inline-block;
     width: 100%;
@@ -102,12 +130,28 @@ aside a.selected {
 }
 
 .nav-description.visible {
-    display: inline;
+    display: inline-block;
 }
 
 .nav-content-container {
     display: inline-block;
     height: 64px;
+}
+
+#menu-container {
+    height: calc(100vh - 64px);
+    min-height: 100%;
+}
+
+#nav-item-container {
+    overflow: auto;
+    padding-bottom: 64px;
+}
+
+#add-data {
+    position: relative;
+    height: 64px;
+    clear: both;
 }
 
 
@@ -128,4 +172,20 @@ main h2 {
 }
 
 
+
+/* ****************** */
+/*       Footer       */
+/* ****************** */
+
+
+
+
+
+/* ****************** */
+/*   Media Queries    */
+/* ****************** */
+
+@media screen and (min-width: 800px) {
+    
+}
 

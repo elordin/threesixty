@@ -1,20 +1,16 @@
-package threesixty.algorithms
+package threesixty.ProcessingMethods.clustering
 
 import threesixty.data.metadata.{Reliability, Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.data.Data.Identifier
-import threesixty.processor.{MultiProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
+import threesixty.data.tags.{ClusterTag, NoiseTag}
+import threesixty.processor.{SingleProcessingMethod, MultiProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
 
-import clustering._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 
 object Clustering extends ProcessingMethodCompanion {
@@ -39,7 +35,6 @@ object Clustering extends ProcessingMethodCompanion {
     // TODO: Review distance functions
 
     type DistanceFunctionSelector[D, V] = ((D => V)*) => DistanceFunction[D]
-
     type DistanceFunction[D] = (D, D) => Double
 
 
@@ -53,7 +48,10 @@ object Clustering extends ProcessingMethodCompanion {
         }
     }
 
-    def manhattanDistance = genericManhattanDistance[TaggedDataPoint, Double]
+    def manhattanDistance = ??? // genericManhattanDistance[TaggedDataPoint, Double](
+        // { tdp: TaggedDataPoint => tdp.value },
+        // { tdp: TaggedDataPoint => tdp.timestamp.getTime.toDouble }
+    // )
 
     def genericEuclidianDistance[D, V <% Double]: DistanceFunctionSelector[D, V] = {
         selectors => {
@@ -67,14 +65,17 @@ object Clustering extends ProcessingMethodCompanion {
         }
     }
 
-    def euclidianDistanceS = genericEuclidianDistance[TaggedDataPoint, Double]
+    def euclidianDistance = ??? //  genericEuclidianDistance[TaggedDataPoint, Double](
+        // { tdp: TaggedDataPoint => tdp.value },
+        // { tdp: TaggedDataPoint => tdp.timestamp.getTime.toDouble }
+    // )
 
 
     def dbscan[D](dataset: Set[D],
                   distFunction: DistanceFunction[D])
                  (implicit minPts: Int,
                            epsilon: Double): Map[D, Classification] =
-        DBSCAN.run[D](dataset,distFunction)
+        DBSCAN.run[D](dataset, distFunction)
 
     def name = "Clustering"
 
@@ -84,7 +85,7 @@ object Clustering extends ProcessingMethodCompanion {
 
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep = ??? // TODO
 
-    def computeDegreeOfFit(inputData: InputData): Double = {
+    def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
         var temp = 0.0
 
         val meta = inputData.metadata
@@ -106,35 +107,30 @@ object Clustering extends ProcessingMethodCompanion {
             temp+= 0.1
         }
 
-        if (inputData.dataPoints.size > 25) {
+        if (inputData.metadata.size > 25) {
             temp += 0.35
         }
-        else if (inputData.dataPoints.size >= 5) {
+        else if (inputData.metadata.size >= 5) {
             temp += 0.2
         }
 
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig): Double = {
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
 
         val visFactor =  targetVisualization match {
             //ideal
             case _:ScatterChartConfig       => -1.0
-//             case _:ScatterColorChartConfig  => -1.0
             //medium
             case _:BarChartConfig           => 0.3
-//             case _:PolarAreaChartConfig     => 0.3  //equal to BarChar
             //maybe but rather bad
             case _:LineChartConfig          => 0.2
-//             case _:HeatLineChartConfig      => 0.2
             case _:PieChartConfig           => 0.2
             //bad
-//             case _:ProgressChartConfig      => 0
             //default
             case _                          => 0.3
         }
-
 
         // break option for ideal case
         if (visFactor == -1.0)
@@ -145,9 +141,41 @@ object Clustering extends ProcessingMethodCompanion {
     }
 }
 
-case class Clustering(idMapping: Map[Identifier, Identifier])
-    extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+// case class Clustering(idMapping: Map[Identifier, Identifier])
+//     extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
 
-    def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ??? // TODO implement
+//     def companion : ProcessingMethodCompanion = Clustering
+//     def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ???
+// }
+
+
+case class Clustering(idMapping: Map[Identifier, Identifier], minPts: Int, epsilon: Double)
+    extends SingleProcessingMethod {
+    import Clustering._
+
+    def companion = Clustering
+
+    def apply(dataInput: ProcessedData): Set[ProcessedData] = {
+        val clusteringResult: Map[TaggedDataPoint, Classification] =
+            Clustering.dbscan[TaggedDataPoint](dataInput.dataPoints.toSet,
+                euclidianDistance)(minPts, epsilon)
+        val newID = idMapping.getOrElse(dataInput.id,
+            throw new NoSuchElementException(s"No idMapping for $dataInput.id specified"))
+        if (newID == dataInput.id) {
+            Set(ProcessedData(newID,
+                clusteringResult.toList.map {
+                    case (p, Cluster(id))   => p.copy(tags = p.tags + ClusterTag(id))
+                    case (p, Noise)         => p.copy(tags = p.tags + NoiseTag)
+                }))
+        } else {
+            Set(dataInput, ProcessedData(newID,
+                clusteringResult.toList.map {
+                    case (p, Cluster(id))   => p.copy(tags = p.tags + ClusterTag(id))
+                    case (p, Noise)         => p.copy(tags = p.tags + NoiseTag)
+                }))
+        }
+    }
+
+
 
 }

@@ -1,6 +1,6 @@
 package threesixty.data
 
-import threesixty.data.Data.Identifier
+import threesixty.data.Data.{Identifier, Timestamp, DoubleValue}
 
 import threesixty.persistence.DatabaseAdapter
 
@@ -15,18 +15,56 @@ import scala.collection.immutable.{Map => ImmutableMap}
  */
 @throws[NoSuchElementException]("if an id was given, for which no InputData exists.")
 class DataPool(
-    val dataIDs: Set[Identifier],
+    val skeletons: Seq[InputDataSkeleton],
     implicit val databaseAdapter: DatabaseAdapter
 ) {
 
-    require(dataIDs.size > 0, "Empty ID Set is not allowed.")
+    require(skeletons.size > 0, "Empty Set if Input Data is not allowed.")
+
+    val SIZE_THRESHOLD = 5000
+
+    /** Reduces the amount of datapoints. */
+    def prune(input: InputDataLike): InputDataLike = {
+        if (input.dataPoints.size > SIZE_THRESHOLD) {
+            val groupSize = math.ceil(input.dataPoints.size / SIZE_THRESHOLD).toInt
+            val prunedDatapoints = input.dataPoints.grouped(groupSize).map({
+                pts => val (sumTime, sumValue) = pts.tail.foldLeft(
+                        (pts.head.timestamp.getTime, pts.head.value.value)
+                    )({
+                        (init, current) => (
+                            init._1 + current.timestamp.getTime,
+                            init._2 + current.value.value)
+                    })
+                    DataPoint(new Timestamp(sumTime / groupSize), DoubleValue(sumValue / groupSize))
+            }).toList
+            InputDataSubset(
+                input.id,
+                input.measurement,
+                prunedDatapoints,
+                input.metadata,
+                input.metadata.timeframe.start,
+                input.metadata.timeframe.end
+            )
+        } else {
+            input
+        }
+    }
+
 
     // get data from db
-    val inputDatasets: Set[InputData] =
-        dataIDs.map(databaseAdapter.getDataset(_) match {
-            case Right(data) => data
-            case Left(error) => throw new NoSuchElementException(error)
-        })
+    val inputDatasets: Seq[InputDataLike] =
+        skeletons.distinct.map {
+            case subsetSkeleton: InputDataSubsetSkeleton =>
+                databaseAdapter.getDatasetInRange(subsetSkeleton.id, subsetSkeleton.from, subsetSkeleton.to) match {
+                    case Right(subset: InputDataSubset) => prune(subset)
+                    case Left(error: String)   => throw new NoSuchElementException(error)
+                }
+            case fullsetSkeleton: InputDataSkeleton =>
+                databaseAdapter.getDataset(fullsetSkeleton.id) match {
+                    case Right(fullset: InputData) => prune(fullset)
+                    case Left(error: String)    => throw new NoSuchElementException(error)
+                }
+        }
 
     // convert input data to processed data
     var processedDatasets: Map[Identifier, ProcessedData] =

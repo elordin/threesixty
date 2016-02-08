@@ -1,12 +1,14 @@
 package threesixty.server
 
+import threesixty.persistence.cassandra.CassandraAdapter
+import threesixty.persistence.FakeDatabaseAdapter
+import threesixty.ProcessingMethods.Accumulation.Accumulation
+import threesixty.ProcessingMethods.Aggregation.Aggregation
+import threesixty.ProcessingMethods.TimeSelection.TimeSelection
 import threesixty.processor.Processor
 import threesixty.visualizer.Visualizer
 import threesixty.engine.{VisualizationEngine, Engine}
-import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.algorithms.interpolation.{TimeSelection, Accumulation, Aggregation, LinearInterpolation}
-import threesixty.data.Data.Identifier
-import threesixty.data.InputData
+import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.visualizer.visualizations._
 
 import akka.actor.{Actor, Props}
@@ -25,18 +27,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 
 object APIHandler {
-
-    val config: Config = ConfigFactory.load
-
-    @throws[ConfigException]("if config doesn't contain database.uri") // TODO
-    val dbURI: String =
-        config.getString("database.uri")
-
-    val debug: Boolean = try {
-        config.getBoolean("debug")
-    } catch {
-        case _:ConfigException => false
-    }
+    val DEBUG = true
 
     lazy val engine: Engine = VisualizationEngine using
         new Processor   with LinearInterpolation.Mixin
@@ -46,7 +37,7 @@ object APIHandler {
             with lineChart.Mixin
             with pieChart.Mixin
             with barChart.Mixin
-            with scatterChart.Mixin and FakeDatabaseAdapter
+            with scatterChart.Mixin and CassandraAdapter
 
     def props: Props = Props(new APIHandler)
 }
@@ -81,7 +72,7 @@ class APIHandler extends Actor {
                     peer ! HttpResponse(
                         status = StatusCodes.InternalServerError,
                         entity = HttpEntity(`application/json`,
-                            s"""{ "error": "${if (APIHandler.debug) t.getMessage else "Internal Server Error" }" }"""),
+                            s"""{ "error": "${if (APIHandler.DEBUG) t.getMessage else "Internal Server Error" }" }"""),
                         headers = List(`Access-Control-Allow-Origin`(AllOrigins))
                     )
             }

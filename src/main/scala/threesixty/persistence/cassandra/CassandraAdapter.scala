@@ -4,13 +4,12 @@ import java.util.UUID
 import com.websudos.phantom.connectors.KeySpaceDef
 import com.websudos.phantom.db.DatabaseImpl
 import threesixty.data.Data._
-import threesixty.data.metadata.CompleteInputMetadata
-import threesixty.data.{DataPoint, InputData}
+import threesixty.data.metadata._
+import threesixty.data.{DataPoint, InputData, InputDataSubset, InputDataSkeleton}
 import threesixty.persistence.DatabaseAdapter
-import threesixty.persistence.cassandra.CassandraAdapter
 import threesixty.persistence.cassandra.tables._
 
-import scala.concurrent.{Future, Await}
+import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 /**
@@ -25,153 +24,155 @@ class CassandraAdapter(val keyspace: KeySpaceDef) extends DatabaseImpl(keyspace)
     object inputMetadataSets extends InputMetadataSets with keyspace.Connector
 
     /**
-      *  Retrieves a data set from the storage
+      * Retrieves a data set from the storage
       *
-      *  @param id Id of the data to retrieve
-      *  @return Either the data set (Left) or Left(errormsg) on error
+      * @param id Id of the data to retrieve
+      * @return Either the data set (Left) or Left(errormsg) on error
       */
-    def getDataset(id:Identifier):Either[String, InputData] = {
-        Await.result(CassandraAdapter.inputDatasets
-            .getInputDataByIdentifier(UUID.fromString(id)), Duration.Inf) match {
-            case Some(result) => Right(result)
-            case None => Left("Failed to load data set with identifier: " + id)
+    def getDataset(id: Identifier): Either[String, InputData] = {
+        try {
+            Await.result(CassandraAdapter.inputDatasets
+                .getInputDataByIdentifier(UUID.fromString(id)), Duration.Inf) match {
+                case Some(result) => Right(result)
+                case None => Left("Failed to load data set with identifier: " + id)
+            }
+        } catch {
+            case e: NoSuchElementException => Left(e.getMessage)
         }
     }
 
     /**
-      *  Appends data to a dataset of given id
+      * Inserts data set into the database
       *
-      *  @param data Data to insert into the database
-      *  @return Either Right(uuid), new id of inserted data, or Left(errormsg) on error
+      * @param data Data to insert into the database
+      * @return Either Right(uuid), new id of inserted data, or Left(errormsg) on error
       */
-    def insertData(data:InputData):Either[String, Identifier] = {
+    def insertData(data: InputData): Either[String, Identifier] = {
+        val dataSetAlreadyExists = getDataset(data.id)
+        dataSetAlreadyExists match {
+            case Left(_) => insert(data)
+            case Right(_) => append(data)
+        }
+    }
+
+
+
+    /*
+     * Inserts new data set into the database
+     */
+    private def insert(data: InputData): Either[String, Identifier] = {
         Await.result(CassandraAdapter.inputDatasets.store(data), Duration.Inf)
         Right(data.id)
     }
 
-
-    /**
-      *  Attempts to append data to a data set of given id.
-      *  If the id does not exist, a new data set is created.
-      *
-      *  @param data Data to insert into the database
-      *  @param id Id of data set to append to
-      *  @return Either Right(id), new id of inserted data or dataset appended to, or Left(errormsg) on error
-      */
-    def appendOrInsertData(data:InputData):Either[String, Identifier] = {
-
-        val testIfExisting = getDataset(data.id)
-        testIfExisting match {
-            case Left(_) => insertData(data)
-            case Right(_) => appendData(data)
-            case _ => Left("Something went wrong during appendOrInsert of new Data (id: " + data.id +")")
+    /*
+     * Appends the data points which are not already stored to the data set
+     */
+    private def append(data: InputData): Either[String, Identifier] = {
+        val pointsToAppend = pointsNotAlreadyStored(data.dataPoints, UUID.fromString(data.id))
+        if (pointsToAppend.isEmpty) {
+            Left("All data points are already stored in the database")
         }
-
-    }
-
-//vv author Markus . ^^ author Stefan ................................//
-
-
-    /**
-      *  Appends data to a data set of given id
-      *
-      *  @param data Data to insert into the database
-      *  @param id Id of existing data set to append to
-      *  @return Either Right(id), id of appended data, or Left(errormsg) on error
-      */
-    def appendData(data:InputData):Either[String, Identifier] = {
-        val dataId = UUID.fromString(data.id)
-        val points = data.dataPoints
-        val cleanedPoints = cleanPoints(points, dataId)
-
-        if  (cleanedPoints.isEmpty)
-            {Left("All Datapoints were already stored in the Database")}
         else {
-            try {
-                cleanedPoints.foreach(CassandraAdapter.dataPoints.store(_, dataId))
-                updateMetadata(data, points ++ cleanedPoints)
-            }
-            catch {
-                case e: Exception => Left("Error in appending data to existing Data. " + e.toString)
-            }
+            pointsToAppend.foreach(CassandraAdapter.dataPoints.store(_, UUID.fromString((data.id))))
+
+            val metadataID = Await.result(CassandraAdapter.inputDatasets.getMetadataID(UUID.fromString(data.id)), Duration.Inf)
+            val inputMetadata = Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(metadataID.get), Duration.Inf)
+
+            val newSize = inputMetadata.get.size + pointsToAppend.length
+            updateSizeForMetadataIdentifier(metadataID.get, newSize)
+
+            val allPoints = data.dataPoints ++ pointsToAppend
+            val newStart = allPoints.minBy(_.timestamp.getTime).timestamp
+            val newEnd = allPoints.maxBy(_.timestamp.getTime).timestamp
+
+            updateTimeframeForMetadataIdentifier(metadataID.get, newStart, newEnd)
+
+            return Right(data.id)
         }
-
     }
 
-
-  def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] = {
-
-    val metaIdOption = Await.result(CassandraAdapter.inputDatasets.getMetadataID(UUID.fromString(identifier)), Duration.Inf)
-    val metadata = metaIdOption match{
-      case Some(metaId) => partialProxy_Metadata(metaId)
-      case None => None
+    /*
+     * Removes the points that are already stored from the data points
+     */
+    private def pointsNotAlreadyStored(pointsToCheck: List[DataPoint], id: UUID): List[DataPoint] = {
+        val pointsAlreadyStored = Await.result(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(id), Duration.Inf)
+        pointsToCheck.diff(pointsAlreadyStored)
     }
-    metadata
-  }
 
-
-  def getDatapointsLength(identifier: Identifier) : Either[String,Int] = {
-    //count(*) where...
-    val length = getDataset(identifier) match {
-      case Left(msg) => Left(msg)
-      case Right(data) => Right(data.dataPoints.length)
+    /*
+     * Updates the size for the input metadata entry
+     */
+    private def updateSizeForMetadataIdentifier(identifier: UUID, newSize: Int) = {
+        Await.result(CassandraAdapter.inputMetadataSets.updateSizeForIdentifier(identifier, newSize), Duration.Inf)
     }
-    length
-  }
 
-
-
-
-  private def partialProxy_Metadata(id : UUID) : Option[CompleteInputMetadata] = {
-    val resultInputMetadata = Await.result(CassandraAdapter.inputMetadataSets
-      .getInputMetadataByIdentifier(id), Duration.Inf)
-    match {
-      case Some(inputMetadata) => Some(inputMetadata)
-      case None => None
+    /*
+     * Updates the time frame for input metadata entry
+     */
+    private def updateTimeframeForMetadataIdentifier(identifier: UUID, newStart: Timestamp, newEnd: Timestamp) = {
+        val timeframeID = Await.result(CassandraAdapter.inputMetadataSets.getTimeframeId(identifier), Duration.Inf)
+        Await.result(CassandraAdapter.timeframes.updateTimeframe(timeframeID.get, newStart, newEnd), Duration.Inf)
     }
-    resultInputMetadata
-  }
 
     /**
-     * helper Method that ensures only new points are appended to the InputData*/
-      private  def cleanPoints(points : List[DataPoint], id : UUID): List[DataPoint] ={
-
-        val existingPoints = Await.result(CassandraAdapter.dataPoints.getDataPointsWithInputDataId(id), Duration.Inf)
-
-        points.diff(existingPoints)
-    }
-
-
-
-
-
-    /**
-      * private Method that is called after appending new datapoints to InputData
-      * Updates the Timeframe of the param InputData
+      * Retrieves a data set for a specific time range from the storage
+      *
+      * @param identifier Identifier of data to retreive
+      * @param from       The start timestamp of the range
+      * @param to         The end timestamp of the range
+      * @return           Either the data set (Left) or an error message (Right)
       */
-   private def updateMetadata(inputData: InputData, points: List[DataPoint]) : Either[String, Identifier] = {
-        val dataset = getDataset(inputData.id) match {
-            case Right(data) => data
+    def getDatasetInRange(identifier: Identifier, from: Timestamp, to: Timestamp): Either[String, InputDataSubset] = {
+        val dataPoints = Await.result(CassandraAdapter.dataPoints.
+            getDataPointsWithInputDataId(UUID.fromString(identifier), from, to), Duration.Inf).toList
+
+
+
+
+
+        val startTime = dataPoints.minBy(_.timestamp).timestamp
+        val endTime = dataPoints.maxBy(_.timestamp).timestamp
+        val timeframe = Timeframe(startTime, endTime)
+        val metadataID = Await.result(CassandraAdapter.inputDatasets.getMetadataID(UUID.fromString(identifier)), Duration.Inf).get
+        val inputMetadata = CassandraAdapter.getMetadata(metadataID.toString) match {
+             case Some(original) => CompleteInputMetadata(timeframe, original.reliability,
+                 original.resolution, original.scaling, original.activityType, dataPoints.length)
+             case None => val activityType = ActivityType("Unknown Activity")
+                 CompleteInputMetadata(timeframe, Reliability.Unknown, Resolution.Middle, Scaling.Nominal, activityType, dataPoints.length)
         }
+       Await.result(CassandraAdapter.inputDatasets.
+            getInputDataByIdentifier(UUID.fromString(identifier)), Duration.Inf) match {
+            case Some(original) => Right(InputDataSubset(identifier, original.measurement, dataPoints, inputMetadata, from, to))
+            case None => Left("It was not possible to load the data set in given range")
+        }
+    }
 
-         val min = points.minBy(_.timestamp.getTime).timestamp
-         val max = points.maxBy(_.timestamp.getTime).timestamp
 
+    /**
+      *  Gets only the metadata for a datset with given ID.
+      *
+      *  @param identifier ID of data whose metadata is requested
+      *  @return Some[CompleteInputMetadata] of the requested dataset or None on error
+      */
+    def getMetadata(identifier: Identifier) : Option[CompleteInputMetadata] = {
+        Await.result(CassandraAdapter.inputMetadataSets.getInputMetadataByIdentifier(UUID.fromString(identifier)), Duration.Inf)
+    }
+
+    def getSkeleton(identifier: Identifier): Either[String, InputDataSkeleton] = {
         try {
-            //GOTO MetaDataTable  -> get TimeframeID
-            val metaId = Await.result(CassandraAdapter.inputDatasets.getMetadataID(UUID.fromString(inputData.id)), Duration.Inf)
-            //GOTO Timeframe with ID
-            val timeframe_Id = Await.result(CassandraAdapter.inputMetadataSets.getTimeframeId(metaId.get), Duration.Inf)
-            //-> update start(min), end(max)
-            Await.result(CassandraAdapter.timeframes.updateTimeframe(timeframe_Id.get, min, max), Duration.Inf)
-
-        Right(inputData.id)
+            Await.result(CassandraAdapter.inputDatasets
+                .getInputDataSkeletonByIdentifier(UUID.fromString(identifier)), Duration.Inf) match {
+                case Some(result: InputDataSkeleton) => Right(result)
+                case None => Left("Failed to load data set with identifier: " + identifier)
+            }
+        } catch {
+            case e: NoSuchElementException => Left(e.getMessage)
         }
-        catch{
-            case e: Exception => Left("problem when updating the timeframe for new dataPoints \n " + e.toString)
-            case _ => Left("problem when updating the timeframe for new dataPoints. - no more detailed information available")
-        }
+    }
 
+    implicit def ordered: Ordering[Timestamp] = new Ordering[Timestamp] {
+        def compare(x: Timestamp, y: Timestamp): Int = x compareTo y
     }
 
 }

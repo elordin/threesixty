@@ -1,15 +1,12 @@
-package threesixty.algorithms.interpolation
-
-import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint}
-import threesixty.data.Data.{Identifier, Timestamp}
-import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags._
-import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
-import threesixty.algorithms.statistics.StatisticalAnalysis
+package threesixty.ProcessingMethods.TimeSelection
 
 import spray.json._
+import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.DataJsonProtocol._
+import threesixty.data.Implicits.timestamp2Long
+import threesixty.data.metadata.{Resolution, Scaling}
+import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
+import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
@@ -39,7 +36,7 @@ object TimeSelection extends ProcessingMethodCompanion {
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
         TimeSelection(new Timestamp(0), new Timestamp(0), idMapping).asProcessingStep
 
-    def computeDegreeOfFit(inputData: InputData): Double = {
+    def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
 
         var temp = 0.0
         val meta = inputData.metadata
@@ -47,10 +44,10 @@ object TimeSelection extends ProcessingMethodCompanion {
         if (meta.scaling == Scaling.Ordinal) {
             temp += 0.4
         }
-        if (inputData.dataPoints.length >= 5) {
+        if (inputData.metadata.size >= 5) {
             temp += 0.2
         }
-        if (inputData.dataPoints.length >= 50) {
+        if (inputData.metadata.size >= 50) {
             temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
@@ -63,7 +60,7 @@ object TimeSelection extends ProcessingMethodCompanion {
         temp
     }
 
-    def computeDegreeOfFit(inputData: InputData, targetVisualization: VisualizationConfig ): Double = {
+    def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
 
         val strategyFactor = computeDegreeOfFit(inputData)
         val visFactor = targetVisualization match {
@@ -93,7 +90,9 @@ object TimeSelection extends ProcessingMethodCompanion {
   *
   */ //groupby() bei Listen :-)
 case class TimeSelection(from: Timestamp, to: Timestamp, idMapping: Map[Identifier, Identifier])
-    extends SingleProcessingMethod(idMapping: Map[Identifier, Identifier]) {
+    extends SingleProcessingMethod {
+
+    def companion: ProcessingMethodCompanion = TimeSelection
 
     /**
       *  Creates a new dataset with ID as specified in idMapping.

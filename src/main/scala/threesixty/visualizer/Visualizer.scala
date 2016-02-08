@@ -1,13 +1,18 @@
 package threesixty.visualizer
 
-import threesixty.visualizer.util.{Grid, Axis}
+import threesixty.visualizer.util.{Legend, Grid, Axis}
+import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.engine.UsageInfo
+import threesixty.data.InputDataSkeleton
+import threesixty.data.Data.Identifier
 
 import spray.json._
 import DefaultJsonProtocol._
-import threesixty.processor.{ProcessingMethod, ProcessingMethodCompanion}
+import threesixty.processor.{ProcessingStrategy, ProcessingStep}
 
 import scala.xml.Elem
+import scala.util.Random
+
 
 
 trait Renderable {
@@ -97,6 +102,21 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         conversion(args)
     }
 
+    def deduce(skeletons: InputDataSkeleton*): VisualizationConfig = ???
+    def deduce(procStrat: ProcessingStrategy, skeletons: InputDataSkeleton*): VisualizationConfig = {
+        val possibleVis = visualizationInfos.values.filter({
+            viz: VisualizationCompanion => procStrat.steps.map({
+                step: ProcessingStep => viz.isMatching(step, skeletons: _*)
+            }).forall(_.isDefined)
+        })
+
+        if (possibleVis.isEmpty) {
+            LineChartConfig.default(skeletons.map(_.id),1024,1024)
+        } else {
+            possibleVis.toList(Random.nextInt(possibleVis.size)).default(skeletons.map(_.id),1024,1024)
+        }
+    }
+
 }
 
 
@@ -129,15 +149,13 @@ case class SVGXML(elems: Elem*) {
     def prepend(renderable: Renderable): SVGXML = prepend(renderable.toSVG)
 
     /** Appends a title */
-    def withTitle(text: String, x: Int, y: Int, fontSize: Int): SVGXML =
+    def withTitle(text: String, x: Int, y: Int, fontSize: Int, fontFamily: String): SVGXML =
         if (text != "") {
             append(<text  x={ x.toString }
                         y={ y.toString }
-                        font-family="Roboto, Segoe UI, Sans-Serif"
-                        font-weight="100"
+                        font-family={fontFamily}
                         font-size={ fontSize.toString }
-                        text-anchor="middle">{ text }
-                </text>)
+                        text-anchor="middle">{text}</text>)
         } else {
             this
         }
@@ -147,8 +165,8 @@ case class SVGXML(elems: Elem*) {
 
     /** Appends an axis */
     def withAxis(axis: Axis): SVGXML = append(axis)
-
-    // def withLegend(legend: Legend): SVGXML = ???
+    /** Appends a legend */
+    def withLegend(legend: Legend): SVGXML = append(legend)
 }
 object SVGXML {
     implicit def unpimpMulti(pimped: SVGXML): Seq[Elem] = pimped.elems
