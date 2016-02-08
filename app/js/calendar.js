@@ -47,6 +47,7 @@ function updateCurrentWeekdays() {
     sunday = new Date(currentDate.setDate(saturday.getDate() + 1));
     
     updateWeekdayNumbers();
+    updateWeekDiagram();
 }
 
 function updateWeekdayNumbers() {
@@ -72,7 +73,6 @@ function selectTodayInDayList() {
 function updateDayContent() {
     updateDateTitle();
     updateDayDiagram();
-    updateWeekDiagram();
 }
 
 function updateDateTitle() {
@@ -120,6 +120,7 @@ $('#previous-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() - 7);
     updateCurrentWeekdays();
     updateDayContent();
+    updateWeekDiagram();
     
     return false;
 });
@@ -128,10 +129,10 @@ $('#next-week').click(function () {
     selectedDate.setDate(selectedDate.getDate() + 7);
     updateCurrentWeekdays();
     updateDayContent();
+    updateWeekDiagram();
     
     return false;
 });
-
 
 
 
@@ -146,71 +147,25 @@ function updateDayDiagram() {
     today.setHours(23,59,59,999)
     var endTime = Math.min(today.getTime(), (new Date()).getTime())
     
-    sendRequest(JSON.stringify({
-        "type": "visualization",
-        "visualization": {
-            "type": "barchart",
-            "args": {
-                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
-                "width": 512,
-                "height": 256,
-                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
-                },
-                "yUnit": 25.0,
-                "colorScheme": "green"
-            }
-        },
-        "processor": [{
-            "method": "aggregation",
-            "args": {
-                    "idMapping": {
-                            "23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"
-                     },
-                    "mode": "mean",
-                    "param": "hour"
-            }
-        }],
-        "data": [{
-            "id": "23551219-404e-42a7-bc95-95accb8affe5",
-            "from": startTime,
-            "to": endTime
-        }]
-    }), '#date-activity');
+//    var visualization = makeVisualization("linechart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
+//    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
+//    var request = makeVisualizationRequest(visualization, [], [data]);
     
-    /*
-    sendRequest(JSON.stringify({
-        "type": "visualization",
-        "visualization": {
-            "type": "linechart",
-            "args": {
-                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
-                "width": 512,
-                "height": 256,
-                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
-                },
-                "yUnit": 25.0,
-                "colorScheme": "green"
-            }
-        },
-        "processor": [],
-        "data": [{
-            "id": "23551219-404e-42a7-bc95-95accb8affe5",
-            "from": startTime,
-            "to": endTime
-        }]
-    }), '#date-activity');
-    */
+    var visualization = makeVisualization("barchart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
+    var idMapping = {"23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"};
+    var processor = makeProcessor("aggregation", idMapping, "mean", "hour");
+    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
+    var request = makeVisualizationRequest(visualization, [processor], [data]);
+    
+    sendRequest(request, '#date-activity');
 }
-
 
 function updateWeekDiagram() {
     var firstDayOfWeek = selectedDate.getDate() - selectedDate.getDay() + 1;
     if (selectedDate.getDay() == 0) {
         firstDayOfWeek = selectedDate.getDate() - 6;
     }
-    
     var currentDate = new Date(selectedDate);
-    
     monday = new Date(currentDate.setDate(firstDayOfWeek));
     sunday = new Date(currentDate.setDate(monday.getDate() + 6));
     
@@ -219,71 +174,69 @@ function updateWeekDiagram() {
     sunday.setHours(23, 59, 59, 999)
     var endTime = sunday.getTime()
     
+//    var visualization = makeVisualization("linechart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
+//    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
+//    var request = makeVisualizationRequest(visualization, [], [data]);
     
-    /*
-    sendRequest(JSON.stringify({
-        "type": "visualization",
-        "visualization": {
-            "type": "barchart",
-            "args": {
-                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
-                "width": 512,
-                "height": 256,
-                "yMax": 175,
-                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
-                },
-                "yUnit": 25.0,
-                "colorScheme": "green"
-            }
-        },
-        "processor": [{
-            "method": "aggregation",
-            "args": {
-                    "idMapping": {
-                            "23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"
-                     },
-                    "mode": "mean",
-                    "param": "weekday"
-            }
-        }],
-        "data": [{
-            "id": "23551219-404e-42a7-bc95-95accb8affe5",
-            "from": startTime,
-            "to": endTime
-        }]
-    }), '#week-activity');
-    */
+    var visualization = makeVisualization("piechart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
+    var idMapping = {"23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"};
+    var processor = makeProcessor("aggregation", idMapping, "mean", "weekday");
+    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
+    var request = makeVisualizationRequest(visualization, [processor], [data]);
     
-    sendRequest(JSON.stringify({
-        "type": "visualization",
-        "visualization": {
-            "type": "linechart",
-            "args": {
-                "ids": ["23551219-404e-42a7-bc95-95accb8affe5"],
-                "width": 512,
-                "height": 256,
-                "yMax": 175,
-                "border": {"top": 10, "bottom": 10, "left": 70, "right": 20
-                },
-                "yUnit": 25.0,
-                "colorScheme": "green"
-            }
-        },
-        "processor": [],
-        "data": [{
-            "id": "23551219-404e-42a7-bc95-95accb8affe5",
-            "from": startTime,
-            "to": endTime
-        }]
-    }), '#week-activity');
+    sendRequest(request, '#week-activity');
 }
 
 
 
 
+/* ****************** */
+/*   JSON Requests    */
+/* ****************** */
 
 
 
+function makeVisualization(type, ids) {
+    return {
+        "type": type,
+        "args": {
+            "ids": ids,
+            "width": 512,
+            "height": 256,
+            "border": {"top": 10, "bottom": 10, "left": 70, "right": 20},
+            "yUnit": 25.0,
+            "colorScheme": "green"
+        }
+    }
+}
+
+function makeProcessor(method, idMapping, mode, param) {
+    return {
+        "method": method,
+        "args": {
+            "idMapping": idMapping,
+            "mode": mode,
+            "param": param
+        }
+    }
+}
+
+function makeData(id, from, to) {
+    return {
+        "id": id,
+        "from": from,
+        "to": to
+    }
+}
+
+function makeVisualizationRequest(visualization, processors, data) {
+    return JSON.stringify({
+        "type": "visualization",
+        "visualization": visualization,
+        "processor": processors,
+        "data": data
+    })
+}
 
 function sendRequest(requestText, resultPlaceholder) {
     $.ajax({
