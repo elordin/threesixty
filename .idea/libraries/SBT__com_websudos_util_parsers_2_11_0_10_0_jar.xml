@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.ivy2/cache/com.websudos/util-parsers_2.11/jars/util-parsers_2.11-0.10.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.websudos/util-parsers_2.11/srcs/util-parsers_2.11-0.10.0-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

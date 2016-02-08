@@ -27,7 +27,22 @@ object Aggregation extends ProcessingMethodCompanion {
 
     def fromString: (String) => ProcessingStep = { s => apply(s).asProcessingStep }
 
-    def usage = """ Use responsibly """ // TODO
+    def usage =     """ |Aggregator(mode, param). It takes 2 arguments, which will be specified as described and aggregates according to its parameter the data
+                        |mode possible input:
+                        |  *                 mean:       In the aggrggaton the MEAN is used.
+                        |  *                 sum         In the aggrggaton the values are summed up and its sum is returned
+                        |  *                 num         In the aggregation the number of values is used - its number of elements is used
+                        |  *                 enum        This aggregation goes by the Y-Axis: and counts how often which value occured; param not need in this case
+                        |  *
+                        |  * param possible input:
+                        |  *                 datasize-1990: The number can be any other as well. Aggregates the data that you have 1900 datapoints at the end
+                        |  *                 blocksize-1990: The number can be any other as well. Aggregates all the time the next 1900 datapoints together
+                        |  *                 minute:     Aggregates the values of a minute together
+                        |  *                 hour:
+                        |  *                 weekday:    Cyclic Aggregation on Monday, tuesdays, etc.
+                        |  *                 day:
+                        |  *                 monthl:    Aggregates the values of a month together
+                        |  *                 yearl:     Aggregates the values of a year together""".stripMargin
 
     def apply(jsonString: String): Aggregation = {
         implicit val aggregationFormat =
@@ -47,16 +62,16 @@ object Aggregation extends ProcessingMethodCompanion {
             temp += 0.4
         }
         if (meta.size >= 5) {
-            temp += 0.2
+            temp += 1.0
         }
         if (meta.size >= 50) {
-            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
+            temp += 1.0 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
-            temp += 0.2
+            temp += 1.0
         }
         if (meta.resolution == Resolution.Middle) {
-            temp += 0.1
+            temp += 0.6
         }
 
         temp
@@ -69,13 +84,13 @@ object Aggregation extends ProcessingMethodCompanion {
             //good
             case _:LineChartConfig          => 1.0
             // case _:HeatLineChartConfig      => 1.0
-            case _:BarChartConfig           => 0.8
+            case _:BarChartConfig           => 1.0
             // case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
-            case _:ScatterChartConfig       => 0.2
+            case _:ScatterChartConfig       => 0.1
             // case _:ScatterColorChartConfig  => 0.2
             // case _:ProgressChartConfig      => 0.1
-            case _:PieChartConfig           => 0.0
+            case _:PieChartConfig           => 0.4
             //default
             case _                          => 0.5
         }
@@ -95,13 +110,15 @@ object Aggregation extends ProcessingMethodCompanion {
   *                 sum         In the aggrggaton the values are summed up and its sum is returned
   *                 num         In the aggregation the number of values is used - its number of elements is used
   *                 enum        This aggregation goes by the Y-Axis: and counts how often which value occured; param not need in this case
-  *
   * @param param possible input:
   *                 datasize-1990:
   *                 blocksize-1990:
-  *                 weekday:
-  *                 monthly:    Aggregates the values of a month together
-  *                 yearly:     Aggregates the values of a year together
+  *                 minute:     Aggregates the values of a minute together
+  *                 hour:       "
+  *                 weekday:    Cyclic Aggregation on Monday, tuesdays, etc
+  *                 day:        "
+  *                 monthl:    Aggregates the values of a month together
+  *                 yearl:     Aggregates the values of a year together
   *
   *
   */ //groupby() bei Listen :-)
@@ -115,8 +132,6 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
       *  the diagramm as the number of data has been reduced
       *  Tag aggegated will be added as well
       *     Timeaggregated -> just reduce the complexity of the datapoints
-      *
-      *
       *
       *  @param data Data to interpolate
       *  @return One element Set containing the new dataset
@@ -135,21 +150,30 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
 
             var agdata = data.dataPoints.sortBy(d => -timestamp2Long((d.timestamp)))
 
-            var blocksize = 0
-            var datasize = 0
+            var blocksize = 1
+            var datasize = 1
 
             paramsplit(0) match {
                 case "datasize" =>
                     datasize = paramsplit(1).toInt
+
+                    require( datasize != 0, { datasize = 1; println("Datasize value of 0 is nt allowed, takes default 1")})
+
                     blocksize = math.ceil(agdata.length/datasize).toInt
                 case "blocksize" =>
                     blocksize = paramsplit(1).toInt
-                    datasize = math.ceil(agdata.length/datasize).toInt
+
+                    require( blocksize != 0, { blocksize = 1; println("Blocksize value of 0 is nt allowed, takes default 1")})
+
+                    datasize = math.ceil(agdata.length/blocksize).toInt
                 case default =>
                     throw new IllegalArgumentException("Not matching argument given like 'datasize' or 'blocksize' BUT got: " + paramsplit(0) )
             }
 
             var l = List[TaggedDataPoint]()
+
+
+
 
             for( i <- 0 until datasize ) {
                 val buf = agdata.splitAt(blocksize)

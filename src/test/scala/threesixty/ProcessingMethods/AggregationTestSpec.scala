@@ -3,7 +3,6 @@ package threesixty.ProcessingMethods
 import org.scalatest.FunSpec
 import threesixty.ProcessingMethods.Aggregation.Aggregation
 
-import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.data.{ProcessedData, TaggedDataPoint}
 import threesixty.data.Data.Timestamp
 import threesixty.data.tags._

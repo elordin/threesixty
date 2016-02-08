@@ -4,6 +4,8 @@
       <root url="jar://$USER_HOME$/.ivy2/cache/com.websudos/phantom-testkit_2.11/jars/phantom-testkit_2.11-1.18.1.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/com.websudos/phantom-testkit_2.11/srcs/phantom-testkit_2.11-1.18.1-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>
