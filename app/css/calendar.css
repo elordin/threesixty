@@ -78,3 +78,6 @@
     margin: 0 0 0 -20px;
 }
 
+svg .bar {
+    fill: #4DAF50;
+}
