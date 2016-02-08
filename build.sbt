@@ -83,6 +83,9 @@ mappings in Windows := (mappings in Universal).value
 wixProductId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
 wixProductUpgradeId := "AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA"
 
+
+wixFile := File("deployment/wixconfig.xml")
+
 //Command creating it
 //sbt windows:packageBin
 
