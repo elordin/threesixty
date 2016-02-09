@@ -1,33 +1,33 @@
 # 360° - Visualization Engine
 
-- [Introduction][]
-- [Requirements][]
-    - [Scala][]
-        - [Akka and Spray][]
-    - [Cassandra][]
-- [Building][]
-    - [IntelliJ IDEA][]
-    - [SBT][]
-- [Config][]
-- [API][]
-    - [Visualization request][]
-        - [Parameters][]
-            - [`visualization`][]
-            - [`processor`][]
-    - [Data requests][]
-        - [Insert][]
-            - [`dataPoints`][]
-            - [`metadata`][]
-        - [Get][]
-    - [Help requests / usage info][]
-- [Extending the Engine][]
-    - [Additional visualizations][]
-        - [Visualization][]
-        - [VisualizationConfig][]
-        - [Mixin][]
-    - [Additional processing methods][]
-        - [ProcessingMethod][]
-        - [Mixin][]
+- [Introduction][Introduction]
+- [Requirements][Requirements]
+    - [Scala][Scala]
+        - [Akka and Spray][Akka and Spray]
+    - [Cassandra][Cassandra]
+- [Building][Building]
+    - [IntelliJ IDEA][IntelliJ IDEA]
+    - [SBT][SBT]
+- [Config][Config]
+- [API][API]
+    - [Visualization request][Visualization request]
+        - [Parameters][Parameters]
+            - [`visualization`][`visualization`]
+            - [`processor`][`processor`]
+    - [Data requests][Data requests]
+        - [Insert][Insert]
+            - [`dataPoints`][`dataPoints`]
+            - [`metadata`][`metadata`]
+        - [Get][Get]
+    - [Help requests / usage info][Help requests / usage info]
+- [Extending the Engine][Extending the Engine]
+    - [Additional visualizations][Additional visualizations]
+        - [Visualization][Visualization]
+        - [VisualizationConfig][VisualizationConfig]
+        - [Mixin][VizMixin]
+    - [Additional processing methods][Additional processing methods]
+        - [ProcessingMethod][ProcessingMethod]
+        - [Mixin][ProcMixin]
 
 ## Introduction
 Project repository for the semester project of the Software Engineering lecture as part of the Software Engineering program at Augsburg University.
@@ -238,7 +238,7 @@ The metadata object can contains the following keys (_all are optional_)
         "end": 4567
     },
     "reliability": "Device | User | Unknown",
-    "resolution": "High | Middle | Low"
+    "resolution": "High | Middle | Low",
     "scaling": "Nominal | Ordinal",
     "acitivityType": {
         "name": "Foo"
@@ -330,7 +330,7 @@ They must provide:
 
 #### VisualizationConfig
 
-#### Mixin
+#### Mixin [VizMixin]
 
 ### Additional processing methods
 
@@ -346,4 +346,4 @@ Similar to adding visualizations, processing methods must also provide certain c
 `SingleProcessingMethod`s require a single Dataset as input are applied in parallel when used for multiple datasets.
 `MultiProcessingMethod` are those that operate on a Set if `ProcessedData`.
 
-#### Mixin
+#### Mixin [ProcMixin]
