@@ -70,6 +70,10 @@
     font-size: 2.5vmax;
 }
 
+#message-field {
+    margin: 0 0 24px -20px;
+}
+
 #date-activity {
     margin: 0 0 40px -20px;
 }
