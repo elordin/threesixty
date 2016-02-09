@@ -4,6 +4,12 @@
 ## Introduction
 Project repository for the semester project of the Software Engineering lecture as part of the Software Engineering program at Augsburg University.
 
+- [S. Cimander](https://github.com/StefanCimander)
+- [T. Engel](https://github.com/ThEngel14)
+- [M. Schnappinger](https://github.com/MarkusSchnappi)
+- [T. Weber](https://github.com/elordin)
+- [J. Wöhrle](https://github.com/SweetyGott)
+
 ## Requirements
 
 The visualization engine uses the following technologies:
@@ -14,6 +20,12 @@ The engine is written in the [Scala programming language](http://scala-lang.org)
 
 Scalas combination of object oriented with functional programming is well suited for the task. It offers good modeling capabilities to properly model the domain, as well as the high level abstraction of the functional world very useful for data processing using e.g. map reduce.
 
+#### Akka and Spray
+
+The underlying framework for concurrency, networking, HTTP request and response handling etc. is [spray](http://spray.io) which in turn builds on [akka](http://akka.io).
+
+Aside from being light weight, efficient, network aware (and thus portable for cluster use) and easy to use it also offers low-on-boilerplate, type safe JSON conversions.
+
 ### Cassandra
 
 While the engine is designed to accommodate different database systems, we choose Cassandra for our exemplary implementation.
@@ -22,6 +34,8 @@ This decision is bast mostly on the following advantages:
 - __Familiar query interface__: Cassandra comes with the CQL (Cassandra Query Language), offering a SQL like syntax, thus providing a familiar interface for administrators and developers.
 - __Cluster capable__: To provide scale and resilience for the engine, deployment on a cluster is an option. Cassandra is intended for use on a cluster, thus meeting this requirement as well.
 - __Fast write operations__: To accommodate the requirement of _high frequency data_, Cassandras fast write operations come in handy.
+
+Accessing Cassandra using Scala is done with the [Phantom](http://websudos.github.io/phantom/) adapter.
 
 ## Building
 
@@ -261,6 +275,47 @@ Using the name of a visualization or a processing method as returned by the two 
 
 ## Extending the Engine
 
+The engine is inherently built to support easy extension of its components.
+
+Using the mini-DSL for engine creation, setup and be done as follow:
+
+```scala
+val engine = VisualizationEngine using
+         new Visualizer with FooVisualization.Mixin
+                        with BarVisualization.Mixin and new Visualizer
+                        with FooProcessingMethod.Mixin
+                        with BarProcessingMethod.Mixin and
+                        SomeDatabaseAdapter
+```
+
 ### Additional visualizations
 
+Additional visualizations must comply with a certain format.
+
+They must provide:
+
+- The visualization class extending `Visualization`
+- The visualizations configuration extending `VisualizationConfig`
+- A mixin for adding the visualization to the `Visualizer`
+
+#### Visualization
+
+#### VisualizationConfig
+
+#### Mixin
+
 ### Additional processing methods
+
+Similar to adding visualizations, processing methods must also provide certain components:
+
+- The ProcessingMethod extending either `SingleProcessingMethod` or `MultiProcessingMethod`
+- The mixing to add the method to the `Processor`
+
+#### ProcessingMethod
+
+
+
+`SingleProcessingMethod`s require a single Dataset as input are applied in parallel when used for multiple datasets.
+`MultiProcessingMethod` are those that operate on a Set if `ProcessedData`.
+
+#### Mixin
