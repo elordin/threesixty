@@ -6,11 +6,52 @@ Project repository for the semester project of the Software Engineering lecture 
 
 ## Requirements
 
+The visualization engine uses the following technologies:
+
+### Scala
+
+The engine is written in the [Scala programming language](http://scala-lang.org).
+
+Scalas combination of object oriented with functional programming is well suited for the task. It offers good modeling capabilities to properly model the domain, as well as the high level abstraction of the functional world very useful for data processing using e.g. map reduce.
+
+### Cassandra
+
+While the engine is designed to accommodate different database systems, we choose Cassandra for our exemplary implementation.
+This decision is bast mostly on the following advantages:
+
+- __Familiar query interface__: Cassandra comes with the CQL (Cassandra Query Language), offering a SQL like syntax, thus providing a familiar interface for administrators and developers.
+- __Cluster capable__: To provide scale and resilience for the engine, deployment on a cluster is an option. Cassandra is intended for use on a cluster, thus meeting this requirement as well.
+- __Fast write operations__: To accommodate the requirement of _high frequency data_, Cassandras fast write operations come in handy.
 
 ## Building
 
+### IntelliJ IDEA
+
+### SBT
+
+Compiling, testing and running can also be done using the [Scala Build Tool](http://www.scala-sbt.org).
+
+```
+sbt compile
+```
+
+```
+sbt run
+```
+
+```
+sbt test
+```
 
 ## Config
+
+The `application.conf` file (in `src/main/ressources`) contains some settings:
+
+- `server.interface` Network interface used by the server. Defaults to `127.0.0.1` if none is given.
+- `server.port` Port used by the server. Defaults to `8080` if none is given.
+- `database.address` Address of the database as used by the `CassandraDatabaseAdapter`
+- `database.keyspace` Keyspace name as used by the `CassandraDatabaseAdapter`
+- `akka` contains some settings for [Akka](http://akka.io). For details, see its documentation.
 
 
 ## API
