@@ -1,33 +1,33 @@
 # 360° - Visualization Engine
 
-- [Introduction][Introduction]
-- [Requirements][Requirements]
-    - [Scala][Scala]
-        - [Akka and Spray][Akka and Spray]
-    - [Cassandra][Cassandra]
-- [Building][Building]
-    - [IntelliJ IDEA][IntelliJ IDEA]
-    - [SBT][SBT]
-- [Config][Config]
-- [API][API]
-    - [Visualization request][Visualization request]
-        - [Parameters][Parameters]
-            - [`visualization`][`visualization`]
-            - [`processor`][`processor`]
-    - [Data requests][Data requests]
-        - [Insert][Insert]
-            - [`dataPoints`][`dataPoints`]
-            - [`metadata`][`metadata`]
-        - [Get][Get]
-    - [Help requests / usage info][Help requests / usage info]
-- [Extending the Engine][Extending the Engine]
-    - [Additional visualizations][Additional visualizations]
-        - [Visualization][Visualization]
-        - [VisualizationConfig][VisualizationConfig]
-        - [Mixin][VizMixin]
-    - [Additional processing methods][Additional processing methods]
-        - [ProcessingMethod][ProcessingMethod]
-        - [Mixin][ProcMixin]
+- [Introduction](#introduction)
+- [Requirements](#requirements)
+    - [Scala](#scala)
+        - [Akka and Spray](#akka-and-spray)
+    - [Cassandra](#cassandra)
+- [Building](#building)
+    - [IntelliJ IDEA](#intellij-idea)
+    - [SBT](#sbt)
+- [Config](#config)
+- [API](#api)
+    - [Visualization request](#visualization-request)
+        - [Parameters](#parameters)
+            - [`visualization`](#visualization)
+            - [`processor`](#processor)
+    - [Data requests](#data-requests)
+        - [Insert](#insert)
+            - [`dataPoints`](#dataPoints)
+            - [`metadata`](#metadata)
+        - [Get](#get)
+    - [Help requests / usage info](#help-requests--usage-info)
+- [Extending the Engine](#extending-the-engine)
+    - [Additional visualizations](#additional-visualizations)
+        - [Visualization](#visualization-1)
+        - [VisualizationConfig](#visualizationconfig)
+        - [Mixin](#mixin)
+    - [Additional processing methods](#additional-processing-methods)
+        - [ProcessingMethod](#processingmethod)
+        - [Mixin](#mixin-1)
 
 ## Introduction
 Project repository for the semester project of the Software Engineering lecture as part of the Software Engineering program at Augsburg University.
@@ -330,7 +330,7 @@ They must provide:
 
 #### VisualizationConfig
 
-#### Mixin [VizMixin]
+#### Mixin
 
 ### Additional processing methods
 
@@ -346,4 +346,4 @@ Similar to adding visualizations, processing methods must also provide certain c
 `SingleProcessingMethod`s require a single Dataset as input are applied in parallel when used for multiple datasets.
 `MultiProcessingMethod` are those that operate on a Set if `ProcessedData`.
 
-#### Mixin [ProcMixin]
+#### Mixin
