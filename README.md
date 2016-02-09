@@ -1,5 +1,33 @@
 # 360° - Visualization Engine
 
+- [Introduction][]
+- [Requirements][]
+    - [Scala][]
+        - [Akka and Spray][]
+    - [Cassandra][]
+- [Building][]
+    - [IntelliJ IDEA][]
+    - [SBT][]
+- [Config][]
+- [API][]
+    - [Visualization request][]
+        - [Parameters][]
+            - [`visualization`][]
+            - [`processor`][]
+    - [Data requests][]
+        - [Insert][]
+            - [`dataPoints`][]
+            - [`metadata`][]
+        - [Get][]
+    - [Help requests / usage info][]
+- [Extending the Engine][]
+    - [Additional visualizations][]
+        - [Visualization][]
+        - [VisualizationConfig][]
+        - [Mixin][]
+    - [Additional processing methods][]
+        - [ProcessingMethod][]
+        - [Mixin][]
 
 ## Introduction
 Project repository for the semester project of the Software Engineering lecture as part of the Software Engineering program at Augsburg University.
@@ -208,7 +236,7 @@ The metadata object can contains the following keys (_all are optional_)
     "timeframe": {
         "start": 1234,
         "end": 4567
-    }
+    },
     "reliability": "Device | User | Unknown",
     "resolution": "High | Middle | Low"
     "scaling": "Nominal | Ordinal",
@@ -282,7 +310,7 @@ Using the mini-DSL for engine creation, setup and be done as follow:
 ```scala
 val engine = VisualizationEngine using
          new Visualizer with FooVisualization.Mixin
-                        with BarVisualization.Mixin and new Visualizer
+                        with BarVisualization.Mixin and new Processor
                         with FooProcessingMethod.Mixin
                         with BarProcessingMethod.Mixin and
                         SomeDatabaseAdapter
