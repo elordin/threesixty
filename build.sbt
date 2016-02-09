@@ -59,6 +59,10 @@ libraryDependencies ++= Seq(
   "io.spray" %% "spray-routing-shapeless2" % "1.3.3"
 )
 
+libraryDependencies ++= Seq(
+    "com.typesafe.play" %% "play-json" % "2.3.4"
+)
+
 //Build Deploymenttools
 enablePlugins(JavaServerAppPackaging)
 enablePlugins(JavaAppPackaging)

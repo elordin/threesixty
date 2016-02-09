@@ -38,6 +38,15 @@ class ExampleDataGenerator {
         InputData(withIdentifier, "Step Numbers", dataPoints, metadata)
     }
 
+    def generateStepsForDay(day: DateTime, withIdentifier: Identifier): InputData = {
+        var dataPoints = gaussianDatapoints(day)
+        val startDate = dataPoints.minBy(_.timestamp).timestamp
+        val endDate = dataPoints.maxBy(_.timestamp).timestamp
+        val timeframe = Timeframe(startDate, endDate)
+        val metadata = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, dataPoints.length)
+        InputData(withIdentifier, "Step Numbers", dataPoints, metadata)
+    }
+
     def gaussianDatapoints(t: DateTime): List[DataPoint] = {
         val variation = 1 + new Random().nextDouble()
 

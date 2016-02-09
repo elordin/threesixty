@@ -135,6 +135,19 @@ $('#next-week').click(function () {
 });
 
 
+/* ****************** */
+/*    Refresh Data    */
+/* ****************** */
+
+$('#refresh').click(function () {
+    var request = makeDataInsertRequest(today);
+    sendDataInsertRequest(request)
+    
+    return false;
+})
+
+
+
 
 /* ****************** */
 /*  Loading Diagrams  */
@@ -145,11 +158,11 @@ function updateDayDiagram() {
     today.setHours(0,0,0,0)
     var startTime = today.getTime()
     today.setHours(23,59,59,999)
-    var endTime = today.getTime() // Math.min(today.getTime(), (new Date()).getTime())
+    var endTime = Math.min(today.getTime(), (new Date()).getTime())
 
     var visualization = makeBarChartVisualization(["23551219-404e-42a7-bc95-95accb8affe5"]);
     var idMapping = {"23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"};
-    var processor = makeProcessor("aggregation", idMapping, "mean", "hour");
+    var processor = makeProcessor("aggregation", idMapping, "sum", "hour");
     var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
     var request = makeVisualizationRequest(visualization, [processor], [data]);
 
@@ -192,10 +205,12 @@ function makeBarChartVisualization(ids) {
             "width": 512,
             "height": 256,
             "border": {"top": 10, "bottom": 10, "left": 70, "right": 20},
-            "yMax": 200,
-            "yUnit": 25.0,
+            "yMax": 900,
+            "yUnit": 300,
             "xUnit": "",
-            "colorScheme": "green"
+            "colorScheme": "green",
+            "fontFamily": "Calibri",
+            "fontSize": 1
         }
     }
 }
@@ -211,7 +226,8 @@ function makePieChartVisualization(ids) {
             "colorScheme": "green",
             "innerRadiusPercent": 0.5,
             "legendPosition": "left",
-            "fontFamily": "Calibri"
+            "fontFamily": "Calibri",
+            "fontSize": 16
         }
     }
 }
@@ -251,14 +267,37 @@ function sendRequest(requestText, resultPlaceholder) {
         data: requestText,
         dataType: 'html',
         success: function (answer) {
+            $('#message-field').empty();
             $(resultPlaceholder).empty().html(answer);
         },
         error: function (response) {
             console.log(response.responseText);
-            $(resultPlaceholder).empty().html('<span class="error">An Error occurred. Please try again later.</span>');
+            $('#message-field').empty().html('<span class="error">There is currently no data available. Please try again later.</span>');
+            $(resultPlaceholder).empty();
         }
     });
 }
 
+function makeDataInsertRequest(inputData) {
+    return JSON.stringify({
+        "type": "data",
+        "action": "insert",
+        "data": inputData
+    })
+}
 
-
+function sendDataInsertRequest(request) {
+    $.ajax({
+        url: 'http://localhost:8080',
+        method: 'POST',
+        data: request,
+        dataType: 'html',
+        success: function (answer) {
+            $('#message-field').empty().html('<span class="success">Successfully synchronized new data.</span>');
+        },
+        error: function (response) {
+            $('#message-field').empty().html('<span class="error">All data has already been synchronized.</span>');
+            console.log(response.responseText);
+        }
+    })
+}
