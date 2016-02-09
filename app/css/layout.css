@@ -180,25 +180,18 @@ main h2 {
     display: block;
     background-color: #f2dede;
     border: thin solid #a94442;
-    margin: 0 auto;
+    margin: 0 20px;
     max-width: 32em;
     padding: 1em;
     color: #a94442;
 }
 
-
-/* ****************** */
-/*       Footer       */
-/* ****************** */
-
-
-
-
-
-/* ****************** */
-/*   Media Queries    */
-/* ****************** */
-
-@media screen and (min-width: 800px) {
-
+.success {
+    display: block;
+    background-color: #DFFFDD;
+    border: thin solid #388E3C;;
+    margin: 0 20px;
+    max-width: 32em;
+    padding: 1em;
+    color: #388E3C;;
 }

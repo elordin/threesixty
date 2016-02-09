@@ -135,6 +135,19 @@ $('#next-week').click(function () {
 });
 
 
+/* ****************** */
+/*    Refresh Data    */
+/* ****************** */
+
+$('#refresh').click(function () {
+    var request = makeDataInsertRequest(today);
+    sendDataInsertRequest(request)
+    
+    return false;
+})
+
+
+
 
 /* ****************** */
 /*  Loading Diagrams  */
@@ -147,13 +160,9 @@ function updateDayDiagram() {
     today.setHours(23,59,59,999)
     var endTime = Math.min(today.getTime(), (new Date()).getTime())
 
-//    var visualization = makeVisualization("linechart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
-//    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
-//    var request = makeVisualizationRequest(visualization, [], [data]);
-
-    var visualization = makeVisualization("barchart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
+    var visualization = makeBarChartVisualization(["23551219-404e-42a7-bc95-95accb8affe5"]);
     var idMapping = {"23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"};
-    var processor = makeProcessor("aggregation", idMapping, "mean", "hour");
+    var processor = makeProcessor("aggregation", idMapping, "sum", "hour");
     var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
     var request = makeVisualizationRequest(visualization, [processor], [data]);
 
@@ -174,39 +183,51 @@ function updateWeekDiagram() {
     sunday.setHours(23, 59, 59, 999)
     var endTime = sunday.getTime()
 
-
-//    var visualization = makeVisualization("linechart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
-//    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
-//    var request = makeVisualizationRequest(visualization, [], [data]);
-
-    var visualization = makeVisualization("piechart", ["23551219-404e-42a7-bc95-95accb8affe5"]);
+    var visualization = makePieChartVisualization(["23551219-404e-42a7-bc95-95accb8affe5"]);
+    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
     var idMapping = {"23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"};
     var processor = makeProcessor("aggregation", idMapping, "mean", "weekday");
-    var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
     var request = makeVisualizationRequest(visualization, [processor], [data]);
 
     sendRequest(request, '#week-activity');
 }
 
 
-
-
 /* ****************** */
 /*   JSON Requests    */
 /* ****************** */
 
-
-
-function makeVisualization(type, ids) {
+function makeBarChartVisualization(ids) {
     return {
-        "type": type,
+        "type": "barchart",
         "args": {
             "ids": ids,
             "width": 512,
             "height": 256,
             "border": {"top": 10, "bottom": 10, "left": 70, "right": 20},
-            "yUnit": 25.0,
-            "colorScheme": "green"
+            "yMax": 900,
+            "yUnit": 300,
+            "xUnit": "",
+            "colorScheme": "green",
+            "fontFamily": "Calibri",
+            "fontSize": 1
+        }
+    }
+}
+
+function makePieChartVisualization(ids) {
+    return {
+        "type": "piechart",
+        "args": {
+            "ids": ids,
+            "width": 400,
+            "height": 200,
+            "border": {"top": 20, "bottom": 20, "left": 80, "right": 60},
+            "colorScheme": "green",
+            "innerRadiusPercent": 0.5,
+            "legendPosition": "left",
+            "fontFamily": "Calibri",
+            "fontSize": 16
         }
     }
 }
@@ -246,14 +267,37 @@ function sendRequest(requestText, resultPlaceholder) {
         data: requestText,
         dataType: 'html',
         success: function (answer) {
+            $('#message-field').empty();
             $(resultPlaceholder).empty().html(answer);
         },
         error: function (response) {
             console.log(response.responseText);
-            $(resultPlaceholder).empty().html('<span class="error">An Error occurred. Please try again later.</span>');
+            $('#message-field').empty().html('<span class="error">There is currently no data available. Please try again later.</span>');
+            $(resultPlaceholder).empty();
         }
     });
 }
 
+function makeDataInsertRequest(inputData) {
+    return JSON.stringify({
+        "type": "data",
+        "action": "insert",
+        "data": inputData
+    })
+}
 
-
+function sendDataInsertRequest(request) {
+    $.ajax({
+        url: 'http://localhost:8080',
+        method: 'POST',
+        data: request,
+        dataType: 'html',
+        success: function (answer) {
+            $('#message-field').empty().html('<span class="success">Successfully synchronized new data.</span>');
+        },
+        error: function (response) {
+            $('#message-field').empty().html('<span class="error">All data has already been synchronized.</span>');
+            console.log(response.responseText);
+        }
+    })
+}
