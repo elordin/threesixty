@@ -17,7 +17,7 @@ Project repository for the semester project of the Software Engineering lecture 
 
 ### Visualization request
 
-Usually the most common call uses `"type": "visualization"`. It is used to request a visualization with certain parameters.
+The most common call uses `"type": "visualization"`. It is used to request a visualization with certain parameters.
 
 ```json
 {
@@ -30,7 +30,7 @@ Usually the most common call uses `"type": "visualization"`. It is used to reque
 
 #### Parameters
 
-- __data__ _required_: A list of ids (Strings) of datasets which will be used for the visualization.
+- __data__ _required_: A list of identifiers of datasets which will be used for the visualization. The are either simple Strings when the whole dataset should be processed (__not recommended__ for large datasets) or JSON objects defining a start and end point `{ "id": "foo", "from": 0, "to": 1000}` where `from` and `to` are timestamps and can be omitted for a partially bounded selection.
 - __visualization__ _optional_: Specifies the desired visualization format. Is deduced when omitted.
 - __processor__ _optional_: A list of processing steps applied to the input data. Is deduced when omitted.
 
@@ -142,7 +142,7 @@ Each datapoint must follow the format:
 ```
 
 - `timestamp` ist the timestap for the measurement taken
-- `value` is an object with `type` being either `"int"` or `"double"` to define, what type it is, and `value` the actual value (__Note__ that Double values with `type` being `int` are converted to Integers)
+- `value` is an object with the optional `type` being either `"int"` or `"double"` to define, what type it is, and `value` the actual value (__Note__ that Double values with `type` being `int` are converted to Integers; when not `type` is given, `double` is assumed.)
 
 ##### `metadata`
 
@@ -216,11 +216,7 @@ Using the name of a visualization or a processing method as returned by the two 
 }
 ```
 
-`data` lists help on how to insert data.
-
-
-### Inserting data
-
+`data` lists help on how to get and insert data.
 
 ## Extending the Engine
 
