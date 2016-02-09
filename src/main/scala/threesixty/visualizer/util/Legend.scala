@@ -35,9 +35,8 @@ case class Legend(x: Int,
                   y: Int,
                   symbolWidth: Int,
                   labels: Seq[(String, RGBColor)],
-                  labelSize: Int = 12,
-                  labelFontFamily: String = "Roboto, Segoe UI",
-                  labelFontWeight: Int = 100
+                  labelSize: Int,
+                  labelFontFamily: String
 ) extends Renderable {
 
     /**
@@ -65,7 +64,6 @@ case class Legend(x: Int,
                     <text x={(x + 2*symbolWidth).toString}
                           y={(y + (2 * i + 1) * symbolWidth).toString}
                           font-family={labelFontFamily}
-                          font-weight={labelFontWeight.toString}
                           font-size={labelSize.toString}
                           text-anchor="left">{labels(i)._1}</text>
                 </g>

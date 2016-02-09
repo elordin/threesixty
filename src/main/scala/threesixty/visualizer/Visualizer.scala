@@ -149,13 +149,13 @@ case class SVGXML(elems: Elem*) {
     def prepend(renderable: Renderable): SVGXML = prepend(renderable.toSVG)
 
     /** Appends a title */
-    def withTitle(text: String, x: Int, y: Int, fontSize: Int, fontFamily: String): SVGXML =
+    def withTitle(text: String, x: Int, y: Int, fontSize: Int, fontFamily: String, alignment: String): SVGXML =
         if (text != "") {
             append(<text  x={ x.toString }
                         y={ y.toString }
                         font-family={fontFamily}
                         font-size={ fontSize.toString }
-                        text-anchor="middle">{text}</text>)
+                        text-anchor={alignment}>{text}</text>)
         } else {
             this
         }

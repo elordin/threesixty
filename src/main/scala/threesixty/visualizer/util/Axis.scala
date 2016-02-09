@@ -27,9 +27,11 @@ case class HorizontalAxis(
     xTitle: Option[Int] = None,
     yTitle: Option[Int] = None,
     titleSize: Int = 16,
+    titleFontFamily: String = "Roboto, Segoe UI",
     titleColor: RGBColor = RGBColor.BLACK,
     labels: Seq[(String, Int)] = Seq(),
     labelSize: Int = 12,
+    labelFontFamily: String = "Roboto, Segoe UI",
     labelColor: RGBColor = RGBColor.BLACK,
     labelRotation: Int = 0,
     labelOffset: Option[Int] = None
@@ -68,6 +70,7 @@ case class HorizontalAxis(
                         y={ labelY.toString }
                         transform={ s"rotate($labelRotation, $labelX, $labelY)"}
                         fill={ labelColor.toString }
+                        font-family={ labelFontFamily }
                         font-size={ labelSize.toString }
                         text-anchor="middle">
                         { labelText }
@@ -91,6 +94,7 @@ case class HorizontalAxis(
                         y={ yTitle.getOrElse(y + 3 * labelSize).toString }
                         fill={ titleColor.toString }
                         font-size={ titleSize.toString }
+                        font-family={ titleFontFamily }
                         text-anchor="middle">
                         { title }
                     </text>
@@ -113,9 +117,11 @@ case class VerticalAxis(
     xTitle: Option[Int] = None,
     yTitle: Option[Int] = None,
     titleSize: Int = 16,
+    titleFontFamily: String = "Roboto, Segoe UI",
     titleColor: RGBColor = RGBColor.BLACK,
     labels: Seq[(String, Int)] = Seq(),
     labelSize: Int = 12,
+    labelFontFamily: String = "Roboto, Segoe UI",
     labelColor: RGBColor = RGBColor.BLACK,
     labelRotation: Int = 0,
     labelOffset: Option[Int] = None
@@ -155,6 +161,7 @@ case class VerticalAxis(
                         transform={ s"rotate($labelRotation, $labelX, $labelY)"}
                         fill={ labelColor.toString }
                         font-size={ labelSize.toString }
+                        font-family={ labelFontFamily }
                         text-anchor="end">
                         { labelText }
                     </text>
@@ -179,6 +186,7 @@ case class VerticalAxis(
                         y={ titleY.toString }
                         fill={ titleColor.toString }
                         font-size={ titleSize.toString }
+                        font-family={ titleFontFamily }
                         transform={ s"rotate(-90, $titleX, $titleY)"}
                         text-anchor="middle">
                         { title }

@@ -3,7 +3,8 @@ package threesixty.visualizer
 import threesixty.data.{InputData, DataPool}
 import threesixty.data.Data.Identifier
 import threesixty.processor.{ProcessingStep, ProcessingMethod}
-import threesixty.visualizer.util.{Border, LegendPositionType, ColorScheme, DefaultColorScheme, Legend}
+import threesixty.visualizer.util.param._
+import threesixty.visualizer.util.{LegendPositionType, ColorScheme, DefaultColorScheme, Legend}
 
 /**
  * Generic Configuration for a [[threesixty.visualizer.Visualization]].
@@ -15,38 +16,38 @@ import threesixty.visualizer.util.{Border, LegendPositionType, ColorScheme, Defa
  * @param _border the border
  * @param _colorScheme the color scheme
  * @param _title the title
- * @param _titleVerticalOffset the vertical offset of the title
- * @param _titleFontSize the font size of the title
  * @param _xLabel the x-axis label
  * @param _yLabel the y-axis label
- * @param _minPxBetweenXGridPoints the minimum distance in px between two grid points on the x-axis
- * @param _minPxBetweenYGridPoints the minimum distance in px between two grid points on the y-axis
- * @param _fontSize the font size of labels
- * @param _fontFamily the font family of labels
- * @param _legendPosition the legend position
- * @param _legendHorizontalOffset the horizontal offset of the legend
- * @param _legendVerticalOffset the vertical offset of the legend
- * @param _legendSymbolWidth the width of the legend symbols
+ * @param _xAxisGrid if the grid for the x-axis should be shown
+ * @param _yAxisGrid if the gird for the y-axis should be shown
+ * @param _xAxisLabels if the labels for the x-axis should be shown
+ * @param _yAxisLabels if the labels for the y-axis should be shown
+ * @param _legend the legend
  */
 abstract class VisualizationConfig(
     ids:                        Seq[Identifier],
     height:                     Int,
     width:                      Int,
-    _border:                    Option[Border]      = None,
-    _colorScheme:               Option[ColorScheme] = None,
-    _title:                     Option[String]      = None,
-    _titleVerticalOffset:       Option[Int]         = None,
-    _titleFontSize:             Option[Int]         = None,
-    _xLabel:                    Option[String]      = None,
-    _yLabel:                    Option[String]      = None,
-    _minPxBetweenXGridPoints:   Option[Int]         = None,
-    _minPxBetweenYGridPoints:   Option[Int]         = None,
-    _fontSize:                  Option[Int]         = None,
-    _fontFamily:                Option[String]      = None,
-    _legendPosition:            Option[String]      = None,
-    _legendHorizontalOffset:    Option[Int]         = None,
-    _legendVerticalOffset:      Option[Int]         = None,
-    _legendSymbolWidth:         Option[Int]         = None
+    _border:                    Option[Border]          = None,
+    _colorScheme:               Option[ColorScheme]     = None,
+    _title:                     Option[OptTitleParam]   = None,
+    _xLabel:                    Option[String]          = None,
+    _yLabel:                    Option[String]          = None,
+    _xLabelSize:                Option[Int]             = None,
+    _yLabelSize:                Option[Int]             = None,
+    _xLabelFontFamily:          Option[String]          = None,
+    _yLabelFontFamily:          Option[String]          = None,
+    _minPxBetweenXGridPoints:   Option[Int]             = None,
+    _minPxBetweenYGridPoints:   Option[Int]             = None,
+    _xUnitLabelSize:            Option[Int]             = None,
+    _yUnitLabelSize:            Option[Int]             = None,
+    _xUnitLabelFontFamily:      Option[String]          = None,
+    _yUnitLabelFontFamily:      Option[String]          = None,
+    _xAxisGrid:                 Option[Boolean]         = None,
+    _yAxisGrid:                 Option[Boolean]         = None,
+    _xAxisLabels:               Option[Boolean]         = None,
+    _yAxisLabels:               Option[Boolean]         = None,
+    _legend:                    Option[OptLegendParam]  = None
 ) extends Function1[DataPool, Visualization] {
 
     require(height > 0, "Value for height must be greater than 0.")
@@ -71,135 +72,185 @@ abstract class VisualizationConfig(
      */
     def colorScheme: ColorScheme = _colorScheme.getOrElse(DefaultColorScheme)
 
-    /**
-     * @return the default vertical offset of the title
-     */
-    def titleVerticalOffsetDefault: Int = 20
-
-    /**
-      * @return the default font size of the title
-      */
-    def titleFontSizeDefault: Int = 20
+    val TITLE_DEFAULT: String = ""
+    val TITLE_VERTICAL_OFFSET_DEFAULT: Int = 20
+    val TITLE_HORIZONTAL_OFFSET_DEFAULT: Int = 0
+    val TITLE_SIZE_DEFAULT: Int = 20
+    val TITLE_FONT_FAMILY_DEFAULT = "Roboto, Segoe UI"
+    val TITLE_ALIGNMENT_DEFAULT: String = "middle"
 
     /**
      * @return the title
      */
-    def title: String = _title.getOrElse("")
+    def title: TitleParam = {
+        if(_title.isDefined) {
+            TitleParam(
+                _title.get.title.getOrElse(TITLE_DEFAULT),
+                _title.get.verticalOffset.getOrElse(TITLE_VERTICAL_OFFSET_DEFAULT),
+                _title.get.horizontalOffset.getOrElse(TITLE_HORIZONTAL_OFFSET_DEFAULT),
+                _title.get.size.getOrElse(TITLE_SIZE_DEFAULT),
+                _title.get.fontFamily.getOrElse(TITLE_FONT_FAMILY_DEFAULT),
+                _title.get.alignment.getOrElse(TITLE_ALIGNMENT_DEFAULT))
+        } else {
+            TitleParam(
+                TITLE_DEFAULT,
+                TITLE_VERTICAL_OFFSET_DEFAULT,
+                TITLE_HORIZONTAL_OFFSET_DEFAULT,
+                TITLE_SIZE_DEFAULT,
+                TITLE_FONT_FAMILY_DEFAULT,
+                TITLE_ALIGNMENT_DEFAULT)
+        }
+    }
 
-    /**
-     * @return the vertical offset of the title
-     */
-    def titleVerticalOffset: Int = _titleVerticalOffset.getOrElse(titleVerticalOffsetDefault)
+    val X_AXIS_LABEL_DEFAULT : String = ""
+    val Y_AXIS_LABEL_DEFAULT: String  = ""
 
-    /**
-     * @return the default font size of the title
-     */
-    def titleFontSize: Int = _titleFontSize.getOrElse(titleFontSizeDefault)
+    val X_AXIS_LABEL_SIZE_DEFAULT: Int = 12
+    val Y_AXIS_LABEL_SIZE_DEFAULT: Int = 12
 
-    require(titleFontSize > 0, "Value for the font size of the title must be positive.")
+    val X_AXIS_LABEL_FONT_FAMILY_DEFAULT: String = "Roboto, Segoe UI"
+    val Y_AXIS_LABEL_FONT_FAMILY_DEFAULT: String = "Roboto, Segoe UI"
+
+    val X_AXIS_MIN_DISTANCE_DEFAULT: Int = 20
+    val Y_AXIS_MIN_DISTANCE_DEFAULT: Int = 20
+
+    val X_AXIS_UNIT_LABEL_SIZE_DEFAULT: Int = 12
+    val Y_AXIS_UNIT_LABEL_SIZE_DEFAULT: Int = 12
+
+    val X_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT: String = "Roboto, Segoe UI"
+    val Y_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT: String = "Roboto, Segoe UI"
+
+    val X_AXIS_GRID_DEFAULT: Boolean = true
+    val Y_AXIS_GRID_DEFAULT: Boolean = true
+
+    val X_AXIS_LABELS_DEFAULT: Boolean = true
+    val Y_AXIS_LABELS_DEFAULT: Boolean = true
 
     /**
      * @return the label for the x-axis
      */
-    def xLabel: String = _xLabel.getOrElse("")
+    def xLabel: String = _xLabel.getOrElse(X_AXIS_LABEL_DEFAULT)
 
     /**
      * @return the label for the y-axis
      */
-    def yLabel: String = _yLabel.getOrElse("")
+    def yLabel: String = _yLabel.getOrElse(Y_AXIS_LABEL_DEFAULT)
 
     /**
-     * @return the default value for the minimum px between two grid points on the x-axis
+     * @return the label size for the x-axis
      */
-    def minPxBetweenXGridPointsDefault: Int = 20
+    def xLabelSize: Int = _xLabelSize.getOrElse(X_AXIS_LABEL_SIZE_DEFAULT)
 
     /**
-     * @return the default value for the minimum px between two grid points on the y-axis
+     * @return the label size for the y-axis
      */
-    def minPxBetweenYGridPointsDefault: Int = 20
+    def yLabelSize: Int = _yLabelSize.getOrElse(Y_AXIS_LABEL_SIZE_DEFAULT)
+
+    /**
+     * @return the font family of the label for the x-axis
+     */
+    def xLabelFontFamily: String = _xLabelFontFamily.getOrElse(X_AXIS_LABEL_FONT_FAMILY_DEFAULT)
+
+    /**
+     * @return the font family of the label for the y-axis
+     */
+    def yLabelFontFamily: String = _yLabelFontFamily.getOrElse(Y_AXIS_LABEL_FONT_FAMILY_DEFAULT)
 
     /**
      * @return the minimum px between two grid points on the x-axis
      */
-    def minPxBetweenXGridPoints: Int = _minPxBetweenXGridPoints.getOrElse(minPxBetweenXGridPointsDefault)
+    def minPxBetweenXGridPoints: Int = _minPxBetweenXGridPoints.getOrElse(X_AXIS_MIN_DISTANCE_DEFAULT)
 
     require(minPxBetweenXGridPoints > 0, "Value for the minimum px between two grid points on the x-axis must be greater than 0.")
 
     /**
      * @return the minimum px between two grid points on the y-axis
      */
-    def minPxBetweenYGridPoints: Int = _minPxBetweenYGridPoints.getOrElse(minPxBetweenYGridPointsDefault)
+    def minPxBetweenYGridPoints: Int = _minPxBetweenYGridPoints.getOrElse(Y_AXIS_MIN_DISTANCE_DEFAULT)
 
     require(minPxBetweenYGridPoints > 0, "Value for the minimum px between two grid points on the y-axis must be greater than 0.")
 
     /**
-      * @return the default value for the font size
+     * @return the label size of the unit labels for the x-axis
+     */
+    def xUnitLabelSize: Int = _xUnitLabelSize.getOrElse(X_AXIS_UNIT_LABEL_SIZE_DEFAULT)
+
+    /**
+     * @return the label size of the unit labels for the y-axis
+     */
+    def yUnitLabelSize: Int = _yUnitLabelSize.getOrElse(Y_AXIS_UNIT_LABEL_SIZE_DEFAULT)
+
+    /**
+      * @return the font family of the label for the x-axis
       */
-    def fontSizeDefault: Int = 12
+    def xUnitLabelFontFamily: String = _xUnitLabelFontFamily.getOrElse(X_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT)
 
     /**
-     * @return the default font family
-     */
-    def fontFamilyDefault: String = "Roboto, Segoe UI"
+      * @return the font family of the label for the y-axis
+      */
+    def yUnitLabelFontFamily: String = _yUnitLabelFontFamily.getOrElse(Y_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT)
 
     /**
-     * @return the font size
+     * @return true iff the grid for the x-axis should be shown
      */
-    def fontSize: Int = _fontSize.getOrElse(fontSizeDefault)
-
-    require(fontSize > 0, "Value for font size must be positive.")
+    def xAxisGrid: Boolean = _xAxisGrid.getOrElse(X_AXIS_GRID_DEFAULT)
 
     /**
-     * @return the font family
+     * @return true iff the grid for the y-axis should be shown
      */
-    def fontFamily: String = _fontFamily.getOrElse(fontFamilyDefault)
+    def yAxisGrid: Boolean = _yAxisGrid.getOrElse(Y_AXIS_GRID_DEFAULT)
 
     /**
-     * @return the default legend position
+     * @return true iff the labels for the x-axis should be shown
      */
-    def legendPositionDefault: Option[LegendPositionType.LegendPosition] = None
+    def xAxisLabels: Boolean = _xAxisLabels.getOrElse(X_AXIS_LABELS_DEFAULT)
 
     /**
-     * @return the default horizontal offset of the legend
+     * @return true iff the labels for the y-axis should be shown
      */
-    def legendHorizontalOffsetDefault: Int = 20
+    def yAxisLabels: Boolean = _yAxisLabels.getOrElse(Y_AXIS_LABELS_DEFAULT)
 
-    /**
-     * @return the default vertical offset of the legend
-     */
-    def legendVerticalOffsetDefault: Int = 20
-
-    /**
-     * @return the default legend symbol width
-     */
-    def legendSymbolWidthDefault: Int = 10
+    val LEGEND_POSITION_DEFAULT: Option[LegendPositionType.LegendPosition] = None
+    val LEGEND_VERTICAL_OFFSET_DEFAULT: Int = 20
+    val LEGEND_HORIZONTAL_OFFSET_DEFAULT: Int = 20
+    val LEGEND_SYMBOL_WIDTH_DEFAULT: Int = 10
+    val LEGEND_SIZE_DEFAULT: Int = 12
+    val LEGEND_FONT_FAMILY_DEFAULT: String = "Roboto, Segoe UI"
 
     /**
      * @return the legend position
      */
-    def legendPosition: Option[LegendPositionType.LegendPosition] = {
-        if(_legendPosition.isDefined) {
-            Legend.getLegendPosition(_legendPosition.get)
+    private def legendPosition: Option[LegendPositionType.LegendPosition] = {
+        if(_legend.isDefined) {
+            Legend.getLegendPosition(_legend.get.position.get)
         } else {
-            legendPositionDefault
+            LEGEND_POSITION_DEFAULT
         }
 
     }
 
     /**
-     * @return the horizontal offset of the legend
+     * @return the legend
      */
-    def legendHorizontalOffset: Int = _legendHorizontalOffset.getOrElse(legendHorizontalOffsetDefault)
-
-    /**
-     * @return the vertical offset of the legend
-     */
-    def legendVerticalOffset: Int = _legendVerticalOffset.getOrElse(legendVerticalOffsetDefault)
-
-    /**
-     * @return the width of the legend symbol
-     */
-    def legendSymbolWidth: Int = _legendSymbolWidth.getOrElse(legendSymbolWidthDefault)
+    def legend: LegendParam = {
+        if(_legend.isDefined) {
+            LegendParam(
+                legendPosition,
+                _legend.get.verticalOffset.getOrElse(LEGEND_VERTICAL_OFFSET_DEFAULT),
+                _legend.get.horizontalOffset.getOrElse(LEGEND_HORIZONTAL_OFFSET_DEFAULT),
+                _legend.get.symbolWidth.getOrElse(LEGEND_SYMBOL_WIDTH_DEFAULT),
+                _legend.get.size.getOrElse(LEGEND_SIZE_DEFAULT),
+                _legend.get.fontFamily.getOrElse(LEGEND_FONT_FAMILY_DEFAULT))
+        } else {
+            LegendParam(
+                LEGEND_POSITION_DEFAULT,
+                LEGEND_VERTICAL_OFFSET_DEFAULT,
+                LEGEND_HORIZONTAL_OFFSET_DEFAULT,
+                LEGEND_SYMBOL_WIDTH_DEFAULT,
+                LEGEND_SIZE_DEFAULT,
+                LEGEND_FONT_FAMILY_DEFAULT)
+        }
+    }
 
     /**
      * @return the coordinates of the top left corner of the legend
@@ -215,7 +266,7 @@ abstract class VisualizationConfig(
                 case _ => throw new UnsupportedOperationException("Legend postion " + legendPosition.get.name + " is not supported.")
         }
 
-        (x + legendHorizontalOffset, y + legendVerticalOffset)
+        (x + legend.horizontalOffset, y + legend.verticalOffset)
     }
 
     /**
