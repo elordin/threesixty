@@ -305,7 +305,7 @@ Using the name of a visualization or a processing method as returned by the two 
 
 The engine is inherently built to support easy extension of its components.
 
-Using the mini-DSL for engine creation, setup and be done as follow:
+Using the mini-DSL for engine creation, setup can be done as follow:
 
 ```scala
 val engine = VisualizationEngine using
