@@ -1,9 +1,7 @@
 $(function() {
     loadRecentSteps();
     loadRecentDistance();
-    loadRecentWeight();
 });
-
 
 
 
@@ -48,4 +46,3 @@ function loadRecentDistance() {
 
     sendRequest(request, '#recent-distance');
 }
-

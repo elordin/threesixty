@@ -39,9 +39,15 @@ function makeBarChartVisualization(ids, title, yMax, yUnit) {
             "width": 512,
             "height": 256,
             "border": {"top": 10, "bottom": 40, "left": 70, "right": 20},
+            "xAxis": {
+                "arrowSize": 5,
+                "arrowFilled": true,
+            },
             "yAxis": {
                 "max": yMax,
-                "unit": yUnit
+                "unit": yUnit,
+                "arrowSize": 5,
+                "arrowFilled": true,
             },
             "descriptionLabelSize": 0,
             "colorScheme": "green",
@@ -67,7 +73,6 @@ function makePieChartVisualization(ids, legendOffset) {
             "border": {"top": 15, "bottom": 35, "left": 80, "right": 0},
             "colorScheme": "green",
             "innerRadiusPercent": 0.5,
-            
             
             "legend": {
                 "position": "left",
