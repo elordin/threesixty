@@ -5,7 +5,7 @@ import threesixty.visualizer.Visualization
 import spray.http.{HttpMethods, HttpResponse, HttpHeaders, HttpRequest, AllOrigins, StatusCodes, ContentTypes, ContentType, MediaTypes, HttpEntity, StatusCode}
 import ContentTypes.{`text/plain(UTF-8)`, `application/json`}
 import MediaTypes.`image/svg+xml`
-import HttpMethods.{GET, POST}
+import HttpMethods.{POST}
 import HttpHeaders.`Access-Control-Allow-Origin`
 
 import spray.json.{JsString, JsValue, JsObject}

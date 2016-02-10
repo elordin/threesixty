@@ -3,11 +3,9 @@ package threesixty.persistence.cassandra.tables
 import java.sql.Timestamp
 import java.util.UUID
 
-import com.datastax.driver.core.ConsistencyLevel
 import com.websudos.phantom.CassandraTable
 import com.websudos.phantom.connectors.RootConnector
 import com.websudos.phantom.dsl._
-import threesixty.data.Data._
 import threesixty.data.metadata._
 import threesixty.persistence.cassandra.CassandraAdapter
 

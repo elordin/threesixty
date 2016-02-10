@@ -2,7 +2,6 @@ package threesixty.persistence.cassandra.tables
 
 import java.util.UUID
 
-import com.datastax.driver.core.ConsistencyLevel
 import com.websudos.phantom.{dsl, CassandraTable}
 import com.websudos.phantom.column.DateTimeColumn
 import com.websudos.phantom.connectors.RootConnector

@@ -2,12 +2,10 @@ package threesixty.visualizer.visualizations.LineChart
 
 import threesixty.data.Data._
 import org.scalatest._
-import threesixty.data.DataJsonProtocol.TimestampJsonFormat
-import threesixty.visualizer.util.param.{OptValueAxisParam, OptTimeAxisParam, OptTitleParam, OptBorder}
+import threesixty.visualizer.util.param.{OptValueAxisParam, OptTimeAxisParam, OptTitleParam}
 import threesixty.visualizer.util.{DefaultColorScheme, GreenColorScheme}
 import threesixty.visualizer.util.param.OptBorder
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
-import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
 
 class LineChartConversionTestSpec extends FunSpec {

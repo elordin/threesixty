@@ -1,15 +1,15 @@
 .diagram-select-container {
+    text-align: center;
     margin: 0 0 40px -28px;
     padding-left: 28px;
     height: 40px;
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
-    background: #eee;
+    justify-content: center;
 }
 
 .diagram-select-item {
-    flex-basis: 80px;
+    flex-basis: 100px;
     flex-grow: 1;
 }
 

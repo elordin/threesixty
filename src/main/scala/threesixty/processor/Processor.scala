@@ -1,11 +1,9 @@
 package threesixty.processor
 
-import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.ProcessingMethods.interpolation.{SplineInterpolation, LinearInterpolation}
 import threesixty.engine.UsageInfo
-import threesixty.data.{InputData, ProcessedData, InputDataSkeleton}
+import threesixty.data.{ProcessedData, InputDataSkeleton}
 import threesixty.data.Data.Identifier
-import threesixty.data.metadata.CompleteInputMetadata
 import threesixty.visualizer.VisualizationConfig
 
 import spray.json._
@@ -27,7 +25,7 @@ sealed trait ProcessingMethod {
  *
  *  @author Thomas Weber
  *
- *  @param Single instance of ProcessedData it requires
+ *  @param data Single instance of ProcessedData it requires
  *  @return Set of ProcessedData, possibly including artificially created data
  */
 trait SingleProcessingMethod
@@ -203,10 +201,5 @@ class Processor extends ProcessingMixins with UsageInfo {
         else {ProcessingStrategy(max.default(dataMap))}
 
     }
-
-
-
-    // def deduce(metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
-    // def deduce(vizConf: VisualizationConfig, metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
 
 }

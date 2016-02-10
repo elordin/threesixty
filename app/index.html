@@ -9,89 +9,78 @@
 
 <body>
 
-    <aside id="sidebar">
-        <div id="menu-container">
-            <div id="nav-item-container">
-                <div id="burger-container" class="nav-item">
-                    <button id="burger-button">
-                        <img id="burger-image" class="nav-image" src="img/menu.png">
-                    </button>
-                </div>
-                <div class="nav-item">
-                    <a class="selected" href="index.html">
-                        <div class="nav-content-container">
-                            <img class="nav-image" src="img/home.png">
-                            <p class="nav-description">Home</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="map.html">
-                        <div class="nav-content-container">
-                            <img class="nav-image" src="img/map.png">
-                            <p class="nav-description">Map</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="favorites.html">
-                        <div class="nav-content-container">
-                            <img class="nav-image" src="img/star.png">
-                            <p class="nav-description">Favorites</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="calendar.html">
-                        <div class="nav-content-container">
-                            <img class="nav-image" src="img/calendar.png">
-                            <p class="nav-description">Calendar</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="goals.html">
-                        <div class="nav-content-container">
-                            <img class="nav-image" src="img/trophy.png">
-                            <p class="nav-description">Goals</p>
-                        </div>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="statistics.html">
-                        <div class="nav-content-container">
-                            <img class="nav-image" src="img/chart.png">
-                            <p class="nav-description">Statistics</p>
-                        </div>
-                    </a>
-                </div>
-            </div>
+    <aside>
+        <div id="burger-container" class="nav-item">
+             <button id="burger-button">
+                <img id="burger-image" class="nav-image" src="img/menu.png">
+            </button>
         </div>
-        <div class="nav-item" id="add-data">
-            <a href="adding.html">
+        <div class="nav-item">
+            <a class="selected" href="index.html">
                 <div class="nav-content-container">
-                    <img class="nav-image" src="img/add.png">
-                    <p class="nav-description">New Device</p>
+                    <img class="nav-image" src="img/home.png">
+                    <p class="nav-description">Home</p>
+                </div>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="map.html">
+                <div class="nav-content-container">
+                    <img class="nav-image" src="img/map.png">
+                    <p class="nav-description">Map</p>
+                </div>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="favorites.html">
+                <div class="nav-content-container">
+                    <img class="nav-image" src="img/star.png">
+                    <p class="nav-description">Favorites</p>
+                </div>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="calendar.html">
+                <div class="nav-content-container">
+                    <img class="nav-image" src="img/calendar.png">
+                    <p class="nav-description">Calendar</p>
+                </div>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="goals.html">
+                <div class="nav-content-container">
+                    <img class="nav-image" src="img/trophy.png">
+                    <p class="nav-description">Goals</p>
+                </div>
+            </a>
+        </div>
+        <div class="nav-item">
+            <a href="statistics.html">
+                <div class="nav-content-container">
+                    <img class="nav-image" src="img/chart.png">
+                    <p class="nav-description">Statistics</p>
                 </div>
             </a>
         </div>
     </aside>
-
 
     <header>
         <h1>Dashboard</h1>
         <a id="refresh" href=""><img src=img/refresh.png></a>
     </header>
 
-
     <main>
         <h1>Recent Activity</h1>
-        <div id="daily-activity"></div>
+        <pre id="message-field"></pre>
+        <pre id="recent-steps"></pre>
+        <pre id="recent-distance"></pre>
     </main>
 
 
     <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/navigation.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/requests.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/dashboard.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

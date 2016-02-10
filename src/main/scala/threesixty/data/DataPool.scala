@@ -10,7 +10,7 @@ import scala.collection.immutable.{Map => ImmutableMap}
 /**
  *  This contains all datasets requested by the client.
  *
- *  @param dataIDs Set of IDs of datasets that will be processed.
+ *  @param skeletons Set of IDs of datasets that will be processed.
  *  @param databaseAdapter DatabaseAdapter
  */
 @throws[NoSuchElementException]("if an id was given, for which no InputData exists.")

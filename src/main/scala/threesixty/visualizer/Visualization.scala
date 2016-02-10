@@ -1,7 +1,6 @@
 package threesixty.visualizer
 
 import threesixty.data.ProcessedData
-import scala.xml.Elem
 
 
 /**

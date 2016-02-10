@@ -20,8 +20,7 @@ aside {
     float: left;
     background: #323232;
     width: 64px;
-    position: fixed;
-    bottom: 0;
+    height: 100%;
 }
 
 aside.extended {
@@ -142,20 +141,9 @@ aside a.selected {
     height: 64px;
 }
 
-#menu-container {
-    height: calc(100vh - 64px);
-    min-height: 100%;
-}
-
-#nav-item-container {
-    overflow: auto;
-    padding-bottom: 64px;
-}
-
 #add-data {
-    position: relative;
-    height: 64px;
-    clear: both;
+    position: fixed;
+    bottom: 0;
 }
 
 
@@ -173,6 +161,23 @@ main h1 {
 main h2 {
     font-size: 0.9em;
     font-weight: 400;
+}
+
+pre {
+    margin: 0 0 0 -28px;
+}
+
+svg .bar {
+    fill: #4DAF50;
+}
+
+svg .data path {
+    stroke: #4DAF50;
+}
+
+svg .data circle {
+    stroke: #4DAF50;
+    fill: #4DAF50;
 }
 
 

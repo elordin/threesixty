@@ -1,0 +1,12 @@
+pre {
+    margin: 0 0 0 -28px;
+}
+
+svg .data path {
+    stroke: #4DAF50;
+}
+
+svg .data circle {
+    stroke: #4DAF50;
+    fill: #4DAF50;
+}

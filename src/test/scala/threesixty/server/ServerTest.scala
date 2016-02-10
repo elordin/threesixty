@@ -1,7 +1,7 @@
 package threesixty.server
 
-import akka.actor.{ActorSystem, Actor, Props}
-import akka.testkit.{TestActors, TestKit, TestProbe, ImplicitSender}
+import akka.actor.{ActorSystem}
+import akka.testkit.{TestKit, TestProbe, ImplicitSender}
 import akka.io.Tcp.{Closed, Aborted, ConfirmedClosed, PeerClosed, ErrorClosed}
 
 import spray.http._

@@ -4,14 +4,12 @@ import threesixty.visualizer.util.{Legend, Grid, Axis}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.engine.UsageInfo
 import threesixty.data.InputDataSkeleton
-import threesixty.data.Data.Identifier
 
 import spray.json._
 import DefaultJsonProtocol._
 import threesixty.processor.{ProcessingStrategy, ProcessingStep}
 
 import scala.xml.Elem
-import scala.util.Random
 
 
 
@@ -20,12 +18,6 @@ trait Renderable {
      *  Returns a SVG/XML tree.
      */
     def toSVG: Elem
-
-    // def toPNG:PNGImage
-
-    // def toJPG:JPGImage
-
-    // def toRawdata:String
 }
 
 

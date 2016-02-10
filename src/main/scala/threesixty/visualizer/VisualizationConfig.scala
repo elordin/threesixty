@@ -1,10 +1,9 @@
 package threesixty.visualizer
 
-import threesixty.data.{InputData, DataPool}
+import threesixty.data.{DataPool}
 import threesixty.data.Data.Identifier
-import threesixty.processor.{ProcessingStep, ProcessingMethod}
 import threesixty.visualizer.util.param._
-import threesixty.visualizer.util.{ColorScheme, DefaultColorScheme, Legend}
+import threesixty.visualizer.util.{ColorScheme, DefaultColorScheme}
 
 /**
  * Generic Configuration for a [[threesixty.visualizer.Visualization]].

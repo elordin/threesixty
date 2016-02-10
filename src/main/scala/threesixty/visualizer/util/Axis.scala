@@ -76,9 +76,7 @@ case class HorizontalAxis(
                         fill={ labelColor.toString }
                         font-family={ labelFontFamily }
                         font-size={ labelSize.toString }
-                        text-anchor="middle">
-                        { labelText }
-                    </text>
+                        text-anchor="middle">{labelText}</text>
                     <line class="label-dash"
                         x1={ labelX.toString }
                         y1={ y.toString }
@@ -99,9 +97,7 @@ case class HorizontalAxis(
                         fill={ titleColor.toString }
                         font-size={ titleSize.toString }
                         font-family={ titleFontFamily }
-                        text-anchor="middle">
-                        { title }
-                    </text>
+                        text-anchor="middle">{title}</text>
                 }
             }
         </g>
@@ -170,9 +166,7 @@ case class VerticalAxis(
                         fill={ labelColor.toString }
                         font-size={ labelSize.toString }
                         font-family={ labelFontFamily }
-                        text-anchor="end">
-                        { labelText }
-                    </text>
+                        text-anchor="end">{labelText}</text>
                     <line class="label-dash"
                         x1={ x.toString }
                         y1={ labelY.toString }
@@ -196,9 +190,7 @@ case class VerticalAxis(
                         font-size={ titleSize.toString }
                         font-family={ titleFontFamily }
                         transform={ s"rotate(-90, $titleX, $titleY)"}
-                        text-anchor="middle">
-                        { title }
-                    </text>
+                        text-anchor="middle">{title}</text>
                 }
             }
         </g>

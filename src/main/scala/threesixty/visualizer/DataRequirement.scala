@@ -1,9 +1,9 @@
 package threesixty.visualizer
 
-import threesixty.data.{InputDataSkeleton, DataPool}
+import threesixty.data.{InputDataSkeleton}
 import threesixty.data.metadata.Resolution.Resolution
 import threesixty.data.metadata.Scaling.Scaling
-import threesixty.processor.{ProcessingMethodCompanion, ProcessingStrategy, ProcessingStep, ProcessingMethod}
+import threesixty.processor.{ProcessingMethodCompanion, ProcessingStrategy, ProcessingStep}
 
 /**
  * This class contains the input data requirements for a visualization type.

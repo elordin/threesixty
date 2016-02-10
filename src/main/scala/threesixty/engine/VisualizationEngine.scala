@@ -7,7 +7,6 @@ import threesixty.persistence.DatabaseAdapter
 import threesixty.data.{DataPool, UnsafeInputData, InputDataSkeleton}
 import threesixty.data.Data.{Identifier, Timestamp}
 
-import spray.http.HttpResponse
 import spray.json._
 
 import threesixty.data.DataJsonProtocol._
