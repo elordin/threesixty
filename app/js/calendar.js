@@ -94,6 +94,7 @@ function updateDateTitle() {
 $('.day-link').click(function () {
     $('.day-item').removeClass('selected');
     $(this).parent().addClass('selected');
+    $('#success-field').empty();
 
     var dateClicked = $(this).children().first().text();
     if (dateClicked == monday.getDate().toString()) {
@@ -121,6 +122,7 @@ $('#previous-week').click(function () {
     updateCurrentWeekdays();
     updateDayContent();
     updateWeekDiagram();
+    $('#success-field').empty();
 
     return false;
 });
@@ -130,6 +132,7 @@ $('#next-week').click(function () {
     updateCurrentWeekdays();
     updateDayContent();
     updateWeekDiagram();
+    $('#success-field').empty();
 
     return false;
 });
@@ -140,7 +143,7 @@ $('#next-week').click(function () {
 /* ****************** */
 
 $('#refresh').click(function () {
-    var request = makeDataInsertRequest(today);
+    var request = makeDataInsertRequest(newData);
     sendDataInsertRequest(request)
     
     return false;
@@ -222,12 +225,13 @@ function makePieChartVisualization(ids) {
             "ids": ids,
             "width": 400,
             "height": 200,
-            "border": {"top": 20, "bottom": 20, "left": 80, "right": 60},
+            "border": {"top": 20, "bottom": 20, "left": 120, "right": 60},
             "colorScheme": "green",
             "innerRadiusPercent": 0.5,
             "legendPosition": "left",
             "fontFamily": "Calibri",
-            "fontSize": 16
+            "fontSize": 16,
+            "legendHorizontalOffset": 0
         }
     }
 }
@@ -293,7 +297,9 @@ function sendDataInsertRequest(request) {
         data: request,
         dataType: 'html',
         success: function (answer) {
-            $('#message-field').empty().html('<span class="success">Successfully synchronized new data.</span>');
+            updateDayContent();
+            updateWeekDiagram();
+            $('#success-field').empty().html('<span class="success">Successfully synchronized new data.</span>');
         },
         error: function (response) {
             $('#message-field').empty().html('<span class="error">All data has already been synchronized.</span>');
