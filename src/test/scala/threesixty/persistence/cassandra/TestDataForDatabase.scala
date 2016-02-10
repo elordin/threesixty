@@ -96,7 +96,7 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
     describe("generating test data for the presentation day") {
         it ("should just create a sample data set for one day, that can be loaded by the app") {
 
-            val date = new DateTime(2015, 12, 22, 1, 1)
+            val date = new DateTime(2015, 12, 21, 1, 1)
             val inputData = generator.generateStepsForDay(date,"23551219-404e-42a7-bc95-95accb8affe5")
 
             println(inputDataToJson(inputData))

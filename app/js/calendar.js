@@ -207,13 +207,16 @@ function makeBarChartVisualization(ids) {
             "ids": ids,
             "width": 512,
             "height": 256,
-            "border": {"top": 10, "bottom": 10, "left": 70, "right": 20},
+            "border": {"top": 10, "bottom": 40, "left": 70, "right": 20},
             "yMax": 900,
             "yUnit": 300,
             "xUnit": "",
             "colorScheme": "green",
             "fontFamily": "Calibri",
-            "fontSize": 1
+            "fontSize": 1,
+            "title": "Steps per hour",
+            "titleVerticalOffset": -230,
+            "titleFontSize": 23
         }
     }
 }
@@ -225,13 +228,16 @@ function makePieChartVisualization(ids) {
             "ids": ids,
             "width": 400,
             "height": 200,
-            "border": {"top": 20, "bottom": 20, "left": 120, "right": 60},
+            "border": {"top": 15, "bottom": 35, "left": 100, "right": 60},
             "colorScheme": "green",
             "innerRadiusPercent": 0.5,
             "legendPosition": "left",
             "fontFamily": "Calibri",
             "fontSize": 16,
-            "legendHorizontalOffset": 0
+            "legendHorizontalOffset": 0,
+            "title": "Steps per day",
+            "titleVerticalOffset": -180,
+            "titleFontSize": 20
         }
     }
 }
