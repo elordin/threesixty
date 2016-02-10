@@ -276,4 +276,6 @@ case class ScatterChartConfig(
         ScatterChartConfig.ScatterChart(this, pool.getDatasets(ids: _*): _*)
     }
 
+    override def toString(): String = f"$ids $height $width ${_border} ${_colorScheme} ${_title} ${_xAxis} ${_yAxis} ${_radius}"
+
 }

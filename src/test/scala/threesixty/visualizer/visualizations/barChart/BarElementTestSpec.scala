@@ -17,21 +17,21 @@ class BarElementTestSpec extends FunSpec {
             valueLabelSize = 10)
 
         it("should calculate the correct path") {
-            val expectedPath = "M 5.0 0 L 5.0 50.0 L 15.0 50.0 L 15.0 0 L 5.0 0"
+            val expectedPath = "M 5.0 0 L 5.0 -50.0 L 15.0 -50.0 L 15.0 0 L 5.0 0"
             assertResult(expectedPath) {
                 barElement.calculateBarPath
             }
         }
 
         it("should calculate the correct value anchor point") {
-            val expectedPoint = (10.0, 65.0)
+            val expectedPoint = (10.0, -60.0)
             assertResult(expectedPoint) {
                 barElement.calculateValueAnchorPoint
             }
         }
 
         it("should calculate the correct description anchor point") {
-            val expectedPoint = (10, - 10)
+            val expectedPoint = (10, 17)
             assertResult(expectedPoint) {
                 barElement.calculateDescriptionAnchorPoint
             }
@@ -50,21 +50,21 @@ class BarElementTestSpec extends FunSpec {
             valueLabelSize = 1)
 
         it("should calculate the correct path") {
-            val expectedPath = "M 5.0 0 L 5.0 -50.0 L 15.0 -50.0 L 15.0 0 L 5.0 0"
+            val expectedPath = "M 5.0 0 L 5.0 50.0 L 15.0 50.0 L 15.0 0 L 5.0 0"
             assertResult(expectedPath) {
                 barElement.calculateBarPath
             }
         }
 
         it("should calculate the correct value anchor point") {
-            val expectedPoint = (10, -60)
+            val expectedPoint = (10, 56)
             assertResult(expectedPoint) {
                 barElement.calculateValueAnchorPoint
             }
         }
 
         it("should calculate the correct description anchor point") {
-            val expectedPoint = (10, 15)
+            val expectedPoint = (10, -10)
             assertResult(expectedPoint) {
                 barElement.calculateDescriptionAnchorPoint
             }

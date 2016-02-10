@@ -96,9 +96,9 @@ object PieChartConfig extends VisualizationCompanion {
         */
 
         val radius = config._radius.getOrElse(calculateRadius)
-        val innerRadiusPercent = config._innerRadiusPercent.getOrElse(0.0)
+        val innerRadiusPercent = config.innerRadiusPercent
         val innerRadius = radius * innerRadiusPercent
-        val valueLabelRadiusPercent = config._valueLabelRadiusPercent.getOrElse(1.1)
+        val valueLabelRadiusPercent = config.valueLabelRadiusPercent
         val labelRadius = radius * valueLabelRadiusPercent
 
         require(radius > 0, "Value for radius must be greater than 0.")
@@ -373,6 +373,16 @@ case class PieChartConfig(
      * @return true iff a label should be shown for each segment
      */
     def showSegmentLabels: Boolean = _showSegmentLabels.getOrElse(true)
+
+    /**
+     * @return the percentage of the value label radius
+     */
+    def valueLabelRadiusPercent: Double = _valueLabelRadiusPercent.getOrElse(1.1)
+
+    /**
+     * @return the percentage of the inner radius
+     */
+    def innerRadiusPercent: Double = _innerRadiusPercent.getOrElse(0.0)
 
     /**
      * @return the font size of segment labels

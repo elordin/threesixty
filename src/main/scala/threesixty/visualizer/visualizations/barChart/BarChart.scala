@@ -85,6 +85,13 @@ object BarChartConfig extends VisualizationCompanion {
     case class BarChart(config: BarChartConfig, data: ProcessedData*) extends Visualization(data: _*) {
 
         val displayData = data.headOption.getOrElse(throw new IllegalArgumentException("There are no data to display."))
+        /*
+        val displayData = new ProcessedData("aggregatedData", List(
+            new TaggedDataPoint(new Timestamp(0), new DoubleValue(2), Set(new AggregationTag("Wert 1"))),
+            new TaggedDataPoint(new Timestamp(0), new DoubleValue(10), Set(new AggregationTag("Wert 2"))),
+            new TaggedDataPoint(new Timestamp(0), new DoubleValue(50), Set(new AggregationTag("Wert 3"))),
+            new TaggedDataPoint(new Timestamp(0), new DoubleValue(20), Set(new AggregationTag("Wert 4")))))
+        */
 
         // TODO Performance optimization, get both in one run
         val dataMinMaxY: (Double, Double) =
@@ -97,10 +104,11 @@ object BarChartConfig extends VisualizationCompanion {
         val _yMax = config._yAxis.map(_.max).getOrElse(None)
         val _yUnit = config._yAxis.map(_.unit).getOrElse(None)
 
+        // baseline of a bar chart should be 0
         val yScale = _yUnit.map(
-            ValueScale(_yMin.getOrElse(dataMinY),
+            ValueScale(_yMin.getOrElse(math.min(0, dataMinY)),
                 _yMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
-            ValueScale(_yMin.getOrElse(dataMinY),
+            ValueScale(_yMin.getOrElse(math.min(0, dataMinY)),
                 _yMax.getOrElse(dataMaxY), 0, config.chartHeight)
         }
 
