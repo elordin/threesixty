@@ -61,8 +61,6 @@ object Segment {
  * @param segmentLabelLineColor the color of the line connecting the segment with the description label
  * @param value the shown value
  * @param fontSize the font size of labels
- * @param fontFamily the font family
- * @param fontWeight the font weight
  * @param color the color of the bar
  *
  * @author Thomas Engel
@@ -80,8 +78,6 @@ case class Segment(
     val segmentLabelLineColor: String = "#000000",
     val value: String,
     val fontSize: Int = 12,
-    val fontFamily: String = "Roboto, Segoe UI",
-    val fontWeight: Int = 100,
     val color: RGBColor = RGBColor.TRANSPARENT
   ) {
 
@@ -103,7 +99,6 @@ case class Segment(
                 <text class="value"
                       x={(tlpx + calculateValueLabelAnchorDirection * 5).toString}
                       y={tlpy.toString}
-                      font-family={fontFamily}
                       font-size={fontSize.toString}
                       text-anchor={calculateValueLabelAnchor}>{value}</text>
                 }

@@ -6,7 +6,7 @@ import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
-import threesixty.visualizer.util.LegendPositionType.LegendPosition
+import threesixty.visualizer.util.param.{PositionType, OptTitleParam, OptLegendParam, OptBorder}
 import threesixty.visualizer.visualizations.Segment
 import threesixty.visualizer.util._
 import ColorScheme.ColorSchemeJsonFormat
@@ -36,16 +36,10 @@ object PieChartConfig extends VisualizationCompanion {
                 "    width:                     Int                    - Width of the diagram in px\n" +
                 "    border:                    Border      (optional) - Border (top, bottom, left, right) in px\n" +
                 "    colorScheme:               String      (optional) - The color scheme\n" +
-                "    title:                     String      (optional) - Diagram title\n" +
-                "    titleVerticalOffset:       Int         (optional) - The vertical offset of the title\n" +
-                "    titleFontSize:             Int         (optional) - The font size of the title\n" +
-                "    fontSize:                  Int         (optional) - The font size\n" +
-                "    fontFamily:                String      (optional) - The font family\n" +
-                "    legendPosition:            String      (optional) - The legend position\n" +
-                "    legendHorizontalOffset:    Int         (optional) - The horizontal offset of the legend\n" +
-                "    legendVerticalOffset:      Int         (optional) - The vertical offset of the legend\n" +
-                "    legendSymbolWidth:         Int         (optional) - The width of the legend symbol\n" +
+                "    title:                     Title       (optional) - Diagram title (title, position, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
+                "    legend:                    Legend      (optional) - The legend (position, verticalOffset, horzontalOffset, symbolWidth, size, fontFamily)\n" +
                 "    showSegmentLabels:         Boolean     (optional) - If labels for a segment should be shown\n" +
+                "    segmentLabelSize:          Int         (optional) - The font size of the segment labels\n" +
                 "    valueLabelRadiusPercent:   Double      (optional) - The radius to place the value label in percent\n" +
                 "    segmentLabelLineColor:     String      (optional) - The color of the line connecting the segment with the label\n" +
                 "    showValues:                Boolean     (optional) - If values should be shown\n" +
@@ -69,11 +63,10 @@ object PieChartConfig extends VisualizationCompanion {
             "ids",
             "height", "width",
             "border",
-            "colorScheme",
-            "title", "titleVerticalOffset", "titleFontSize",
-            "fontSize", "fontFamily",
-            "legendPosition", "legendHorizontalOffset", "legendVerticalOffset", "legendSymbolWidth",
-            "showSegmentLabels", "valueLabelRadiusPercent", "segmentLabelLineColor", "showValues",
+            "colorScheme", "title",
+            "legend",
+            "showSegmentLabels", "segmentLabelSize",
+            "valueLabelRadiusPercent", "segmentLabelLineColor", "showValues",
             "angleStart", "angleEnd", "radius", "innerRadiusPercent")
         jsonString.parseJson.convertTo[PieChartConfig]
     }
@@ -275,8 +268,7 @@ object PieChartConfig extends VisualizationCompanion {
                     valueRadius = labelRadius,
                     segmentLabelLineColor = config.segmentLabelLineColor,
                     value = value,
-                    fontSize = config.fontSize,
-                    fontFamily = config.fontFamily,
+                    fontSize = config.segmentLabelSize,
                     color = color)
 
                 result = segment :: result
@@ -287,8 +279,9 @@ object PieChartConfig extends VisualizationCompanion {
 
         def toSVG: Elem = {
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+            val (xtitle, ytitle) = config.getTitleCoordinates
             val segments = calculateSegments
-            val showLegend = config.legendPosition.isDefined
+            val showLegend = config.legend.position.isDefined
 
 
             var svg = (<g class="segments"
@@ -298,11 +291,12 @@ object PieChartConfig extends VisualizationCompanion {
                 }
             </g>: SVGXML)
                 .withTitle(
-                    config.title,
-                    config.width / 2,
-                    config.border.top - config.titleVerticalOffset,
-                    config.titleFontSize,
-                    config.fontFamily)
+                    config.title.title,
+                    xtitle,
+                    ytitle,
+                    config.title.size,
+                    config.title.fontFamily,
+                    config.title.alignment)
 
             if(showLegend) {
                 val (xlegend, ylegend) = config.getLegendCoordinates
@@ -311,10 +305,10 @@ object PieChartConfig extends VisualizationCompanion {
                 svg = svg.withLegend(Legend(
                     xlegend,
                     ylegend,
-                    config.legendSymbolWidth,
+                    config.legend.symbolWidth,
                     legendLabels,
-                    config.fontSize,
-                    config.fontFamily))
+                    config.legend.size,
+                    config.legend.fontFamily))
             }
 
             svg.withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
@@ -332,14 +326,7 @@ object PieChartConfig extends VisualizationCompanion {
  * @param _border the border
  * @param _colorScheme the color scheme
  * @param _title the title
- * @param _titleVerticalOffset the vertical offset of the title
- * @param _titleFontSize the font size of the title
- * @param _fontSize the font size of labels
- * @param _fontFamily the font family of labels
- * @param _legendPosition the legend position
- * @param _legendHorizontalOffset the horizontal offset of the legend
- * @param _legendVerticalOffset the vertical offset of the legend
- * @param _legendSymbolWidth the width of the legend symbols
+ * @param _legend the legend
  * @param _showSegmentLabels if a label should be shown to a segment
  * @param _valueLabelRadiusPercent the radius to place the value label in percent
  * @param _segmentLabelLineColor the color of the line connecting the label for a segment with the segment
@@ -354,25 +341,19 @@ case class PieChartConfig(
     val height:                     Int,
     val width:                      Int,
     val _border:                    Option[OptBorder]     = None,
-    val _colorScheme:               Option[ColorScheme] = None,
-    val _title:                     Option[String]  = None,
-    val _titleVerticalOffset:       Option[Int]     = None,
-    val _titleFontSize:             Option[Int]     = None,
-    val _fontSize:                  Option[Int]     = None,
-    val _fontFamily:                Option[String]  = None,
-    val _legendPosition:            Option[String]  = None,
-    val _legendHorizontalOffset:    Option[Int]     = None,
-    val _legendVerticalOffset:      Option[Int]     = None,
-    val _legendSymbolWidth:         Option[Int]     = None,
+    val _colorScheme:               Option[ColorScheme]     = None,
+    val _title:                     Option[OptTitleParam]   = None,
+    val _legend:                    Option[OptLegendParam]  = None,
 
-    val _showSegmentLabels:         Option[Boolean] = None,
-    val _valueLabelRadiusPercent:   Option[Double]  = None,
-    val _segmentLabelLineColor:     Option[String]  = None,
-    val _showValues:                Option[Boolean] = None,
-    val _angleStart:                Option[Int]     = None,
-    val _angleEnd:                  Option[Int]     = None,
-    val _radius:                    Option[Double]  = None,
-    val _innerRadiusPercent:        Option[Double]  = None
+    val _showSegmentLabels:         Option[Boolean]         = None,
+    val _segmentLabelSize:          Option[Int]             = None,
+    val _valueLabelRadiusPercent:   Option[Double]          = None,
+    val _segmentLabelLineColor:     Option[String]          = None,
+    val _showValues:                Option[Boolean]         = None,
+    val _angleStart:                Option[Int]             = None,
+    val _angleEnd:                  Option[Int]             = None,
+    val _radius:                    Option[Double]          = None,
+    val _innerRadiusPercent:        Option[Double]          = None
 ) extends VisualizationConfig(
     ids = ids,
     height = height,
@@ -380,28 +361,23 @@ case class PieChartConfig(
     _border = _border,
     _colorScheme = _colorScheme,
     _title = _title,
-    _titleVerticalOffset = _titleVerticalOffset,
-    _titleFontSize = _titleFontSize,
-    _fontSize = _fontSize,
-    _fontFamily = _fontFamily,
-    _legendPosition = _legendPosition,
-    _legendHorizontalOffset = _legendHorizontalOffset,
-    _legendVerticalOffset = _legendVerticalOffset,
-    _legendSymbolWidth = _legendSymbolWidth) {
+    _legend = _legend) {
 
     override val BORDER_TOP_DEFAULT: Int = 100
 
     override val BORDER_RIGHT_DEFAULT: Int = 150
 
-    /**
-     * @return the default legend position
-     */
-    override def legendPositionDefault: Option[LegendPositionType.LegendPosition] = Some(LegendPositionType.RIGHT)
+    override val LEGEND_POSITION_DEFAULT: Option[PositionType.Position] = Some(PositionType.RIGHT)
 
     /**
      * @return true iff a label should be shown for each segment
      */
     def showSegmentLabels: Boolean = _showSegmentLabels.getOrElse(true)
+
+    /**
+     * @return the font size of segment labels
+     */
+    def segmentLabelSize: Int = _segmentLabelSize.getOrElse(12)
 
     /**
      * @return the color string for the line connecting the segment with the label

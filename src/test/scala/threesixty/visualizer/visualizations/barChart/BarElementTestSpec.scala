@@ -5,7 +5,16 @@ import threesixty.visualizer.visualizations.BarElement
 
 class BarElementTestSpec extends FunSpec {
     describe("A created BarElement with positive height") {
-        val barElement = new BarElement("id", 5, 10, 50, "blah", Set.empty, true, "val", 10)
+        val barElement = new BarElement(
+            identifier = "id",
+            xLeft = 5,
+            width = 10,
+            height = 50,
+            description = "blah",
+            classes = Set.empty,
+            showValues = true,
+            value = "val",
+            valueLabelSize = 10)
 
         it("should calculate the correct path") {
             val expectedPath = "M 5.0 0 L 5.0 50.0 L 15.0 50.0 L 15.0 0 L 5.0 0"
@@ -30,7 +39,15 @@ class BarElementTestSpec extends FunSpec {
     }
 
     describe("A created BarElement with negative height") {
-        val barElement = new BarElement("id", 5, 10, -50, "blah", Set.empty, true, "val", 10)
+        val barElement = new BarElement(identifier = "id",
+            xLeft = 5,
+            width = 10,
+            height = -50,
+            description = "blah",
+            classes = Set.empty,
+            showValues = true,
+            value = "val",
+            valueLabelSize = 1)
 
         it("should calculate the correct path") {
             val expectedPath = "M 5.0 0 L 5.0 -50.0 L 15.0 -50.0 L 15.0 0 L 5.0 0"

@@ -14,7 +14,7 @@ import threesixty.data.metadata._
 import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.processor.{ProcessingStrategy, Processor, ProcessingStep}
-import threesixty.visualizer.util.{OptBorder, Border}
+import threesixty.visualizer.util.param.OptBorder
 import threesixty.visualizer.visualizations.{scatterChart, barChart, pieChart, lineChart}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
@@ -58,27 +58,28 @@ class VisDeductionTestSpec extends  FunSpec {
         ids = Seq("abc", "123"),
         height = 1024,
         width = 768,
-        _xMin = Some(new Timestamp(100000)),
+        /*_xMin = Some(new Timestamp(100000)),
         _xMax = Some(new Timestamp(200000)),
         _yMin = Some(10.0),
         _yMax = Some(123.456),
         _xLabel = Some("X-Axis"),
         _yLabel = Some("Y-Axis"),
-        _title = Some("Title"),
-        _border = Some(OptBorder(Some(100),Some(50),Some(50),Some(50))),
         _minPxBetweenXGridPoints = Some(50),
+        _title = Some("Title"),*/
+        _border = Some(OptBorder(Some(100),Some(50),Some(50),Some(50)))
+        /*_minPxBetweenXGridPoints = Some(50),
         _minPxBetweenYGridPoints = Some(50),
         _xUnit = Some("seconds30"),
-        _yUnit = Some(10.0)
+        _yUnit = Some(10.0)*/
     )
 
     val pieChart = new PieChartConfig(
         ids = Seq("a"),
         height = 1024,
         width = 768,
-        _title = Some("Title"),
         _border = Some(OptBorder(Some(100),Some(50),Some(50),Some(50))),
-        _titleVerticalOffset = Some(50),
+        /*_title = Some("Title"),*/
+        /*_titleVerticalOffset = Some(50),*/
         _showValues = Some(true)
     )
 

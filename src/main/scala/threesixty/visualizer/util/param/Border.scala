@@ -1,5 +1,4 @@
-package threesixty.visualizer.util
-
+package threesixty.visualizer.util.param
 
 /**
  * Class to provide a border.
