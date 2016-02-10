@@ -8,6 +8,7 @@ import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
 import threesixty.visualizer.util._
 import ColorScheme.ColorSchemeJsonFormat
+import threesixty.visualizer.util.param._
 
 import scala.xml.Elem
 import scala.annotation.tailrec
@@ -35,21 +36,9 @@ object ScatterChartConfig extends VisualizationCompanion {
                 "    width:                     Int                    - Width of the diagram in px\n" +
                 "    border:                    Border      (optional) - Border (top, bottom, left, right) in px\n" +
                 "    colorScheme:               String      (optional) - The color scheme\n" +
-                "    title:                     String      (optional) - Diagram title\n" +
-                "    titleVerticalOffset:       Int         (optional) - The vertical offset of the title\n" +
-                "    titleFontSize:             Int         (optional) - The font size of the title\n" +
-                "    xlabel:                    String      (optional) - The label for the x-axis\n" +
-                "    ylabel:                    String      (optional) - The label for the y-axis\n" +
-                "    minDistanceX:              Int         (optional) - The minimum number of px between two grid points on the x-axis\n" +
-                "    minDistanceY:              Int         (optional) - The minimum number of px between two grid points on the y-axis\n" +
-                "    fontSize:                  Int         (optional) - The font size\n" +
-                "    fontFamily:                String      (optional) - The font family\n" +
-                "    xMin:                      Double      (optional) - The minimum value displayed on the x-axis\n" +
-                "    xMax:                      Double      (optional) - The maximum value displayed on the x-axis\n" +
-                "    yMin:                      Double      (optional) - The minimum value displayed on the y-axis\n" +
-                "    yMax:                      Double      (optional) - The maximum value displayed on the y-axis\n" +
-                "    xUnit:                     Double      (optional) - The unit on the x-axis\n" +
-                "    yUnit:                     Double      (optional) - The unit on the y-axis\n" +
+                "    title:                     Title       (optional) - Diagram title (title, position, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
+                "    xAxis:                     ValueAxis   (optional) - The x-axis (label, labelSize, labelFontFamily, min, max, minDistance, unit, unitLabelSize, unitLabelFontFamily, showGrid, showLabels, arrowSize, arrowFilled)\n" +
+                "    yAxis:                     ValueAxis   (optional) - The y-axis (label, labelSize, labelFontFamily, min, max, minDistance, unit, unitLabelSize, unitLabelFontFamily, showGrid, showLabels, arrowSize, arrowFilled)\n" +
                 "    radius:                    Int         (optional) - The radius of the displayed points\n"
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
@@ -66,12 +55,8 @@ object ScatterChartConfig extends VisualizationCompanion {
             "ids",
             "height", "width",
             "border",
-            "colorScheme",
-            "title", "titleVerticalOffset", "titleFontSize",
-            "xlabel", "ylabel", "minDistanceX", "minDistanceY",
-            "fontSize", "fontFamily",
-            "xMin", "xMax", "yMin", "yMax",
-            "xUnit", "yUnit",
+            "colorScheme", "title",
+            "xAxis", "yAxis",
             "radius")
         jsonString.parseJson.convertTo[ScatterChartConfig]
     }
@@ -112,17 +97,25 @@ object ScatterChartConfig extends VisualizationCompanion {
         val dataMaxY: Double = dataMinMaxY._2
         val chartOrigin = (config.border.left, config.height - config.border.bottom)
 
-        val xScale = config._xUnit.map(
-                ValueScale(config._xMin.getOrElse(dataMinX),
-                    config._xMax.getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
-                    ValueScale(config._xMin.getOrElse(dataMinX),
-                        config._xMax.getOrElse(dataMaxX), 0, config.chartWidth)
+        val _xMin = config._xAxis.map(_.min).getOrElse(None)
+        val _xMax = config._xAxis.map(_.max).getOrElse(None)
+        val _yMin = config._yAxis.map(_.min).getOrElse(None)
+        val _yMax = config._yAxis.map(_.max).getOrElse(None)
+
+        val _xUnit = config._xAxis.map(_.unit).getOrElse(None)
+        val _yUnit = config._yAxis.map(_.unit).getOrElse(None)
+
+        val xScale = _xUnit.map(
+                ValueScale(_xMin.getOrElse(dataMinX),
+                    _xMax.getOrElse(dataMaxX), 0, config.chartWidth, _)).getOrElse {
+                    ValueScale(_xMin.getOrElse(dataMinX),
+                        _xMax.getOrElse(dataMaxX), 0, config.chartWidth)
             }
-        val yScale = config._yUnit.map(
-                ValueScale(config._yMin.getOrElse(dataMinY),
-                    config._yMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
-                    ValueScale(config._yMin.getOrElse(dataMinY),
-                        config._yMax.getOrElse(dataMaxY), 0, config.chartHeight)
+        val yScale = _yUnit.map(
+                ValueScale(_yMin.getOrElse(dataMinY),
+                    _yMax.getOrElse(dataMaxY), 0, config.chartHeight, _)).getOrElse {
+                    ValueScale(_yMin.getOrElse(dataMinY),
+                        _yMax.getOrElse(dataMaxY), 0, config.chartHeight)
             }
 
         val xAxisLabels: Seq[(String, Int)] = {
@@ -162,6 +155,7 @@ object ScatterChartConfig extends VisualizationCompanion {
             }
             */
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+            val (xtitle, ytitle) = config.getTitleCoordinates
 
             /*
             val xdata = data.head
@@ -173,7 +167,6 @@ object ScatterChartConfig extends VisualizationCompanion {
                 { for { dataPoints <- joinedDatasets } yield  {
                     val color = DefaultColorScheme.next
                     for { (dp1, dp2) <- dataPoints } yield
-                        //TODO Adapt class when joined datapoints are used
                         <circle
                             class={(dp1.tags ++ dp2.tags).map(_.toString.replace(' ', '_')) mkString " " }
                             cx={ (chartOrigin._1 + xScale(dp1.value.value)).toString }
@@ -187,27 +180,40 @@ object ScatterChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    xAxisLabels.map(_._2),
-                    yAxisLabels.map(_._2)
+                    xPositions = if(config.xAxis.showGrid) xAxisLabels.map(_._2) else Seq(),
+                    yPositions = if(config.yAxis.showGrid) yAxisLabels.map(_._2) else Seq()
                     ))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
                     width = config.chartWidth,
-                    title = config.xLabel,
-                    labels = xAxisLabels))
+                    title = config.xAxis.label,
+                    titleSize = config.xAxis.labelSize,
+                    titleFontFamily = config.xAxis.labelFontFamily,
+                    labels = if(config.xAxis.showLabels) xAxisLabels else Seq(),
+                    labelSize = config.xAxis.unitLabelSize,
+                    labelFontFamily = config.xAxis.unitLabelFontFamily,
+                    arrowSize = config.xAxis.arrowSize,
+                    arrowFilled = config.xAxis.arrowFilled))
                 .withAxis(VerticalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
                     height = config.chartHeight,
-                    title = config.yLabel,
-                    labels = yAxisLabels))
+                    title = config.yAxis.label,
+                    titleSize = config.yAxis.labelSize,
+                    titleFontFamily = config.yAxis.labelFontFamily,
+                    labels = if(config.yAxis.showLabels) yAxisLabels else Seq(),
+                    labelSize = config.yAxis.labelSize,
+                    labelFontFamily = config.yAxis.labelFontFamily,
+                    arrowSize = config.yAxis.arrowSize,
+                    arrowFilled = config.yAxis.arrowFilled))
                 .withTitle(
-                    config.title,
-                    config.width / 2,
-                    config.border.top - config.titleVerticalOffset,
-                    config.titleFontSize,
-                    config.fontFamily)
+                    config.title.title,
+                    xtitle,
+                    ytitle,
+                    config.title.size,
+                    config.title.fontFamily,
+                    config.title.alignment)
                 .withSVGHeader(viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight)
         }
     }
@@ -223,20 +229,8 @@ object ScatterChartConfig extends VisualizationCompanion {
  * @param _border the border
  * @param _colorScheme the color scheme
  * @param _title the title
- * @param _titleVerticalOffset the vertical offset of the title
- * @param _titleFontSize the font size of the title
- * @param _xLabel the x-axis label
- * @param _yLabel the y-axis label
- * @param _minPxBetweenXGridPoints the minimum distance in px between two grid points on the x-axis
- * @param _minPxBetweenYGridPoints the minimum distance in px between two grid points on the y-axis
- * @param _fontSize the font size of labels
- * @param _fontFamily the font family of labels
- * @param _xMin the minimum value displayed on the x-coordinate
- * @param _xMax the maximum value displayed on the x-coordinate
- * @param _yMin the minimum value displayed on the y-coordinate
- * @param _yMax the maximum value displayed on the y-coordinate
- * @param _xUnit the unit of the x-axis
- * @param _yUnit the unit of the y-axis
+ * @param _xAxis the x-axis
+ * @param _yAxis the y-axis
  * @param _radius the radius of the points
  *
  * @author Thomas {Engel, Weber}
@@ -245,25 +239,13 @@ case class ScatterChartConfig(
     val ids:                        Seq[Identifier],
     val height:                     Int,
     val width:                      Int,
-    val _border:                    Option[Border]      = None,
-    val _colorScheme:               Option[ColorScheme] = None,
-    val _title:                     Option[String]      = None,
-    val _titleVerticalOffset:       Option[Int]         = None,
-    val _titleFontSize:             Option[Int]         = None,
-    val _xLabel:                    Option[String]      = None,
-    val _yLabel:                    Option[String]      = None,
-    val _minPxBetweenXGridPoints:   Option[Int]         = None,
-    val _minPxBetweenYGridPoints:   Option[Int]         = None,
-    val _fontSize:                  Option[Int]         = None,
-    val _fontFamily:                Option[String]      = None,
+    val _border:                    Option[OptBorder]           = None,
+    val _colorScheme:               Option[ColorScheme]         = None,
+    val _title:                     Option[OptTitleParam]       = None,
 
-    val _xMin:                      Option[Double]      = None,
-    val _xMax:                      Option[Double]      = None,
-    val _yMin:                      Option[Double]      = None,
-    val _yMax:                      Option[Double]      = None,
-    val _xUnit:                     Option[Double]      = None,
-    val _yUnit:                     Option[Double]      = None,
-    val _radius:                    Option[Int]         = None
+    val _xAxis:                     Option[OptValueAxisParam]   = None,
+    val _yAxis:                     Option[OptValueAxisParam]   = None,
+    val _radius:                    Option[Int]                 = None
 ) extends VisualizationConfig(
     ids = ids,
     height = height,
@@ -271,14 +253,9 @@ case class ScatterChartConfig(
     _border = _border,
     _colorScheme = _colorScheme,
     _title = _title,
-    _titleVerticalOffset = _titleVerticalOffset,
-    _titleFontSize = _titleFontSize,
-    _xLabel = _xLabel,
-    _yLabel = _yLabel,
-    _minPxBetweenXGridPoints = _minPxBetweenXGridPoints,
-    _minPxBetweenYGridPoints = _minPxBetweenYGridPoints,
-    _fontSize = _fontSize,
-    _fontFamily = _fontFamily) {
+    _xAxis = _xAxis,
+    _yAxis = _yAxis
+) {
 
     /**
       * @return the radius of the points
@@ -298,5 +275,7 @@ case class ScatterChartConfig(
     def apply(pool: DataPool): ScatterChartConfig.ScatterChart =  {
         ScatterChartConfig.ScatterChart(this, pool.getDatasets(ids: _*): _*)
     }
+
+    override def toString(): String = f"$ids $height $width ${_border} ${_colorScheme} ${_title} ${_xAxis} ${_yAxis} ${_radius}"
 
 }

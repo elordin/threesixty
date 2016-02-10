@@ -61,8 +61,6 @@ object Segment {
  * @param segmentLabelLineColor the color of the line connecting the segment with the description label
  * @param value the shown value
  * @param fontSize the font size of labels
- * @param fontFamily the font family
- * @param fontWeight the font weight
  * @param color the color of the bar
  *
  * @author Thomas Engel
@@ -80,8 +78,6 @@ case class Segment(
     val segmentLabelLineColor: String = "#000000",
     val value: String,
     val fontSize: Int = 12,
-    val fontFamily: String = "Roboto, Segoe UI",
-    val fontWeight: Int = 100,
     val color: RGBColor = RGBColor.TRANSPARENT
   ) {
 
@@ -103,7 +99,6 @@ case class Segment(
                 <text class="value"
                       x={(tlpx + calculateValueLabelAnchorDirection * 5).toString}
                       y={tlpy.toString}
-                      font-family={fontFamily}
                       font-size={fontSize.toString}
                       text-anchor={calculateValueLabelAnchor}>{value}</text>
                 }
@@ -123,18 +118,20 @@ case class Segment(
       * @return the path (<path d=.. />) for the segment
       */
     def calculatePath: String = {
-        val largeArcFlag = getLargeArcFlag
-
         val p1 = calculateInnerStartPoint
         val p2 = calculateOuterStartPoint
-        val p3 = calculateOuterEndPoint
-        val p4 = calculateInnerEndPoint
+        val p3 = calculateOuterMiddlePoint
+        val p4 = calculateOuterEndPoint
+        val p5 = calculateInnerEndPoint
+        val p6 = calculateInnerMiddlePoint
 
         "M " + p1._1 + " " + p1._2 +
         " L " + p2._1 + " " + p2._2 + " " +
-        " A " + radius + " " + radius + " 0 " + largeArcFlag + " " + getSweepFlag + " " + p3._1 + " " + p3._2 +
-        " L " + p4._1 + " " + p4._2 +
-        " A " + innerRadius + " " + innerRadius + " 0 " + largeArcFlag + " " + getInnerSweepFlat + " " + p1._1 + " " + p1._2
+        " A " + radius + " " + radius + " 0 0 " + getSweepFlag + " " + p3._1 + " " + p3._2 +
+        " A " + radius + " " + radius + " 0 0 " + getSweepFlag + " " + p4._1 + " " + p4._2 +
+        " L " + p5._1 + " " + p5._2 +
+        " A " + innerRadius + " " + innerRadius + " 0 0 " + getInnerSweepFlat + " " + p6._1 + " " + p6._2 +
+        " A " + innerRadius + " " + innerRadius + " 0 0 " + getInnerSweepFlat + " " + p1._1 + " " + p1._2
     }
 
     /**
@@ -183,6 +180,13 @@ case class Segment(
     }
 
     /**
+     * @return the point on the inner segment with the middle angle
+     */
+    def calculateInnerMiddlePoint: (Double, Double) = {
+        Segment.calculatePoint(calculateAvgAngle, innerRadius)
+    }
+
+    /**
       * @return the point on the outer segment with the middle angle
       */
     def calculateOuterMiddlePoint: (Double, Double) = {
@@ -209,13 +213,6 @@ case class Segment(
      */
     def calculateValueLabelAnchorDirection: Double = {
         math.signum(Segment.calculateXCoordinate(calculateAvgAngle, 1))
-    }
-
-    /**
-      * @return the large arc flag for the segment
-      */
-    def getLargeArcFlag: Int = {
-        if(math.abs(calculateDeltaAngles) > 180) 1 else 0
     }
 
     /**

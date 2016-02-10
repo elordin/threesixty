@@ -2,7 +2,8 @@ package threesixty.visualizer.visualizations
 
 import org.scalatest.FunSpec
 import threesixty.data.Data.Timestamp
-import threesixty.visualizer.util.{GreenColorScheme, Border}
+import threesixty.visualizer.util.GreenColorScheme
+import threesixty.visualizer.util.param.{OptValueAxisParam, OptTimeAxisParam, OptTitleParam, OptBorder}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
@@ -17,21 +18,9 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "width": 768,
                 "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
                 "colorScheme": "green",
-                "title": "Title",
-                "titleVerticalOffset": 50,
-                "titleFontSize": 18,
-                "xlabel": "X-Label",
-                "ylabel": "Y-Label",
-                "minDistanceX": 30,
-                "minDistanceY": 40,
-                "fontSize": 10,
-                "fontFamily": "FontFamily",
-                "xMin": -20.4,
-                "xMax": 30,
-                "yMin": -10,
-                "yMax": 50.5,
-                "xUnit": 25,
-                "yUnit": 20.5,
+                "title": {"title": "Title", "position": "bottom", "verticalOffset": 15, "horizontalOffset": 25, "size": 22, "fontFamily": "fontFamily", "alignment": "end"},
+                "xAxis": {"label": "X-Label", "labelSize": 10, "labelFontFamily": "fontFamily", "min": -20.4, "max": 30, "minDistance": 30, "unit": 25, "unitLabelSize": 10, "unitLabelFontFamily": "fontFamily", "showGrid": true, "showLabels": false, "arrowSize": 5, "arrowFilled": true},
+                "yAxis": {"label": "Y-Label", "labelSize": 10, "labelFontFamily": "fontFamily", "min": -10, "max": 50.5, "minDistance": 40, "unit": 20.5, "unitLabelSize": 10, "unitLabelFontFamily": "fontFamily", "showGrid": false, "showLabels": true, "arrowSize": 7, "arrowFilled": false},
                 "radius": 4
             }"""
 
@@ -41,23 +30,44 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                _border = Some(Border(200,100,150,25)),
+                _border = Some(OptBorder(Some(200),Some(100),Some(150),Some(25))),
                 _colorScheme = Some(GreenColorScheme),
-                _title = Some("Title"),
-                _titleVerticalOffset = Some(50),
-                _titleFontSize = Some(18),
-                _xLabel = Some("X-Label"),
-                _yLabel = Some("Y-Label"),
-                _minPxBetweenXGridPoints = Some(30),
-                _minPxBetweenYGridPoints = Some(40),
-                _fontSize = Some(10),
-                _fontFamily = Some("FontFamily"),
-                _xMin = Some(-20.4),
-                _xMax = Some(30),
-                _yMin = Some(-10),
-                _yMax = Some(50.5),
-                _xUnit = Some(25),
-                _yUnit = Some(20.5),
+                _title = Some(OptTitleParam(
+                    title = Some("Title"),
+                    position = Some("bottom"),
+                    verticalOffset = Some(15),
+                    horizontalOffset = Some(25),
+                    size = Some(22),
+                    fontFamily = Some("fontFamily"),
+                    alignment = Some("end"))),
+                _xAxis = Some(OptValueAxisParam(
+                    label = Some("X-Label"),
+                    labelSize = Some(10),
+                    labelFontFamily = Some("fontFamily"),
+                    min = Some(-20.4),
+                    max = Some(30),
+                    minPxBetweenGridPoints = Some(30),
+                    unit = Some(25),
+                    unitLabelSize = Some(10),
+                    unitLabelFontFamily = Some("fontFamily"),
+                    showGrid = Some(true),
+                    showLabels = Some(false),
+                    arrowSize = Some(5),
+                    arrowFilled = Some(true))),
+                _yAxis = Some(OptValueAxisParam(
+                    label = Some("Y-Label"),
+                    labelSize = Some(10),
+                    labelFontFamily = Some("fontFamily"),
+                    min = Some(-10),
+                    max = Some(50.5),
+                    minPxBetweenGridPoints = Some(40),
+                    unit = Some(20.5),
+                    unitLabelSize = Some(10),
+                    unitLabelFontFamily = Some("fontFamily"),
+                    showGrid = Some(false),
+                    showLabels = Some(true),
+                    arrowSize = Some(7),
+                    arrowFilled = Some(false))),
                 _radius = Some(4)
             )
             assertResult(expectedResult) {
@@ -73,25 +83,19 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 "width": 768,
                 "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
                 "colorScheme": "green",
-                "xlabel": "X-Label",
-                "minDistanceX": 30,
-                "fontFamily": "FontFamily",
-                "xMax": 30,
-                "yMin": -10,
-                "yUnit": 20.5
+                "title": {"position": "bottom",  "horizontalOffset": 25, "size": 22, "fontFamily": "fontFamily", "alignment": "end"},
+                "xAxis": {"labelSize": 10, "labelFontFamily": "fontFamily", "min": -20.4, "max": 30, "minDistance": 30, "unit": 25, "unitLabelFontFamily": "fontFamily", "showLabels": false, "arrowSize": 5, "arrowFilled": true},
+                "yAxis": {"label": "Y-Label", "labelSize": 10, "labelFontFamily": "fontFamily", "max": 50.5, "minDistance": 40, "unitLabelSize": 10, "unitLabelFontFamily": "fontFamily", "showGrid": false, "showLabels": true, "arrowFilled": false}
             }"""
 
         it("should have the default values where none were given") {
             val convertedConfig = ScatterChartConfig(jsonString)
-            assert(convertedConfig.title == "")
-            assert(convertedConfig.titleVerticalOffset == 20)
-            assert(convertedConfig.titleFontSize == 20)
-            assert(convertedConfig.yLabel == "")
-            assert(convertedConfig.fontSize == 12)
-            assert(convertedConfig.minPxBetweenYGridPoints == 20)
-            assert(convertedConfig._xMin == None)
-            assert(convertedConfig._yMax == None)
-            assert(convertedConfig._xUnit == None)
+            assert(convertedConfig.title.title == "")
+            assert(convertedConfig.title.verticalOffset == 20)
+            assert(convertedConfig.xAxis.label == "")
+            assert(convertedConfig.xAxis.unitLabelSize == 12)
+            assert(convertedConfig.xAxis.showGrid == true)
+            assert(convertedConfig.yAxis.arrowSize == 10)
             assert(convertedConfig.radius == 2)
         }
 
@@ -100,14 +104,36 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                _border = Some(Border(200,100,150,25)),
+                _border = Some(OptBorder(Some(200),Some(100),Some(150),Some(25))),
                 _colorScheme = Some(GreenColorScheme),
-                _xLabel = Some("X-Label"),
-                _minPxBetweenXGridPoints = Some(30),
-                _fontFamily = Some("FontFamily"),
-                _xMax = Some(30),
-                _yMin = Some(-10),
-                _yUnit = Some(20.5)
+                _title = Some(OptTitleParam(
+                    position = Some("bottom"),
+                    horizontalOffset = Some(25),
+                    size = Some(22),
+                    fontFamily = Some("fontFamily"),
+                    alignment = Some("end"))),
+                _xAxis = Some(OptValueAxisParam(
+                    labelSize = Some(10),
+                    labelFontFamily = Some("fontFamily"),
+                    min = Some(-20.4),
+                    max = Some(30),
+                    minPxBetweenGridPoints = Some(30),
+                    unit = Some(25),
+                    unitLabelFontFamily = Some("fontFamily"),
+                    showLabels = Some(false),
+                    arrowSize = Some(5),
+                    arrowFilled = Some(true))),
+                _yAxis = Some(OptValueAxisParam(
+                    label = Some("Y-Label"),
+                    labelSize = Some(10),
+                    labelFontFamily = Some("fontFamily"),
+                    max = Some(50.5),
+                    minPxBetweenGridPoints = Some(40),
+                    unitLabelSize = Some(10),
+                    unitLabelFontFamily = Some("fontFamily"),
+                    showGrid = Some(false),
+                    showLabels = Some(true),
+                    arrowFilled = Some(false)))
             )
             assertResult(expectedResult) {
                 ScatterChartConfig(jsonString)
