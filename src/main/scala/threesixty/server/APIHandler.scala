@@ -1,7 +1,6 @@
 package threesixty.server
 
 import threesixty.persistence.cassandra.CassandraAdapter
-import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.ProcessingMethods.Accumulation.Accumulation
 import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.ProcessingMethods.TimeSelection.TimeSelection
@@ -19,8 +18,6 @@ import spray.can.Http
 import HttpMethods.{GET, POST}
 import MediaTypes.`application/json`
 import HttpHeaders.`Access-Control-Allow-Origin`
-
-import com.typesafe.config.{Config, ConfigFactory, ConfigException}
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
