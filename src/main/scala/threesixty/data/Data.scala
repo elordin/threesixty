@@ -1,5 +1,7 @@
 package threesixty.data
 
+import java.text.SimpleDateFormat
+
 import threesixty.data.tags.{InputOrigin}
 import threesixty.data.metadata.IncompleteInputMetadata
 
@@ -9,6 +11,8 @@ import threesixty.visualizer.util.param._
 
 import scala.concurrent.duration.{Duration, FiniteDuration}
 import spray.json._
+
+import scala.util.{Failure, Success, Try}
 
 
 object Data {
@@ -83,8 +87,22 @@ object DataJsonProtocol extends DefaultJsonProtocol {
 
         def read(v: JsValue) = v match {
             case JsNumber(n) => new Timestamp(n.toLong)
+            case JsString(s) => getTimestamp(s).getOrElse(deserializationError("Timestamp expected"))
             case _ => deserializationError("Timestamp expected")
         }
+    }
+
+    private def getTimestamp(s: String) : Option[Timestamp] = {
+        val formats = List("dd.MM.yyyy HH:mm:ss:SSS", "dd.MM.yyyy HH:mm:ss", "dd.MM.yyyy HH:mm", "dd.MM.yyyy")
+
+        formats.map{
+            (formatString: String) => {
+                Try(new Timestamp(new SimpleDateFormat(formatString).parse(s).getTime)) match {
+                    case Success(t) => Some(t)
+                    case Failure(_) => None
+                }
+            }
+        }.dropWhile { ! _.isDefined }.headOption.getOrElse(None)
     }
 
     implicit val timeframeJsonFormat = jsonFormat(Timeframe.apply, "start", "end")
