@@ -9,11 +9,24 @@ function makeLineChartVisualization(ids, title) {
         "args": {
         "ids": ids,
             "width": 512,
-            "height": 256,
+            "height": 350,
             "border": {"top": 10, "bottom": 50, "left": 70, "right": 20},
-            "title": title,
-            "titleVerticalOffset": -230,
-            "fontFamily": "Calibri",
+            "title": {
+                "title": title,
+                "position": "bottom",
+                "fontFamily": "Calibri",
+            },
+            "xAxis": {
+                "showLabels": false,
+                "arrowSize": 5,
+                "arrowFilled": true,
+                "showGrid": false  
+            },
+            "yAxis": {
+                "arrowSize": 5,
+                "arrowFilled": true,
+                "unitFontFamily": "Calibri"
+            }
         }
     }
 }
@@ -26,15 +39,20 @@ function makeBarChartVisualization(ids, title, yMax, yUnit) {
             "width": 512,
             "height": 256,
             "border": {"top": 10, "bottom": 40, "left": 70, "right": 20},
-            "yMax": yMax,
-            "yUnit": yUnit,
-            "xUnit": "",
+            "yAxis": {
+                "max": yMax,
+                "unit": yUnit
+            },
+            "descriptionLabelSize": 0,
             "colorScheme": "green",
             "fontFamily": "Calibri",
-            "fontSize": 1,
-            "title": title,
-            "titleVerticalOffset": -230,
-            "titleFontSize": 23
+            "title": {
+                "title": title,
+                "position": "bottom",
+                "size": 23,
+                "verticalOffset": 10,
+                "fontFamily": "Calibri"
+            }
         }
     }
 }
@@ -49,13 +67,23 @@ function makePieChartVisualization(ids, legendOffset) {
             "border": {"top": 15, "bottom": 35, "left": 80, "right": 0},
             "colorScheme": "green",
             "innerRadiusPercent": 0.5,
-            "legendPosition": "left",
-            "fontFamily": "Calibri",
-            "fontSize": 16,
-            "legendHorizontalOffset": legendOffset,
-            "title": "Steps per day",
-            "titleVerticalOffset": -210,
-            "titleFontSize": 20
+            
+            
+            "legend": {
+                "position": "left",
+                "fontFamily": "Calibri",
+                "size": 16,
+                "horizontalOffset": legendOffset,
+                "verticalOffset": 50
+            },
+            
+            "title": {
+                "title": "Steps per day",
+                "position": "bottom",
+                "size": 20,
+                "fontFamily": "Calibri",
+                "verticalOffset": 10
+            }
         }
     }
 }
