@@ -114,12 +114,7 @@ case class Accumulation(idMapping: Map[Identifier, Identifier])
     def apply(data: ProcessedData): Set[ProcessedData] = {
 
         /**
-          * Interpolation function.
-          * For each combination of two points it creates the linear
-          * equation paramters m (slope) and b (offset).
-          * It the generates the appropriate number of intermediary points
-          * with the corresponding values and tags and inserts them into
-          * the list of datapoints.
+          * Accumulator, creates out of a List of Datapoints it accumulated function
           *
           * @param list of datapoints
           * @return list of datapoints with interpolated values and Tnterpolation-tags

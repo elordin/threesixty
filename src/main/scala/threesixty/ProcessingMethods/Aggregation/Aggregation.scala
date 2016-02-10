@@ -138,11 +138,16 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
       */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
+        //Splitting second argument as it can contain two information
+        //datasize-1900 will become {datasize, 1900}
+        //minute, etc will remain minute etc
         val paramsplit = param.split("-").map(_.trim)
         if( param == "" ) {
             throw new IllegalArgumentException("Empty Argument not allow in param")
         }
 
+        //Aggregation making "smaller data" and reduces the amount of points
+        //Makes datasize blocks with blocksize aggregated points on each new point
         if( paramsplit(0) == "datasize" || paramsplit(0) == "blocksize" ) {
             if( paramsplit.length != 2) {
                 throw new IllegalArgumentException("Wrong Input, needs to be of format datasize-190")
@@ -170,6 +175,7 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
                     throw new IllegalArgumentException("Not matching argument given like 'datasize' or 'blocksize' BUT got: " + paramsplit(0) )
             }
 
+            //Creating the Aggregation buy
             var l = List[TaggedDataPoint]()
 
             for( i <- 0 until datasize ) {
@@ -182,6 +188,7 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
             val newID = idMapping(data.id)
 
             Set(ProcessedData(newID, l))
+        //Aggregation on timeframe or cyclic
         } else {
 
             val grouped = param match {
@@ -203,6 +210,12 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
                     throw new IllegalArgumentException("Not matching argument given like 'minute', 'hour', 'weekday', 'month', 'year' BUT got: " + param )
             }
 
+            /**
+              *  From the aggregated value it creates a proper String for the Charts
+              *
+              *  @param v Value on which has been aggregated,
+              *  @return String represation for a proper label on the value v on which has been aggregated
+              */
             def AggregationInfo(v: Double): String = {
                 var ret = ""
                 if( param == "weekday" ) {

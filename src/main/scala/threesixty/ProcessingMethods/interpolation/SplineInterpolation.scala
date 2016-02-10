@@ -91,6 +91,7 @@ object SplineInterpolation extends ProcessingMethodCompanion {
 
 /**
   *  Spline interpolator
+  *  Creates the spline interpolated function out of a set of data
   *
   *  @author Jens Woehrle
   */
@@ -111,15 +112,13 @@ case class SplineInterpolation(idMapping: Map[Identifier, Identifier])
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
         /**
-          *  Interpolation function.
-          *  For each combination of two points it creates the linear
-          *  equation paramters m (slope) and b (offset).
-          *  It the generates the appropriate number of intermediary points
-          *  with the corresponding values and tags and inserts them into
-          *  the list of datapoints.
+          *  Spline interplato function.
+          *  For each combination of two points it creates the cubic
+          *  equation paramters dx^3+cx^2+bx+y
+          *  and returns a list with its Qudruple
           *
           *  @param list of datapoints
-          *  @returns list of datapoints with interpolated values and Tnterpolation-tags
+          *  @returns list of qudruples of the spline interpolation
           */
         val odata = data.dataPoints.sortBy(d => timestamp2Long(d.timestamp))
         val x = new Array[Long](odata.length)
