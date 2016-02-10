@@ -1,23 +1,106 @@
 # 360° - Visualization Engine
 
+- [Introduction](#introduction)
+- [Requirements](#requirements)
+    - [Scala](#scala)
+        - [Akka and Spray](#akka-and-spray)
+    - [Cassandra](#cassandra)
+- [Building](#building)
+    - [IntelliJ IDEA](#intellij-idea)
+    - [SBT](#sbt)
+- [Config](#config)
+- [API](#api)
+    - [Visualization request](#visualization-request)
+        - [Parameters](#parameters)
+            - [`visualization`](#visualization)
+            - [`processor`](#processor)
+    - [Data requests](#data-requests)
+        - [Insert](#insert)
+            - [`dataPoints`](#dataPoints)
+            - [`metadata`](#metadata)
+        - [Get](#get)
+    - [Help requests / usage info](#help-requests--usage-info)
+- [Extending the Engine](#extending-the-engine)
+    - [Additional visualizations](#additional-visualizations)
+        - [Visualization](#visualization-1)
+        - [VisualizationConfig](#visualizationconfig)
+        - [Mixin](#mixin)
+    - [Additional processing methods](#additional-processing-methods)
+        - [ProcessingMethod](#processingmethod)
+        - [Mixin](#mixin-1)
 
 ## Introduction
 Project repository for the semester project of the Software Engineering lecture as part of the Software Engineering program at Augsburg University.
 
+- [S. Cimander](https://github.com/StefanCimander)
+- [T. Engel](https://github.com/ThEngel14)
+- [M. Schnappinger](https://github.com/MarkusSchnappi)
+- [T. Weber](https://github.com/elordin)
+- [J. Wöhrle](https://github.com/SweetyGott)
+
 ## Requirements
 
+The visualization engine uses the following technologies:
+
+### Scala
+
+The engine is written in the [Scala programming language](http://scala-lang.org).
+
+Scalas combination of object oriented with functional programming is well suited for the task. It offers good modeling capabilities to properly model the domain, as well as the high level abstraction of the functional world very useful for data processing using e.g. map reduce.
+
+#### Akka and Spray
+
+The underlying framework for concurrency, networking, HTTP request and response handling etc. is [spray](http://spray.io) which in turn builds on [akka](http://akka.io).
+
+Aside from being light weight, efficient, network aware (and thus portable for cluster use) and easy to use it also offers low-on-boilerplate, type safe JSON conversions.
+
+### Cassandra
+
+While the engine is designed to accommodate different database systems, we choose Cassandra for our exemplary implementation.
+This decision is bast mostly on the following advantages:
+
+- __Familiar query interface__: Cassandra comes with the CQL (Cassandra Query Language), offering a SQL like syntax, thus providing a familiar interface for administrators and developers.
+- __Cluster capable__: To provide scale and resilience for the engine, deployment on a cluster is an option. Cassandra is intended for use on a cluster, thus meeting this requirement as well.
+- __Fast write operations__: To accommodate the requirement of _high frequency data_, Cassandras fast write operations come in handy.
+
+Accessing Cassandra using Scala is done with the [Phantom](http://websudos.github.io/phantom/) adapter.
 
 ## Building
 
+### IntelliJ IDEA
+
+### SBT
+
+Compiling, testing and running can also be done using the [Scala Build Tool](http://www.scala-sbt.org).
+
+```
+sbt compile
+```
+
+```
+sbt run
+```
+
+```
+sbt test
+```
 
 ## Config
+
+The `application.conf` file (in `src/main/ressources`) contains some settings:
+
+- `server.interface` Network interface used by the server. Defaults to `127.0.0.1` if none is given.
+- `server.port` Port used by the server. Defaults to `8080` if none is given.
+- `database.address` Address of the database as used by the `CassandraDatabaseAdapter`
+- `database.keyspace` Keyspace name as used by the `CassandraDatabaseAdapter`
+- `akka` contains some settings for [Akka](http://akka.io). For details, see its documentation.
 
 
 ## API
 
 ### Visualization request
 
-Usually the most common call uses `"type": "visualization"`. It is used to request a visualization with certain parameters.
+The most common call uses `"type": "visualization"`. It is used to request a visualization with certain parameters.
 
 ```json
 {
@@ -30,7 +113,7 @@ Usually the most common call uses `"type": "visualization"`. It is used to reque
 
 #### Parameters
 
-- __data__ _required_: A list of ids (Strings) of datasets which will be used for the visualization.
+- __data__ _required_: A list of identifiers of datasets which will be used for the visualization. The are either simple Strings when the whole dataset should be processed (__not recommended__ for large datasets) or JSON objects defining a start and end point `{ "id": "foo", "from": 0, "to": 1000}` where `from` and `to` are timestamps and can be omitted for a partially bounded selection.
 - __visualization__ _optional_: Specifies the desired visualization format. Is deduced when omitted.
 - __processor__ _optional_: A list of processing steps applied to the input data. Is deduced when omitted.
 
@@ -142,7 +225,7 @@ Each datapoint must follow the format:
 ```
 
 - `timestamp` ist the timestap for the measurement taken
-- `value` is an object with `type` being either `"int"` or `"double"` to define, what type it is, and `value` the actual value (__Note__ that Double values with `type` being `int` are converted to Integers)
+- `value` is an object with the optional `type` being either `"int"` or `"double"` to define, what type it is, and `value` the actual value (__Note__ that Double values with `type` being `int` are converted to Integers; when not `type` is given, `double` is assumed.)
 
 ##### `metadata`
 
@@ -153,9 +236,9 @@ The metadata object can contains the following keys (_all are optional_)
     "timeframe": {
         "start": 1234,
         "end": 4567
-    }
+    },
     "reliability": "Device | User | Unknown",
-    "resolution": "High | Middle | Low"
+    "resolution": "High | Middle | Low",
     "scaling": "Nominal | Ordinal",
     "acitivityType": {
         "name": "Foo"
@@ -216,14 +299,51 @@ Using the name of a visualization or a processing method as returned by the two 
 }
 ```
 
-`data` lists help on how to insert data.
-
-
-### Inserting data
-
+`data` lists help on how to get and insert data.
 
 ## Extending the Engine
 
+The engine is inherently built to support easy extension of its components.
+
+Using the mini-DSL for engine creation, setup can be done as follow:
+
+```scala
+val engine = VisualizationEngine using
+         new Visualizer with FooVisualization.Mixin
+                        with BarVisualization.Mixin and new Processor
+                        with FooProcessingMethod.Mixin
+                        with BarProcessingMethod.Mixin and
+                        SomeDatabaseAdapter
+```
+
 ### Additional visualizations
 
+Additional visualizations must comply with a certain format.
+
+They must provide:
+
+- The visualization class extending `Visualization`
+- The visualizations configuration extending `VisualizationConfig`
+- A mixin for adding the visualization to the `Visualizer`
+
+#### Visualization
+
+#### VisualizationConfig
+
+#### Mixin
+
 ### Additional processing methods
+
+Similar to adding visualizations, processing methods must also provide certain components:
+
+- The ProcessingMethod extending either `SingleProcessingMethod` or `MultiProcessingMethod`
+- The mixing to add the method to the `Processor`
+
+#### ProcessingMethod
+
+
+
+`SingleProcessingMethod`s require a single Dataset as input are applied in parallel when used for multiple datasets.
+`MultiProcessingMethod` are those that operate on a Set if `ProcessedData`.
+
+#### Mixin
