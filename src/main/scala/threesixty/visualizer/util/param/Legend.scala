@@ -1,12 +1,10 @@
 package threesixty.visualizer.util.param
 
-import threesixty.visualizer.util.LegendPositionType.LegendPosition
-
 /**
   * Created by Thomas on 09.02.2016.
   */
 case class LegendParam(
-    val position: Option[LegendPosition],
+    val position: Option[PositionType.Position],
     val verticalOffset: Int,
     val horizontalOffset: Int,
     val symbolWidth: Int,

@@ -57,13 +57,15 @@ case class BarElement(
                 class="bar"
                 fill={getColor}
                 d={calculateBarPath} />
-            <text
-                class="description"
-                x={dpx.toString}
-                y={dpy.toString}
-                font-size={descriptionLabelSize.toString}
-                font-family={descriptionLabelFontFamily}
-                text-anchor="middle">{description}</text>
+            { if(descriptionLabelSize > 0) {
+                <text
+                    class="description"
+                    x={dpx.toString}
+                    y={dpy.toString}
+                    font-size={descriptionLabelSize.toString}
+                    font-family={descriptionLabelFontFamily}
+                    text-anchor="middle">{description}</text>
+            } }
             {if (showValues)
                 <text
                     class="value"

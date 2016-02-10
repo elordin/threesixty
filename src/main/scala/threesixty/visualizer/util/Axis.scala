@@ -47,19 +47,23 @@ case class HorizontalAxis(
                 fill="none"
                 stroke-width={ strokeWidth.toString }
                 stroke={ strokeColor.toString } />
-            <g class="arrowhead">
-                <path
-                    d={
+            {
+                if(arrowSize > 0) {
+                    <g class="arrowhead">
+                        <path
+                        d={
                         if (leftToRight) {
                             s"M${x + width - arrowSize} ${y - arrowSize} L${x + width} $y L${x + width - arrowSize} ${y + arrowSize}"
                         } else {
                             s"M${x + arrowSize} ${y - arrowSize} L$x $y L${x + arrowSize} ${y + arrowSize}"
                         }
-                    }
-                    fill={ if (arrowFilled) strokeColor.toString else "none" }
-                    stroke-width={ strokeWidth.toString }
-                    stroke={ strokeColor.toString } />
-            </g>
+                        }
+                        fill={ if (arrowFilled) strokeColor.toString else "none" }
+                        stroke-width={ strokeWidth.toString }
+                        stroke={ strokeColor.toString } />
+                    </g>
+                }
+            }
             {
 
                 for { ((labelText, xOffset), i) <- labels.zipWithIndex } yield {
@@ -137,19 +141,23 @@ case class VerticalAxis(
                 fill="none"
                 stroke-width={ strokeWidth.toString }
                 stroke={ strokeColor.toString } />
-            <g class="arrowhead">
-                <path
-                    d={
-                        if (bottomToTop) {
-                            s"M${x - arrowSize} ${y + arrowSize - height} L$x ${y - height} L${x + arrowSize} ${y + arrowSize - height}"
-                        } else {
-                            s"M${x - arrowSize} ${y - arrowSize} L$x $y L${x + arrowSize} ${y - arrowSize}"
-                        }
-                    }
-                    fill={ if (arrowFilled) strokeColor.toString else "none" }
-                    stroke-width={ strokeWidth.toString }
-                    stroke={ strokeColor.toString } />
-            </g>
+            {
+                if(arrowSize > 0) {
+                    <g class="arrowhead">
+                        <path
+                            d={
+                                if (bottomToTop) {
+                                    s"M${x - arrowSize} ${y + arrowSize - height} L$x ${y - height} L${x + arrowSize} ${y + arrowSize - height}"
+                                } else {
+                                    s"M${x - arrowSize} ${y - arrowSize} L$x $y L${x + arrowSize} ${y - arrowSize}"
+                                }
+                            }
+                            fill={ if (arrowFilled) strokeColor.toString else "none" }
+                            stroke-width={ strokeWidth.toString }
+                            stroke={ strokeColor.toString } />
+                    </g>
+                }
+            }
             {
 
                 for { ((labelText, yOffset), i) <- labels.zipWithIndex } yield {

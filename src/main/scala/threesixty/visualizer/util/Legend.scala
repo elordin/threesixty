@@ -4,31 +4,12 @@ import threesixty.visualizer.Renderable
 
 import scala.xml.Elem
 
-object LegendPositionType extends Enumeration {
-    case class LegendPosition(val name: String)
-    val TOP = new LegendPosition("top")
-    val BOTTOM = new LegendPosition("bottom")
-    val LEFT = new LegendPosition("left")
-    val RIGHT = new LegendPosition("right")
-}
 
 /**
   *  @author Thomas Engel
   */
 object Legend {
     implicit def toXML(legend: Legend): Elem = legend.toSVG
-
-    def getLegendPosition(name: String): Option[LegendPositionType.LegendPosition] = {
-        val result = name.toLowerCase match {
-            case LegendPositionType.TOP.name => Some(LegendPositionType.TOP)
-            case LegendPositionType.BOTTOM.name => Some(LegendPositionType.BOTTOM)
-            case LegendPositionType.LEFT.name => Some(LegendPositionType.LEFT)
-            case LegendPositionType.RIGHT.name => Some(LegendPositionType.RIGHT)
-            case _ => None
-        }
-
-        result
-    }
 }
 
 case class Legend(x: Int,

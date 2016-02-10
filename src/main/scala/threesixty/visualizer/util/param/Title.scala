@@ -5,6 +5,7 @@ package threesixty.visualizer.util.param
   */
 case class TitleParam(
     val title: String,
+    val position: PositionType.Position,
     val verticalOffset: Int,
     val horizontalOffset: Int,
     val size: Int,
@@ -16,6 +17,7 @@ case class TitleParam(
 
 case class OptTitleParam(
     val title: Option[String] = None,
+    val position: Option[String] = None,
     val verticalOffset: Option[Int] = None,
     val horizontalOffset: Option[Int] = None,
     val size: Option[Int] = None,

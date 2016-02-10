@@ -7,7 +7,7 @@ import threesixty.data.tags.{Tag, AggregationTag}
 import threesixty.data.{DataPool, ProcessedData, TaggedDataPoint}
 import threesixty.visualizer._
 import threesixty.visualizer.util._
-import threesixty.visualizer.util.param.{OptValueAxisParam, OptTitleParam, Border}
+import threesixty.visualizer.util.param.{OptAxisParam, OptValueAxisParam, OptTitleParam, Border}
 import threesixty.visualizer.visualizations.BarElement
 import ColorScheme.ColorSchemeJsonFormat
 
@@ -39,18 +39,16 @@ object BarChartConfig extends VisualizationCompanion {
                 "    width:                         Int                    - Width of the diagram in px\n" +
                 "    border:                        Border      (optional) - Border (top, bottom, left, right) in px\n" +
                 "    colorScheme:                   String      (optional) - The color scheme\n" +
-                "    title:                         Title       (optional) - Diagram title (title, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
-                "    xlabel:                        String      (optional) - The label for the x-axis\n" +
-                "    xlabelSize:                    Int         (optional) - The size of the label for the x-axis\n" +
-                "    xlabelFontFamily:              String      (optional) - The font family of the label for the x-axis\n" +
-                "    yAxis:                         Axis        (optional) - The y-axis (label, labelSize, min, max, minDistance, unit, unitLabelSize, showGrid, showLabels)\n" +
+                "    title:                         Title       (optional) - Diagram title (title, position, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
+                "    xAxis:                         Axis        (optional) - The x-axis (label, labelSize, labelFontFamily, arrowSize, arrowFilled)\n" +
+                "    yAxis:                         ValueAxis   (optional) - The y-axis (label, labelSize, labelFontFamily, min, max, minDistance, unit, unitLabelSize, unitLabelFontFamily, showGrid, showLabels, arrowSize, arrowFilled)\n" +
                 "    widthBar:                      Double      (optional) - The width of a bar\n" +
                 "    distanceBetweenBars:           Double      (optional) - The distance between two bars\n" +
                 "    showValues:                    Boolean     (optional) - If the values for a bar should be shown\n" +
                 "    descriptionLabelSize:          Int         (optional) - The font size of the description label\n" +
                 "    descriptionLabelFontFamily:    String      (optional) - The font family of the description label\n" +
                 "    valueLabelSize:                Int         (optional) - The font size of the value label\n" +
-                "    valueLabelFotnFamily:          String      (optional) - The font family of the value label"
+                "    valueLabelFontFamily:          String      (optional) - The font family of the value label"
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
 
@@ -66,7 +64,7 @@ object BarChartConfig extends VisualizationCompanion {
             "height", "width",
             "border",
             "colorScheme", "title",
-            "xlabel", "xlabelSize", "xlabelFontFamily", "yAxis",
+            "xAxis", "yAxis",
             "widthBar", "distanceBetweenBars", "showValues",
             "descriptionLabelSize", "descriptionLabelFontFamily", "valueLabelSize", "valueLabelFontFamily")
         jsonString.parseJson.convertTo[BarChartConfig]
@@ -181,6 +179,7 @@ object BarChartConfig extends VisualizationCompanion {
 
         def toSVG: Elem = {
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+            val (xtitle, ytitle) = config.getTitleCoordinates
             val chartOrigin = calculateOrigin
 
             (<g class="bars" transform={ s"translate$chartOrigin" }>
@@ -194,28 +193,32 @@ object BarChartConfig extends VisualizationCompanion {
                     config.chartWidth,
                     config.chartHeight,
                     xPositions = Seq(),
-                    yPositions = if(config.yAxisGrid) yAxisLabels.map(_._2) else Seq()))
+                    yPositions = if(config.yAxis.showGrid) yAxisLabels.map(_._2) else Seq()))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
                     width = config.chartWidth,
-                    title = config.xLabel,
-                    titleSize = config.xLabelSize,
-                    titleFontFamily = config.xLabelFontFamily))
+                    title = config.xAxis.label,
+                    titleSize = config.xAxis.labelSize,
+                    titleFontFamily = config.xAxis.labelFontFamily,
+                    arrowSize = config.xAxis.arrowSize,
+                    arrowFilled = config.xAxis.arrowFilled))
                 .withAxis(VerticalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
                     height = config.chartHeight,
-                    title = config.yLabel,
-                    titleSize = config.yLabelSize,
-                    titleFontFamily = config.yLabelFontFamily,
-                    labels = if(config.yAxisLabels) yAxisLabels else Seq(),
-                    labelSize = config.yUnitLabelSize,
-                    labelFontFamily = config.yUnitLabelFontFamily))
+                    title = config.yAxis.label,
+                    titleSize = config.yAxis.labelSize,
+                    titleFontFamily = config.yAxis.labelFontFamily,
+                    labels = if(config.yAxis.showLabels) yAxisLabels else Seq(),
+                    labelSize = config.yAxis.labelSize,
+                    labelFontFamily = config.yAxis.labelFontFamily,
+                    arrowSize = config.yAxis.arrowSize,
+                    arrowFilled = config.yAxis.arrowFilled))
                 .withTitle(
                     config.title.title,
-                    config.width / 2 + config.title.horizontalOffset,
-                    config.border.top - config.title.verticalOffset,
+                    xtitle,
+                    ytitle,
                     config.title.size,
                     config.title.fontFamily,
                     config.title.alignment)
@@ -234,7 +237,7 @@ object BarChartConfig extends VisualizationCompanion {
  * @param _border the border
  * @param _colorScheme the color scheme
  * @param _title the title
- * @param _xLabel the x-axis label
+ * @param _xAxis the x-axis
  * @param _yAxis the y-axis
  * @param _widthBar the width of a bar
  * @param _distanceBetweenBars the distance between two bars
@@ -251,11 +254,9 @@ case class BarChartConfig(
     val _border:                        Option[Border]              = None,
     val _colorScheme:                   Option[ColorScheme]         = None,
     val _title:                         Option[OptTitleParam]       = None,
-    val _xLabel:                        Option[String]              = None,
-
-    val _xLabelSize:                    Option[Int]                 = None,
-    val _xLabelFontFamily:              Option[String]              = None,
+    val _xAxis:                         Option[OptValueAxisParam]   = None,
     val _yAxis:                         Option[OptValueAxisParam]   = None,
+
     val _widthBar:                      Option[Double]              = None,
     val _distanceBetweenBars:           Option[Double]              = None,
     val _showValues:                    Option[Boolean]             = None,
@@ -270,17 +271,8 @@ case class BarChartConfig(
     _border = _border,
     _colorScheme = _colorScheme,
     _title = _title,
-    _xLabel = _xLabel,
-    _yLabel = _yAxis.map(_.label).getOrElse(None),
-    _xLabelSize = _xLabelSize,
-    _xLabelFontFamily = _xLabelFontFamily,
-    _yLabelSize = _yAxis.map(_.labelSize).getOrElse(None),
-    _yLabelFontFamily = _yAxis.map(_.labelFontFamily).getOrElse(None),
-    _minPxBetweenYGridPoints = _yAxis.map(_.minPxBetweenGridPoints).getOrElse(None),
-    _yUnitLabelSize = _yAxis.map(_.unitLabelSize).getOrElse(None),
-    _yUnitLabelFontFamily = _yAxis.map(_.unitLabelFontFamily).getOrElse(None),
-    _yAxisGrid = _yAxis.map(_.showGrid).getOrElse(None),
-    _yAxisLabels = _yAxis.map(_.showLabels).getOrElse(None)
+    _xAxis = _xAxis,
+    _yAxis = _yAxis
 ) {
 
     override val X_AXIS_GRID_DEFAULT = false

@@ -36,9 +36,9 @@ object ScatterChartConfig extends VisualizationCompanion {
                 "    width:                     Int                    - Width of the diagram in px\n" +
                 "    border:                    Border      (optional) - Border (top, bottom, left, right) in px\n" +
                 "    colorScheme:               String      (optional) - The color scheme\n" +
-                "    title:                     Title       (optional) - Diagram title (title, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
-                "    xAxis:                     Axis        (optional) - The x-axis (label, labelSize, labelFontFamily, min, max, minDistance, unit, unitLabelSize, unitLabelFontFamily, showGrid, showLabels)\n" +
-                "    yAxis:                     Axis        (optional) - The y-axis (label, labelSize, labelFontFamily, min, max, minDistance, unit, unitLabelSize, unitLabelFontFamily, showGrid, showLabels)\n" +
+                "    title:                     Title       (optional) - Diagram title (title, position, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
+                "    xAxis:                     ValueAxis   (optional) - The x-axis (label, labelSize, labelFontFamily, min, max, minDistance, unit, unitLabelSize, unitLabelFontFamily, showGrid, showLabels, arrowSize, arrowFilled)\n" +
+                "    yAxis:                     ValueAxis   (optional) - The y-axis (label, labelSize, labelFontFamily, min, max, minDistance, unit, unitLabelSize, unitLabelFontFamily, showGrid, showLabels, arrowSize, arrowFilled)\n" +
                 "    radius:                    Int         (optional) - The radius of the displayed points\n"
 
     def fromString: (String) => VisualizationConfig = { s => apply(s) }
@@ -155,6 +155,7 @@ object ScatterChartConfig extends VisualizationCompanion {
             }
             */
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+            val (xtitle, ytitle) = config.getTitleCoordinates
 
             /*
             val xdata = data.head
@@ -166,7 +167,6 @@ object ScatterChartConfig extends VisualizationCompanion {
                 { for { dataPoints <- joinedDatasets } yield  {
                     val color = DefaultColorScheme.next
                     for { (dp1, dp2) <- dataPoints } yield
-                        //TODO Adapt class when joined datapoints are used
                         <circle
                             class={(dp1.tags ++ dp2.tags).map(_.toString.replace(' ', '_')) mkString " " }
                             cx={ (chartOrigin._1 + xScale(dp1.value.value)).toString }
@@ -180,33 +180,37 @@ object ScatterChartConfig extends VisualizationCompanion {
                     chartOrigin._2,
                     config.chartWidth,
                     config.chartHeight,
-                    xPositions = if(config.xAxisGrid) xAxisLabels.map(_._2) else Seq(),
-                    yPositions = if(config.yAxisGrid) yAxisLabels.map(_._2) else Seq()
+                    xPositions = if(config.xAxis.showGrid) xAxisLabels.map(_._2) else Seq(),
+                    yPositions = if(config.yAxis.showGrid) yAxisLabels.map(_._2) else Seq()
                     ))
                 .withAxis(HorizontalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
                     width = config.chartWidth,
-                    title = config.xLabel,
-                    titleSize = config.xLabelSize,
-                    titleFontFamily = config.xLabelFontFamily,
-                    labels = if(config.xAxisLabels) xAxisLabels else Seq(),
-                    labelSize = config.xUnitLabelSize,
-                    labelFontFamily = config.xUnitLabelFontFamily))
+                    title = config.xAxis.label,
+                    titleSize = config.xAxis.labelSize,
+                    titleFontFamily = config.xAxis.labelFontFamily,
+                    labels = if(config.xAxis.showLabels) xAxisLabels else Seq(),
+                    labelSize = config.xAxis.unitLabelSize,
+                    labelFontFamily = config.xAxis.unitLabelFontFamily,
+                    arrowSize = config.xAxis.arrowSize,
+                    arrowFilled = config.xAxis.arrowFilled))
                 .withAxis(VerticalAxis(
                     x = chartOrigin._1,
                     y = chartOrigin._2,
                     height = config.chartHeight,
-                    title = config.yLabel,
-                    titleSize = config.yLabelSize,
-                    titleFontFamily = config.yLabelFontFamily,
-                    labels = if(config.yAxisLabels) yAxisLabels else Seq(),
-                    labelSize = config.yUnitLabelSize,
-                    labelFontFamily = config.yUnitLabelFontFamily))
+                    title = config.yAxis.label,
+                    titleSize = config.yAxis.labelSize,
+                    titleFontFamily = config.yAxis.labelFontFamily,
+                    labels = if(config.yAxis.showLabels) yAxisLabels else Seq(),
+                    labelSize = config.yAxis.labelSize,
+                    labelFontFamily = config.yAxis.labelFontFamily,
+                    arrowSize = config.yAxis.arrowSize,
+                    arrowFilled = config.yAxis.arrowFilled))
                 .withTitle(
                     config.title.title,
-                    config.width / 2 + config.title.horizontalOffset,
-                    config.border.top - config.title.verticalOffset,
+                    xtitle,
+                    ytitle,
                     config.title.size,
                     config.title.fontFamily,
                     config.title.alignment)
@@ -249,14 +253,9 @@ case class ScatterChartConfig(
     _border = _border,
     _colorScheme = _colorScheme,
     _title = _title,
-    _xLabel = _xAxis.map(_.label).getOrElse(None),
-    _yLabel = _yAxis.map(_.label).getOrElse(None),
-    _minPxBetweenXGridPoints = _xAxis.map(_.minPxBetweenGridPoints).getOrElse(None),
-    _minPxBetweenYGridPoints = _yAxis.map(_.minPxBetweenGridPoints).getOrElse(None),
-    _xAxisGrid = _xAxis.map(_.showGrid).getOrElse(None),
-    _yAxisGrid = _yAxis.map(_.showGrid).getOrElse(None),
-    _xAxisLabels = _xAxis.map(_.showLabels).getOrElse(None),
-    _yAxisLabels = _yAxis.map(_.showLabels).getOrElse(None)) {
+    _xAxis = _xAxis,
+    _yAxis = _yAxis
+) {
 
     /**
       * @return the radius of the points

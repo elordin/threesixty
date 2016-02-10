@@ -4,7 +4,7 @@ import threesixty.data.{InputData, DataPool}
 import threesixty.data.Data.Identifier
 import threesixty.processor.{ProcessingStep, ProcessingMethod}
 import threesixty.visualizer.util.param._
-import threesixty.visualizer.util.{LegendPositionType, ColorScheme, DefaultColorScheme, Legend}
+import threesixty.visualizer.util.{ColorScheme, DefaultColorScheme, Legend}
 
 /**
  * Generic Configuration for a [[threesixty.visualizer.Visualization]].
@@ -16,12 +16,8 @@ import threesixty.visualizer.util.{LegendPositionType, ColorScheme, DefaultColor
  * @param _border the border
  * @param _colorScheme the color scheme
  * @param _title the title
- * @param _xLabel the x-axis label
- * @param _yLabel the y-axis label
- * @param _xAxisGrid if the grid for the x-axis should be shown
- * @param _yAxisGrid if the gird for the y-axis should be shown
- * @param _xAxisLabels if the labels for the x-axis should be shown
- * @param _yAxisLabels if the labels for the y-axis should be shown
+ * @param _xAxis the x-axis
+ * @param _yAxis the y-axis
  * @param _legend the legend
  */
 abstract class VisualizationConfig(
@@ -31,22 +27,8 @@ abstract class VisualizationConfig(
     _border:                    Option[Border]          = None,
     _colorScheme:               Option[ColorScheme]     = None,
     _title:                     Option[OptTitleParam]   = None,
-    _xLabel:                    Option[String]          = None,
-    _yLabel:                    Option[String]          = None,
-    _xLabelSize:                Option[Int]             = None,
-    _yLabelSize:                Option[Int]             = None,
-    _xLabelFontFamily:          Option[String]          = None,
-    _yLabelFontFamily:          Option[String]          = None,
-    _minPxBetweenXGridPoints:   Option[Int]             = None,
-    _minPxBetweenYGridPoints:   Option[Int]             = None,
-    _xUnitLabelSize:            Option[Int]             = None,
-    _yUnitLabelSize:            Option[Int]             = None,
-    _xUnitLabelFontFamily:      Option[String]          = None,
-    _yUnitLabelFontFamily:      Option[String]          = None,
-    _xAxisGrid:                 Option[Boolean]         = None,
-    _yAxisGrid:                 Option[Boolean]         = None,
-    _xAxisLabels:               Option[Boolean]         = None,
-    _yAxisLabels:               Option[Boolean]         = None,
+    _xAxis:                     Option[OptAxisParam]    = None,
+    _yAxis:                     Option[OptAxisParam]    = None,
     _legend:                    Option[OptLegendParam]  = None
 ) extends Function1[DataPool, Visualization] {
 
@@ -73,11 +55,24 @@ abstract class VisualizationConfig(
     def colorScheme: ColorScheme = _colorScheme.getOrElse(DefaultColorScheme)
 
     val TITLE_DEFAULT: String = ""
+    val TITLE_POSITION_DEFAULT: PositionType.Position = PositionType.TOP
     val TITLE_VERTICAL_OFFSET_DEFAULT: Int = 20
     val TITLE_HORIZONTAL_OFFSET_DEFAULT: Int = 0
     val TITLE_SIZE_DEFAULT: Int = 20
     val TITLE_FONT_FAMILY_DEFAULT = "Roboto, Segoe UI"
     val TITLE_ALIGNMENT_DEFAULT: String = "middle"
+
+    /**
+     * @return the title position
+     */
+    private def titlePosition: PositionType.Position = {
+        if(_title.isDefined) {
+            PositionType.getPosition(_title.get.position.getOrElse("default")).getOrElse(TITLE_POSITION_DEFAULT)
+        } else {
+            TITLE_POSITION_DEFAULT
+        }
+
+    }
 
     /**
      * @return the title
@@ -86,6 +81,7 @@ abstract class VisualizationConfig(
         if(_title.isDefined) {
             TitleParam(
                 _title.get.title.getOrElse(TITLE_DEFAULT),
+                titlePosition,
                 _title.get.verticalOffset.getOrElse(TITLE_VERTICAL_OFFSET_DEFAULT),
                 _title.get.horizontalOffset.getOrElse(TITLE_HORIZONTAL_OFFSET_DEFAULT),
                 _title.get.size.getOrElse(TITLE_SIZE_DEFAULT),
@@ -94,12 +90,29 @@ abstract class VisualizationConfig(
         } else {
             TitleParam(
                 TITLE_DEFAULT,
+                TITLE_POSITION_DEFAULT,
                 TITLE_VERTICAL_OFFSET_DEFAULT,
                 TITLE_HORIZONTAL_OFFSET_DEFAULT,
                 TITLE_SIZE_DEFAULT,
                 TITLE_FONT_FAMILY_DEFAULT,
                 TITLE_ALIGNMENT_DEFAULT)
         }
+    }
+
+    /**
+      * @return the coordinates of the top left corner of the legend
+      */
+    @throws[UnsupportedOperationException]("If titlePosition is not set or not knwon.")
+    def getTitleCoordinates: (Int, Int) = {
+        val (x, y) = titlePosition match {
+            case PositionType.TOP => (width / 2, upperLimit)
+            case PositionType.BOTTOM => (width / 2, height)
+            case PositionType.LEFT => (border.left / 2, upperLimit)
+            case PositionType.RIGHT => (rightLimit + border.right / 2, upperLimit)
+            case _ => throw new UnsupportedOperationException("Title postion " + titlePosition.name + " is not supported.")
+        }
+
+        (x + title.horizontalOffset, y - title.verticalOffset)
     }
 
     val X_AXIS_LABEL_DEFAULT : String = ""
@@ -126,91 +139,75 @@ abstract class VisualizationConfig(
     val X_AXIS_LABELS_DEFAULT: Boolean = true
     val Y_AXIS_LABELS_DEFAULT: Boolean = true
 
+    val X_AXIS_ARROW_SIZE_DEFAULT: Int = 10
+    val Y_AXIS_ARROW_SIZE_DEFAULT: Int = 10
+
+    val X_AXIS_ARROW_FILLED_DEFAULT: Boolean = false
+    val Y_AXIS_ARROW_FILLED_DEFAULT: Boolean = false
+
     /**
-     * @return the label for the x-axis
+     * @return the x-axis
      */
-    def xLabel: String = _xLabel.getOrElse(X_AXIS_LABEL_DEFAULT)
+    def xAxis: AxisParam = {
+        if(_xAxis.isDefined) {
+            AxisParam(
+                _xAxis.get.label.getOrElse(X_AXIS_LABEL_DEFAULT),
+                _xAxis.get.labelSize.getOrElse(X_AXIS_LABEL_SIZE_DEFAULT),
+                _xAxis.get.labelFontFamily.getOrElse(X_AXIS_LABEL_FONT_FAMILY_DEFAULT),
+                _xAxis.get.minPxBetweenGridPoints.getOrElse(X_AXIS_MIN_DISTANCE_DEFAULT),
+                _xAxis.get.unitLabelSize.getOrElse(X_AXIS_UNIT_LABEL_SIZE_DEFAULT),
+                _xAxis.get.unitLabelFontFamily.getOrElse(X_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT),
+                _xAxis.get.showGrid.getOrElse(X_AXIS_GRID_DEFAULT),
+                _xAxis.get.showLabels.getOrElse(X_AXIS_LABELS_DEFAULT),
+                _xAxis.get.arrowSize.getOrElse(X_AXIS_ARROW_SIZE_DEFAULT),
+                _xAxis.get.arrowFilled.getOrElse(X_AXIS_ARROW_FILLED_DEFAULT))
+        } else {
+            AxisParam(
+                X_AXIS_LABEL_DEFAULT,
+                X_AXIS_LABEL_SIZE_DEFAULT,
+                X_AXIS_LABEL_FONT_FAMILY_DEFAULT,
+                X_AXIS_MIN_DISTANCE_DEFAULT,
+                X_AXIS_UNIT_LABEL_SIZE_DEFAULT,
+                X_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT,
+                X_AXIS_GRID_DEFAULT,
+                X_AXIS_LABELS_DEFAULT,
+                X_AXIS_ARROW_SIZE_DEFAULT,
+                X_AXIS_ARROW_FILLED_DEFAULT)
+        }
+    }
 
     /**
-     * @return the label for the y-axis
-     */
-    def yLabel: String = _yLabel.getOrElse(Y_AXIS_LABEL_DEFAULT)
-
-    /**
-     * @return the label size for the x-axis
-     */
-    def xLabelSize: Int = _xLabelSize.getOrElse(X_AXIS_LABEL_SIZE_DEFAULT)
-
-    /**
-     * @return the label size for the y-axis
-     */
-    def yLabelSize: Int = _yLabelSize.getOrElse(Y_AXIS_LABEL_SIZE_DEFAULT)
-
-    /**
-     * @return the font family of the label for the x-axis
-     */
-    def xLabelFontFamily: String = _xLabelFontFamily.getOrElse(X_AXIS_LABEL_FONT_FAMILY_DEFAULT)
-
-    /**
-     * @return the font family of the label for the y-axis
-     */
-    def yLabelFontFamily: String = _yLabelFontFamily.getOrElse(Y_AXIS_LABEL_FONT_FAMILY_DEFAULT)
-
-    /**
-     * @return the minimum px between two grid points on the x-axis
-     */
-    def minPxBetweenXGridPoints: Int = _minPxBetweenXGridPoints.getOrElse(X_AXIS_MIN_DISTANCE_DEFAULT)
-
-    require(minPxBetweenXGridPoints > 0, "Value for the minimum px between two grid points on the x-axis must be greater than 0.")
-
-    /**
-     * @return the minimum px between two grid points on the y-axis
-     */
-    def minPxBetweenYGridPoints: Int = _minPxBetweenYGridPoints.getOrElse(Y_AXIS_MIN_DISTANCE_DEFAULT)
-
-    require(minPxBetweenYGridPoints > 0, "Value for the minimum px between two grid points on the y-axis must be greater than 0.")
-
-    /**
-     * @return the label size of the unit labels for the x-axis
-     */
-    def xUnitLabelSize: Int = _xUnitLabelSize.getOrElse(X_AXIS_UNIT_LABEL_SIZE_DEFAULT)
-
-    /**
-     * @return the label size of the unit labels for the y-axis
-     */
-    def yUnitLabelSize: Int = _yUnitLabelSize.getOrElse(Y_AXIS_UNIT_LABEL_SIZE_DEFAULT)
-
-    /**
-      * @return the font family of the label for the x-axis
+      * @return the y-axis
       */
-    def xUnitLabelFontFamily: String = _xUnitLabelFontFamily.getOrElse(X_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT)
+    def yAxis: AxisParam = {
+        if(_xAxis.isDefined) {
+            AxisParam(
+                _yAxis.get.label.getOrElse(Y_AXIS_LABEL_DEFAULT),
+                _yAxis.get.labelSize.getOrElse(Y_AXIS_LABEL_SIZE_DEFAULT),
+                _yAxis.get.labelFontFamily.getOrElse(Y_AXIS_LABEL_FONT_FAMILY_DEFAULT),
+                _yAxis.get.minPxBetweenGridPoints.getOrElse(Y_AXIS_MIN_DISTANCE_DEFAULT),
+                _yAxis.get.unitLabelSize.getOrElse(Y_AXIS_UNIT_LABEL_SIZE_DEFAULT),
+                _yAxis.get.unitLabelFontFamily.getOrElse(Y_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT),
+                _yAxis.get.showGrid.getOrElse(Y_AXIS_GRID_DEFAULT),
+                _yAxis.get.showLabels.getOrElse(Y_AXIS_LABELS_DEFAULT),
+                _yAxis.get.arrowSize.getOrElse(Y_AXIS_ARROW_SIZE_DEFAULT),
+                _yAxis.get.arrowFilled.getOrElse(Y_AXIS_ARROW_FILLED_DEFAULT))
+        } else {
+            AxisParam(
+                Y_AXIS_LABEL_DEFAULT,
+                Y_AXIS_LABEL_SIZE_DEFAULT,
+                Y_AXIS_LABEL_FONT_FAMILY_DEFAULT,
+                Y_AXIS_MIN_DISTANCE_DEFAULT,
+                Y_AXIS_UNIT_LABEL_SIZE_DEFAULT,
+                Y_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT,
+                Y_AXIS_GRID_DEFAULT,
+                Y_AXIS_LABELS_DEFAULT,
+                Y_AXIS_ARROW_SIZE_DEFAULT,
+                Y_AXIS_ARROW_FILLED_DEFAULT)
+        }
+    }
 
-    /**
-      * @return the font family of the label for the y-axis
-      */
-    def yUnitLabelFontFamily: String = _yUnitLabelFontFamily.getOrElse(Y_AXIS_UNIT_LABEL_FONT_FAMILY_DEFAULT)
-
-    /**
-     * @return true iff the grid for the x-axis should be shown
-     */
-    def xAxisGrid: Boolean = _xAxisGrid.getOrElse(X_AXIS_GRID_DEFAULT)
-
-    /**
-     * @return true iff the grid for the y-axis should be shown
-     */
-    def yAxisGrid: Boolean = _yAxisGrid.getOrElse(Y_AXIS_GRID_DEFAULT)
-
-    /**
-     * @return true iff the labels for the x-axis should be shown
-     */
-    def xAxisLabels: Boolean = _xAxisLabels.getOrElse(X_AXIS_LABELS_DEFAULT)
-
-    /**
-     * @return true iff the labels for the y-axis should be shown
-     */
-    def yAxisLabels: Boolean = _yAxisLabels.getOrElse(Y_AXIS_LABELS_DEFAULT)
-
-    val LEGEND_POSITION_DEFAULT: Option[LegendPositionType.LegendPosition] = None
+    val LEGEND_POSITION_DEFAULT: Option[PositionType.Position] = None
     val LEGEND_VERTICAL_OFFSET_DEFAULT: Int = 20
     val LEGEND_HORIZONTAL_OFFSET_DEFAULT: Int = 20
     val LEGEND_SYMBOL_WIDTH_DEFAULT: Int = 10
@@ -220,9 +217,9 @@ abstract class VisualizationConfig(
     /**
      * @return the legend position
      */
-    private def legendPosition: Option[LegendPositionType.LegendPosition] = {
+    private def legendPosition: Option[PositionType.Position] = {
         if(_legend.isDefined) {
-            Legend.getLegendPosition(_legend.get.position.get)
+            PositionType.getPosition(_legend.get.position.get)
         } else {
             LEGEND_POSITION_DEFAULT
         }
@@ -259,10 +256,10 @@ abstract class VisualizationConfig(
     def getLegendCoordinates: (Int, Int) = {
         val (x, y) = legendPosition
             .getOrElse(throw new UnsupportedOperationException("Cannot calculate legend position because no legend position was set.")) match {
-                case LegendPositionType.TOP => (0, 0)
-                case LegendPositionType.BOTTOM => (0, lowerLimit)
-                case LegendPositionType.LEFT => (0, upperLimit)
-                case LegendPositionType.RIGHT => (rightLimit, upperLimit)
+                case PositionType.TOP => (0, 0)
+                case PositionType.BOTTOM => (0, lowerLimit)
+                case PositionType.LEFT => (0, upperLimit)
+                case PositionType.RIGHT => (rightLimit, upperLimit)
                 case _ => throw new UnsupportedOperationException("Legend postion " + legendPosition.get.name + " is not supported.")
         }
 

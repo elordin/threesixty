@@ -6,8 +6,7 @@ import threesixty.data.DataJsonProtocol._
 import threesixty.data.tags.{AggregationTag, Tag}
 import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
 import threesixty.visualizer._
-import threesixty.visualizer.util.LegendPositionType.LegendPosition
-import threesixty.visualizer.util.param.{OptTitleParam, OptLegendParam, Border}
+import threesixty.visualizer.util.param.{PositionType, OptTitleParam, OptLegendParam, Border}
 import threesixty.visualizer.visualizations.Segment
 import threesixty.visualizer.util._
 import ColorScheme.ColorSchemeJsonFormat
@@ -37,7 +36,7 @@ object PieChartConfig extends VisualizationCompanion {
                 "    width:                     Int                    - Width of the diagram in px\n" +
                 "    border:                    Border      (optional) - Border (top, bottom, left, right) in px\n" +
                 "    colorScheme:               String      (optional) - The color scheme\n" +
-                "    title:                     Title       (optional) - Diagram title (title, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
+                "    title:                     Title       (optional) - Diagram title (title, position, verticalOffset, horizontalOffset, size, fontFamily, alignment)\n" +
                 "    legend:                    Legend      (optional) - The legend (position, verticalOffset, horzontalOffset, symbolWidth, size, fontFamily)\n" +
                 "    showSegmentLabels:         Boolean     (optional) - If labels for a segment should be shown\n" +
                 "    segmentLabelSize:          Int         (optional) - The font size of the segment labels\n" +
@@ -280,6 +279,7 @@ object PieChartConfig extends VisualizationCompanion {
 
         def toSVG: Elem = {
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
+            val (xtitle, ytitle) = config.getTitleCoordinates
             val segments = calculateSegments
             val showLegend = config.legend.position.isDefined
 
@@ -292,8 +292,8 @@ object PieChartConfig extends VisualizationCompanion {
             </g>: SVGXML)
                 .withTitle(
                     config.title.title,
-                    config.width / 2 + config.title.horizontalOffset,
-                    config.border.top - config.title.verticalOffset,
+                    xtitle,
+                    ytitle,
                     config.title.size,
                     config.title.fontFamily,
                     config.title.alignment)
@@ -367,7 +367,7 @@ case class PieChartConfig(
 
     override val BORDER_RIGHT_DEFAULT: Int = 150
 
-    override val LEGEND_POSITION_DEFAULT: Option[LegendPositionType.LegendPosition] = Some(LegendPositionType.RIGHT)
+    override val LEGEND_POSITION_DEFAULT: Option[PositionType.Position] = Some(PositionType.RIGHT)
 
     /**
      * @return true iff a label should be shown for each segment
