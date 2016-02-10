@@ -1,6 +1,7 @@
 package threesixty.processor
 
 import threesixty.ProcessingMethods.Aggregation.Aggregation
+import threesixty.ProcessingMethods.interpolation.{SplineInterpolation, LinearInterpolation}
 import threesixty.engine.UsageInfo
 import threesixty.data.{InputData, ProcessedData, InputDataSkeleton}
 import threesixty.data.Data.Identifier
@@ -9,6 +10,8 @@ import threesixty.visualizer.VisualizationConfig
 
 import spray.json._
 import DefaultJsonProtocol._
+
+import scala.util.Random
 
 
 sealed trait ProcessingMethod {
@@ -161,11 +164,22 @@ class Processor extends ProcessingMixins with UsageInfo {
 
     /**
      *  Deduces the best fitting ProcessingStrategy for a given Set of InputData.
+      *  Note: If Interpolation is deduced -> non determinitic decision is  made what kind of Interpolation
      */
     def deduce(data: InputDataSkeleton*): ProcessingStrategy = {
-            ProcessingStrategy(processingInfos.values.par.map({
-            info => (info, info.degreeOfFit(data: _*))
-        }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
+       val dataMap = data.map({ data => (data.id, data.id) }).toMap
+        val max = processingInfos.values.par.map({
+                info => (info, info.degreeOfFit(data: _*))
+            }).maxBy(_._2)._1
+
+        if (max.equals(LinearInterpolation) && processingInfos.contains("SplineInterpolation"))
+            {
+                Random.nextInt(1) match {
+                    case 0 => ProcessingStrategy(SplineInterpolation.default(dataMap))
+                    case 1 => ProcessingStrategy(LinearInterpolation.default(dataMap))
+                }
+            }
+        else {ProcessingStrategy(max.default(dataMap))}
 
     }
 
