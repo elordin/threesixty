@@ -8,6 +8,7 @@ import threesixty.data.metadata._
 import threesixty.data.Data.IntValue
 
 import org.joda.time.DateTime
+import threesixty.persistence.cassandra.CassandraAdapter
 
 import scala.util.Random
 
@@ -76,22 +77,18 @@ class ExampleDataGenerator {
     }
 
 
+
     def exampleHeartRate(min: Int = 48, max: Int = 225, steps: Int,
-                         startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())): InputData = {
+                         startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())): Unit = {
 
         val identifier = UUID.randomUUID()
         val measurement = "Heart Rate"
-        val timeframe = Timeframe(startTime, new Timestamp(startTime.getTime() + steps * 1000))
         val activityType = ActivityType("nothing special")
         activityType.setDescription("everyday tracking heartrate")
         val resolution = Resolution.High
         val reliability = Reliability.Device
         val scaling = Scaling.Ordinal
-        val size = steps
 
-        val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
-
-        var dataPoints: List[DataPoint] = List()
         val random = new Random()
         var value = 75
 
@@ -101,10 +98,9 @@ class ExampleDataGenerator {
                 case 0 => -4
                 case 1 => -2
                 case 2 => -1
-                case 3 => 3
+                case 3 => 2
                 case 4 => 5
             }
-
             value += delta
             if (value > max) {
                 value = max
@@ -112,9 +108,59 @@ class ExampleDataGenerator {
             else if (value < min) {
                 value = min
             }
-            dataPoints = dataPoints ++ List(new DataPoint(new Timestamp(startTime.getTime + i * 1000), value))
+
+            println("Step: " + i + " Value: " + value)
+
+            val dataPoint = new DataPoint(new Timestamp(startTime.getTime + i * 1000), value)
+            val timeframe = Timeframe(dataPoint.timestamp, dataPoint.timestamp)
+            val size = 1
+            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
+
+            val inputData = InputData(identifier.toString, measurement, List(dataPoint), inputMetadta)
+            CassandraAdapter.insertData(inputData)
         }
-        InputData(identifier.toString, measurement, dataPoints, inputMetadta)
     }
 
+
+    def exampleCalories(min: Int = 2000, max: Int = 4000, steps: Int,
+                         startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())): Unit = {
+
+        val identifier = UUID.randomUUID()
+        val measurement = "Calories"
+        val activityType = ActivityType("Training")
+        val resolution = Resolution.Middle
+        val reliability = Reliability.User
+        val scaling = Scaling.Ordinal
+
+        val random = new Random()
+        var value = 2500
+
+        for (i <- 0 until steps) {
+            var r = random.nextInt(5)
+            var delta = r match {
+                case 0 => -250
+                case 1 => -150
+                case 2 => 0
+                case 3 => 100
+                case 4 => 300
+            }
+            value += delta
+            if (value > max) {
+                value = max
+            }
+            else if (value < min) {
+                value = min
+            }
+
+            val dataPoint = new DataPoint(new Timestamp(startTime.getTime + i * 1000 * 60 * 60 * 24), value)
+            val timeframe = Timeframe(dataPoint.timestamp, dataPoint.timestamp)
+            val size = 1
+            val inputMetadta = CompleteInputMetadata(timeframe, reliability, resolution, scaling, activityType, size)
+
+            val inputData = InputData(identifier.toString, measurement, List(dataPoint), inputMetadta)
+            CassandraAdapter.insertData(inputData)
+        }
+
+    }
+    
 }
