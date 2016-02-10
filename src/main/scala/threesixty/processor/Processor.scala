@@ -188,10 +188,22 @@ class Processor extends ProcessingMixins with UsageInfo {
      *  and a Visualization.
      */
     def deduce(vizConf: VisualizationConfig, data: InputDataSkeleton*): ProcessingStrategy = {
-        ProcessingStrategy(processingInfos.values.par.map({
-            info => (info, info.degreeOfFit(vizConf, data: _*))
-        }).maxBy(_._2)._1.default(data.map({ data => (data.id, data.id) }).toMap))
+        val dataMap = data.map({ data => (data.id, data.id) }).toMap
+        val max = processingInfos.values.par.map({
+            info => (info, info.degreeOfFit(vizConf,data: _*))
+        }).maxBy(_._2)._1
+
+        if (max.equals(LinearInterpolation) && processingInfos.contains("SplineInterpolation"))
+        {
+            Random.nextInt(1) match {
+                case 0 => ProcessingStrategy(SplineInterpolation.default(dataMap))
+                case 1 => ProcessingStrategy(LinearInterpolation.default(dataMap))
+            }
+        }
+        else {ProcessingStrategy(max.default(dataMap))}
+
     }
+
 
 
     // def deduce(metadata: (Identifier, CompleteInputMetadata)*): ProcessingStrategy = ???
