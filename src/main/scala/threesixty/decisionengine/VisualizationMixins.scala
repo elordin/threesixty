@@ -2,7 +2,6 @@ package threesixty.decisionengine.visualizations
 
 import threesixty.decisionengine.machinelearning.{SLPerceptron, Neuron}
 
-import threesixty.visualizer.VisualizationCompanion
 import threesixty.processor.ProcessingStrategy
 import threesixty.data.InputDataSkeleton
 import threesixty.data.metadata._
@@ -30,8 +29,6 @@ trait VisualizationDecisionMethod {
 
     def degreeOfFit(skeletons: InputDataSkeleton*): Double
     def degreeOfFit(processingStrategy: ProcessingStrategy, skeletons: InputDataSkeleton*): Double
-
-    // protected def dof(skeletons: InputDataSkeleton): Double = 0
 }
 
 
@@ -86,9 +83,3 @@ trait PerceptronVizMixin extends VisualizationDecisionMethod with Trainable[Enco
     abstract override def numberOfDeciders = super.numberOfDeciders + 1
 
 }
-
-/*
-trait HeuristicVizMixin extends VisualizationDecisionMethod {
-
-}
-*/

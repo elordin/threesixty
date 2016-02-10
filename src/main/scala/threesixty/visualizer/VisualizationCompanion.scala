@@ -1,10 +1,9 @@
 package threesixty.visualizer
 
 import threesixty.data.Data.Identifier
-import threesixty.data.{ InputData, DataPool, InputDataSkeleton }
-import threesixty.data.metadata.CompleteInputMetadata
+import threesixty.data.{ InputDataSkeleton }
 import threesixty.engine.UsageInfo
-import threesixty.processor.{ProcessingStep, ProcessingMethod, ProcessingStrategy}
+import threesixty.processor.{ProcessingStep, ProcessingStrategy}
 import threesixty.decisionengine.visualizations.VisualizationDecisionMethod
 
 
@@ -27,8 +26,8 @@ trait VisualizationCompanion extends VisualizationDecisionMethod with UsageInfo 
     /**
      *  Method to determine if a list of input data fulfills the requirements of the visualization
      *
-     *  @param inputData a list of input data
      *  @param procMeth the processing step
+     *  @param skeletons a list of input data
      *  @return a maybe reordered list of input data that matches the visualization requirement.
      *          It does not return a Boolean!
      */

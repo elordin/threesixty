@@ -4,7 +4,6 @@ import org.scalatest.FunSpec
 
 import threesixty.data.{ProcessedData, DataPoint, InputData, DataPool, InputDataSkeleton, InputDataSubset}
 import threesixty.data.Data.{Timestamp, Identifier}
-import threesixty.data.tags.Tag
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 import threesixty.persistence.DatabaseAdapter
 import threesixty.ProcessingMethods.interpolation.LinearInterpolation

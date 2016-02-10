@@ -7,7 +7,7 @@ import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.tags._
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
+import threesixty.data.{ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
@@ -83,13 +83,9 @@ object Aggregation extends ProcessingMethodCompanion {
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-            // case _:HeatLineChartConfig      => 1.0
             case _:BarChartConfig           => 1.0
-            // case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.1
-            // case _:ScatterColorChartConfig  => 0.2
-            // case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.4
             //default
             case _                          => 0.5

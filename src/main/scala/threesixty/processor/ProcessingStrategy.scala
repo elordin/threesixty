@@ -1,6 +1,6 @@
 package threesixty.processor
 
-import threesixty.data.{ProcessedData, DataPool}
+import threesixty.data.{DataPool}
 
 
 /**

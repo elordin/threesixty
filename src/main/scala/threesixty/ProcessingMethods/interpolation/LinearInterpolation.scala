@@ -1,7 +1,7 @@
 package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
+import threesixty.data.{ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.data.Data.{Identifier, Timestamp}
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.tags.{Tag, Interpolated, Original}
@@ -117,7 +117,6 @@ case class LinearInterpolation(frequency: Int, idMapping: Map[Identifier, Identi
           * with the corresponding values and tags and inserts them into
           * the list of datapoints.
           *
-          * @param list of datapoints
           * @return list of datapoints with interpolated values and Tnterpolation-tags
           */
         def linearInterpolated: List[TaggedDataPoint] => List[TaggedDataPoint] = {

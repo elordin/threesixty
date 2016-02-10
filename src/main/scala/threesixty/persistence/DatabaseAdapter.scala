@@ -2,7 +2,6 @@ package threesixty.persistence
 
 import threesixty.data.{InputData, InputDataSubset, InputDataSkeleton}
 import threesixty.data.Data.{Timestamp, Identifier}
-import threesixty.data.metadata.CompleteInputMetadata
 
 trait DatabaseAdapter {
 

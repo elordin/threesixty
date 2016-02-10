@@ -1,9 +1,9 @@
 package threesixty.visualizer.visualizations.lineChart
 
-import threesixty.data.Data.{Identifier, Timestamp}
+import threesixty.data.Data.{Identifier}
 import threesixty.data.DataJsonProtocol._
 import threesixty.data.metadata.Scaling
-import threesixty.data.{ProcessedData, TaggedDataPoint, DataPool}
+import threesixty.data.{ProcessedData, DataPool}
 import threesixty.visualizer.util.param._
 import threesixty.visualizer.{
     DataRequirement,

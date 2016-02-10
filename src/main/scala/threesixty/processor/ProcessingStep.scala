@@ -3,8 +3,6 @@ package threesixty.processor
 import threesixty.data.{ProcessedData, DataPool}
 import threesixty.data.Data.Identifier
 
-import scala.collection.parallel._
-
 
 /**
  * Represents single step in the processing chain.
@@ -18,7 +16,7 @@ import scala.collection.parallel._
  * @author Thomas Weber
  *
  * @param method Method of processing for this step
- * @param IDs of a subset of all data that is to be processed in this step.
+ * @param dataIDs of a subset of all data that is to be processed in this step.
  */
 case class ProcessingStep(val method: ProcessingMethod, val dataIDs: Set[Identifier]) {
 

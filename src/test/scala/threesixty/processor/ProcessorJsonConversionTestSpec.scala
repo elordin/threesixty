@@ -4,9 +4,6 @@ import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 
 import org.scalatest.FunSpec
 
-// import spray.json._
-// import DefaultJsonProtocol._
-
 
 class ProcessorJsonConversionTestSpec extends FunSpec {
 

@@ -9,18 +9,16 @@ import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.ProcessingMethods.TimeSelection.TimeSelection
 import threesixty.ProcessingMethods.interpolation.LinearInterpolation
 import threesixty.data.Data._
-import threesixty.data.{DataPool, InputData, DataPoint, InputDataSkeleton}
+import threesixty.data.{DataPool, DataPoint, InputDataSkeleton}
 import threesixty.data.metadata._
 import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
-import threesixty.processor.{ProcessingStrategy, Processor, ProcessingStep}
+import threesixty.processor.{ProcessingStrategy, Processor}
 import threesixty.visualizer.util.param.OptBorder
-import threesixty.visualizer.visualizations.{scatterChart, barChart, pieChart, lineChart}
+import threesixty.visualizer.visualizations.{scatterChart, barChart}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-import threesixty.visualizer.visualizations._
 
-import scala.xml.Elem
 
 /**
 * Created by Markus on 30.01.2016.
@@ -57,30 +55,13 @@ class VisDeductionTestSpec extends  FunSpec {
     val lineChart = LineChartConfig(
         ids = Seq("abc", "123"),
         height = 1024,
-        width = 768,
-        /*_xMin = Some(new Timestamp(100000)),
-        _xMax = Some(new Timestamp(200000)),
-        _yMin = Some(10.0),
-        _yMax = Some(123.456),
-        _xLabel = Some("X-Axis"),
-        _yLabel = Some("Y-Axis"),
-        _minPxBetweenXGridPoints = Some(50),
-        _title = Some("Title"),*/
-        _border = Some(OptBorder(Some(100),Some(50),Some(50),Some(50)))
-        /*_minPxBetweenXGridPoints = Some(50),
-        _minPxBetweenYGridPoints = Some(50),
-        _xUnit = Some("seconds30"),
-        _yUnit = Some(10.0)*/
+        width = 768
     )
 
     val pieChart = new PieChartConfig(
         ids = Seq("a"),
         height = 1024,
-        width = 768,
-        _border = Some(OptBorder(Some(100),Some(50),Some(50),Some(50))),
-        /*_title = Some("Title"),*/
-        /*_titleVerticalOffset = Some(50),*/
-        _showValues = Some(true)
+        width = 768
     )
 
     val dataPool = new DataPool(Seq(inputDataSet0), FakeDatabaseAdapter)

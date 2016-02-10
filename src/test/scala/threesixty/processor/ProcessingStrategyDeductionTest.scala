@@ -221,15 +221,8 @@ class ProcessingStrategyDeductionTest extends FunSpec{
       val dedicatedProcessingStrategy0 = LinearInterpolation
       val deducedProcessingStrategyAlternative = SplineInterpolation
       assert((deducedProcessingStrategy0 equals dedicatedProcessingStrategy0) ||  (deducedProcessingStrategy0 equals deducedProcessingStrategyAlternative))
-
-
-
-
-
     }
   }
-
-
 
 }
 

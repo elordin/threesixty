@@ -1,23 +1,18 @@
 package threesixty.ProcessingMethods.interpolation
 
 import threesixty.data.metadata.{Resolution, Scaling}
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
-import threesixty.data.Data.{Identifier, Timestamp}
+import threesixty.data.{ProcessedData, TaggedDataPoint, InputDataSkeleton}
+import threesixty.data.Data.{Identifier}
 import threesixty.data.Implicits.timestamp2Long
-import threesixty.data.tags.{Tag, Interpolated, Original}
 import threesixty.processor.{ProcessingMixins, SingleProcessingMethod, ProcessingMethodCompanion, ProcessingStep}
 
 import spray.json._
 import DefaultJsonProtocol._
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
-// import threesixty.visualizer.visualizations.heatLineChart.HeatLineChartConfig
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
-// import threesixty.visualizer.visualizations.polarAreaChart.PolarAreaChartConfig
-// import threesixty.visualizer.visualizations.progressChart.ProgressChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
-// import threesixty.visualizer.visualizations.scatterColorChart.ScatterColorChartConfig
 
 object SplineInterpolation extends ProcessingMethodCompanion {
 
@@ -71,13 +66,9 @@ object SplineInterpolation extends ProcessingMethodCompanion {
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-            // case _:HeatLineChartConfig      => 1.0
             case _:BarChartConfig           => 0.8
-            // case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
             case _:ScatterChartConfig       => 0.2
-            // case _:ScatterColorChartConfig  => 0.2
-            // case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.1
             //default
             case _                          => 0.5
@@ -111,15 +102,6 @@ case class SplineInterpolation(idMapping: Map[Identifier, Identifier])
       */
     @throws[NoSuchElementException]("if data.id can not be found in idMapping")
     def apply(data: ProcessedData): Set[ProcessedData] = {
-        /**
-          *  Spline interplato function.
-          *  For each combination of two points it creates the cubic
-          *  equation paramters dx^3+cx^2+bx+y
-          *  and returns a list with its Qudruple
-          *
-          *  @param list of datapoints
-          *  @returns list of qudruples of the spline interpolation
-          */
         val odata = data.dataPoints.sortBy(d => timestamp2Long(d.timestamp))
         val x = new Array[Long](odata.length)
         val y = new Array[Double](odata.length)
@@ -129,7 +111,6 @@ case class SplineInterpolation(idMapping: Map[Identifier, Identifier])
         }
 
         if (x.length < 3) {
-            // throw new NumberIsTooSmallException(x.length, 3, true)
             throw new NotImplementedError
         }
         // Number of intervals.  The number of data points is n + 1.
@@ -164,7 +145,6 @@ case class SplineInterpolation(idMapping: Map[Identifier, Identifier])
         // by this point we created the polynomials coefficients of the splines
         // Now we start generating the Datasetpoints
 
-        //Array.tabulate(n)(i => Polynomial(Array(y(i), b(i), c(i), d(i))))
         var tp = 0;
 
         //val dataPoints :  List[TaggedDataPoint] = new TaggedDataPoint(new Timestamp(x(0)), y(0), data.data(0).tags)

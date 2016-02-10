@@ -1,11 +1,8 @@
 package threesixty.visualizer.visualizations
 
 import org.scalatest.FunSpec
-import threesixty.data.Data.Timestamp
 import threesixty.visualizer.util.GreenColorScheme
-import threesixty.visualizer.util.param.{OptValueAxisParam, OptTimeAxisParam, OptTitleParam, OptBorder}
-import threesixty.visualizer.visualizations.lineChart.LineChartConfig
-import threesixty.visualizer.visualizations.pieChart.PieChartConfig
+import threesixty.visualizer.util.param.{OptValueAxisParam, OptTitleParam, OptBorder}
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
 

@@ -4,8 +4,7 @@ import java.sql.Timestamp
 import java.util.UUID
 
 import com.websudos.phantom.dsl._
-import threesixty.data.{DataPoint, InputData, InputDataSkeleton}
-import threesixty.data.metadata._
+import threesixty.data.{InputData, InputDataSkeleton}
 import threesixty.persistence.cassandra.CassandraAdapter
 
 import scala.concurrent.duration.Duration

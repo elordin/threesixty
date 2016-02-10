@@ -2,14 +2,10 @@ package threesixty.data
 
 import java.text.SimpleDateFormat
 
-import threesixty.data.tags.{InputOrigin}
-import threesixty.data.metadata.IncompleteInputMetadata
-
 import java.sql.{Timestamp => JSQLTimestamp}
 
 import threesixty.visualizer.util.param._
 
-import scala.concurrent.duration.{Duration, FiniteDuration}
 import spray.json._
 
 import scala.util.{Failure, Success, Try}
@@ -218,42 +214,9 @@ object DataJsonProtocol extends DefaultJsonProtocol {
     implicit val unsafeInputDataJsonFormat = jsonFormat(UnsafeInputData.apply,
         "id", "measurement", "dataPoints", "metadata")
 
-/*
-    implicit val inputDataSkeletonJsonFormat = jsonFormat(InputDataSkeleton.apply,
-        "id", "measurement", "metadata")
-
-    implicit val inputDataSubsetSkeletonJsonFormat = jsonFormat(InputDataSubsetSkeleton.apply,
-        "id", "measurement", "metadata", "from", "to")
-*/
-/*
-    implicit object InputDataSkeletonLikeJsonFormat extends JsonFromat[InputDataSkeletonLike] {
-
-    }
-*/
-
     implicit val inputDataJsonFormat = jsonFormat(InputData.apply,
         "id", "measurement", "dataPoints", "metadata")
 
     implicit val inputDataSubsetJsonFormat = jsonFormat(InputDataSubset.apply,
         "id", "measurement", "dataPoints", "metadata", "from", "to")
-
-/*
-    implicit object InputDataLikeJsonFormat extends JsonFormat[InputDataLike] {
-        def write(idl: InputDataLike): JsValue = Map[String, JsValue](
-            "id" -> idl.id.toJson,
-            "measurement" -> idl.measurement.toJson,
-            "dataPoints" -> idl.dataPoints.toJson,
-            "metadata" -> idl.metadata.toJson
-        )
-
-        def read(jsv: JsValue): InputDataLike = {
-            case jso: JsObject =>
-                if (jso.fields.contains("from") && jso.fields.contains("to"))
-                    jso.convertTo[InputDataSubset]
-                else
-                    jso.convertTo[InputData]
-            case _ => deserializationError("Invalid format for data.")
-        }
-    }
-*/
 }

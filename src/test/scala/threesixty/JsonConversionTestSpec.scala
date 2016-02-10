@@ -35,7 +35,6 @@ class JsonConversionTestSpec extends FunSpec {
     // ProcessingMethod
 
 
-
     describe("Conversion of JSON to Metadata values") {
         describe("Timeframe") {
             val json = """{"start": 1024, "end": 2048}"""

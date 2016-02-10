@@ -143,26 +143,9 @@ object ScatterChartConfig extends VisualizationCompanion {
         }
 
         def toSVG: Elem = {
-            /*
-            val displayData = data.map {
-                dataset => ProcessedData(dataset.id, dataset.dataPoints.filter {
-                    dataPoint =>
-                        dataPoint.timestamp.getTime >= xScale.inMin &&
-                        dataPoint.timestamp.getTime <= xScale.inMax &&
-                        dataPoint.value.value >= yScale.inMin &&
-                        dataPoint.value.value <= yScale.inMax
-                })
-            }
-            */
             val (viewBoxX, viewBoxY, viewBoxWidth, viewBoxHeight) = config.viewBox
             val (xtitle, ytitle) = config.getTitleCoordinates
 
-            /*
-            val xdata = data.head
-            val ydata = data.last
-
-            val zippedData = xdata.dataPoints.zip(ydata.dataPoints)
-            */
             (<g id="datapoints">
                 { for { dataPoints <- joinedDatasets } yield  {
                     val color = DefaultColorScheme.next

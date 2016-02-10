@@ -141,14 +141,6 @@ object Clustering extends ProcessingMethodCompanion {
     }
 }
 
-// case class Clustering(idMapping: Map[Identifier, Identifier])
-//     extends MultiProcessingMethod(idMapping: Map[Identifier, Identifier]) {
-
-//     def companion : ProcessingMethodCompanion = Clustering
-//     def apply(dataInput: Set[ProcessedData]): Set[ProcessedData] = ???
-// }
-
-
 case class Clustering(idMapping: Map[Identifier, Identifier], minPts: Int, epsilon: Double)
     extends SingleProcessingMethod {
     import Clustering._
@@ -175,7 +167,4 @@ case class Clustering(idMapping: Map[Identifier, Identifier], minPts: Int, epsil
                 }))
         }
     }
-
-
-
 }

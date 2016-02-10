@@ -1,9 +1,7 @@
 package threesixty.data
 
-import java.util.UUID
 
 import threesixty.data.tags._
-import threesixty.data.Implicits._
 import threesixty.data.Data._
 import threesixty.data.metadata.{CompleteInputMetadata, Timeframe, Reliability, Resolution, Scaling, ActivityType}
 

@@ -6,7 +6,7 @@ import threesixty.data.Data.Identifier
 import threesixty.data.Implicits.timestamp2Long
 import threesixty.data.metadata.{Resolution, Scaling}
 import threesixty.data.tags.Accumulated
-import threesixty.data.{InputData, ProcessedData, TaggedDataPoint, InputDataSkeleton}
+import threesixty.data.{ProcessedData, TaggedDataPoint, InputDataSkeleton}
 import threesixty.processor.{ProcessingMethodCompanion, ProcessingMixins, ProcessingStep, SingleProcessingMethod}
 import threesixty.visualizer.VisualizationConfig
 import threesixty.visualizer.visualizations.barChart.BarChartConfig
@@ -73,13 +73,9 @@ object Accumulation extends ProcessingMethodCompanion {
         val visFactor = targetVisualization match {
             //good
             case _:LineChartConfig          => 1.0
-//             case _:HeatLineChartConfig      => 1.0
-            case _:BarChartConfig           => 0.2
-//             case _:PolarAreaChartConfig     => 0.8 //equal to BarChar
             //bad
+            case _:BarChartConfig           => 0.2
             case _:ScatterChartConfig       => 0.2
-//             case _:ScatterColorChartConfig  => 0.2
-//             case _:ProgressChartConfig      => 0.1
             case _:PieChartConfig           => 0.1
             //default
             case _                          => 0.5
@@ -116,7 +112,6 @@ case class Accumulation(idMapping: Map[Identifier, Identifier])
         /**
           * Accumulator, creates out of a List of Datapoints it accumulated function
           *
-          * @param list of datapoints
           * @return list of datapoints with interpolated values and Tnterpolation-tags
           */
         def akkumulated: List[TaggedDataPoint] => List[TaggedDataPoint] = {

@@ -1,7 +1,6 @@
 package threesixty.visualizer.visualizations
 
 import org.scalatest.FunSpec
-import threesixty.visualizer.util.GreenColorScheme
 import threesixty.visualizer.util.param.{PositionType, OptLegendParam, OptTitleParam, OptBorder}
 import threesixty.visualizer.util.{GreenColorScheme}
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
