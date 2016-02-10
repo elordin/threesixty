@@ -1,0 +1,646 @@
+<Wix xmlns:util="http://schemas.microsoft.com/wix/UtilExtension" xmlns="http://schemas.microsoft.com/wix/2006/wi">
+      <Product Id="AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA" Name="360° - My personal health and fitness monitor" Language="1033" Version="1.0" Manufacturer="Heroes of SE &lt;se@openinnovator.net&gt;" UpgradeCode="AAAAAAAA-AAAA-AAAA-AAAA-AAAAAAAAAAAA">
+        <Package Description="Visualization engine for fitness data" Comments="TODO - we need comments." Manufacturer="Heroes of SE &lt;se@openinnovator.net&gt;" InstallScope="perMachine" InstallerVersion="200" Compressed="yes"/>
+        <Media Id="1" Cabinet="threesixty105596312.cab" EmbedCab="yes"/>
+        
+      <!-- Define the directories we use -->
+      <Directory Id="TARGETDIR" Name="SourceDir">
+        <Directory Id="ProgramMenuFolder">
+          <Directory Id="ApplicationProgramsFolder" Name="Threesixty"/>
+        </Directory>
+        <Directory Id="ProgramFilesFolder" Name="PFiles">
+          <Directory Id="INSTALLDIR" Name="Threesixty">
+            <Directory Id="lib107141xxx" Name="lib">
+        
+      </Directory><!-- --><Directory Id="bin97543xxxx" Name="bin">
+        
+      </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+      <!-- Now define the components -->
+      <DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_default_threesixty_1_0_jar199705809" Guid="856eb4c1-3b78-4e8a-b4db-521bf8dc457b">
+              <File Id="fl_lib_default_threesixty_1_0_jar199705809" Name="default.threesixty-1.0.jar" DiskId="1" Source="lib\default.threesixty-1.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scala_lang_scala_library_2_11_7_jar193386475" Guid="267c9318-a8a4-4a5a-843d-1823c994e3ef">
+              <File Id="fl_lib_org_scala_lang_scala_library_2_11_7_jar193386475" Name="org.scala-lang.scala-library-2.11.7.jar" DiskId="1" Source="lib\org.scala-lang.scala-library-2.11.7.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scala_lang_modules_scala_xml_2_11_1_0_3_jar196462225" Guid="49bc1970-93fb-40ce-8bab-600220b9b36d">
+              <File Id="fl_lib_org_scala_lang_modules_scala_xml_2_11_1_0_3_jar196462225" Name="org.scala-lang.modules.scala-xml_2.11-1.0.3.jar" DiskId="1" Source="lib\org.scala-lang.modules.scala-xml_2.11-1.0.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_typesafe_akka_akka_actor_2_11_2_4_1_jar391156624" Guid="9e29f768-f9b5-4857-a866-4cef32e7328f">
+              <File Id="fl_lib_com_typesafe_akka_akka_actor_2_11_2_4_1_jar391156624" Name="com.typesafe.akka.akka-actor_2.11-2.4.1.jar" DiskId="1" Source="lib\com.typesafe.akka.akka-actor_2.11-2.4.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_typesafe_config_1_3_0_jar149793418" Guid="e9e820d1-5369-4cab-aeca-2ee9776ad879">
+              <File Id="fl_lib_com_typesafe_config_1_3_0_jar149793418" Name="com.typesafe.config-1.3.0.jar" DiskId="1" Source="lib\com.typesafe.config-1.3.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_typesafe_akka_akka_testkit_2_11_2_4_1_jar144225055" Guid="e22fe3e4-5e7c-472e-a372-f59c2d0f2f63">
+              <File Id="fl_lib_com_typesafe_akka_akka_testkit_2_11_2_4_1_jar144225055" Name="com.typesafe.akka.akka-testkit_2.11-2.4.1.jar" DiskId="1" Source="lib\com.typesafe.akka.akka-testkit_2.11-2.4.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="ib_org_skife_com_typesafe_config_typesafe_config_0_3_0_jar447811429" Guid="3de27d95-e453-4f32-aced-f6e6a5ca9e4d">
+              <File Id="fl_ib_org_skife_com_typesafe_config_typesafe_config_0_3_0_jar447811429" Name="org.skife.com.typesafe.config.typesafe-config-0.3.0.jar" DiskId="1" Source="lib\org.skife.com.typesafe.config.typesafe-config-0.3.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_can_2_11_1_3_3_jar187760005" Guid="87b8304e-21a6-43fa-a50f-44bce97c9a1d">
+              <File Id="fl_lib_io_spray_spray_can_2_11_1_3_3_jar187760005" Name="io.spray.spray-can_2.11-1.3.3.jar" DiskId="1" Source="lib\io.spray.spray-can_2.11-1.3.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_io_2_11_1_3_3_jar85393617x" Guid="e2e505f4-1a44-46af-87b6-4e1325152502">
+              <File Id="fl_lib_io_spray_spray_io_2_11_1_3_3_jar85393617x" Name="io.spray.spray-io_2.11-1.3.3.jar" DiskId="1" Source="lib\io.spray.spray-io_2.11-1.3.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_util_2_11_1_3_3_jar537462325" Guid="e087c9a5-d20e-4d3e-90a8-c62d31f9d637">
+              <File Id="fl_lib_io_spray_spray_util_2_11_1_3_3_jar537462325" Name="io.spray.spray-util_2.11-1.3.3.jar" DiskId="1" Source="lib\io.spray.spray-util_2.11-1.3.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_http_2_11_1_3_3_jar140993716" Guid="612e81d0-4755-42ad-9eac-4c0b8e5b4f2c">
+              <File Id="fl_lib_io_spray_spray_http_2_11_1_3_3_jar140993716" Name="io.spray.spray-http_2.11-1.3.3.jar" DiskId="1" Source="lib\io.spray.spray-http_2.11-1.3.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_parboiled_parboiled_scala_2_11_1_1_7_jar125246639" Guid="7a3fc742-0bfd-46cd-abde-22815c223dc6">
+              <File Id="fl_lib_org_parboiled_parboiled_scala_2_11_1_1_7_jar125246639" Name="org.parboiled.parboiled-scala_2.11-1.1.7.jar" DiskId="1" Source="lib\org.parboiled.parboiled-scala_2.11-1.1.7.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_parboiled_parboiled_core_1_1_7_jar660943563" Guid="d611b02b-40e0-414d-9103-d7c906f79c3d">
+              <File Id="fl_lib_org_parboiled_parboiled_core_1_1_7_jar660943563" Name="org.parboiled.parboiled-core-1.1.7.jar" DiskId="1" Source="lib\org.parboiled.parboiled-core-1.1.7.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_caching_2_11_1_3_3_jar261247350" Guid="08555e2a-ee25-471d-9f2b-73125ed9c006">
+              <File Id="fl_lib_io_spray_spray_caching_2_11_1_3_3_jar261247350" Name="io.spray.spray-caching_2.11-1.3.3.jar" DiskId="1" Source="lib\io.spray.spray-caching_2.11-1.3.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="currentlinkedhashmap_concurrentlinkedhashmap_lru_1_4_2_jar179802211" Guid="0f2d9130-72b5-4788-b498-57c3555c83d2">
+              <File Id="fl_currentlinkedhashmap_concurrentlinkedhashmap_lru_1_4_2_jar179802211" Name="com.googlecode.concurrentlinkedhashmap.concurrentlinkedhashmap-lru-1.4.2.jar" DiskId="1" Source="lib\com.googlecode.concurrentlinkedhashmap.concurrentlinkedhashmap-lru-1.4.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_json_2_11_1_3_2_jar741722382" Guid="e5b37dfe-706b-4580-b404-5fd64c29f2b1">
+              <File Id="fl_lib_io_spray_spray_json_2_11_1_3_2_jar741722382" Name="io.spray.spray-json_2.11-1.3.2.jar" DiskId="1" Source="lib\io.spray.spray-json_2.11-1.3.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_phantom_dsl_2_11_1_18_1_jar51231422x" Guid="2a887ae0-7058-46ea-9126-8afe039379c3">
+              <File Id="fl_lib_com_websudos_phantom_dsl_2_11_1_18_1_jar51231422x" Name="com.websudos.phantom-dsl_2.11-1.18.1.jar" DiskId="1" Source="lib\com.websudos.phantom-dsl_2.11-1.18.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_phantom_connectors_2_11_1_18_1_jar190483727" Guid="14c0377c-a518-4aac-8a9f-f7ea02b61f65">
+              <File Id="fl_lib_com_websudos_phantom_connectors_2_11_1_18_1_jar190483727" Name="com.websudos.phantom-connectors_2.11-1.18.1.jar" DiskId="1" Source="lib\com.websudos.phantom-connectors_2.11-1.18.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_ch_qos_logback_logback_classic_1_1_3_jar136783883" Guid="f77d30d7-c702-4213-8ecd-94ccfa54fa7e">
+              <File Id="fl_lib_ch_qos_logback_logback_classic_1_1_3_jar136783883" Name="ch.qos.logback.logback-classic-1.1.3.jar" DiskId="1" Source="lib\ch.qos.logback.logback-classic-1.1.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_ch_qos_logback_logback_core_1_1_3_jar183913998" Guid="6fe9770c-dd30-4b52-b118-a1cd1ad56ceb">
+              <File Id="fl_lib_ch_qos_logback_logback_core_1_1_3_jar183913998" Name="ch.qos.logback.logback-core-1.1.3.jar" DiskId="1" Source="lib\ch.qos.logback.logback-core-1.1.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_slf4j_log4j_over_slf4j_1_7_12_jar101450065" Guid="2a658336-f869-4045-9ff5-2fab9772b4d8">
+              <File Id="fl_lib_org_slf4j_log4j_over_slf4j_1_7_12_jar101450065" Name="org.slf4j.log4j-over-slf4j-1.7.12.jar" DiskId="1" Source="lib\org.slf4j.log4j-over-slf4j-1.7.12.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_slf4j_slf4j_api_1_7_12_jar705973762" Guid="0c96db9e-0405-4e7d-8ad8-a3a9ac2cabc2">
+              <File Id="fl_lib_org_slf4j_slf4j_api_1_7_12_jar705973762" Name="org.slf4j.slf4j-api-1.7.12.jar" DiskId="1" Source="lib\org.slf4j.slf4j-api-1.7.12.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="_datastax_cassandra_cassandra_driver_core_3_0_0_alpha4_jar194588962" Guid="8fefe560-16b0-4487-b88e-04593c6f4c58">
+              <File Id="fl__datastax_cassandra_cassandra_driver_core_3_0_0_alpha4_jar194588962" Name="com.datastax.cassandra.cassandra-driver-core-3.0.0-alpha4.jar" DiskId="1" Source="lib\com.datastax.cassandra.cassandra-driver-core-3.0.0-alpha4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_netty_netty_handler_4_0_27_Final_jar807725430" Guid="a4aebe7c-914a-4f12-90d3-d4354b764513">
+              <File Id="fl_lib_io_netty_netty_handler_4_0_27_Final_jar807725430" Name="io.netty.netty-handler-4.0.27.Final.jar" DiskId="1" Source="lib\io.netty.netty-handler-4.0.27.Final.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_netty_netty_buffer_4_0_27_Final_jar304851190" Guid="578ba2fb-7ff5-450d-ba55-0104a3e3cd3f">
+              <File Id="fl_lib_io_netty_netty_buffer_4_0_27_Final_jar304851190" Name="io.netty.netty-buffer-4.0.27.Final.jar" DiskId="1" Source="lib\io.netty.netty-buffer-4.0.27.Final.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_netty_netty_common_4_0_27_Final_jar126042604" Guid="ed3e3744-dcc1-4e8d-a638-5eaec82f124e">
+              <File Id="fl_lib_io_netty_netty_common_4_0_27_Final_jar126042604" Name="io.netty.netty-common-4.0.27.Final.jar" DiskId="1" Source="lib\io.netty.netty-common-4.0.27.Final.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_netty_netty_transport_4_0_27_Final_jar131418093" Guid="2ec361ae-be3c-4b00-9760-49739a103d96">
+              <File Id="fl_lib_io_netty_netty_transport_4_0_27_Final_jar131418093" Name="io.netty.netty-transport-4.0.27.Final.jar" DiskId="1" Source="lib\io.netty.netty-transport-4.0.27.Final.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_netty_netty_codec_4_0_27_Final_jar214589566" Guid="9924d0f8-27f5-4c36-b3d3-a4d025b45aa0">
+              <File Id="fl_lib_io_netty_netty_codec_4_0_27_Final_jar214589566" Name="io.netty.netty-codec-4.0.27.Final.jar" DiskId="1" Source="lib\io.netty.netty-codec-4.0.27.Final.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_google_guava_guava_16_0_1_jar109019912" Guid="78de2157-8a62-4df1-9e27-5b91925b3a85">
+              <File Id="fl_lib_com_google_guava_guava_16_0_1_jar109019912" Name="com.google.guava.guava-16.0.1.jar" DiskId="1" Source="lib\com.google.guava.guava-16.0.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_codahale_metrics_metrics_core_3_0_2_jar540711351" Guid="bd7594bc-87f7-46ae-8491-31012c09630a">
+              <File Id="fl_lib_com_codahale_metrics_metrics_core_3_0_2_jar540711351" Name="com.codahale.metrics.metrics-core-3.0.2.jar" DiskId="1" Source="lib\com.codahale.metrics.metrics-core-3.0.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scala_lang_scala_reflect_2_11_7_jar163598952" Guid="41abe540-8e55-4995-81c6-f1f15d06ee38">
+              <File Id="fl_lib_org_scala_lang_scala_reflect_2_11_7_jar163598952" Name="org.scala-lang.scala-reflect-2.11.7.jar" DiskId="1" Source="lib\org.scala-lang.scala-reflect-2.11.7.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_diesel_engine_2_11_0_2_2_jar874775933" Guid="d1dabe89-ab75-4938-bb60-c88b1b36a7a9">
+              <File Id="fl_lib_com_websudos_diesel_engine_2_11_0_2_2_jar874775933" Name="com.websudos.diesel-engine_2.11-0.2.2.jar" DiskId="1" Source="lib\com.websudos.diesel-engine_2.11-0.2.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_chuusai_shapeless_2_11_2_2_4_jar167701378" Guid="feb72cbe-808b-4d78-a4d0-ee18def17e42">
+              <File Id="fl_lib_com_chuusai_shapeless_2_11_2_2_4_jar167701378" Name="com.chuusai.shapeless_2.11-2.2.4.jar" DiskId="1" Source="lib\com.chuusai.shapeless_2.11-2.2.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_core_2_11_6_24_0_jar959146963" Guid="79db80db-c4d0-4b7f-824c-d7cbd9fa5f26">
+              <File Id="fl_lib_com_twitter_util_core_2_11_6_24_0_jar959146963" Name="com.twitter.util-core_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-core_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_function_2_11_6_24_0_jar323880564" Guid="ac0c6464-0bf4-47f0-9654-7f2941b14b12">
+              <File Id="fl_lib_com_twitter_util_function_2_11_6_24_0_jar323880564" Name="com.twitter.util-function_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-function_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="scala_lang_modules_scala_parser_combinators_2_11_1_0_2_jar164446945" Guid="855d2d16-5015-4aae-b99b-ce5c4db610b9">
+              <File Id="fl_scala_lang_modules_scala_parser_combinators_2_11_1_0_2_jar164446945" Name="org.scala-lang.modules.scala-parser-combinators_2.11-1.0.2.jar" DiskId="1" Source="lib\org.scala-lang.modules.scala-parser-combinators_2.11-1.0.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_typesafe_play_play_iteratees_2_11_2_4_0_M1_jar169558603" Guid="965aa063-901e-41c9-b5f3-f4b520327236">
+              <File Id="fl_lib_com_typesafe_play_play_iteratees_2_11_2_4_0_M1_jar169558603" Name="com.typesafe.play.play-iteratees_2.11-2.4.0-M1.jar" DiskId="1" Source="lib\com.typesafe.play.play-iteratees_2.11-2.4.0-M1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scala_stm_scala_stm_2_11_0_7_jar909053964" Guid="e5c582c0-ec5e-4b60-ac66-d5e76aef5339">
+              <File Id="fl_lib_org_scala_stm_scala_stm_2_11_0_7_jar909053964" Name="org.scala-stm.scala-stm_2.11-0.7.jar" DiskId="1" Source="lib\org.scala-stm.scala-stm_2.11-0.7.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_joda_joda_convert_1_6_jar242233433" Guid="11826c23-3d6b-4aa9-b7b7-885d1a16d401">
+              <File Id="fl_lib_org_joda_joda_convert_1_6_jar242233433" Name="org.joda.joda-convert-1.6.jar" DiskId="1" Source="lib\org.joda.joda-convert-1.6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_phantom_testkit_2_11_1_18_1_jar209438860" Guid="f0fc76b7-8a21-40b7-a267-9d004a440aca">
+              <File Id="fl_lib_com_websudos_phantom_testkit_2_11_1_18_1_jar209438860" Name="com.websudos.phantom-testkit_2.11-1.18.1.jar" DiskId="1" Source="lib\com.websudos.phantom-testkit_2.11-1.18.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_util_lift_2_11_0_10_0_jar159584865" Guid="610facde-4f58-45c2-97aa-95efed0e338a">
+              <File Id="fl_lib_com_websudos_util_lift_2_11_0_10_0_jar159584865" Name="com.websudos.util-lift_2.11-0.10.0.jar" DiskId="1" Source="lib\com.websudos.util-lift_2.11-0.10.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_util_parsers_2_11_0_10_0_jar185396094" Guid="c9e9b95d-58f4-4023-90e0-f5c0c50d3b81">
+              <File Id="fl_lib_com_websudos_util_parsers_2_11_0_10_0_jar185396094" Name="com.websudos.util-parsers_2.11-0.10.0.jar" DiskId="1" Source="lib\com.websudos.util-parsers_2.11-0.10.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_util_domain_2_11_0_10_0_jar158230008" Guid="f6748d55-2e34-416b-b2c1-7a4272239ba8">
+              <File Id="fl_lib_com_websudos_util_domain_2_11_0_10_0_jar158230008" Name="com.websudos.util-domain_2.11-0.10.0.jar" DiskId="1" Source="lib\com.websudos.util-domain_2.11-0.10.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_util_http_2_11_0_10_0_jar339507020" Guid="d7c4ae16-d5bc-40da-baef-245a2d84419b">
+              <File Id="fl_lib_com_websudos_util_http_2_11_0_10_0_jar339507020" Name="com.websudos.util-http_2.11-0.10.0.jar" DiskId="1" Source="lib\com.websudos.util-http_2.11-0.10.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_finagle_http_2_11_6_25_0_jar725561479" Guid="05363c02-9511-4d0f-af01-bf0ecae5a16a">
+              <File Id="fl_lib_com_twitter_finagle_http_2_11_6_25_0_jar725561479" Name="com.twitter.finagle-http_2.11-6.25.0.jar" DiskId="1" Source="lib\com.twitter.finagle-http_2.11-6.25.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_finagle_core_2_11_6_25_0_jar123859163" Guid="45352ecd-c992-4135-b5c7-3f940ec06200">
+              <File Id="fl_lib_com_twitter_finagle_core_2_11_6_25_0_jar123859163" Name="com.twitter.finagle-core_2.11-6.25.0.jar" DiskId="1" Source="lib\com.twitter.finagle-core_2.11-6.25.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_netty_netty_3_10_1_Final_jar183654754" Guid="bf28862c-4a02-4ab4-bf50-1631c5dfadd3">
+              <File Id="fl_lib_io_netty_netty_3_10_1_Final_jar183654754" Name="io.netty.netty-3.10.1.Final.jar" DiskId="1" Source="lib\io.netty.netty-3.10.1.Final.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_app_2_11_6_24_0_jar586774717" Guid="c5c48092-8a8c-4656-9186-6b8cd8a1a51e">
+              <File Id="fl_lib_com_twitter_util_app_2_11_6_24_0_jar586774717" Name="com.twitter.util-app_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-app_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_registry_2_11_6_24_0_jar180009675" Guid="b30702de-de28-49e8-a67e-4e8547cbca49">
+              <File Id="fl_lib_com_twitter_util_registry_2_11_6_24_0_jar180009675" Name="com.twitter.util-registry_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-registry_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_collection_2_11_6_24_0_jar968617490" Guid="007fcb71-b2bd-4e11-9c95-0dd3e0d3fd34">
+              <File Id="fl_lib_com_twitter_util_collection_2_11_6_24_0_jar968617490" Name="com.twitter.util-collection_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-collection_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_google_code_findbugs_jsr305_1_3_9_jar196922733" Guid="8351a326-b710-4f10-9e06-71f667b9c291">
+              <File Id="fl_lib_com_google_code_findbugs_jsr305_1_3_9_jar196922733" Name="com.google.code.findbugs.jsr305-1.3.9.jar" DiskId="1" Source="lib\com.google.code.findbugs.jsr305-1.3.9.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_javax_inject_javax_inject_1_jar265886357" Guid="a75f23ea-0275-4563-82c9-5fff584f0c11">
+              <File Id="fl_lib_javax_inject_javax_inject_1_jar265886357" Name="javax.inject.javax.inject-1.jar" DiskId="1" Source="lib\javax.inject.javax.inject-1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_collections_commons_collections_3_2_1_jar201169772" Guid="f9d324e0-e700-4047-8811-c9f91d8a6f6f">
+              <File Id="fl_lib_commons_collections_commons_collections_3_2_1_jar201169772" Name="commons-collections.commons-collections-3.2.1.jar" DiskId="1" Source="lib\commons-collections.commons-collections-3.2.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_hashing_2_11_6_24_0_jar150473530" Guid="40043bdd-1b04-455e-91a1-af528a19d30e">
+              <File Id="fl_lib_com_twitter_util_hashing_2_11_6_24_0_jar150473530" Name="com.twitter.util-hashing_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-hashing_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_stats_2_11_6_24_0_jar181432934" Guid="1a270d35-d16d-47bf-abfc-76bd592e42ee">
+              <File Id="fl_lib_com_twitter_util_stats_2_11_6_24_0_jar181432934" Name="com.twitter.util-stats_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-stats_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_jvm_2_11_6_24_0_jar104951558" Guid="3f19e04b-381b-4f1a-b55a-7a1cf34eea57">
+              <File Id="fl_lib_com_twitter_util_jvm_2_11_6_24_0_jar104951558" Name="com.twitter.util-jvm_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-jvm_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_logging_2_11_6_24_0_jar141604838" Guid="08c6a26d-d662-439d-90db-eaf4a8278dda">
+              <File Id="fl_lib_com_twitter_util_logging_2_11_6_24_0_jar141604838" Name="com.twitter.util-logging_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-logging_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_jsr166e_1_0_0_jar210164473" Guid="c10c0673-e586-4939-9610-86137389fe5b">
+              <File Id="fl_lib_com_twitter_jsr166e_1_0_0_jar210164473" Name="com.twitter.jsr166e-1.0.0.jar" DiskId="1" Source="lib\com.twitter.jsr166e-1.0.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_twitter_util_codec_2_11_6_24_0_jar163515016" Guid="8b8e5ee8-9e83-4c7f-9823-603fc006d745">
+              <File Id="fl_lib_com_twitter_util_codec_2_11_6_24_0_jar163515016" Name="com.twitter.util-codec_2.11-6.24.0.jar" DiskId="1" Source="lib\com.twitter.util-codec_2.11-6.24.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_codec_commons_codec_1_6_jar110247059" Guid="f180e29f-3c47-4db7-9e67-135cba520d48">
+              <File Id="fl_lib_commons_codec_commons_codec_1_6_jar110247059" Name="commons-codec.commons-codec-1.6.jar" DiskId="1" Source="lib\commons-codec.commons-codec-1.6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_lang_commons_lang_2_6_jar105787132" Guid="4a49e096-64a4-4dfd-bdac-af503f850ffb">
+              <File Id="fl_lib_commons_lang_commons_lang_2_6_jar105787132" Name="commons-lang.commons-lang-2.6.jar" DiskId="1" Source="lib\commons-lang.commons-lang-2.6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_validator_commons_validator_1_4_0_jar151452812" Guid="e603b442-f995-4555-bfdc-ddc4ac196d08">
+              <File Id="fl_lib_commons_validator_commons_validator_1_4_0_jar151452812" Name="commons-validator.commons-validator-1.4.0.jar" DiskId="1" Source="lib\commons-validator.commons-validator-1.4.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_beanutils_commons_beanutils_1_8_3_jar551242464" Guid="d4145226-a67a-4295-911d-9bd9d888fe1b">
+              <File Id="fl_lib_commons_beanutils_commons_beanutils_1_8_3_jar551242464" Name="commons-beanutils.commons-beanutils-1.8.3.jar" DiskId="1" Source="lib\commons-beanutils.commons-beanutils-1.8.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_logging_commons_logging_1_1_1_jar250197267" Guid="d7d8d0b0-509b-4087-8618-2da81645f3c5">
+              <File Id="fl_lib_commons_logging_commons_logging_1_1_1_jar250197267" Name="commons-logging.commons-logging-1.1.1.jar" DiskId="1" Source="lib\commons-logging.commons-logging-1.1.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_digester_commons_digester_1_8_jar37833601x" Guid="b10d470c-d632-4d91-98ad-5735206f5c9e">
+              <File Id="fl_lib_commons_digester_commons_digester_1_8_jar37833601x" Name="commons-digester.commons-digester-1.8.jar" DiskId="1" Source="lib\commons-digester.commons-digester-1.8.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scalaz_scalaz_core_2_11_7_1_0_jar219843483" Guid="9c965fa5-fec6-4daa-ade9-b4795e68a1ea">
+              <File Id="fl_lib_org_scalaz_scalaz_core_2_11_7_1_0_jar219843483" Name="org.scalaz.scalaz-core_2.11-7.1.0.jar" DiskId="1" Source="lib\org.scalaz.scalaz-core_2.11-7.1.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_net_liftweb_lift_webkit_2_11_3_0_M6_jar180839661" Guid="70987345-20fe-4719-b760-b509e6e1b188">
+              <File Id="fl_lib_net_liftweb_lift_webkit_2_11_3_0_M6_jar180839661" Name="net.liftweb.lift-webkit_2.11-3.0-M6.jar" DiskId="1" Source="lib\net.liftweb.lift-webkit_2.11-3.0-M6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_net_liftweb_lift_util_2_11_3_0_M6_jar687357636" Guid="7db83a3d-b0f2-4164-b71c-deae76598724">
+              <File Id="fl_lib_net_liftweb_lift_util_2_11_3_0_M6_jar687357636" Name="net.liftweb.lift-util_2.11-3.0-M6.jar" DiskId="1" Source="lib\net.liftweb.lift-util_2.11-3.0-M6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scala_lang_scala_compiler_2_11_4_jar118074580" Guid="86d5d369-731f-4ad2-9e41-eb59bdc80e5c">
+              <File Id="fl_lib_org_scala_lang_scala_compiler_2_11_4_jar118074580" Name="org.scala-lang.scala-compiler-2.11.4.jar" DiskId="1" Source="lib\org.scala-lang.scala-compiler-2.11.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_net_liftweb_lift_actor_2_11_3_0_M6_jar574273203" Guid="0781ef51-77c1-4b98-8adf-2af2f9a00a69">
+              <File Id="fl_lib_net_liftweb_lift_actor_2_11_3_0_M6_jar574273203" Name="net.liftweb.lift-actor_2.11-3.0-M6.jar" DiskId="1" Source="lib\net.liftweb.lift-actor_2.11-3.0-M6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_net_liftweb_lift_common_2_11_3_0_M6_jar137507477" Guid="d844f9ab-cd1d-46e4-b58f-6bc1f20b5712">
+              <File Id="fl_lib_net_liftweb_lift_common_2_11_3_0_M6_jar137507477" Name="net.liftweb.lift-common_2.11-3.0-M6.jar" DiskId="1" Source="lib\net.liftweb.lift-common_2.11-3.0-M6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_net_liftweb_lift_json_2_11_3_0_M6_jar154188603" Guid="997d47bb-2677-4637-b224-45a4e9ce4383">
+              <File Id="fl_lib_net_liftweb_lift_json_2_11_3_0_M6_jar154188603" Name="net.liftweb.lift-json_2.11-3.0-M6.jar" DiskId="1" Source="lib\net.liftweb.lift-json_2.11-3.0-M6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scala_lang_scalap_2_11_4_jar152751678" Guid="c9b27a7c-8476-48fe-93b2-e6377b17f8c5">
+              <File Id="fl_lib_org_scala_lang_scalap_2_11_4_jar152751678" Name="org.scala-lang.scalap-2.11.4.jar" DiskId="1" Source="lib\org.scala-lang.scalap-2.11.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_thoughtworks_paranamer_paranamer_2_4_1_jar182375326" Guid="57164910-bf99-4882-a223-1c5339d83bfe">
+              <File Id="fl_lib_com_thoughtworks_paranamer_paranamer_2_4_1_jar182375326" Name="com.thoughtworks.paranamer.paranamer-2.4.1.jar" DiskId="1" Source="lib\com.thoughtworks.paranamer.paranamer-2.4.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_net_liftweb_lift_markdown_2_11_3_0_M6_jar855445327" Guid="3fefca53-e5e1-4ebd-a750-4a39ad1f476b">
+              <File Id="fl_lib_net_liftweb_lift_markdown_2_11_3_0_M6_jar855445327" Name="net.liftweb.lift-markdown_2.11-3.0-M6.jar" DiskId="1" Source="lib\net.liftweb.lift-markdown_2.11-3.0-M6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_joda_time_joda_time_2_6_jar760558510" Guid="7ff9fdc6-de6a-44ce-ba3a-f66b996b9443">
+              <File Id="fl_lib_joda_time_joda_time_2_6_jar760558510" Name="joda-time.joda-time-2.6.jar" DiskId="1" Source="lib\joda-time.joda-time-2.6.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_javax_mail_mail_1_4_4_jar174208525" Guid="3426a1f1-8560-471d-9636-cee22b7ee796">
+              <File Id="fl_lib_javax_mail_mail_1_4_4_jar174208525" Name="javax.mail.mail-1.4.4.jar" DiskId="1" Source="lib\javax.mail.mail-1.4.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_javax_activation_activation_1_1_jar152946556" Guid="3497ef6a-bc86-425c-b711-1e06fef63da2">
+              <File Id="fl_lib_javax_activation_activation_1_1_jar152946556" Name="javax.activation.activation-1.1.jar" DiskId="1" Source="lib\javax.activation.activation-1.1.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_nu_validator_htmlparser_htmlparser_1_4_jar114479870" Guid="428d9d5f-cf45-460a-954a-f5ee801a11af">
+              <File Id="fl_lib_nu_validator_htmlparser_htmlparser_1_4_jar114479870" Name="nu.validator.htmlparser.htmlparser-1.4.jar" DiskId="1" Source="lib\nu.validator.htmlparser.htmlparser-1.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_xerces_xercesImpl_2_11_0_jar203284702" Guid="d07e518c-c113-4623-8ab9-b8dd41aef8d8">
+              <File Id="fl_lib_xerces_xercesImpl_2_11_0_jar203284702" Name="xerces.xercesImpl-2.11.0.jar" DiskId="1" Source="lib\xerces.xercesImpl-2.11.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_xml_apis_xml_apis_1_4_01_jar76483630x" Guid="07df9b84-b7fc-4a56-9109-086d0bca9bd8">
+              <File Id="fl_lib_xml_apis_xml_apis_1_4_01_jar76483630x" Name="xml-apis.xml-apis-1.4.01.jar" DiskId="1" Source="lib\xml-apis.xml-apis-1.4.01.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_commons_fileupload_commons_fileupload_1_2_2_jar208483027" Guid="d59cec6e-5b2c-4335-9f64-7de7fb6d1467">
+              <File Id="fl_lib_commons_fileupload_commons_fileupload_1_2_2_jar208483027" Name="commons-fileupload.commons-fileupload-1.2.2.jar" DiskId="1" Source="lib\commons-fileupload.commons-fileupload-1.2.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_mozilla_rhino_1_7R4_jar154110550" Guid="f6e1b0a3-096f-4d8c-a4df-da581711d8ad">
+              <File Id="fl_lib_org_mozilla_rhino_1_7R4_jar154110550" Name="org.mozilla.rhino-1.7R4.jar" DiskId="1" Source="lib\org.mozilla.rhino-1.7R4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_websudos_util_testing_2_11_0_10_0_jar33875144x" Guid="7b79b657-acdd-466a-b93a-6f503a356621">
+              <File Id="fl_lib_com_websudos_util_testing_2_11_0_10_0_jar33875144x" Name="com.websudos.util-testing_2.11-0.10.0.jar" DiskId="1" Source="lib\com.websudos.util-testing_2.11-0.10.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scalatest_scalatest_2_11_2_2_4_jar979837847" Guid="bbf3ba82-1c02-4964-9052-759bc54f3466">
+              <File Id="fl_lib_org_scalatest_scalatest_2_11_2_2_4_jar979837847" Name="org.scalatest.scalatest_2.11-2.2.4.jar" DiskId="1" Source="lib\org.scalatest.scalatest_2.11-2.2.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scalacheck_scalacheck_2_11_1_11_4_jar185948233" Guid="03da7f2b-d05e-470d-8698-fbedf2c841c9">
+              <File Id="fl_lib_org_scalacheck_scalacheck_2_11_1_11_4_jar185948233" Name="org.scalacheck.scalacheck_2.11-1.11.4.jar" DiskId="1" Source="lib\org.scalacheck.scalacheck_2.11-1.11.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_scala_sbt_test_interface_1_0_jar163107882" Guid="b3eac8b3-488f-4277-a729-e4df86adeee0">
+              <File Id="fl_lib_org_scala_sbt_test_interface_1_0_jar163107882" Name="org.scala-sbt.test-interface-1.0.jar" DiskId="1" Source="lib\org.scala-sbt.test-interface-1.0.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_fluttercode_datafactory_datafactory_0_8_jar191281377" Guid="d1104083-4a10-409d-b65d-44b0fb94e4d2">
+              <File Id="fl_lib_org_fluttercode_datafactory_datafactory_0_8_jar191281377" Name="org.fluttercode.datafactory.datafactory-0.8.jar" DiskId="1" Source="lib\org.fluttercode.datafactory.datafactory-0.8.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_routing_shapeless2_2_11_1_3_3_jar112965445" Guid="232a9e35-87a2-4d6f-83c6-34bd873163cf">
+              <File Id="fl_lib_io_spray_spray_routing_shapeless2_2_11_1_3_3_jar112965445" Name="io.spray.spray-routing-shapeless2_2.11-1.3.3.jar" DiskId="1" Source="lib\io.spray.spray-routing-shapeless2_2.11-1.3.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_io_spray_spray_httpx_2_11_1_3_3_jar171958889" Guid="2904a1b3-e160-4046-88dc-aacab02abf56">
+              <File Id="fl_lib_io_spray_spray_httpx_2_11_1_3_3_jar171958889" Name="io.spray.spray-httpx_2.11-1.3.3.jar" DiskId="1" Source="lib\io.spray.spray-httpx_2.11-1.3.3.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_org_jvnet_mimepull_mimepull_1_9_5_jar132864275" Guid="43b30681-1943-4479-a0d6-0995462b5512">
+              <File Id="fl_lib_org_jvnet_mimepull_mimepull_1_9_5_jar132864275" Name="org.jvnet.mimepull.mimepull-1.9.5.jar" DiskId="1" Source="lib\org.jvnet.mimepull.mimepull-1.9.5.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_typesafe_play_play_json_2_11_2_3_4_jar127890470" Guid="0ecaee5f-6850-44d5-86ec-a4f110589adc">
+              <File Id="fl_lib_com_typesafe_play_play_json_2_11_2_3_4_jar127890470" Name="com.typesafe.play.play-json_2.11-2.3.4.jar" DiskId="1" Source="lib\com.typesafe.play.play-json_2.11-2.3.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_typesafe_play_play_functional_2_11_2_3_4_jar610767430" Guid="0cca0b34-a6a3-4264-b687-570aa5e7f67a">
+              <File Id="fl_lib_com_typesafe_play_play_functional_2_11_2_3_4_jar610767430" Name="com.typesafe.play.play-functional_2.11-2.3.4.jar" DiskId="1" Source="lib\com.typesafe.play.play-functional_2.11-2.3.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_typesafe_play_play_datacommons_2_11_2_3_4_jar209737397" Guid="4f03dbc4-01f9-4af1-b641-f53bcaa7d793">
+              <File Id="fl_lib_com_typesafe_play_play_datacommons_2_11_2_3_4_jar209737397" Name="com.typesafe.play.play-datacommons_2.11-2.3.4.jar" DiskId="1" Source="lib\com.typesafe.play.play-datacommons_2.11-2.3.4.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="b_com_fasterxml_jackson_core_jackson_annotations_2_3_2_jar158794196" Guid="fb686685-ba9a-4f8e-9cd4-dc2e908a5990">
+              <File Id="fl_b_com_fasterxml_jackson_core_jackson_annotations_2_3_2_jar158794196" Name="com.fasterxml.jackson.core.jackson-annotations-2.3.2.jar" DiskId="1" Source="lib\com.fasterxml.jackson.core.jackson-annotations-2.3.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_fasterxml_jackson_core_jackson_core_2_3_2_jar108199831" Guid="e6cf1dcf-60e9-4db9-aed6-111be2333a95">
+              <File Id="fl_lib_com_fasterxml_jackson_core_jackson_core_2_3_2_jar108199831" Name="com.fasterxml.jackson.core.jackson-core-2.3.2.jar" DiskId="1" Source="lib\com.fasterxml.jackson.core.jackson-core-2.3.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="lib107141xxx">
+            <Component Id="lib_com_fasterxml_jackson_core_jackson_databind_2_3_2_jar539531815" Guid="8ae7aa0a-cf62-4dcf-a40b-48d72a7da5bf">
+              <File Id="fl_lib_com_fasterxml_jackson_core_jackson_databind_2_3_2_jar539531815" Name="com.fasterxml.jackson.core.jackson-databind-2.3.2.jar" DiskId="1" Source="lib\com.fasterxml.jackson.core.jackson-databind-2.3.2.jar">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="bin97543xxxx">
+            <Component Id="bin_threesixty134178353" Guid="6953228b-f32d-49b5-b8c4-244b7bcfd204">
+              <File Id="fl_bin_threesixty134178353" Name="threesixty" DiskId="1" Source="bin\threesixty">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="bin97543xxxx">
+            <Component Id="bin_threesixty_bat151381368" Guid="26461bbe-956b-486b-81f1-d672822c57bc">
+              <File Id="fl_bin_threesixty_bat151381368" Name="threesixty.bat" DiskId="1" Source="bin\threesixty.bat">
+                
+              </File>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="bin97543xxxx">
+            <Component Id="bin97543xxxxPathC" Guid="46589e5a-3c6c-4a6d-81ae-eff6b209157e">
+              <CreateFolder/>
+              <Environment Id="THREESIXTY_HOME" Name="THREESIXTY_HOME" Value="[INSTALLDIR]" Permanent="no" Action="set" System="yes"/>
+              <Environment Id="PATH" Name="PATH" Value="[INSTALLDIR]bin" Permanent="no" Part="last" Action="set" System="yes"/>
+            </Component>
+          </DirectoryRef><DirectoryRef Id="ApplicationProgramsFolder">
+            <Component Id="shortcut_d8be7b19_8c5f_487a_bc26_ec0cf43b1732972584253" Guid="68e6495f-47c6-44db-9751-4a8b79d300a5">
+              
+              <RemoveFolder Id="ApplicationProgramsFolderRemove" Directory="ApplicationProgramsFolder" On="uninstall"/>
+              <RegistryValue Root="HKCU" Key="Software\Heroes of SE &lt;se@openinnovator.net&gt;\Threesixty" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+          </DirectoryRef>
+      <!-- Now define the features! -->
+      <Feature Id="Complete" Title="360° - My personal health and fitness monitor" Description="Visualization engine for fitness data" Display="expand" Level="1" ConfigurableDirectory="INSTALLDIR">
+        <Feature Id="threesixty_core211374948" Title="threesixty" Description="All core files." Level="1" Absent="disallow">
+                    <ComponentRef Id="lib_default_threesixty_1_0_jar199705809"/><ComponentRef Id="lib_org_scala_lang_scala_library_2_11_7_jar193386475"/><ComponentRef Id="lib_org_scala_lang_modules_scala_xml_2_11_1_0_3_jar196462225"/><ComponentRef Id="lib_com_typesafe_akka_akka_actor_2_11_2_4_1_jar391156624"/><ComponentRef Id="lib_com_typesafe_config_1_3_0_jar149793418"/><ComponentRef Id="lib_com_typesafe_akka_akka_testkit_2_11_2_4_1_jar144225055"/><ComponentRef Id="ib_org_skife_com_typesafe_config_typesafe_config_0_3_0_jar447811429"/><ComponentRef Id="lib_io_spray_spray_can_2_11_1_3_3_jar187760005"/><ComponentRef Id="lib_io_spray_spray_io_2_11_1_3_3_jar85393617x"/><ComponentRef Id="lib_io_spray_spray_util_2_11_1_3_3_jar537462325"/><ComponentRef Id="lib_io_spray_spray_http_2_11_1_3_3_jar140993716"/><ComponentRef Id="lib_org_parboiled_parboiled_scala_2_11_1_1_7_jar125246639"/><ComponentRef Id="lib_org_parboiled_parboiled_core_1_1_7_jar660943563"/><ComponentRef Id="lib_io_spray_spray_caching_2_11_1_3_3_jar261247350"/><ComponentRef Id="currentlinkedhashmap_concurrentlinkedhashmap_lru_1_4_2_jar179802211"/><ComponentRef Id="lib_io_spray_spray_json_2_11_1_3_2_jar741722382"/><ComponentRef Id="lib_com_websudos_phantom_dsl_2_11_1_18_1_jar51231422x"/><ComponentRef Id="lib_com_websudos_phantom_connectors_2_11_1_18_1_jar190483727"/><ComponentRef Id="lib_ch_qos_logback_logback_classic_1_1_3_jar136783883"/><ComponentRef Id="lib_ch_qos_logback_logback_core_1_1_3_jar183913998"/><ComponentRef Id="lib_org_slf4j_log4j_over_slf4j_1_7_12_jar101450065"/><ComponentRef Id="lib_org_slf4j_slf4j_api_1_7_12_jar705973762"/><ComponentRef Id="_datastax_cassandra_cassandra_driver_core_3_0_0_alpha4_jar194588962"/><ComponentRef Id="lib_io_netty_netty_handler_4_0_27_Final_jar807725430"/><ComponentRef Id="lib_io_netty_netty_buffer_4_0_27_Final_jar304851190"/><ComponentRef Id="lib_io_netty_netty_common_4_0_27_Final_jar126042604"/><ComponentRef Id="lib_io_netty_netty_transport_4_0_27_Final_jar131418093"/><ComponentRef Id="lib_io_netty_netty_codec_4_0_27_Final_jar214589566"/><ComponentRef Id="lib_com_google_guava_guava_16_0_1_jar109019912"/><ComponentRef Id="lib_com_codahale_metrics_metrics_core_3_0_2_jar540711351"/><ComponentRef Id="lib_org_scala_lang_scala_reflect_2_11_7_jar163598952"/><ComponentRef Id="lib_com_websudos_diesel_engine_2_11_0_2_2_jar874775933"/><ComponentRef Id="lib_com_chuusai_shapeless_2_11_2_2_4_jar167701378"/><ComponentRef Id="lib_com_twitter_util_core_2_11_6_24_0_jar959146963"/><ComponentRef Id="lib_com_twitter_util_function_2_11_6_24_0_jar323880564"/><ComponentRef Id="scala_lang_modules_scala_parser_combinators_2_11_1_0_2_jar164446945"/><ComponentRef Id="lib_com_typesafe_play_play_iteratees_2_11_2_4_0_M1_jar169558603"/><ComponentRef Id="lib_org_scala_stm_scala_stm_2_11_0_7_jar909053964"/><ComponentRef Id="lib_org_joda_joda_convert_1_6_jar242233433"/><ComponentRef Id="lib_com_websudos_phantom_testkit_2_11_1_18_1_jar209438860"/><ComponentRef Id="lib_com_websudos_util_lift_2_11_0_10_0_jar159584865"/><ComponentRef Id="lib_com_websudos_util_parsers_2_11_0_10_0_jar185396094"/><ComponentRef Id="lib_com_websudos_util_domain_2_11_0_10_0_jar158230008"/><ComponentRef Id="lib_com_websudos_util_http_2_11_0_10_0_jar339507020"/><ComponentRef Id="lib_com_twitter_finagle_http_2_11_6_25_0_jar725561479"/><ComponentRef Id="lib_com_twitter_finagle_core_2_11_6_25_0_jar123859163"/><ComponentRef Id="lib_io_netty_netty_3_10_1_Final_jar183654754"/><ComponentRef Id="lib_com_twitter_util_app_2_11_6_24_0_jar586774717"/><ComponentRef Id="lib_com_twitter_util_registry_2_11_6_24_0_jar180009675"/><ComponentRef Id="lib_com_twitter_util_collection_2_11_6_24_0_jar968617490"/><ComponentRef Id="lib_com_google_code_findbugs_jsr305_1_3_9_jar196922733"/><ComponentRef Id="lib_javax_inject_javax_inject_1_jar265886357"/><ComponentRef Id="lib_commons_collections_commons_collections_3_2_1_jar201169772"/><ComponentRef Id="lib_com_twitter_util_hashing_2_11_6_24_0_jar150473530"/><ComponentRef Id="lib_com_twitter_util_stats_2_11_6_24_0_jar181432934"/><ComponentRef Id="lib_com_twitter_util_jvm_2_11_6_24_0_jar104951558"/><ComponentRef Id="lib_com_twitter_util_logging_2_11_6_24_0_jar141604838"/><ComponentRef Id="lib_com_twitter_jsr166e_1_0_0_jar210164473"/><ComponentRef Id="lib_com_twitter_util_codec_2_11_6_24_0_jar163515016"/><ComponentRef Id="lib_commons_codec_commons_codec_1_6_jar110247059"/><ComponentRef Id="lib_commons_lang_commons_lang_2_6_jar105787132"/><ComponentRef Id="lib_commons_validator_commons_validator_1_4_0_jar151452812"/><ComponentRef Id="lib_commons_beanutils_commons_beanutils_1_8_3_jar551242464"/><ComponentRef Id="lib_commons_logging_commons_logging_1_1_1_jar250197267"/><ComponentRef Id="lib_commons_digester_commons_digester_1_8_jar37833601x"/><ComponentRef Id="lib_org_scalaz_scalaz_core_2_11_7_1_0_jar219843483"/><ComponentRef Id="lib_net_liftweb_lift_webkit_2_11_3_0_M6_jar180839661"/><ComponentRef Id="lib_net_liftweb_lift_util_2_11_3_0_M6_jar687357636"/><ComponentRef Id="lib_org_scala_lang_scala_compiler_2_11_4_jar118074580"/><ComponentRef Id="lib_net_liftweb_lift_actor_2_11_3_0_M6_jar574273203"/><ComponentRef Id="lib_net_liftweb_lift_common_2_11_3_0_M6_jar137507477"/><ComponentRef Id="lib_net_liftweb_lift_json_2_11_3_0_M6_jar154188603"/><ComponentRef Id="lib_org_scala_lang_scalap_2_11_4_jar152751678"/><ComponentRef Id="lib_com_thoughtworks_paranamer_paranamer_2_4_1_jar182375326"/><ComponentRef Id="lib_net_liftweb_lift_markdown_2_11_3_0_M6_jar855445327"/><ComponentRef Id="lib_joda_time_joda_time_2_6_jar760558510"/><ComponentRef Id="lib_javax_mail_mail_1_4_4_jar174208525"/><ComponentRef Id="lib_javax_activation_activation_1_1_jar152946556"/><ComponentRef Id="lib_nu_validator_htmlparser_htmlparser_1_4_jar114479870"/><ComponentRef Id="lib_xerces_xercesImpl_2_11_0_jar203284702"/><ComponentRef Id="lib_xml_apis_xml_apis_1_4_01_jar76483630x"/><ComponentRef Id="lib_commons_fileupload_commons_fileupload_1_2_2_jar208483027"/><ComponentRef Id="lib_org_mozilla_rhino_1_7R4_jar154110550"/><ComponentRef Id="lib_com_websudos_util_testing_2_11_0_10_0_jar33875144x"/><ComponentRef Id="lib_org_scalatest_scalatest_2_11_2_2_4_jar979837847"/><ComponentRef Id="lib_org_scalacheck_scalacheck_2_11_1_11_4_jar185948233"/><ComponentRef Id="lib_org_scala_sbt_test_interface_1_0_jar163107882"/><ComponentRef Id="lib_org_fluttercode_datafactory_datafactory_0_8_jar191281377"/><ComponentRef Id="lib_io_spray_spray_routing_shapeless2_2_11_1_3_3_jar112965445"/><ComponentRef Id="lib_io_spray_spray_httpx_2_11_1_3_3_jar171958889"/><ComponentRef Id="lib_org_jvnet_mimepull_mimepull_1_9_5_jar132864275"/><ComponentRef Id="lib_com_typesafe_play_play_json_2_11_2_3_4_jar127890470"/><ComponentRef Id="lib_com_typesafe_play_play_functional_2_11_2_3_4_jar610767430"/><ComponentRef Id="lib_com_typesafe_play_play_datacommons_2_11_2_3_4_jar209737397"/><ComponentRef Id="b_com_fasterxml_jackson_core_jackson_annotations_2_3_2_jar158794196"/><ComponentRef Id="lib_com_fasterxml_jackson_core_jackson_core_2_3_2_jar108199831"/><ComponentRef Id="lib_com_fasterxml_jackson_core_jackson_databind_2_3_2_jar539531815"/><ComponentRef Id="bin_threesixty134178353"/><ComponentRef Id="bin_threesixty_bat151381368"/>
+                  </Feature><Feature Id="AddBinToPath" Title="Update Enviornment Variables" Description="Update PATH environment variables (requires restart)." Level="1" Absent="allow">
+                    <ComponentRef Id="bin97543xxxxPathC"/>
+                  </Feature><Feature Id="AddConfigLinks" Title="Configuration start menu links" Description="Adds start menu shortcuts to edit configuration files." Level="1" Absent="allow">
+                    <ComponentRef Id="shortcut_d8be7b19_8c5f_487a_bc26_ec0cf43b1732972584253"/>
+                  </Feature>
+      </Feature>
+      <MajorUpgrade AllowDowngrades="no" Schedule="afterInstallInitialize" DowngradeErrorMessage="A later version of [ProductName] is already installed. Setup will now exit."/>
+      <UIRef Id="WixUI_FeatureTree"/>
+      <UIRef Id="WixUI_ErrorProgressText"/>
+      <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
+      
+    
+      </Product>
+    </Wix>

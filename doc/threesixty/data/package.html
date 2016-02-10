@@ -1,0 +1,434 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>data - threesixty.data</title>
+          <meta name="description" content="data - threesixty.data" />
+          <meta name="keywords" content="data threesixty.data" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'threesixty.data.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="threesixty">threesixty</a></p>
+        <h1>data</h1><span class="permalink">
+      <a href="../../index.html#threesixty.data.package" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">data</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="threesixty.data.DataPoint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DataPointextendsProductwithSerializable"></a>
+      <a id="DataPoint:DataPoint"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DataPoint.html"><span class="name">DataPoint</span></a><span class="params">(<span name="timestamp">timestamp: <a href="Data$.html#Timestamp=java.sql.Timestamp" class="extmbr" name="threesixty.data.Data.Timestamp">Timestamp</a></span>, <span name="value">value: <a href="Data$$ValueType.html" class="extype" name="threesixty.data.Data.ValueType">ValueType</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@DataPointextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.DataPool" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="DataPoolextendsAnyRef"></a>
+      <a id="DataPool:DataPool"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="DataPool.html"><span class="name">DataPool</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@DataPoolextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> This contains all datasets requested by the client.</p><div class="fullcomment"><div class="comment cmt"><p> This contains all datasets requested by the client.
+</p></div><dl class="attributes block"> <dt>Annotations</dt><dd>
+                <span class="name">@throws</span><span class="args">(<span>
+      
+      <span class="defval" name="&quot;if an id was given, for which no InputData exists.&quot;">...</span>
+    </span>)</span>
+              
+        </dd></dl></div>
+    </li><li name="threesixty.data.InputData" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputDataextendsInputDataSkeletonwithInputDataLikewithProductwithSerializable"></a>
+      <a id="InputData:InputData"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputData.html"><span class="name">InputData</span></a><span class="params">(<span name="id">id: <a href="Data$.html#Identifier=String" class="extmbr" name="threesixty.data.Data.Identifier">Identifier</a></span>, <span name="measurement">measurement: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dataPoints">dataPoints: <span class="extype" name="scala.List">List</span>[<a href="DataPoint.html" class="extype" name="threesixty.data.DataPoint">DataPoint</a>]</span>, <span name="metadata">metadata: <a href="metadata/CompleteInputMetadata.html" class="extype" name="threesixty.data.metadata.CompleteInputMetadata">CompleteInputMetadata</a></span>)</span><span class="result"> extends <a href="InputDataSkeleton.html" class="extype" name="threesixty.data.InputDataSkeleton">InputDataSkeleton</a> with <a href="InputDataLike.html" class="extype" name="threesixty.data.InputDataLike">InputDataLike</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@InputDataextendsInputDataSkeletonwithInputDataLikewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.InputDataLike" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="InputDataLikeextendsInputDataSkeletonLike"></a>
+      <a id="InputDataLike:InputDataLike"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="InputDataLike.html"><span class="name">InputDataLike</span></a><span class="result"> extends <a href="InputDataSkeletonLike.html" class="extype" name="threesixty.data.InputDataSkeletonLike">InputDataSkeletonLike</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@InputDataLikeextendsInputDataSkeletonLike" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.InputDataSkeleton" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputDataSkeletonextendsInputDataSkeletonLike"></a>
+      <a id="InputDataSkeleton:InputDataSkeleton"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputDataSkeleton.html"><span class="name">InputDataSkeleton</span></a><span class="result"> extends <a href="InputDataSkeletonLike.html" class="extype" name="threesixty.data.InputDataSkeletonLike">InputDataSkeletonLike</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@InputDataSkeletonextendsInputDataSkeletonLike" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.InputDataSkeletonLike" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="InputDataSkeletonLikeextendsAnyRef"></a>
+      <a id="InputDataSkeletonLike:InputDataSkeletonLike"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="InputDataSkeletonLike.html"><span class="name">InputDataSkeletonLike</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@InputDataSkeletonLikeextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.InputDataSubset" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputDataSubsetextendsInputDataSubsetSkeletonwithInputDataLikewithProductwithSerializable"></a>
+      <a id="InputDataSubset:InputDataSubset"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputDataSubset.html"><span class="name">InputDataSubset</span></a><span class="params">(<span name="id">id: <a href="Data$.html#Identifier=String" class="extmbr" name="threesixty.data.Data.Identifier">Identifier</a></span>, <span name="measurement">measurement: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dataPoints">dataPoints: <span class="extype" name="scala.List">List</span>[<a href="DataPoint.html" class="extype" name="threesixty.data.DataPoint">DataPoint</a>]</span>, <span name="metadata">metadata: <a href="metadata/CompleteInputMetadata.html" class="extype" name="threesixty.data.metadata.CompleteInputMetadata">CompleteInputMetadata</a></span>, <span name="from">from: <a href="Data$.html#Timestamp=java.sql.Timestamp" class="extmbr" name="threesixty.data.Data.Timestamp">Timestamp</a></span>, <span name="to">to: <a href="Data$.html#Timestamp=java.sql.Timestamp" class="extmbr" name="threesixty.data.Data.Timestamp">Timestamp</a></span>)</span><span class="result"> extends <a href="InputDataSubsetSkeleton.html" class="extype" name="threesixty.data.InputDataSubsetSkeleton">InputDataSubsetSkeleton</a> with <a href="InputDataLike.html" class="extype" name="threesixty.data.InputDataLike">InputDataLike</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@InputDataSubsetextendsInputDataSubsetSkeletonwithInputDataLikewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.InputDataSubsetSkeleton" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputDataSubsetSkeletonextendsInputDataSkeletonwithSubset"></a>
+      <a id="InputDataSubsetSkeleton:InputDataSubsetSkeleton"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="InputDataSubsetSkeleton.html"><span class="name">InputDataSubsetSkeleton</span></a><span class="result"> extends <a href="InputDataSkeleton.html" class="extype" name="threesixty.data.InputDataSkeleton">InputDataSkeleton</a> with <a href="Subset.html" class="extype" name="threesixty.data.Subset">Subset</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@InputDataSubsetSkeletonextendsInputDataSkeletonwithSubset" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.ProcessedData" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ProcessedDataextendsProductwithSerializable"></a>
+      <a id="ProcessedData:ProcessedData"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ProcessedData.html"><span class="name">ProcessedData</span></a><span class="params">(<span name="id">id: <a href="Data$.html#Identifier=String" class="extmbr" name="threesixty.data.Data.Identifier">Identifier</a></span>, <span name="dataPoints">dataPoints: <span class="extype" name="scala.List">List</span>[<a href="TaggedDataPoint.html" class="extype" name="threesixty.data.TaggedDataPoint">TaggedDataPoint</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@ProcessedDataextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.Subset" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SubsetextendsAnyRef"></a>
+      <a id="Subset:Subset"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Subset.html"><span class="name">Subset</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@SubsetextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.TaggedDataPoint" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TaggedDataPointextendsProductwithSerializable"></a>
+      <a id="TaggedDataPoint:TaggedDataPoint"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="TaggedDataPoint.html"><span class="name">TaggedDataPoint</span></a><span class="params">(<span name="timestamp">timestamp: <a href="Data$.html#Timestamp=java.sql.Timestamp" class="extmbr" name="threesixty.data.Data.Timestamp">Timestamp</a></span>, <span name="value">value: <a href="Data$$ValueType.html" class="extype" name="threesixty.data.Data.ValueType">ValueType</a></span>, <span name="tags">tags: <span class="extype" name="scala.Predef.Set">Set</span>[<a href="tags/Tag.html" class="extype" name="threesixty.data.tags.Tag">Tag</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@TaggedDataPointextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.UnsafeInputData" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UnsafeInputDataextendsProductwithSerializable"></a>
+      <a id="UnsafeInputData:UnsafeInputData"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UnsafeInputData.html"><span class="name">UnsafeInputData</span></a><span class="params">(<span name="id">id: <a href="Data$.html#Identifier=String" class="extmbr" name="threesixty.data.Data.Identifier">Identifier</a></span>, <span name="measurement">measurement: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="dataPoints">dataPoints: <span class="extype" name="scala.List">List</span>[<a href="DataPoint.html" class="extype" name="threesixty.data.DataPoint">DataPoint</a>]</span>, <span name="metadata">metadata: <a href="metadata/IncompleteInputMetadata.html" class="extype" name="threesixty.data.metadata.IncompleteInputMetadata">IncompleteInputMetadata</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@UnsafeInputDataextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="threesixty.data.Data" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Data"></a>
+      <a id="Data:Data"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Data$.html"><span class="name">Data</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@Data" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.DataJsonProtocol" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DataJsonProtocol"></a>
+      <a id="DataJsonProtocol:DataJsonProtocol"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DataJsonProtocol$.html"><span class="name">DataJsonProtocol</span></a><span class="result"> extends <span class="extype" name="spray.json.DefaultJsonProtocol">DefaultJsonProtocol</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@DataJsonProtocol" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.Implicits" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Implicits"></a>
+      <a id="Implicits:Implicits"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Implicits$.html"><span class="name">Implicits</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@Implicits" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.InputDataLike" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="InputDataLike"></a>
+      <a id="InputDataLike:InputDataLike"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="InputDataLike$.html"><span class="name">InputDataLike</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@InputDataLike" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.UnsafeInputData" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UnsafeInputData"></a>
+      <a id="UnsafeInputData:UnsafeInputData"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="UnsafeInputData$.html"><span class="name">UnsafeInputData</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@UnsafeInputData" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.metadata" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="metadata"></a>
+      <a id="metadata:metadata"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="metadata/package.html"><span class="name">metadata</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@metadata" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.data.tags" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="tags"></a>
+      <a id="tags:tags"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="tags/package.html"><span class="name">tags</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.data.package@tags" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

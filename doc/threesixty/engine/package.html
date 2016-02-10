@@ -1,0 +1,361 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>engine - threesixty.engine</title>
+          <meta name="description" content="engine - threesixty.engine" />
+          <meta name="keywords" content="engine threesixty.engine" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'threesixty.engine.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="threesixty">threesixty</a></p>
+        <h1>engine</h1><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">engine</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="threesixty.engine.Engine" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="EngineextendsAnyRef"></a>
+      <a id="Engine:Engine"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Engine.html"><span class="name">Engine</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@EngineextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.EngineResponse" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="EngineResponseextendsAnyRef"></a>
+      <a id="EngineResponse:EngineResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="EngineResponse.html"><span class="name">EngineResponse</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@EngineResponseextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.ErrorResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorResponseextendsEngineResponsewithProductwithSerializable"></a>
+      <a id="ErrorResponse:ErrorResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorResponse.html"><span class="name">ErrorResponse</span></a><span class="params">(<span name="msg">msg: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contentType">contentType: <span class="extype" name="spray.http.ContentType">ContentType</span> = <span class="symbol">`text/plain(UTF-8)`</span></span>)</span><span class="result"> extends <a href="EngineResponse.html" class="extype" name="threesixty.engine.EngineResponse">EngineResponse</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@ErrorResponseextendsEngineResponsewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.HelpResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HelpResponseextendsEngineResponsewithProductwithSerializable"></a>
+      <a id="HelpResponse:HelpResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="HelpResponse.html"><span class="name">HelpResponse</span></a><span class="params">(<span name="msg">msg: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="status">status: <span class="extype" name="spray.http.StatusCode">StatusCode</span> = <span class="symbol">StatusCodes.OK</span></span>, <span name="contentType">contentType: <span class="extype" name="spray.http.ContentType">ContentType</span> = <span class="symbol">`text/plain(UTF-8)`</span></span>)</span><span class="result"> extends <a href="EngineResponse.html" class="extype" name="threesixty.engine.EngineResponse">EngineResponse</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@HelpResponseextendsEngineResponsewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.HttpRequestProcessor" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="HttpRequestProcessorextendsEngine"></a>
+      <a id="HttpRequestProcessor:HttpRequestProcessor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="HttpRequestProcessor.html"><span class="name">HttpRequestProcessor</span></a><span class="result"> extends <a href="Engine.html" class="extype" name="threesixty.engine.Engine">Engine</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@HttpRequestProcessorextendsEngine" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.SuccessResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SuccessResponseextendsEngineResponsewithProductwithSerializable"></a>
+      <a id="SuccessResponse:SuccessResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SuccessResponse.html"><span class="name">SuccessResponse</span></a><span class="params">(<span name="msg">msg: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="contentType">contentType: <span class="extype" name="spray.http.ContentType">ContentType</span> = <span class="symbol">`text/plain(UTF-8)`</span></span>)</span><span class="result"> extends <a href="EngineResponse.html" class="extype" name="threesixty.engine.EngineResponse">EngineResponse</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@SuccessResponseextendsEngineResponsewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.UsageInfo" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="UsageInfoextendsAnyRef"></a>
+      <a id="UsageInfo:UsageInfo"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="UsageInfo.html"><span class="name">UsageInfo</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@UsageInfoextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.VisualizationEngine" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VisualizationEngineextendsEnginewithHttpRequestProcessorwithUsageInfowithProductwithSerializable"></a>
+      <a id="VisualizationEngine:VisualizationEngine"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationEngine.html"><span class="name">VisualizationEngine</span></a><span class="params">(<span name="processor">processor: <a href="../processor/Processor.html" class="extype" name="threesixty.processor.Processor">Processor</a></span>, <span name="visualizer">visualizer: <a href="../visualizer/Visualizer.html" class="extype" name="threesixty.visualizer.Visualizer">Visualizer</a></span>, <span name="dbAdapter">dbAdapter: <a href="../persistence/DatabaseAdapter.html" class="extype" name="threesixty.persistence.DatabaseAdapter">DatabaseAdapter</a></span>)</span><span class="result"> extends <a href="Engine.html" class="extype" name="threesixty.engine.Engine">Engine</a> with <a href="HttpRequestProcessor.html" class="extype" name="threesixty.engine.HttpRequestProcessor">HttpRequestProcessor</a> with <a href="UsageInfo.html" class="extype" name="threesixty.engine.UsageInfo">UsageInfo</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@VisualizationEngineextendsEnginewithHttpRequestProcessorwithUsageInfowithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Core Visualization engine.</p><div class="fullcomment"><div class="comment cmt"><p> Core Visualization engine. Processes a string (usually from a HTTP request)
+ and return the requested resource, usually a visualization.
+</p></div><dl class="paramcmts block"><dt class="param">processor</dt><dd class="cmt"><p>A processor object with available processing methods mixed in.</p></dd><dt class="param">visualizer</dt><dd class="cmt"><p>A visualizer object with available visualizations mixed in.</p></dd><dt class="param">dbAdapter</dt><dd class="cmt"><p>The adapter to the database holding all data.</p></dd></dl></div>
+    </li><li name="threesixty.engine.VisualizationResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VisualizationResponseextendsEngineResponsewithProductwithSerializable"></a>
+      <a id="VisualizationResponse:VisualizationResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationResponse.html"><span class="name">VisualizationResponse</span></a><span class="params">(<span name="visualization">visualization: <a href="../visualizer/Visualization.html" class="extype" name="threesixty.visualizer.Visualization">Visualization</a></span>)</span><span class="result"> extends <a href="EngineResponse.html" class="extype" name="threesixty.engine.EngineResponse">EngineResponse</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@VisualizationResponseextendsEngineResponsewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="threesixty.engine.Engine" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Engine"></a>
+      <a id="Engine:Engine"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Engine$.html"><span class="name">Engine</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@Engine" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.ErrorResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ErrorResponse"></a>
+      <a id="ErrorResponse:ErrorResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ErrorResponse$.html"><span class="name">ErrorResponse</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@ErrorResponse" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.HelpResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HelpResponse"></a>
+      <a id="HelpResponse:HelpResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="HelpResponse$.html"><span class="name">HelpResponse</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@HelpResponse" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.SuccessResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SuccessResponse"></a>
+      <a id="SuccessResponse:SuccessResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SuccessResponse$.html"><span class="name">SuccessResponse</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@SuccessResponse" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.VisualizationEngine" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VisualizationEngine"></a>
+      <a id="VisualizationEngine:VisualizationEngine"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationEngine$.html"><span class="name">VisualizationEngine</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@VisualizationEngine" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.engine.VisualizationResponse" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VisualizationResponse"></a>
+      <a id="VisualizationResponse:VisualizationResponse"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationResponse$.html"><span class="name">VisualizationResponse</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.engine.package@VisualizationResponse" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

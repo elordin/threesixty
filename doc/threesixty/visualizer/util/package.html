@@ -1,0 +1,568 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>util - threesixty.visualizer.util</title>
+          <meta name="description" content="util - threesixty.visualizer.util" />
+          <meta name="keywords" content="util threesixty.visualizer.util" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'threesixty.visualizer.util.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="threesixty">threesixty</a>.<a href="../package.html" class="extype" name="threesixty.visualizer">visualizer</a></p>
+        <h1>util</h1><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">util</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="threesixty.visualizer.util.Axis" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="AxisextendsRenderable"></a>
+      <a id="Axis:Axis"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Axis.html"><span class="name">Axis</span></a><span class="result"> extends <a href="../Renderable.html" class="extype" name="threesixty.visualizer.Renderable">Renderable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@AxisextendsRenderable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.ColorScheme" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="ColorSchemeextendsIterator[threesixty.visualizer.util.RGBColor]"></a>
+      <a id="ColorScheme:ColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ColorScheme.html"><span class="name">ColorScheme</span></a><span class="result"> extends <span class="extype" name="scala.Iterator">Iterator</span>[<a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a>]</span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@ColorSchemeextendsIterator[threesixty.visualizer.util.RGBColor]" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> <u>INFINITE</u> (!) cyclic Iterator
+</p><div class="fullcomment"><div class="comment cmt"><p> <u>INFINITE</u> (!) cyclic Iterator
+</p></div><dl class="attributes block"> <div class="block">Example:
+               <ol><li class="cmt"><p></p><pre>ColorScheme.next <span class="cmt">// returns another color</span>
+ColorSchem(<span class="num">15</span>) <span class="cmt">// returns a list of 15 colors</span></pre></li></ol>
+            </div></dl></div>
+    </li><li name="threesixty.visualizer.util.Grid" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GridextendsRenderablewithProductwithSerializable"></a>
+      <a id="Grid:Grid"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Grid.html"><span class="name">Grid</span></a><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>, <span name="y">y: <span class="extype" name="scala.Int">Int</span></span>, <span name="width">width: <span class="extype" name="scala.Int">Int</span></span>, <span name="height">height: <span class="extype" name="scala.Int">Int</span></span>, <span name="xPositions">xPositions: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="yPositions">yPositions: <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Int">Int</span>]</span>, <span name="hShown">hShown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="vShown">vShown: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="hDashed">hDashed: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="vDashed">vDashed: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="hDashArray">hDashArray: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;5, 5&quot;</span></span>, <span name="vDashArray">vDashArray: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;5, 5&quot;</span></span>)</span><span class="result"> extends <a href="../Renderable.html" class="extype" name="threesixty.visualizer.Renderable">Renderable</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@GridextendsRenderablewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.HorizontalAxis" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="HorizontalAxisextendsAxiswithProductwithSerializable"></a>
+      <a id="HorizontalAxis:HorizontalAxis"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="HorizontalAxis.html"><span class="name">HorizontalAxis</span></a><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>, <span name="y">y: <span class="extype" name="scala.Int">Int</span></span>, <span name="width">width: <span class="extype" name="scala.Int">Int</span></span>, <span name="leftToRight">leftToRight: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="arrowSize">arrowSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">10</span></span>, <span name="arrowFilled">arrowFilled: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="strokeWidth">strokeWidth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">2</span></span>, <span name="strokeColor">strokeColor: <a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="symbol"><span class="name"><a href="RGBColor$.html">RGBColor.BLACK</a></span></span></span>, <span name="title">title: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="xTitle">xTitle: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>, <span name="yTitle">yTitle: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>, <span name="titleSize">titleSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">16</span></span>, <span name="titleFontFamily">titleFontFamily: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;Roboto, Segoe UI&quot;</span></span>, <span name="titleColor">titleColor: <a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="symbol"><span class="name"><a href="RGBColor$.html">RGBColor.BLACK</a></span></span></span>, <span name="labels">labels: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>)] = <span class="symbol">Seq()</span></span>, <span name="labelSize">labelSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">12</span></span>, <span name="labelFontFamily">labelFontFamily: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;Roboto, Segoe UI&quot;</span></span>, <span name="labelColor">labelColor: <a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="symbol"><span class="name"><a href="RGBColor$.html">RGBColor.BLACK</a></span></span></span>, <span name="labelRotation">labelRotation: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="labelOffset">labelOffset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="Axis.html" class="extype" name="threesixty.visualizer.util.Axis">Axis</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@HorizontalAxisextendsAxiswithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.Legend" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LegendextendsRenderablewithProductwithSerializable"></a>
+      <a id="Legend:Legend"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Legend.html"><span class="name">Legend</span></a><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>, <span name="y">y: <span class="extype" name="scala.Int">Int</span></span>, <span name="symbolWidth">symbolWidth: <span class="extype" name="scala.Int">Int</span></span>, <span name="labels">labels: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a>)]</span>, <span name="labelSize">labelSize: <span class="extype" name="scala.Int">Int</span></span>, <span name="labelFontFamily">labelFontFamily: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="../Renderable.html" class="extype" name="threesixty.visualizer.Renderable">Renderable</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@LegendextendsRenderablewithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.RGBColor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RGBColorextendsProductwithSerializable"></a>
+      <a id="RGBColor:RGBColor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="RGBColor.html"><span class="name">RGBColor</span></a><span class="params">(<span name="red">red: <span class="extype" name="scala.Int">Int</span></span>, <span name="green">green: <span class="extype" name="scala.Int">Int</span></span>, <span name="blue">blue: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@RGBColorextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.Scale" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="Scale[T]extendsAnyRef"></a>
+      <a id="Scale[T]:Scale[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Scale.html"><span class="name">Scale</span></a><span class="tparams">[<span name="T">T</span>]</span><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@Scale[T]extendsAnyRef" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.TimeScale" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TimeScaleextendsScale[Long]withProductwithSerializable"></a>
+      <a id="TimeScale:TimeScale"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="TimeScale.html"><span class="name">TimeScale</span></a><span class="params">(<span name="inMin">inMin: <span class="extype" name="scala.Long">Long</span></span>, <span name="inMax">inMax: <span class="extype" name="scala.Long">Long</span></span>, <span name="outMin">outMin: <span class="extype" name="scala.Int">Int</span></span>, <span name="outMax">outMax: <span class="extype" name="scala.Int">Int</span></span>, <span name="unit">unit: <a href="TimeScale$$TimeUnits$$TimeUnit.html" class="extype" name="threesixty.visualizer.util.TimeScale.TimeUnits.TimeUnit">TimeUnit</a></span>, <span name="step">step: <span class="extype" name="scala.Long">Long</span></span>)</span><span class="result"> extends <a href="Scale.html" class="extype" name="threesixty.visualizer.util.Scale">Scale</a>[<span class="extype" name="scala.Long">Long</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@TimeScaleextendsScale[Long]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.ValueScale" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ValueScaleextendsScale[Double]withProductwithSerializable"></a>
+      <a id="ValueScale:ValueScale"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ValueScale.html"><span class="name">ValueScale</span></a><span class="params">(<span name="inMin">inMin: <span class="extype" name="scala.Double">Double</span></span>, <span name="inMax">inMax: <span class="extype" name="scala.Double">Double</span></span>, <span name="outMin">outMin: <span class="extype" name="scala.Int">Int</span></span>, <span name="outMax">outMax: <span class="extype" name="scala.Int">Int</span></span>, <span name="step">step: <span class="extype" name="scala.Double">Double</span></span>)</span><span class="result"> extends <a href="Scale.html" class="extype" name="threesixty.visualizer.util.Scale">Scale</a>[<span class="extype" name="scala.Double">Double</span>] with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@ValueScaleextendsScale[Double]withProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.VerticalAxis" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VerticalAxisextendsAxiswithProductwithSerializable"></a>
+      <a id="VerticalAxis:VerticalAxis"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VerticalAxis.html"><span class="name">VerticalAxis</span></a><span class="params">(<span name="x">x: <span class="extype" name="scala.Int">Int</span></span>, <span name="y">y: <span class="extype" name="scala.Int">Int</span></span>, <span name="height">height: <span class="extype" name="scala.Int">Int</span></span>, <span name="bottomToTop">bottomToTop: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">true</span></span>, <span name="arrowSize">arrowSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">10</span></span>, <span name="arrowFilled">arrowFilled: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="strokeWidth">strokeWidth: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">2</span></span>, <span name="strokeColor">strokeColor: <a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="symbol"><span class="name"><a href="RGBColor$.html">RGBColor.BLACK</a></span></span></span>, <span name="title">title: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="xTitle">xTitle: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>, <span name="yTitle">yTitle: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>, <span name="titleSize">titleSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">16</span></span>, <span name="titleFontFamily">titleFontFamily: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;Roboto, Segoe UI&quot;</span></span>, <span name="titleColor">titleColor: <a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="symbol"><span class="name"><a href="RGBColor$.html">RGBColor.BLACK</a></span></span></span>, <span name="labels">labels: <span class="extype" name="scala.Seq">Seq</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>)] = <span class="symbol">Seq()</span></span>, <span name="labelSize">labelSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">12</span></span>, <span name="labelFontFamily">labelFontFamily: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;Roboto, Segoe UI&quot;</span></span>, <span name="labelColor">labelColor: <a href="RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="symbol"><span class="name"><a href="RGBColor$.html">RGBColor.BLACK</a></span></span></span>, <span name="labelRotation">labelRotation: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">0</span></span>, <span name="labelOffset">labelOffset: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.Int">Int</span>] = <span class="symbol">None</span></span>)</span><span class="result"> extends <a href="Axis.html" class="extype" name="threesixty.visualizer.util.Axis">Axis</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@VerticalAxisextendsAxiswithProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="threesixty.visualizer.util.Axis" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Axis"></a>
+      <a id="Axis:Axis"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Axis$.html"><span class="name">Axis</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@Axis" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p>
+    </li><li name="threesixty.visualizer.util.BlueColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BlueColorScheme"></a>
+      <a id="BlueColorScheme:BlueColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="BlueColorScheme$.html"><span class="name">BlueColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@BlueColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.ColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ColorScheme"></a>
+      <a id="ColorScheme:ColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ColorScheme$.html"><span class="name">ColorScheme</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@ColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.DefaultColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DefaultColorScheme"></a>
+      <a id="DefaultColorScheme:DefaultColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="DefaultColorScheme$.html"><span class="name">DefaultColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@DefaultColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.GreenColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GreenColorScheme"></a>
+      <a id="GreenColorScheme:GreenColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="GreenColorScheme$.html"><span class="name">GreenColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@GreenColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.Grid" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Grid"></a>
+      <a id="Grid:Grid"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Grid$.html"><span class="name">Grid</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@Grid" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p>
+    </li><li name="threesixty.visualizer.util.Legend" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Legend"></a>
+      <a id="Legend:Legend"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Legend$.html"><span class="name">Legend</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@Legend" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p>
+    </li><li name="threesixty.visualizer.util.OrangeColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="OrangeColorScheme"></a>
+      <a id="OrangeColorScheme:OrangeColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="OrangeColorScheme$.html"><span class="name">OrangeColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@OrangeColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.PinkColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PinkColorScheme"></a>
+      <a id="PinkColorScheme:PinkColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PinkColorScheme$.html"><span class="name">PinkColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@PinkColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.PurpleColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="PurpleColorScheme"></a>
+      <a id="PurpleColorScheme:PurpleColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="PurpleColorScheme$.html"><span class="name">PurpleColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@PurpleColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.RGBColor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RGBColor"></a>
+      <a id="RGBColor:RGBColor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RGBColor$.html"><span class="name">RGBColor</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@RGBColor" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.RedColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="RedColorScheme"></a>
+      <a id="RedColorScheme:RedColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="RedColorScheme$.html"><span class="name">RedColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@RedColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.TimeScale" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TimeScale"></a>
+      <a id="TimeScale:TimeScale"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TimeScale$.html"><span class="name">TimeScale</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@TimeScale" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.TransparentColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TransparentColorScheme"></a>
+      <a id="TransparentColorScheme:TransparentColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TransparentColorScheme$.html"><span class="name">TransparentColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@TransparentColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.ValueScale" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ValueScale"></a>
+      <a id="ValueScale:ValueScale"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="ValueScale$.html"><span class="name">ValueScale</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@ValueScale" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.YellowColorScheme" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="YellowColorScheme"></a>
+      <a id="YellowColorScheme:YellowColorScheme"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="YellowColorScheme$.html"><span class="name">YellowColorScheme</span></a><span class="result"> extends <a href="ColorScheme.html" class="extype" name="threesixty.visualizer.util.ColorScheme">ColorScheme</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@YellowColorScheme" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util.param" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="param"></a>
+      <a id="param:param"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="param/package.html"><span class="name">param</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.util.package@param" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

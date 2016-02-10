@@ -1,0 +1,333 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>visualizer - threesixty.visualizer</title>
+          <meta name="description" content="visualizer - threesixty.visualizer" />
+          <meta name="keywords" content="visualizer threesixty.visualizer" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../lib/template.js"></script>
+      <script type="text/javascript" src="../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'threesixty.visualizer.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="threesixty">threesixty</a></p>
+        <h1>visualizer</h1><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">visualizer</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="threesixty.visualizer.DataRequirement" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="DataRequirementextendsProductwithSerializable"></a>
+      <a id="DataRequirement:DataRequirement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DataRequirement.html"><span class="name">DataRequirement</span></a><span class="params">(<span name="resolution">resolution: <span class="extype" name="scala.Option">Option</span>[<a href="../data/metadata/Resolution$.html#Resolution=threesixty.data.metadata.Resolution.Value" class="extmbr" name="threesixty.data.metadata.Resolution.Resolution">Resolution</a>] = <span class="symbol">None</span></span>, <span name="scaling">scaling: <span class="extype" name="scala.Option">Option</span>[<a href="../data/metadata/Scaling$.html#Scaling=threesixty.data.metadata.Scaling.Value" class="extmbr" name="threesixty.data.metadata.Scaling.Scaling">Scaling</a>] = <span class="symbol">None</span></span>, <span name="requiredProcessingMethods">requiredProcessingMethods: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<a href="../processor/ProcessingMethodCompanion.html" class="extype" name="threesixty.processor.ProcessingMethodCompanion">ProcessingMethodCompanion</a>]] = <span class="symbol">None</span></span>, <span name="excludedProcessingMethods">excludedProcessingMethods: <span class="extype" name="scala.Option">Option</span>[<span class="extype" name="scala.List">List</span>[<a href="../processor/ProcessingMethodCompanion.html" class="extype" name="threesixty.processor.ProcessingMethodCompanion">ProcessingMethodCompanion</a>]] = <span class="symbol">None</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@DataRequirementextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This class contains the input data requirements for a visualization type.</p><div class="fullcomment"><div class="comment cmt"><p>This class contains the input data requirements for a visualization type.
+</p></div><dl class="paramcmts block"><dt class="param">resolution</dt><dd class="cmt"><p>the required resolution</p></dd><dt class="param">scaling</dt><dd class="cmt"><p>the required scaling</p></dd><dt class="param">requiredProcessingMethods</dt><dd class="cmt"><p>a list of required processing methods</p></dd><dt class="param">excludedProcessingMethods</dt><dd class="cmt"><p>a list of processing methods that can not be applied</p></dd></dl></div>
+    </li><li name="threesixty.visualizer.Renderable" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="RenderableextendsAnyRef"></a>
+      <a id="Renderable:Renderable"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Renderable.html"><span class="name">Renderable</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@RenderableextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.SVGXML" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SVGXMLextendsProductwithSerializable"></a>
+      <a id="SVGXML:SVGXML"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SVGXML.html"><span class="name">SVGXML</span></a><span class="params">(<span name="elems">elems: <span class="extype" name="scala.xml.Elem">Elem</span>*</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@SVGXMLextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Pimped Version of scala.xml.Elems that allows plugin additional
+ Renderables or XML components.</p>
+    </li><li name="threesixty.visualizer.Visualization" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="VisualizationextendsRenderable"></a>
+      <a id="Visualization:Visualization"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Visualization.html"><span class="name">Visualization</span></a><span class="result"> extends <a href="Renderable.html" class="extype" name="threesixty.visualizer.Renderable">Renderable</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@VisualizationextendsRenderable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Generic visualization.</p><div class="fullcomment"><div class="comment cmt"><p> Generic visualization.</p><p> If they require additional parameters, use
+ <a href="VisualizationConfig.html" class="extype" name="threesixty.visualizer.VisualizationConfig">threesixty.visualizer.VisualizationConfig</a> to store those parameters
+ and as a factory.</p><p> Use <a href="VisualizationMixins.html" class="extype" name="threesixty.visualizer.VisualizationMixins">threesixty.visualizer.VisualizationMixins</a> to add them to a <a href="Visualizer.html" class="extype" name="threesixty.visualizer.Visualizer">threesixty.visualizer.Visualizer</a>.
+</p></div></div>
+    </li><li name="threesixty.visualizer.VisualizationCompanion" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="VisualizationCompanionextendsVisualizationDecisionMethodwithUsageInfo"></a>
+      <a id="VisualizationCompanion:VisualizationCompanion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationCompanion.html"><span class="name">VisualizationCompanion</span></a><span class="result"> extends <a href="../decisionengine/visualizations/VisualizationDecisionMethod.html" class="extype" name="threesixty.decisionengine.visualizations.VisualizationDecisionMethod">VisualizationDecisionMethod</a> with <a href="../engine/UsageInfo.html" class="extype" name="threesixty.engine.UsageInfo">UsageInfo</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@VisualizationCompanionextendsVisualizationDecisionMethodwithUsageInfo" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Trait for companion objects to  <a href="Visualization.html" class="extype" name="threesixty.visualizer.Visualization">threesixty.visualizer.Visualization</a>.</p>
+    </li><li name="threesixty.visualizer.VisualizationConfig" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="VisualizationConfigextendsthreesixty.data.DataPool=&gt;threesixty.visualizer.Visualization"></a>
+      <a id="VisualizationConfig:VisualizationConfig"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">abstract </span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationConfig.html"><span class="name">VisualizationConfig</span></a><span class="result"> extends (<a href="../data/DataPool.html" class="extype" name="threesixty.data.DataPool">DataPool</a>) ⇒ <a href="Visualization.html" class="extype" name="threesixty.visualizer.Visualization">Visualization</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@VisualizationConfigextendsthreesixty.data.DataPool=&gt;threesixty.visualizer.Visualization" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">Generic Configuration for a <a href="Visualization.html" class="extype" name="threesixty.visualizer.Visualization">threesixty.visualizer.Visualization</a>.</p><div class="fullcomment"><div class="comment cmt"><p>Generic Configuration for a <a href="Visualization.html" class="extype" name="threesixty.visualizer.Visualization">threesixty.visualizer.Visualization</a>.
+Acts as a factory for creating <a href="Visualization.html" class="extype" name="threesixty.visualizer.Visualization">threesixty.visualizer.Visualization</a>s.
+</p></div></div>
+    </li><li name="threesixty.visualizer.VisualizationMetadata" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VisualizationMetadataextendsProductwithSerializable"></a>
+      <a id="VisualizationMetadata:VisualizationMetadata"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationMetadata.html"><span class="name">VisualizationMetadata</span></a><span class="params">(<span name="requirementList">requirementList: <span class="extype" name="scala.List">List</span>[<a href="DataRequirement.html" class="extype" name="threesixty.visualizer.DataRequirement">DataRequirement</a>]</span>, <span name="unlimitedData">unlimitedData: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@VisualizationMetadataextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This class represents the metadata for a visualization.</p><div class="fullcomment"><div class="comment cmt"><p>This class represents the metadata for a visualization.
+For each <a href="DataRequirement.html" class="extype" name="threesixty.visualizer.DataRequirement">DataRequirement</a> an input data that fulfills the requirements is required.
+</p></div><dl class="paramcmts block"><dt class="param">requirementList</dt><dd class="cmt"><p>a list of input data requirements</p></dd><dt class="param">unlimitedData</dt><dd class="cmt"><p>true iff the number of input data is not limited</p></dd></dl></div>
+    </li><li name="threesixty.visualizer.VisualizationMixins" visbl="pub" data-isabs="true" fullComment="yes" group="Ungrouped">
+      <a id="VisualizationMixinsextendsAnyRef"></a>
+      <a id="VisualizationMixins:VisualizationMixins"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="VisualizationMixins.html"><span class="name">VisualizationMixins</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@VisualizationMixinsextendsAnyRef" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Mixin trait for layering <a href="Visualization.html" class="extype" name="threesixty.visualizer.Visualization">threesixty.visualizer.Visualization</a>s onto the <a href="Visualizer.html" class="extype" name="threesixty.visualizer.Visualizer">threesixty.visualizer.Visualizer</a></p><div class="fullcomment"><div class="comment cmt"><p> Mixin trait for layering <a href="Visualization.html" class="extype" name="threesixty.visualizer.Visualization">threesixty.visualizer.Visualization</a>s onto the <a href="Visualizer.html" class="extype" name="threesixty.visualizer.Visualizer">threesixty.visualizer.Visualizer</a></p><p> Extend this by abstract overriding the visualizationInfos value with super calls.</p></div><dl class="attributes block"> <div class="block">Example:
+               <ol><li class="cmt"><p></p><pre><span class="kw">object</span> FooVisualizationConfig <span class="kw">extends</span> VisualizationCompanion {
+    <span class="kw">def</span> name = <span class="lit">"Foo"</span>
+    <span class="kw">def</span> fromString(in: <span class="std">String</span>) = ...
+    <span class="kw">def</span> usage = <span class="lit">"Use responsibly!"</span>
+}
+<span class="kw">trait</span> FooVisualizationMixin <span class="kw">extends</span> VisualizationMixins {
+    <span class="kw">abstract</span> <span class="kw">override</span> <span class="kw">def</span> visualizationInfos =
+        <span class="kw">super</span>.visualizationInfos + (<span class="lit">"foo"</span> -&gt; FooVisualizationConfig)
+}
+<span class="kw">val</span> visualizer = <span class="kw">new</span> Visualizer <span class="kw">with</span> FooVisualizationMixin</pre></li></ol>
+            </div></dl></div>
+    </li><li name="threesixty.visualizer.Visualizer" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="VisualizerextendsVisualizationMixinswithUsageInfo"></a>
+      <a id="Visualizer:Visualizer"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="Visualizer.html"><span class="name">Visualizer</span></a><span class="result"> extends <a href="VisualizationMixins.html" class="extype" name="threesixty.visualizer.VisualizationMixins">VisualizationMixins</a> with <a href="../engine/UsageInfo.html" class="extype" name="threesixty.engine.UsageInfo">UsageInfo</a></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@VisualizerextendsVisualizationMixinswithUsageInfo" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"> Holds a list of available visualizations and some meta information,
+ including how to convert to <a href="VisualizationConfig.html" class="extype" name="threesixty.visualizer.VisualizationConfig">threesixty.visualizer.VisualizationConfig</a>.</p><div class="fullcomment"><div class="comment cmt"><p> Holds a list of available visualizations and some meta information,
+ including how to convert to <a href="VisualizationConfig.html" class="extype" name="threesixty.visualizer.VisualizationConfig">threesixty.visualizer.VisualizationConfig</a>.</p><p> Stack traits inheriting from <a href="VisualizationMixins.html" class="extype" name="threesixty.visualizer.VisualizationMixins">threesixty.visualizer.VisualizationMixins</a> to add visualizations.
+</p></div><dl class="attributes block"> <div class="block">Example:
+               <ol><li class="cmt"><p></p><pre><span class="kw">val</span> visualizer = <span class="kw">new</span> Visualizer <span class="kw">with</span> FooVisualization.Mixin <span class="kw">with</span> BarVisualization.Mixin</pre></li></ol>
+            </div></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="threesixty.visualizer.SVGXML" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SVGXML"></a>
+      <a id="SVGXML:SVGXML"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SVGXML$.html"><span class="name">SVGXML</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@SVGXML" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.util" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="util"></a>
+      <a id="util:util"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="util/package.html"><span class="name">util</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@util" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.visualizations" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="visualizations"></a>
+      <a id="visualizations:visualizations"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="visualizations/package.html"><span class="name">visualizations</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../index.html#threesixty.visualizer.package@visualizations" title="Permalink" target="_top">
+        <img src="../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>

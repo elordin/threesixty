@@ -1,0 +1,225 @@
+<!DOCTYPE html >
+<html>
+        <head>
+          <title>visualizations - threesixty.visualizer.visualizations</title>
+          <meta name="description" content="visualizations - threesixty.visualizer.visualizations" />
+          <meta name="keywords" content="visualizations threesixty.visualizer.visualizations" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="../../../lib/jquery.js" id="jquery-js"></script>
+      <script type="text/javascript" src="../../../lib/jquery-ui.js"></script>
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../../index.html';
+            var hash = 'threesixty.visualizer.visualizations.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img alt="Package" src="../../../lib/package_big.png" />
+        <p id="owner"><a href="../../package.html" class="extype" name="threesixty">threesixty</a>.<a href="../package.html" class="extype" name="threesixty.visualizer">visualizer</a></p>
+        <h1>visualizations</h1><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">visualizations</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="threesixty.visualizer.visualizations.BarElement" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="BarElementextendsProductwithSerializable"></a>
+      <a id="BarElement:BarElement"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="BarElement.html"><span class="name">BarElement</span></a><span class="params">(<span name="identifier">identifier: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="xLeft">xLeft: <span class="extype" name="scala.Double">Double</span></span>, <span name="width">width: <span class="extype" name="scala.Double">Double</span></span>, <span name="height">height: <span class="extype" name="scala.Double">Double</span></span>, <span name="description">description: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="descriptionLabelSize">descriptionLabelSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">12</span></span>, <span name="descriptionLabelFontFamily">descriptionLabelFontFamily: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;Roboto, Segoe UI&quot;</span></span>, <span name="classes">classes: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="showValues">showValues: <span class="extype" name="scala.Boolean">Boolean</span> = <span class="symbol">false</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;&quot;</span></span>, <span name="valueLabelSize">valueLabelSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">12</span></span>, <span name="valueLabelFontFamily">valueLabelFontFamily: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;Roboto, Segoe UI&quot;</span></span>, <span name="color">color: <a href="../util/RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="defval" name='<span class="name"><a href="../../package.html">threesixty.visualizer.util.RGBColor.TRANSPARENT</a></span>'>...</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package@BarElementextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This class is used to generate a svg element for a bar.</p><div class="fullcomment"><div class="comment cmt"><p>This class is used to generate a svg element for a bar.
+</p></div><dl class="paramcmts block"><dt class="param">identifier</dt><dd class="cmt"><p>the class for the corresponding svg element</p></dd><dt class="param">xLeft</dt><dd class="cmt"><p>x-coordinate of the left side of the bar</p></dd><dt class="param">width</dt><dd class="cmt"><p>the width of the bar</p></dd><dt class="param">height</dt><dd class="cmt"><p>the height of the bar (can also be negative)</p></dd><dt class="param">description</dt><dd class="cmt"><p>the description displayed for the bar</p></dd><dt class="param">descriptionLabelSize</dt><dd class="cmt"><p>the font size of the description labels</p></dd><dt class="param">descriptionLabelFontFamily</dt><dd class="cmt"><p>the font family of the description label</p></dd><dt class="param">classes</dt><dd class="cmt"><p>the classes for this svg element</p></dd><dt class="param">showValues</dt><dd class="cmt"><p>iff the value should be shown to</p></dd><dt class="param">value</dt><dd class="cmt"><p>the shown value</p></dd><dt class="param">valueLabelSize</dt><dd class="cmt"><p>the font size of value labels</p></dd><dt class="param">valueLabelFontFamily</dt><dd class="cmt"><p>the font family of the value label</p></dd><dt class="param">color</dt><dd class="cmt"><p>the color of the bar</p></dd></dl></div>
+    </li><li name="threesixty.visualizer.visualizations.Segment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
+      <a id="SegmentextendsProductwithSerializable"></a>
+      <a id="Segment:Segment"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Segment.html"><span class="name">Segment</span></a><span class="params">(<span name="identifier">identifier: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="description">description: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="classes">classes: <span class="extype" name="scala.Predef.Set">Set</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="angleStart">angleStart: <span class="extype" name="scala.Double">Double</span></span>, <span name="angleEnd">angleEnd: <span class="extype" name="scala.Double">Double</span></span>, <span name="radius">radius: <span class="extype" name="scala.Double">Double</span></span>, <span name="innerRadius">innerRadius: <span class="extype" name="scala.Double">Double</span></span>, <span name="showValueLabel">showValueLabel: <span class="extype" name="scala.Boolean">Boolean</span></span>, <span name="valueRadius">valueRadius: <span class="extype" name="scala.Double">Double</span></span>, <span name="segmentLabelLineColor">segmentLabelLineColor: <span class="extype" name="scala.Predef.String">String</span> = <span class="symbol">&quot;#000000&quot;</span></span>, <span name="value">value: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="fontSize">fontSize: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">12</span></span>, <span name="color">color: <a href="../util/RGBColor.html" class="extype" name="threesixty.visualizer.util.RGBColor">RGBColor</a> = <span class="symbol"><span class="name"><a href="../../package.html">RGBColor.TRANSPARENT</a></span></span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package@SegmentextendsProductwithSerializable" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt">This class is used to generate a svg element for a circle segment.</p><div class="fullcomment"><div class="comment cmt"><p>This class is used to generate a svg element for a circle segment.
+</p></div><dl class="paramcmts block"><dt class="param">identifier</dt><dd class="cmt"><p>the class for the corresponding svg element</p></dd><dt class="param">description</dt><dd class="cmt"><p>the description displayed for the segment</p></dd><dt class="param">classes</dt><dd class="cmt"><p>the classes for the svg element</p></dd><dt class="param">angleStart</dt><dd class="cmt"><p>the start angle</p></dd><dt class="param">angleEnd</dt><dd class="cmt"><p>the end angle</p></dd><dt class="param">radius</dt><dd class="cmt"><p>the radius</p></dd><dt class="param">innerRadius</dt><dd class="cmt"><p>the radius of the circle which is cutted out</p></dd><dt class="param">showValueLabel</dt><dd class="cmt"><p>if the value label should be shown</p></dd><dt class="param">valueRadius</dt><dd class="cmt"><p>the radius of the circle where the value is shown</p></dd><dt class="param">segmentLabelLineColor</dt><dd class="cmt"><p>the color of the line connecting the segment with the description label</p></dd><dt class="param">value</dt><dd class="cmt"><p>the shown value</p></dd><dt class="param">fontSize</dt><dd class="cmt"><p>the font size of labels</p></dd><dt class="param">color</dt><dd class="cmt"><p>the color of the bar</p></dd></dl></div>
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="threesixty.visualizer.visualizations.Segment" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Segment"></a>
+      <a id="Segment:Segment"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Segment$.html"><span class="name">Segment</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package@Segment" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      <p class="shortcomment cmt"></p>
+    </li><li name="threesixty.visualizer.visualizations.barChart" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="barChart"></a>
+      <a id="barChart:barChart"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="barChart/package.html"><span class="name">barChart</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package@barChart" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.visualizations.lineChart" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="lineChart"></a>
+      <a id="lineChart:lineChart"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="lineChart/package.html"><span class="name">lineChart</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package@lineChart" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.visualizations.pieChart" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="pieChart"></a>
+      <a id="pieChart:pieChart"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="pieChart/package.html"><span class="name">pieChart</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package@pieChart" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li><li name="threesixty.visualizer.visualizations.scatterChart" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="scatterChart"></a>
+      <a id="scatterChart:scatterChart"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="scatterChart/package.html"><span class="name">scatterChart</span></a>
+      </span>
+      </h4><span class="permalink">
+      <a href="../../../index.html#threesixty.visualizer.visualizations.package@scatterChart" title="Permalink" target="_top">
+        <img src="../../../lib/permalink.png" alt="Permalink" />
+      </a>
+    </span>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+
+
+    </body>
+      </html>
