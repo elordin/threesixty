@@ -74,7 +74,7 @@ object Aggregation extends ProcessingMethodCompanion {
             temp += 0.6
         }
 
-        temp
+        temp/3.4 //scale to intervall[0;1]
     }
 
     def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {

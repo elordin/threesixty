@@ -41,20 +41,17 @@ object TimeSelection extends ProcessingMethodCompanion {
         var temp = 0.0
         val meta = inputData.metadata
 
-        if (meta.scaling == Scaling.Ordinal) {
-            temp += 0.4
-        }
         if (inputData.metadata.size >= 5) {
-            temp += 0.2
+            temp += 0.1
         }
         if (inputData.metadata.size >= 50) {
-            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
+            temp += 0.3 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
-            temp += 0.2
+            temp += 0.3
         }
         if (meta.resolution == Resolution.Middle) {
-            temp += 0.1
+            temp += 0.15
         }
 
         temp
