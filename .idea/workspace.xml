@@ -2,15 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b5c011ca-2a04-4eb7-bd44-7c8a0db214d5" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/adding.html" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/SBT__org_scala_lang_scala_library_2_11_7_jar.xml" afterPath="$PROJECT_DIR$/.idea/libraries/SBT__org_scala_lang_scala_library_2_11_7_jar.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/SBT__org_scala_lang_scala_reflect_2_11_7_jar.xml" afterPath="$PROJECT_DIR$/.idea/libraries/SBT__org_scala_lang_scala_reflect_2_11_7_jar.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/sbt.xml" afterPath="$PROJECT_DIR$/.idea/sbt.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/calendar.html" afterPath="$PROJECT_DIR$/app/calendar.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/css/calendar.css" afterPath="$PROJECT_DIR$/app/css/calendar.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/css/dashboard.css" afterPath="$PROJECT_DIR$/app/css/dashboard.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/css/layout.css" afterPath="$PROJECT_DIR$/app/css/layout.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/css/statistics.css" afterPath="$PROJECT_DIR$/app/css/statistics.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/favorites.html" afterPath="$PROJECT_DIR$/app/favorites.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/goals.html" afterPath="$PROJECT_DIR$/app/goals.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/index.html" afterPath="$PROJECT_DIR$/app/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/js/calendar.js" afterPath="$PROJECT_DIR$/app/js/calendar.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/js/dashboard.js" afterPath="$PROJECT_DIR$/app/js/dashboard.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/js/statistics.js" afterPath="$PROJECT_DIR$/app/js/statistics.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/map.html" afterPath="$PROJECT_DIR$/app/map.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/statistics.html" afterPath="$PROJECT_DIR$/app/statistics.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" afterPath="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" />
@@ -92,8 +94,8 @@
       <file leaf-file-name="TestDataForDatabase.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.521978">
-              <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
+            <state vertical-scroll-proportion="-0.35714287">
+              <caret line="50" column="52" selection-start-line="50" selection-start-column="52" selection-end-line="50" selection-end-column="52" />
               <folding />
             </state>
           </provider>
@@ -103,7 +105,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="80" column="12" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="12" />
+              <caret line="154" column="99" selection-start-line="154" selection-start-column="99" selection-end-line="154" selection-end-column="99" />
               <folding />
             </state>
           </provider>
@@ -158,8 +160,8 @@
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Aggregation/Aggregation.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Accumulation/Accumulation.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/interpolation/SplineInterpolation.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala" />
       </list>
     </option>
   </component>
@@ -299,7 +301,71 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="server" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scala" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="persistence" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scala" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="persistence" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="cassandra" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -931,26 +997,11 @@
       <updated>1451325602221</updated>
       <workItem from="1455107624368" duration="1459000" />
       <workItem from="1455109685472" duration="364000" />
-      <workItem from="1455117952645" duration="3191000" />
+      <workItem from="1455117952645" duration="7793000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="TestDataForDatabase - 2016.02.10 at 16h 31m 20s.xml">
-      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.10 at 16h 32m 47s.xml">
-      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.10 at 16h 33m 39s.xml">
-      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.10 at 16h 35m 28s.xml">
-      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
-    <history-entry file="TestDataForDatabase - 2016.02.10 at 16h 35m 56s.xml">
-      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
-    </history-entry>
     <history-entry file="TestDataForDatabase - 2016.02.10 at 16h 41m 41s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
@@ -963,12 +1014,27 @@
     <history-entry file="TestDataForDatabase - 2016.02.10 at 16h 52m 26s.xml">
       <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="TimeSelectionTestSpec - 2016.02.08 at 22h 24m 23s.xml">
-      <configuration name="TimeSelectionTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="TestDataForDatabase - 2016.02.10 at 17h 58m 54s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestDataForDatabase - 2016.02.10 at 18h 17m 51s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestDataForDatabase - 2016.02.10 at 18h 58m 57s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestDataForDatabase - 2016.02.10 at 20h 05m 28s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestDataForDatabase - 2016.02.10 at 20h 24m 41s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
+    </history-entry>
+    <history-entry file="TestDataForDatabase - 2016.02.10 at 20h 56m 39s.xml">
+      <configuration name="TestDataForDatabase" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5014000" />
+    <option name="totallyTimeSpent" value="9616000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="0" />
@@ -982,7 +1048,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30843374" sideWeight="0.2353362" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30843374" sideWeight="0.7646638" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30843374" sideWeight="0.7646638" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32891566" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19313304" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1371,15 +1437,15 @@
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/ExampleDataGenerator.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="12" selection-start-line="80" selection-start-column="12" selection-end-line="80" selection-end-column="12" />
+          <caret line="154" column="99" selection-start-line="154" selection-start-column="99" selection-end-line="154" selection-end-column="99" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/TestDataForDatabase.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.521978">
-          <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
+        <state vertical-scroll-proportion="-0.35714287">
+          <caret line="50" column="52" selection-start-line="50" selection-start-column="52" selection-end-line="50" selection-end-column="52" />
           <folding />
         </state>
       </provider>

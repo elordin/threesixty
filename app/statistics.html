@@ -34,7 +34,7 @@
         <div class="nav-item">
             <a href="favorites.html">
                 <div class="nav-content-container">
-                    <img class="nav-image" src="img/star.png">
+                    <img class="nav-image" src="img/heart.png">
                     <p class="nav-description">Favorites</p>
                 </div>
             </a>
@@ -71,23 +71,27 @@
     </header>
     
     <main>
-        <h1>Training</h1>
-        <pre id="training-diagram"></pre>
+        
+        <h1>Body Weight</h1>
+        <pre id="body-weight"></pre>   
+        
+        <h1>Steps</h1>
+        <pre id="steps"></pre>
         <div class="diagram-select-container">
             <div class="diagram-select-item">
-                <a href="" class="selected">Bar Chart</a>
+                <a href="" class="selected" id="barchart">Bar Chart</a>
             </div>
             <div class="diagram-select-item">
-                <a href="">Pie Chart</a>
+                <a href="" id="piechart">Pie Chart</a>
             </div>
         </div>
         
-        <h1>Body Weight</h1>
-        <pre id="weight-diagram"></pre>    
+         
     </main>
     
     <script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/navigation.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/requests.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/statistics.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

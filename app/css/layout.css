@@ -163,6 +163,23 @@ main h2 {
     font-weight: 400;
 }
 
+pre {
+    margin: 0 0 0 -28px;
+}
+
+svg .bar {
+    fill: #4DAF50;
+}
+
+svg .data path {
+    stroke: #4DAF50;
+}
+
+svg .data circle {
+    stroke: #4DAF50;
+    fill: #4DAF50;
+}
+
 
 .error {
     display: block;

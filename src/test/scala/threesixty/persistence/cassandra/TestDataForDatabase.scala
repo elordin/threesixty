@@ -21,17 +21,38 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
     var generator = new ExampleDataGenerator()
     var now = new Timestamp(Calendar.getInstance().getTime.getTime)
 
-
+    /*
     describe("generating heart rate data for one month") {
         it ("should generate the heart rate data and store it into the database") {
 
-            val date = new DateTime(2016, 1, 1, 0, 0)
-            val inputData = generator.exampleHeartRate(48, 225, 2678400, new Timestamp(date.getMillis))
+            // val date = new DateTime(2016, 1, 1, 0, 0)
+            // generator.exampleHeartRate(48, 225, 2678400, new Timestamp(date.getMillis))
 
-            CassandraAdapter.insertData(inputData)
+             val date = new DateTime(2015, 1, 1, 0, 0)
+             generator.exampleHeartRate(48, 225, 86400, new Timestamp(date.getMillis))
         }
     }
-    
+    */
+    /*
+    describe("generating weight data for one month") {
+        it ("should generate weight data and store it into the database") {
+
+            val date = new Timestamp(new DateTime(2016, 2, 1, 9, 0).getMillis)
+            generator.exampleWeight(70, 77, 20, date)
+        }
+    }
+    */
+
+
+    describe("generating calories data for one month") {
+        it ("should generate calories data and store it into the database") {
+
+            val date = new Timestamp(new DateTime(2016, 1, 1, 0, 0).getMillis)
+            generator.exampleCalories(2000, 4000, 31, date)
+        }
+    }
+
+
     def dataPointsToJson(dataPoints: List[DataPoint]): JsValue = {
         Json.toJson(dataPoints.map { dataPoint =>
             Json.obj(

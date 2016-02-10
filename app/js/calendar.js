@@ -151,7 +151,6 @@ $('#refresh').click(function () {
 
 
 
-
 /* ****************** */
 /*  Loading Diagrams  */
 /* ****************** */
@@ -163,7 +162,7 @@ function updateDayDiagram() {
     today.setHours(23,59,59,999)
     var endTime = Math.min(today.getTime(), (new Date()).getTime())
 
-    var visualization = makeBarChartVisualization(["23551219-404e-42a7-bc95-95accb8affe5"]);
+    var visualization = makeBarChartVisualization(["23551219-404e-42a7-bc95-95accb8affe5"], "Steps per hour", 900, 300);
     var idMapping = {"23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"};
     var processor = makeProcessor("aggregation", idMapping, "sum", "hour");
     var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
@@ -186,130 +185,11 @@ function updateWeekDiagram() {
     sunday.setHours(23, 59, 59, 999)
     var endTime = sunday.getTime()
 
-    var visualization = makePieChartVisualization(["23551219-404e-42a7-bc95-95accb8affe5"]);
+    var visualization = makePieChartVisualization(["23551219-404e-42a7-bc95-95accb8affe5"], 0);
     var data = makeData("23551219-404e-42a7-bc95-95accb8affe5", startTime, endTime);
     var idMapping = {"23551219-404e-42a7-bc95-95accb8affe5": "23551219-404e-42a7-bc95-95accb8affe5"};
     var processor = makeProcessor("aggregation", idMapping, "mean", "weekday");
     var request = makeVisualizationRequest(visualization, [processor], [data]);
 
     sendRequest(request, '#week-activity');
-}
-
-
-/* ****************** */
-/*   JSON Requests    */
-/* ****************** */
-
-function makeBarChartVisualization(ids) {
-    return {
-        "type": "barchart",
-        "args": {
-            "ids": ids,
-            "width": 512,
-            "height": 256,
-            "border": {"top": 10, "bottom": 40, "left": 70, "right": 20},
-            "yMax": 900,
-            "yUnit": 300,
-            "xUnit": "",
-            "colorScheme": "green",
-            "fontFamily": "Calibri",
-            "fontSize": 1,
-            "title": "Steps per hour",
-            "titleVerticalOffset": -230,
-            "titleFontSize": 23
-        }
-    }
-}
-
-function makePieChartVisualization(ids) {
-    return {
-        "type": "piechart",
-        "args": {
-            "ids": ids,
-            "width": 400,
-            "height": 200,
-            "border": {"top": 15, "bottom": 35, "left": 100, "right": 60},
-            "colorScheme": "green",
-            "innerRadiusPercent": 0.5,
-            "legendPosition": "left",
-            "fontFamily": "Calibri",
-            "fontSize": 16,
-            "legendHorizontalOffset": 0,
-            "title": "Steps per day",
-            "titleVerticalOffset": -180,
-            "titleFontSize": 20
-        }
-    }
-}
-
-function makeProcessor(method, idMapping, mode, param) {
-    return {
-        "method": method,
-        "args": {
-            "idMapping": idMapping,
-            "mode": mode,
-            "param": param
-        }
-    }
-}
-
-function makeData(id, from, to) {
-    return {
-        "id": id,
-        "from": from,
-        "to": to
-    }
-}
-
-function makeVisualizationRequest(visualization, processors, data) {
-    return JSON.stringify({
-        "type": "visualization",
-        "visualization": visualization,
-        "processor": processors,
-        "data": data
-    })
-}
-
-function sendRequest(requestText, resultPlaceholder) {
-    $.ajax({
-        url: 'http://localhost:8080',
-        method: 'POST',
-        data: requestText,
-        dataType: 'html',
-        success: function (answer) {
-            $('#message-field').empty();
-            $(resultPlaceholder).empty().html(answer);
-        },
-        error: function (response) {
-            console.log(response.responseText);
-            $('#message-field').empty().html('<span class="error">There is currently no data available. Please try again later.</span>');
-            $(resultPlaceholder).empty();
-        }
-    });
-}
-
-function makeDataInsertRequest(inputData) {
-    return JSON.stringify({
-        "type": "data",
-        "action": "insert",
-        "data": inputData
-    })
-}
-
-function sendDataInsertRequest(request) {
-    $.ajax({
-        url: 'http://localhost:8080',
-        method: 'POST',
-        data: request,
-        dataType: 'html',
-        success: function (answer) {
-            updateDayContent();
-            updateWeekDiagram();
-            $('#success-field').empty().html('<span class="success">Successfully synchronized new data.</span>');
-        },
-        error: function (response) {
-            $('#message-field').empty().html('<span class="error">All data has already been synchronized.</span>');
-            console.log(response.responseText);
-        }
-    })
 }
