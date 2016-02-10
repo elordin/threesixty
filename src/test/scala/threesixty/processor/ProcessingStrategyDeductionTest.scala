@@ -82,7 +82,7 @@ class ProcessingStrategyDeductionTest extends FunSpec{
      it("should compute the right value for a given Single InputData"){
 
          val testset = inputData
-         val result = 0.4 + 0.2 + 0.1  //explaination: 0.4 <= ordinal scaling, 0.2 <= enough values to interpolate, 0.1 middle resolution
+         val result = 0.4 + 0.2 + 0.2  //explaination: 0.4 <= ordinal scaling, 0.2 <= enough values to interpolate, 0.1 middle resolution
 
          assert((LinearInterpolation.degreeOfFit(testset) == (result)))
      }
@@ -90,7 +90,7 @@ class ProcessingStrategyDeductionTest extends FunSpec{
      it (" InputData SET, but same metadata"){
 
          val testset = Seq(inputData,inputData1)
-         val result = 0.4 + 0.2 + 0.1 //same as for one single set, as both has same metadata
+         val result = 0.4 + 0.2 + 0.2 //same as for one single set, as both has same metadata
 
          assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset: _*) - result))
      }
@@ -107,10 +107,10 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
         val testset = Seq(inputData)
 
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(barChart,testset: _*) - (0.7 * 0.8)))
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(pieChart,testset: _*) - (0.7 * 0.0)))
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(lineChart,testset: _*) - (0.7 * 1.0)))
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(scatter,testset: _*) - (0.7 * 0.2)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(barChart,testset: _*) - (0.8 * 0.8)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(pieChart,testset: _*) - (0.8 * 0.1)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(lineChart,testset: _*) - (0.8 * 1.0)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(scatter,testset: _*) - (0.8 * 0.2)))
 
    }
 
@@ -119,7 +119,7 @@ class ProcessingStrategyDeductionTest extends FunSpec{
        val testset = Seq(inputData, inputData1, inputData2)
 
        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(barChart, testset: _*) - (0.6 * 0.8)))
-       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(pieChart, testset: _*) - (0.6 * 0.0)))
+       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(pieChart, testset: _*) - (0.6 * 0.1)))
        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(lineChart, testset: _*) - (0.6 * 1.0)))
        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(scatter, testset: _*) - (0.6 * 0.2)))
 

@@ -145,6 +145,9 @@ class VisDeductionTestSpec extends  FunSpec {
     }
 
     describe("Deduction Algorithms") {
+        /*modul-tests for single degreeOfFit-computation methods
+        can be found in ProcessingStrategyDeductionTest.scala
+        * */
 
         val visEngine = VisualizationEngine using
         new Processor   with LinearInterpolation.Mixin
