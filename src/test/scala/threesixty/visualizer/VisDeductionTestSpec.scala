@@ -81,7 +81,7 @@ class VisDeductionTestSpec extends  FunSpec {
         _titleVerticalOffset = Some(50),
         _showValues = Some(true)
     )
-    //val dataPool = new DataPool(Seq(inputDataSkeleton0), FakeDatabaseAdapter)
+
     val dataPool = new DataPool(Seq(inputDataSet0), FakeDatabaseAdapter)
     val idMap = dataPool.skeletons.map({ skeleton => (skeleton.id, skeleton.id) }).toMap
 
@@ -149,6 +149,9 @@ class VisDeductionTestSpec extends  FunSpec {
         can be found in ProcessingStrategyDeductionTest.scala
         * */
 
+        val dataPool = new DataPool(Seq(inputDataSkeleton0), FakeDatabaseAdapter)
+        val idMap = dataPool.skeletons.map({ skeleton => (skeleton.id, skeleton.id) }).toMap
+
         val visEngine = VisualizationEngine using
         new Processor   with LinearInterpolation.Mixin
         with Aggregation.Mixin
@@ -159,36 +162,40 @@ class VisDeductionTestSpec extends  FunSpec {
         with barChart.Mixin
         with scatterChart.Mixin and FakeDatabaseAdapter
 
-        val dataPool = new DataPool(Seq(inputDataSkeleton0), FakeDatabaseAdapter)
-        val idMap = dataPool.skeletons.map({ skeleton => (skeleton.id, skeleton.id) }).toMap
-
-        val strategy = ProcessingStrategy(visEngine.processor.processingInfos.values.head.default(idMap))
-
+        val linIntStrategy = ProcessingStrategy(LinearInterpolation.default(idMap))
+        val aggStrategy = ProcessingStrategy(Aggregation.default(idMap))
 
         it("deduction of a Vis, given a ProcStrat") {
-            val deduced = visEngine.visualizer.deduce(strategy, inputDataSkeleton0)
-            // assert(deduced._1.steps.head.method.companion.name equals "Linear Interpolation")
+            val deducedLinInt = visEngine.visualizer.deduce(linIntStrategy, inputDataSkeleton0)
+            val deducedAgg = visEngine.visualizer.deduce(aggStrategy,inputDataSkeleton0)
 
-            // println(deduced._2.getClass) //assert not yet possible, as long as Parameters in Processing deductions aren't adapted. now(4.2.16) all are the same as in LineaerInterpolation
-            //assert (deducted._2 equals  lineChart   ) //shall be lineChartConfig
-            println(deduced.getClass equals lineChart.getClass   )
-        }
+            assert(deducedLinInt equals LineChartConfig.default(Seq(inputDataSkeleton0.id),1024,1024))
+            assert(deducedAgg equals LineChartConfig.default(Seq(inputDataSkeleton0.id),1024,1024))
+            }
 
         it("deduction of a ProcStrat, given a Vis") {
-            //is tested in ProcessingStrategyDeductionTest. can be tested not before jens has actualized his values
-            val deducedProcessingStrategy0 = visEngine.processor
-                .deduce(inputDataSet0).steps.map(_.method.companion).head
-            val dedicatedProcessingStrategy0 = LinearInterpolation
 
-           ///assert(deducedProcessingStrategy0 equals dedicatedProcessingStrategy0)
-            println( "__Deduction of ProcStrat given Vis (LinearInterpolation) => VisStrategy: " + deducedProcessingStrategy0.getClass)
+            //more detailed test in ProcessingStrategyDeductionTest.
+            val deducedProcessingStrategyLineChart = visEngine.processor
+                .deduce(lineChart,inputDataSet0).steps.map(_.method.companion).head
+
+            val deducedProcessingStrategyPieChart = visEngine.processor
+              .deduce(pieChart,inputDataSet0).steps.map(_.method.companion).head
+
+            val dedicatedProcessingLineChart = LinearInterpolation //or Spline
+            var dedicatedProcessingPieChart = null
+
+
+            assert(deducedProcessingStrategyLineChart.name equals "Linear Interpolation")
+            assert(deducedProcessingStrategyPieChart.name equals "Aggregation")
 
         }
 
         it("deduction of both ProcStrat and Vis") {
-            val deducted = visEngine.deduceVisAndProc(inputDataSkeleton0)
-            println( "__Deduction of Both => ProcStrategy: " + deducted._1.steps.head.method.companion.name)
-            println( "__Deduction of Both => VisStrategy: " + deducted._2.getClass)
+            val deduced = visEngine.deduceVisAndProc(inputDataSkeleton0)
+     
+            assert(deduced._2 equals LineChartConfig.default(Seq(inputDataSkeleton0.id),1024,1024))
+            assert(deduced._1.steps.head.method.companion.name equals "Linear Interpolation")
         }
 
     }
