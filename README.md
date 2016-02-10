@@ -24,9 +24,11 @@
     - [Additional visualizations](#additional-visualizations)
         - [Visualization](#visualization-1)
         - [VisualizationConfig](#visualizationconfig)
+        - [VisualizationCompanion](#visualizationcompanion)
         - [Mixin](#mixin)
     - [Additional processing methods](#additional-processing-methods)
-        - [ProcessingMethod](#processingmethod)
+        - [Parent classes](#parent-classes)
+        - [ProcessingMethodCompanion](#processingmethodcompanion)
         - [Mixin](#mixin-1)
 
 ## Introduction
@@ -324,26 +326,85 @@ They must provide:
 
 - The visualization class extending `Visualization`
 - The visualizations configuration extending `VisualizationConfig`
+- A companion object for the `VisualizationConfig` that extends `VisualizationCompanion`
 - A mixin for adding the visualization to the `Visualizer`
 
 #### Visualization
 
+Being a `Renderable`, a `Visualization` only requires a `toSVG: scala.xml.Elem` method that returns the SVG representation.
+
 #### VisualizationConfig
 
+The `VisualizationConfig` stores all configuration parameters for that graph and acts as a factory for the actual visualization.
+For this purpose it has an method
+
+```scala
+def apply(pool: DataPool): FooVisualization
+```
+
+that takes the datapool, extracts the necessary data and creates the `Visualization`.
+
+#### VisualizationCompanion
+
+`VisualizationCompanion` must implement:
+
+```
+// arbitrary name string
+def name: String
+// converts from JSON to this config
+def fromString: (String) => VisualizationConfig
+// metadata for this visualization
+val metadata: VisualizationMetadata
+// A default version of the config
+def default: (Seq[Identifier], Int, Int) => VisualizationConfig
+```
+
 #### Mixin
+
+The mixin should always comply with the following format
+
+```scala
+trait Mixin extends VisualizationMixins {
+    abstract override def visualizationInfos: Map[String, VisualizationCompanion] =
+        super.visualizationInfos + ("foochart" -> FooChart)
+}
+```
+
+Where `foochart` is the name used in API calls and `FooChart` is the companion object.
 
 ### Additional processing methods
 
 Similar to adding visualizations, processing methods must also provide certain components:
 
 - The ProcessingMethod extending either `SingleProcessingMethod` or `MultiProcessingMethod`
+- A companion object for the ProcessingMethod that extends `ProcessingMethodCompanion`
 - The mixing to add the method to the `Processor`
 
-#### ProcessingMethod
-
-
+#### Parent classes
 
 `SingleProcessingMethod`s require a single Dataset as input are applied in parallel when used for multiple datasets.
 `MultiProcessingMethod` are those that operate on a Set if `ProcessedData`.
 
+#### `ProcessingMethodCompanion`
+
+`ProcessingMethodCompanion` must implement
+
+```
+def name: String                                                        // arbirary string name
+def fromString: (String) => ProcessingStep                              // conversion from JSON transmitted via HTTP
+def default(idMapping: Map[Identifier, Identifier]): ProcessingStep     // creates default version of this processing method
+def computeDegreeOfFit(skeletons: InputDataSkeleton): Double            // calculates how well this method fits for processing given data
+def computeDegreeOfFit(VisualizationConfig, InputDataSkeleton): Double  // calculates how well this method fits for processing given data in the context of a given visualization
+```
+
+
 #### Mixin
+
+```
+trait Mixin extends ProcessingMixins {
+    abstract override def processingInfos: Map[String, ProcessingMethodCompanion] =
+        super.processingInfos + ("foomethod" -> FooMethod)
+}
+```
+
+Where `foomethod` is the name used in API calls and `FooMethod` is the companion object.

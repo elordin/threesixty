@@ -175,9 +175,47 @@ VISUALIZATION
     def processHelpRequest(json: JsObject): EngineResponse =
         json.fields.get("for").map({
             case JsString(forJson) => forJson.toLowerCase match {
-                case "data" => ???
-                case "data-insert" => ???
-                case "data-get" => ???
+                case "data" => HelpResponse("""
+Use the following "for" arguments for additional info
+data-insert     Inserting data
+data-get        Retrieving raw data
+""")
+                case "data-insert" => HelpResponse("""{
+    "type": "data",
+    "action": "insert",
+    "data": {
+        "id":
+        "measurement": "arbitrary string"
+        "dataPoints": [
+            {
+                "timestamp": 1234,
+                "value": {
+                    "type": "int | double",
+                    "value": 12.34
+                }
+            }, ...
+        ]
+        "metadata": {
+            "timeframe": {
+                "start": 1234,
+                "end": 4567
+            },
+            "reliability": "Device | User | Unknown",
+            "resolution": "High | Middle | Low",
+            "scaling": "Nominal | Ordinal",
+            "acitivityType": {
+                "name": "Foo"
+            }
+        }
+    }
+}
+""")
+                case "data-get" => HelpResponse("""{
+    "type": "data",
+    "action": "get",
+    "id": "someID"
+}""")
+
 
                 case "visualizer" =>
                     HelpResponse(visualizer.usage)
