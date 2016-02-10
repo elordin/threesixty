@@ -2,7 +2,7 @@ package threesixty.visualizer.visualizations
 
 import org.scalatest.FunSpec
 import threesixty.data.Data.Timestamp
-import threesixty.visualizer.util.{GreenColorScheme, Border}
+import threesixty.visualizer.util.{OptBorder, GreenColorScheme, Border}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
@@ -41,7 +41,6 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                _border = Some(Border(200,100,150,25)),
                 _colorScheme = Some(GreenColorScheme),
                 _title = Some("Title"),
                 _titleVerticalOffset = Some(50),
@@ -100,8 +99,8 @@ class ScatterChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                _border = Some(Border(200,100,150,25)),
                 _colorScheme = Some(GreenColorScheme),
+                _border = Some(OptBorder(Some(200),Some(100),Some(150),Some(25))),
                 _xLabel = Some("X-Label"),
                 _minPxBetweenXGridPoints = Some(30),
                 _fontFamily = Some("FontFamily"),

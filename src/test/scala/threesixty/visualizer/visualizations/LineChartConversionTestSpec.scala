@@ -3,7 +3,7 @@ package threesixty.visualizer.visualizations.LineChart
 import threesixty.data.Data._
 import org.scalatest._
 import threesixty.data.DataJsonProtocol.TimestampJsonFormat
-import threesixty.visualizer.util.{DefaultColorScheme, GreenColorScheme, Border}
+import threesixty.visualizer.util.{DefaultColorScheme, GreenColorScheme, OptBorder}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
 
@@ -41,7 +41,7 @@ class LineChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                _border = Some(Border(200,100,150,25)),
+                _border = Some(OptBorder(Some(200),Some(100),Some(150),Some(25))),
                 _colorScheme = Some(GreenColorScheme),
                 _title = Some("Title"),
                 _titleVerticalOffset = Some(50),
@@ -73,6 +73,7 @@ class LineChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
+                "border": {"top": 125, "right": 75}
                 "title": "Title",
                 "titleVerticalOffset": 50,
                 "ylabel": "Y-Label",
@@ -87,7 +88,6 @@ class LineChartConversionTestSpec extends FunSpec {
 
         it("should have the default values where none were given") {
             val convertedConfig = LineChartConfig(jsonString)
-            assert(convertedConfig.border.top == 50)
             assert(convertedConfig.border.bottom == 50)
             assert(convertedConfig.border.left == 50)
             assert(convertedConfig.border.right == 50)
@@ -106,6 +106,7 @@ class LineChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
+                _border = Some(OptBorder(top = Some(125), right = Some(75))),
                 _title = Some("Title"),
                 _titleVerticalOffset = Some(50),
                 _yLabel = Some("Y-Label"),

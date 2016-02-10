@@ -3,7 +3,7 @@ package threesixty.visualizer
 import threesixty.data.{InputData, DataPool}
 import threesixty.data.Data.Identifier
 import threesixty.processor.{ProcessingStep, ProcessingMethod}
-import threesixty.visualizer.util.{Border, LegendPositionType, ColorScheme, DefaultColorScheme, Legend}
+import threesixty.visualizer.util._
 
 /**
  * Generic Configuration for a [[threesixty.visualizer.Visualization]].
@@ -32,7 +32,7 @@ abstract class VisualizationConfig(
     ids:                        Seq[Identifier],
     height:                     Int,
     width:                      Int,
-    _border:                    Option[Border]      = None,
+    _border:                    Option[OptBorder]   = None,
     _colorScheme:               Option[ColorScheme] = None,
     _title:                     Option[String]      = None,
     _titleVerticalOffset:       Option[Int]         = None,
@@ -60,11 +60,21 @@ abstract class VisualizationConfig(
     /**
      * @return the border
      */
-    def border:Border = _border.getOrElse(Border(
-        top = BORDER_TOP_DEFAULT,
-        bottom = BORDER_BOTTOM_DEFAULT,
-        left = BORDER_LEFT_DEFAULT,
-        right = BORDER_RIGHT_DEFAULT))
+    def border: Border = {
+        if(_border.isDefined) {
+            Border(
+                top = _border.get.top.getOrElse(BORDER_TOP_DEFAULT),
+                bottom = _border.get.bottom.getOrElse(BORDER_BOTTOM_DEFAULT),
+                left = _border.get.left.getOrElse(BORDER_LEFT_DEFAULT),
+                right = _border.get.right.getOrElse(BORDER_RIGHT_DEFAULT))
+        } else {
+            Border(
+                top = BORDER_TOP_DEFAULT,
+                bottom = BORDER_BOTTOM_DEFAULT,
+                left = BORDER_LEFT_DEFAULT,
+                right = BORDER_RIGHT_DEFAULT)
+        }
+    }
 
     /**
      * @return the color scheme

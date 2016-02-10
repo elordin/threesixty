@@ -14,7 +14,7 @@ import threesixty.data.metadata._
 import threesixty.engine.VisualizationEngine
 import threesixty.persistence.FakeDatabaseAdapter
 import threesixty.processor.{ProcessingStrategy, Processor, ProcessingStep}
-import threesixty.visualizer.util.Border
+import threesixty.visualizer.util.{OptBorder, Border}
 import threesixty.visualizer.visualizations.{scatterChart, barChart, pieChart, lineChart}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
@@ -65,7 +65,7 @@ class VisDeductionTestSpec extends  FunSpec {
         _xLabel = Some("X-Axis"),
         _yLabel = Some("Y-Axis"),
         _title = Some("Title"),
-        _border = Some(Border(100,50,50,50)),
+        _border = Some(OptBorder(Some(100),Some(50),Some(50),Some(50))),
         _minPxBetweenXGridPoints = Some(50),
         _minPxBetweenYGridPoints = Some(50),
         _xUnit = Some("seconds30"),
@@ -77,7 +77,7 @@ class VisDeductionTestSpec extends  FunSpec {
         height = 1024,
         width = 768,
         _title = Some("Title"),
-        _border = Some(Border(100,50,50,50)),
+        _border = Some(OptBorder(Some(100),Some(50),Some(50),Some(50))),
         _titleVerticalOffset = Some(50),
         _showValues = Some(true)
     )
@@ -171,7 +171,7 @@ class VisDeductionTestSpec extends  FunSpec {
 
             assert(deducedLinInt equals LineChartConfig.default(Seq(inputDataSkeleton0.id),1024,1024))
             assert(deducedAgg equals LineChartConfig.default(Seq(inputDataSkeleton0.id),1024,1024))
-            }
+        }
 
         it("deduction of a ProcStrat, given a Vis") {
 
@@ -188,16 +188,7 @@ class VisDeductionTestSpec extends  FunSpec {
 
             assert(deducedProcessingStrategyLineChart.name equals "Linear Interpolation")
             assert(deducedProcessingStrategyPieChart.name equals "Aggregation")
-
         }
-
-        it("deduction of both ProcStrat and Vis") {
-            val deduced = visEngine.deduceVisAndProc(inputDataSkeleton0)
-     
-            assert(deduced._2 equals LineChartConfig.default(Seq(inputDataSkeleton0.id),1024,1024))
-            assert(deduced._1.steps.head.method.companion.name equals "Linear Interpolation")
-        }
-
     }
 
 }

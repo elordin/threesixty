@@ -1,7 +1,7 @@
 package threesixty.visualizer.visualizations.barChart
 
 import org.scalatest.FunSpec
-import threesixty.visualizer.util.{GreenColorScheme, DefaultColorScheme, Border}
+import threesixty.visualizer.util.{OptBorder, GreenColorScheme, DefaultColorScheme}
 
 class BarChartConversionTestSpec extends FunSpec {
 
@@ -33,7 +33,7 @@ class BarChartConversionTestSpec extends FunSpec {
                 ids = Seq("123"),
                 height = 1024,
                 width = 768,
-                _border = Some(Border(200,100,150,25)),
+                _border = Some(OptBorder(Some(200),Some(100),Some(150),Some(25))),
                 _colorScheme = Some(GreenColorScheme),
                 _title = Some("Title"),
                 _titleVerticalOffset = Some(50),
@@ -88,7 +88,7 @@ class BarChartConversionTestSpec extends FunSpec {
                 ids = Seq("123"),
                 height = 1024,
                 width = 768,
-                _border = Some(Border(200,100,150,25)),
+                _border = Some(OptBorder(Some(200),Some(100),Some(150),Some(25))),
                 _title = Some("Title"),
                 _titleFontSize = Some(18),
                 _yLabel = Some("Y-Label"),
