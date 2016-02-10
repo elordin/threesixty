@@ -77,18 +77,38 @@
       <file leaf-file-name="Processor.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/processor/Processor.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="57" column="8" selection-start-line="57" selection-start-column="8" selection-end-line="57" selection-end-column="8" />
+            <state vertical-scroll-proportion="-13.222222">
+              <caret line="174" column="95" selection-start-line="174" selection-start-column="95" selection-end-line="174" selection-end-column="95" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VisDeductionTestSpec.scala" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Visualizer.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/visualizer/Visualizer.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="71" column="6" selection-start-line="71" selection-start-column="6" selection-end-line="71" selection-end-column="6" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VisualizationEngine.scala" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/engine/VisualizationEngine.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="40" column="11" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="VisDeductionTestSpec.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/visualizer/VisDeductionTestSpec.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.5641026">
-              <caret line="149" column="12" selection-start-line="149" selection-start-column="12" selection-end-line="149" selection-end-column="12" />
+            <state vertical-scroll-proportion="-18.25926">
+              <caret line="67" column="45" selection-start-line="67" selection-start-column="45" selection-end-line="67" selection-end-column="45" />
               <folding />
             </state>
           </provider>
@@ -104,11 +124,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProcessingStrategyDeductionTest.scala" pinned="false" current-in-tab="false">
+      <file leaf-file-name="ProcessingStrategyDeductionTest.scala" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/processor/ProcessingStrategyDeductionTest.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="121" column="99" selection-start-line="121" selection-start-column="99" selection-end-line="121" selection-end-column="99" />
+            <state vertical-scroll-proportion="0.6304348">
+              <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
               <folding>
                 <element signature="e#31#59#0" expanded="true" />
               </folding>
@@ -119,8 +139,8 @@
       <file leaf-file-name="LinearInterpolation.scala" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/interpolation/LinearInterpolation.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+            <state vertical-scroll-proportion="-3.7777777">
+              <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -171,13 +191,14 @@
         <option value="$PROJECT_DIR$/build.sbt" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/ProcessingMethods/AcumAgregTests.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/ProcessingMethods/AggregationTestSpec.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/interpolation/LinearInterpolation.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/interpolation/SplineInterpolation.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Accumulation/Accumulation.scala" />
-        <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Aggregation/Aggregation.scala" />
         <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/TimeSelection/TimeSelection.scala" />
-        <option value="$PROJECT_DIR$/src/test/scala/threesixty/processor/ProcessingStrategyDeductionTest.scala" />
         <option value="$PROJECT_DIR$/src/test/scala/threesixty/visualizer/VisDeductionTestSpec.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/interpolation/LinearInterpolation.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Aggregation/Aggregation.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Accumulation/Accumulation.scala" />
+        <option value="$PROJECT_DIR$/src/main/scala/threesixty/processor/Processor.scala" />
+        <option value="$PROJECT_DIR$/src/test/scala/threesixty/processor/ProcessingStrategyDeductionTest.scala" />
       </list>
     </option>
   </component>
@@ -437,80 +458,42 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="ProcessingMethods" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Threesixty" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="threesixty" />
+              <option name="myItemId" value="engine" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="threesixty" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProcessingMethods" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interpolation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Threesixty" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="threesixty" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="threesixty" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ProcessingMethods" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="interpolation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="LinearInterpolation.scala" />
+              <option name="myItemId" value="VisualizationEngine.scala" />
               <option name="myItemType" value="org.jetbrains.plugins.scala.components.ScalaDefsProjectViewProvider$ScalaFileTreeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="scala" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="threesixty" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="engine" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -975,35 +958,35 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 11h 37m 20s.xml">
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 24m 04s.xml">
       <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 03m 35s.xml">
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 32m 21s.xml">
       <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 08m 45s.xml">
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 34m 42s.xml">
       <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 09m 24s.xml">
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 56m 28s.xml">
       <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 10m 46s.xml">
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 12h 59m 38s.xml">
       <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="VisDeductionTestSpec - 2016.02.09 at 21h 50m 56s.xml">
-      <configuration name="VisDeductionTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 13h 00m 29s.xml">
+      <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="VisDeductionTestSpec - 2016.02.09 at 21h 54m 07s.xml">
-      <configuration name="VisDeductionTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 13h 01m 11s.xml">
+      <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="VisDeductionTestSpec - 2016.02.10 at 11h 06m 28s.xml">
-      <configuration name="VisDeductionTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 13h 02m 36s.xml">
+      <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="VisDeductionTestSpec - 2016.02.10 at 11h 09m 39s.xml">
-      <configuration name="VisDeductionTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 13h 02m 42s.xml">
+      <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
-    <history-entry file="VisDeductionTestSpec - 2016.02.10 at 11h 14m 04s.xml">
-      <configuration name="VisDeductionTestSpec" configurationId="ScalaTestRunConfiguration" />
+    <history-entry file="ProcessingStrategyDeductionTest - 2016.02.10 at 13h 02m 47s.xml">
+      <configuration name="ProcessingStrategyDeductionTest" configurationId="ScalaTestRunConfiguration" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -1058,20 +1041,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/persistence/cassandra/CassandraAdapterTestSpec.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/data/InputData.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="22" selection-start-line="11" selection-start-column="22" selection-end-line="11" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/persistence/cassandra/CassandraAdapter.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1347,30 +1316,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Accumulation/Accumulation.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="66" column="14" selection-start-line="66" selection-start-column="14" selection-end-line="66" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Aggregation/Aggregation.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="76" column="42" selection-start-line="76" selection-start-column="42" selection-end-line="76" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Clustering/Clustering.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="0" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/statistics/StatisticalAnalysis.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1387,14 +1332,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/processor/Processor.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="57" column="8" selection-start-line="57" selection-start-column="8" selection-end-line="57" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/interpolation/SplineInterpolation.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.47640118">
@@ -1403,29 +1340,77 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/visualizer/VisDeductionTestSpec.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-18.25926">
+          <caret line="67" column="45" selection-start-line="67" selection-start-column="45" selection-end-line="67" selection-end-column="45" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/interpolation/LinearInterpolation.scala">
       <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.7777777">
+          <caret line="43" column="0" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Clustering/Clustering.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.2035398">
+          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Aggregation/Aggregation.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5516224">
+          <caret line="76" column="16" selection-start-line="76" selection-start-column="16" selection-end-line="76" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/ProcessingMethods/Accumulation/Accumulation.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.67699116">
+          <caret line="66" column="16" selection-start-line="66" selection-start-column="16" selection-end-line="66" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/visualizer/Visualizer.scala">
+      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="64" column="0" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+          <caret line="71" column="6" selection-start-line="71" selection-start-column="6" selection-end-line="71" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/engine/VisualizationEngine.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="40" column="11" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/scala/threesixty/processor/Processor.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-13.222222">
+          <caret line="174" column="95" selection-start-line="174" selection-start-column="95" selection-end-line="174" selection-end-column="95" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/processor/ProcessingStrategyDeductionTest.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="121" column="99" selection-start-line="121" selection-start-column="99" selection-end-line="121" selection-end-column="99" />
+        <state vertical-scroll-proportion="0.6304348">
+          <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
           <folding>
             <element signature="e#31#59#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/threesixty/visualizer/VisDeductionTestSpec.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.5641026">
-          <caret line="149" column="12" selection-start-line="149" selection-start-column="12" selection-end-line="149" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>

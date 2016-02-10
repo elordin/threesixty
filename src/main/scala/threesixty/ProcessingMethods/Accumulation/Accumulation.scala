@@ -64,7 +64,7 @@ object Accumulation extends ProcessingMethodCompanion {
             temp += 1.0
         }
 
-        temp/4
+        temp/4.0
     }
 
     def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {
