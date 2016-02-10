@@ -172,9 +172,6 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
 
             var l = List[TaggedDataPoint]()
 
-
-
-
             for( i <- 0 until datasize ) {
                 val buf = agdata.splitAt(blocksize)
                 val r = buf._1
@@ -206,18 +203,51 @@ case class Aggregation(mode: String, param: String, idMapping: Map[Identifier, I
                     throw new IllegalArgumentException("Not matching argument given like 'minute', 'hour', 'weekday', 'month', 'year' BUT got: " + param )
             }
 
+            def AggregationInfo(v: Double): String = {
+                var ret = ""
+                if( param == "weekday" ) {
+                    v match {
+                        case 0 => ret = "Sunday"
+                        case 1 => ret = "Monday"
+                        case 2 => ret = "Tuesday"
+                        case 3 => ret = "Wednesday"
+                        case 4 => ret = "Thursday"
+                        case 5 => ret = "Friday"
+                        case 6 => ret = "Saturday"
+                    }
+                } else if ( param == "month") {
+                    v match {
+                        case 0 => ret = "January"
+                        case 1 => ret = "February"
+                        case 2 => ret = "March"
+                        case 3 => ret = "April"
+                        case 4 => ret = "May"
+                        case 5 => ret = "June"
+                        case 6 => ret = "July"
+                        case 7 => ret = "August"
+                        case 8 => ret = "September"
+                        case 9 => ret = "October"
+                        case 10 => ret = "November"
+                        case 11 => ret = "December"
+                    }
+                } else {
+                    ret = v.toString
+                }
+                ret
+            }
+
             var l = List[TaggedDataPoint]()
 
             for( (k,v) <- grouped ) {
                 mode match {
                     case "num" =>
-                        l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                        l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag(AggregationInfo(v(0).timestamp.getDay))) :: l
                     case "mean" =>
-                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.mean(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.mean(v), v(0).tags + new AggregationTag(AggregationInfo(v(0).timestamp.getDay))) :: l
                     case "sum" =>
-                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.sum(v), v(0).tags + new AggregationTag("" + v(0).timestamp.getDay)) :: l
+                        l = TaggedDataPoint(new Timestamp(0), StatisticalAnalysis.sum(v), v(0).tags + new AggregationTag(AggregationInfo(v(0).timestamp.getDay))) :: l
                     case "enum" =>
-                        l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag("" + v(0).value)) :: l
+                        l = TaggedDataPoint(new Timestamp(0), v.length, v(0).tags + new AggregationTag(AggregationInfo(v(0).value.value))) :: l
                     case default =>
                         throw new IllegalArgumentException("Not matching argument given like 'num', 'mean', 'sum' BUT got: " + param )
                 }

@@ -76,8 +76,8 @@ class AggregationTestSpec extends FunSpec {
 
                 it("should be (0,2), (0,2)") {
                     val expectedResult = Set(ProcessedData("SomeID", List(
-                        TaggedDataPoint(new Timestamp(0), 2, Set[Tag](new AggregationTag("4"))),
-                        TaggedDataPoint(new Timestamp(0), 2, Set[Tag](new AggregationTag("5")))
+                        TaggedDataPoint(new Timestamp(0), 2, Set[Tag](new AggregationTag("Thursday"))),
+                        TaggedDataPoint(new Timestamp(0), 2, Set[Tag](new AggregationTag("Friday")))
                     )))
 
                     assertResult(expectedResult) {
@@ -89,8 +89,8 @@ class AggregationTestSpec extends FunSpec {
 
                 it("should be (0,2.5), (0,5.5)") {
                     val expectedResult = Set(ProcessedData("SomeID", List(
-                        TaggedDataPoint(new Timestamp(0), 2.5, Set[Tag](new AggregationTag("4"))),
-                        TaggedDataPoint(new Timestamp(0), 5.5, Set[Tag](new AggregationTag("5")))
+                        TaggedDataPoint(new Timestamp(0), 2.5, Set[Tag](new AggregationTag("Thursday"))),
+                        TaggedDataPoint(new Timestamp(0), 5.5, Set[Tag](new AggregationTag("Friday")))
                     )))
 
                     assertResult(expectedResult) {
@@ -100,8 +100,8 @@ class AggregationTestSpec extends FunSpec {
 
                 it("should be (0,5), (0,11)") {
                     val expectedResult = Set(ProcessedData("SomeID", List(
-                        TaggedDataPoint(new Timestamp(0), 5.0, Set[Tag](new AggregationTag("4"))),
-                        TaggedDataPoint(new Timestamp(0), 11.0, Set[Tag](new AggregationTag("5")))
+                        TaggedDataPoint(new Timestamp(0), 5.0, Set[Tag](new AggregationTag("Thursday"))),
+                        TaggedDataPoint(new Timestamp(0), 11.0, Set[Tag](new AggregationTag("Friday")))
                     )))
 
                     assertResult(expectedResult) {
