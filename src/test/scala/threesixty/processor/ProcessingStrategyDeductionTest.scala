@@ -1,4 +1,4 @@
-/*
+
 package threesixty.processor
 
 import org.scalatest.FunSpec
@@ -6,7 +6,7 @@ import threesixty.ProcessingMethods.Accumulation.Accumulation
 import threesixty.ProcessingMethods.Aggregation.Aggregation
 import threesixty.ProcessingMethods.TimeSelection.TimeSelection
 import threesixty.ProcessingMethods.clustering.Clustering
-import threesixty.ProcessingMethods.interpolation.LinearInterpolation
+import threesixty.ProcessingMethods.interpolation.{SplineInterpolation, LinearInterpolation}
 import threesixty.data.Data._
 import threesixty.data.{DataPoint, InputData}
 import threesixty.data.metadata._
@@ -81,47 +81,47 @@ class ProcessingStrategyDeductionTest extends FunSpec{
    describe("Linear interpolation"){
      it("should compute the right value for a given Single InputData"){
 
-         val testset = Set(inputData)
-         val result = 0.4 + 0.2 + 0.1  //explaination: 0.4 <= ordinal scaling, 0.2 <= enough values to interpolate, 0.1 middle resolution
+         val testset = inputData
+         val result = 0.4 + 0.2 + 0.2  //explaination: 0.4 <= ordinal scaling, 0.2 <= enough values to interpolate, 0.2 middle resolution
 
          assert((LinearInterpolation.degreeOfFit(testset) == (result)))
      }
 
      it (" InputData SET, but same metadata"){
 
-         val testset = Set(inputData,inputData1)
-         val result = 0.4 + 0.2 + 0.1 //same as for one single set, as both has same metadata
+         val testset = Seq(inputData,inputData1)
+         val result = 0.4 + 0.2 + 0.2 //same as for one single set, as both has same metadata
 
-         assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset) - result))
+         assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset: _*) - result))
      }
 
      it (" InputData SET, various metadata"){
 
-       val testset = Set(inputData,inputData1,inputData2)
+       val testset = Seq(inputData,inputData1,inputData2)
        val result = 0.6 //value for InputData with Resolution.Low
 
-       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset) - result))
+       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset: _*) - result))
      }
 
    it ("InputData + given VisualizationType"){
 
-        val testset = Set(inputData)
+        val testset = Seq(inputData)
 
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,barChart) - (0.7 * 0.8)))
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,pieChart) - (0.7 * 0.0)))
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,lineChart) - (0.7 * 1.0)))
-        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,scatter) - (0.7 * 0.2)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(barChart,testset: _*) - (0.8 * 0.8)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(pieChart,testset: _*) - (0.8 * 0.1)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(lineChart,testset: _*) - (0.8 * 1.0)))
+        assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(scatter,testset: _*) - (0.8 * 0.2)))
 
    }
 
      it("InputData SET + given VisualizationType"){
 
-       val testset = Set(inputData, inputData1, inputData2)
+       val testset = Seq(inputData, inputData1, inputData2)
 
-       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,barChart) - (0.6 * 0.8)))
-       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,pieChart) - (0.6 * 0.0)))
-       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,lineChart) - (0.6 * 1.0)))
-       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(testset,scatter) - (0.6 * 0.2)))
+       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(barChart, testset: _*) - (0.6 * 0.8)))
+       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(pieChart, testset: _*) - (0.6 * 0.1)))
+       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(lineChart, testset: _*) - (0.6 * 1.0)))
+       assert(0.0001 > math.abs(LinearInterpolation.degreeOfFit(scatter, testset: _*) - (0.6 * 0.2)))
 
      }
 
@@ -131,7 +131,7 @@ class ProcessingStrategyDeductionTest extends FunSpec{
   describe("Clustering") {
     it("should compute the right value for a given Single InputData"){
 
-      val testset = Set(inputData)
+      val testset = (inputData)
       val result = 0.1 + 0.1 + 0.1 + 0.2
 
       assert((Clustering.degreeOfFit(testset) == (result)))
@@ -139,96 +139,98 @@ class ProcessingStrategyDeductionTest extends FunSpec{
 
     it (" InputData SET, but same metadata"){
 
-      val testset = Set(inputData,inputData1)
+      val testset = Seq(inputData,inputData1)
       val result = 0.1 + 0.1 + 0.1 + 0.2 //same as for one single set, as both has same metadata
 
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset) - result))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset: _*) - result))
     }
 
     it (" InputData SET, various metadata"){
 
-      val testset = Set(inputData,inputData1,inputData2)
+      val testset = Seq(inputData,inputData1,inputData2)
       val result = 0.5 //value for InputData with Resolution.Middle | LOW => 0.65
 
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset) - result))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset: _*) - result))
   }
 
     it ("InputData + given VisualizationType"){
 
-      val testset = Set(inputData)
+      val testset = Seq(inputData)
 
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset,barChart) - (0.5 * 0.3)))
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset,pieChart) - (0.5 * 0.2)))
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset,lineChart) - (0.5 * 0.2)))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(barChart, testset: _*) - (0.5 * 0.3)))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(pieChart, testset: _*) - (0.5 * 0.2)))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(lineChart, testset: _*) - (0.5 * 0.2)))
 
-      assert((Clustering.degreeOfFit(testset,scatter)==1))
+      assert((Clustering.degreeOfFit(scatter, testset: _*)==1))
 
     }
 
     it("InputData SET + given VisualizationType"){
 
-      val testset = Set(inputData, inputData1, inputData2)
+      val testset = Seq(inputData, inputData1, inputData2)
 
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset,barChart) - (0.5 * 0.3)))
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset,pieChart) - (0.5 * 0.2)))
-      assert(0.0001 > math.abs(Clustering.degreeOfFit(testset,lineChart) - (0.5 * 0.2)))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(barChart, testset: _*) - (0.5 * 0.3)))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(pieChart, testset: _*) - (0.5 * 0.2)))
+      assert(0.0001 > math.abs(Clustering.degreeOfFit(lineChart, testset: _*) - (0.5 * 0.2)))
 
-      assert((Clustering.degreeOfFit(testset,scatter)==1))
+      assert((Clustering.degreeOfFit(scatter, testset: _*)==1))
     }
 
   }
+
+
   /* //TODO
    this test has to be adapted, as soon as someone has changed parameter in computeDegreeOfFit for any of the methods*/
   describe("deduce best-possible ProcessingStrategy"){
     it("should do this for no given Vis"){
-      val inputdataSet= Set(inputData)
-      val processor = new Processor         with LinearInterpolation.Mixin
+      val inputdataSet= Seq(inputData)
+
+      val processor = new Processor
+        with LinearInterpolation.Mixin
         with Aggregation.Mixin
         with Accumulation.Mixin
         with TimeSelection.Mixin
 
-      val deducedProcessingStrategy0 = processor.deduce(inputdataSet).steps.map(_.method.companion).head
+      val deducedProcessingStrategy0 = processor.deduce(inputdataSet: _*).steps.map(_.method.companion).head
       val dedicatedProcessingStrategy0 = LinearInterpolation
 
       assert(deducedProcessingStrategy0 equals dedicatedProcessingStrategy0)
 
-      val processor1 = new Processor with Accumulation.Mixin
+      val processor1 = new Processor
+        with Accumulation.Mixin
         with Aggregation.Mixin
         with LinearInterpolation.Mixin
         with TimeSelection.Mixin
-      val dedicatedProcessingStrategy1 = Accumulation
-      val deducedProcessingStreategy1 = processor1.deduce(inputdataSet).steps.map(_.method.companion).head
+      val dedicatedProcessingStrategy1 = LinearInterpolation
+      val deducedProcessingStreategy1 = processor1.deduce(inputdataSet: _*).steps.map(_.method.companion).head
 
       assert(dedicatedProcessingStrategy1 equals deducedProcessingStreategy1)
 
     }
 
     it("should do this for a given Vis"){
-      val inputdataSet= Set(inputData)
-      val processor = new Processor         with LinearInterpolation.Mixin
+      val inputdataSet= Seq(inputData)
+      val processor = new Processor
+      with SplineInterpolation.Mixin
+        with LinearInterpolation.Mixin
         with Aggregation.Mixin
         with Accumulation.Mixin
         with TimeSelection.Mixin
 
-      val deducedProcessingStrategy0 = processor.deduce(inputdataSet).steps.map(_.method.companion).head
+      val deducedProcessingStrategy0 = processor.deduce(inputdataSet: _*).steps.map(_.method.companion).head
       val dedicatedProcessingStrategy0 = LinearInterpolation
+      val deducedProcessingStrategyAlternative = SplineInterpolation
+      assert((deducedProcessingStrategy0 equals dedicatedProcessingStrategy0) ||  (deducedProcessingStrategy0 equals deducedProcessingStrategyAlternative))
 
-      assert(deducedProcessingStrategy0 equals dedicatedProcessingStrategy0)
-
-      val LinValue = LinearInterpolation.computeDegreeOfFit(inputData,lineChart)
-      val aggValue = Aggregation.computeDegreeOfFit(inputData,lineChart)
-      val accValue = Accumulation.computeDegreeOfFit(inputData,lineChart)
-      val tiSelValue = TimeSelection.computeDegreeOfFit(inputData, lineChart)
-      println("LinValue: " + LinValue)
-      println("aggValue: " + aggValue)
-      println("accValue: " + accValue)
-      println("tiSelValue: " + tiSelValue)
 
 
 
 
     }
   }
+
+
+
 }
 
-*/
+
