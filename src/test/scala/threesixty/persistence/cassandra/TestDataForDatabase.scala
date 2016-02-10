@@ -16,33 +16,22 @@ import threesixty.persistence.ExampleDataGenerator
 import scala.concurrent.Await
 import scala.concurrent.duration._
 
-/**
-  * Created by Stefan Cimander on 01.02.16.
-  */
 class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraConnector.keyspace.Connector {
-
-    override def beforeAll(): Unit = {
-        super.beforeAll()
-        Await.result(CassandraAdapter.autocreate.future(), 30.seconds)
-    }
 
     var generator = new ExampleDataGenerator()
     var now = new Timestamp(Calendar.getInstance().getTime.getTime)
 
-    /*
-    describe("generating test data for the steps made in current month") {
-        it ("should generate the step data and store it into the database") {
 
-            val stepIdentifier = UUID.randomUUID().toString
-            val date = new DateTime(2016, 2, 10, 1, 1)
+    describe("generating heart rate data for one month") {
+        it ("should generate the heart rate data and store it into the database") {
 
-            val inputData = generator.generateStepsForMonth(date, "23551219-404e-42a7-bc95-95accb8affe5")
+            val date = new DateTime(2016, 1, 1, 0, 0)
+            val inputData = generator.exampleHeartRate(48, 225, 2678400, new Timestamp(date.getMillis))
 
             CassandraAdapter.insertData(inputData)
         }
     }
-    */
-
+    
     def dataPointsToJson(dataPoints: List[DataPoint]): JsValue = {
         Json.toJson(dataPoints.map { dataPoint =>
             Json.obj(
@@ -92,7 +81,7 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
         )
     }
 
-
+    /*
     describe("generating test data for the presentation day") {
         it ("should just create a sample data set for one day, that can be loaded by the app") {
 
@@ -102,5 +91,8 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
             println(inputDataToJson(inputData))
         }
     }
+    */
+
+
 
 }

@@ -76,12 +76,14 @@ class ExampleDataGenerator {
     }
 
 
-    def exampleHeartRate(min: Int = 48, max: Int = 225, steps: Int,
+
+
+    def     exampleHeartRate(min: Int = 48, max: Int = 225, steps: Int,
                          startTime: Timestamp = new Timestamp(Calendar.getInstance().getTime().getTime())): InputData = {
 
         val identifier = UUID.randomUUID()
         val measurement = "Heart Rate"
-        val timeframe = Timeframe(startTime, new Timestamp(startTime.getTime() + steps * 1000))
+        val timeframe = Timeframe(startTime, new Timestamp(startTime.getTime() + steps.toLong * 1000L))
         val activityType = ActivityType("nothing special")
         activityType.setDescription("everyday tracking heartrate")
         val resolution = Resolution.High
@@ -96,12 +98,13 @@ class ExampleDataGenerator {
         var value = 75
 
         for (i <- 0 until steps) {
+
             var r = random.nextInt(5)
             var delta = r match {
                 case 0 => -4
                 case 1 => -2
                 case 2 => -1
-                case 3 => 3
+                case 3 => 2
                 case 4 => 5
             }
 
@@ -112,6 +115,9 @@ class ExampleDataGenerator {
             else if (value < min) {
                 value = min
             }
+
+            println("Step: " + i + " Value: " + value)
+
             dataPoints = dataPoints ++ List(new DataPoint(new Timestamp(startTime.getTime + i * 1000), value))
         }
         InputData(identifier.toString, measurement, dataPoints, inputMetadta)
