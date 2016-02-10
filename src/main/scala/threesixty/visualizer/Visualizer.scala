@@ -113,7 +113,8 @@ class Visualizer extends VisualizationMixins with UsageInfo {
         if (possibleVis.isEmpty) {
             LineChartConfig.default(skeletons.map(_.id),1024,1024)
         } else {
-            possibleVis.toList(Random.nextInt(possibleVis.size)).default(skeletons.map(_.id),1024,1024)
+            possibleVis.maxBy(x => x.degreeOfFit(procStrat,skeletons: _*)).default(skeletons.map(_.id),1024,1024)
+
         }
     }
 
