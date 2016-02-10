@@ -1,11 +1,8 @@
 package threesixty.visualizer.visualizations
 
-import java.sql.Timestamp
-
 import org.scalatest.FunSpec
-import threesixty.visualizer.util.param.Border
-import threesixty.visualizer.util.{LegendPositionType, GreenColorScheme}
-import LegendPositionType.LegendPosition
+import threesixty.visualizer.util.param.{PositionType, OptLegendParam, OptTitleParam, Border}
+import threesixty.visualizer.util.{GreenColorScheme}
 import threesixty.visualizer.visualizations.pieChart.PieChartConfig
 
 
@@ -17,16 +14,10 @@ class PieChartConversionTestSpec extends FunSpec {
                 "width": 768,
                 "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
                 "colorScheme": "green",
-                "title": "Title",
-                "titleVerticalOffset": 50,
-                "titleFontSize": 18,
-                "fontSize": 10,
-                "fontFamily": "FontFamily",
-                "legendPosition": "left",
-                "legendHorizontalOffset": 30,
-                "legendVerticalOffset": 5,
-                "legendSymbolWidth": 25,
+                "title": {"title": "Title", "position": "bottom", "verticalOffset": 15, "horizontalOffset": 25, "size": 22, "fontFamily": "fontFamily", "alignment": "end"},
+                "legend": {"position": "left", "verticalOffset": 5, "horizontalOffset": 12, "symbolWidth": 15, "size": 10, "fontFamily": "fontFamily"},
                 "showSegmentLabels": false,
+                "segmentLabelSize": 10,
                 "valueLabelRadiusPercent": 1.2,
                 "segmentLabelLineColor": "#223344",
                 "showValues": true,
@@ -43,16 +34,23 @@ class PieChartConversionTestSpec extends FunSpec {
                 width = 768,
                 _border = Some(Border(200,100,150,25)),
                 _colorScheme = Some(GreenColorScheme),
-                /*_title = Some("Title"),
-                _titleVerticalOffset = Some(50),
-                _titleFontSize = Some(18),
-                _labelFontSize = Some(10),
-                _labelFontFamily = Some("FontFamily"),
-                _legendPosition = Some("left"),
-                _legendHorizontalOffset = Some(30),
-                _legendVerticalOffset = Some(5),
-                _legendSymbolWidth = Some(25),*/
+                _title = Some(OptTitleParam(
+                    title = Some("Title"),
+                    position = Some("bottom"),
+                    verticalOffset = Some(15),
+                    horizontalOffset = Some(25),
+                    size = Some(22),
+                    fontFamily = Some("fontFamily"),
+                    alignment = Some("end"))),
+                _legend = Some(OptLegendParam(
+                    position = Some("left"),
+                    verticalOffset = Some(5),
+                    horizontalOffset = Some(12),
+                    symbolWidth = Some(15),
+                    size = Some(10),
+                    fontFamily = Some("fontFamily"))),
                 _showSegmentLabels = Some(false),
+                _segmentLabelSize = Some(10),
                 _valueLabelRadiusPercent = Some(1.2),
                 _segmentLabelLineColor = Some("#223344"),
                 _showValues = Some(true),
@@ -74,27 +72,26 @@ class PieChartConversionTestSpec extends FunSpec {
                 "width": 768,
                 "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
                 "colorScheme": "green",
-                "title": "Title",
-                "titleVerticalOffset": 50,
-                "fontSize": 10,
-                "legendHorizontalOffset": 30,
-                "legendSymbolWidth": 25,
+                "title": {"title": "Title", "verticalOffset": 15, "fontFamily": "fontFamily", "alignment": "end"},
+                "legend": {"verticalOffset": 5, "horizontalOffset": 12, "size": 10, "fontFamily": "fontFamily"},
+                "showSegmentLabels": false,
+                "segmentLabelSize": 10,
+                "segmentLabelLineColor": "#223344",
                 "showValues": true,
                 "angleEnd": 180,
-                "innerRadiusPercent": 0.5
+                "radius": 75
             }"""
 
         it("should have the default values where none were given") {
             val convertedConfig = PieChartConfig(jsonString)
-            //assert(convertedConfig.titleFontSize == 20)
-            //assert(convertedConfig.fontFamily == "Roboto, Segoe UI")
-            //assert(convertedConfig.legendPosition == Some(LegendPositionType.RIGHT))
-            //assert(convertedConfig.legendVerticalOffset == 20)
-            assert(convertedConfig.showSegmentLabels == true)
-            assert(convertedConfig._valueLabelRadiusPercent == None)
-            assert(convertedConfig.segmentLabelLineColor == "#000000")
+            assert(convertedConfig.title.position == PositionType.TOP)
+            assert(convertedConfig.title.horizontalOffset == 0)
+            assert(convertedConfig.title.size == 20)
+            assert(convertedConfig.legend.position == Some(PositionType.RIGHT))
+            assert(convertedConfig.legend.symbolWidth == 10)
+            assert(convertedConfig.valueLabelRadiusPercent == 1.1)
             assert(convertedConfig.angleStart == 90)
-            assert(convertedConfig._radius == None)
+            assert(convertedConfig.innerRadiusPercent == 0.0)
         }
 
         it("should have all values set correctly") {
@@ -104,14 +101,22 @@ class PieChartConversionTestSpec extends FunSpec {
                 width = 768,
                 _border = Some(Border(200,100,150,25)),
                 _colorScheme = Some(GreenColorScheme),
-                /*_title = Some("Title"),
-                _titleVerticalOffset = Some(50),
-                _labelFontSize = Some(10),
-                _legendHorizontalOffset = Some(30),
-                _legendSymbolWidth = Some(25),*/
+                _title = Some(OptTitleParam(
+                    title = Some("Title"),
+                    verticalOffset = Some(15),
+                    fontFamily = Some("fontFamily"),
+                    alignment = Some("end"))),
+                _legend = Some(OptLegendParam(
+                    verticalOffset = Some(5),
+                    horizontalOffset = Some(12),
+                    size = Some(10),
+                    fontFamily = Some("fontFamily"))),
+                _showSegmentLabels = Some(false),
+                _segmentLabelSize = Some(10),
+                _segmentLabelLineColor = Some("#223344"),
                 _showValues = Some(true),
                 _angleEnd = Some(180),
-                _innerRadiusPercent = Some(0.5)
+                _radius = Some(75)
             )
             assertResult(expectedResult) {
                 PieChartConfig(jsonString)

@@ -57,24 +57,24 @@ case class BarElement(
                 class="bar"
                 fill={getColor}
                 d={calculateBarPath} />
-            { if(descriptionLabelSize > 0) {
+            {if (descriptionLabelSize > 0) {
                 <text
-                    class="description"
-                    x={dpx.toString}
-                    y={dpy.toString}
-                    font-size={descriptionLabelSize.toString}
-                    font-family={descriptionLabelFontFamily}
-                    text-anchor="middle">{description}</text>
-            } }
-            {if (showValues)
-                <text
+                class="description"
+                x={dpx.toString}
+                y={dpy.toString}
+                font-size={descriptionLabelSize.toString}
+                font-family={descriptionLabelFontFamily}
+                text-anchor="middle">{description}</text>
+            }}
+            {if (showValues) {
+                    <text
                     class="value"
                     x={vpx.toString}
                     y={vpy.toString}
                     font-size={valueLabelSize.toString}
                     font-family={valueLabelFontFamily}
                     text-anchor="middle">{value}</text>
-            }
+            }}
         </g>
     }
 
@@ -98,10 +98,10 @@ case class BarElement(
      * @return the anchor point for the value label
      */
     def calculateValueAnchorPoint: (Double, Double) = {
-        val barMiddle = (xLeft + width / 2.0, height)
-        val offset = if(height < 0) -10 else 5 + valueLabelSize
+        val barMiddle = (xLeft + width / 2.0, - height)
+        val offset = if(height < 0) - (valueLabelSize + 5) else 10
 
-        (barMiddle._1, barMiddle._2 + offset)
+        (barMiddle._1, barMiddle._2 - offset)
     }
 
     /**
@@ -109,7 +109,7 @@ case class BarElement(
      */
     def calculateDescriptionAnchorPoint: (Double, Double) = {
         val baseMiddle = (xLeft + width / 2.0, 0)
-        val offset = if(height < 0) 5 + descriptionLabelSize else - 10
+        val offset = if(height < 0) 10 else - (descriptionLabelSize + 5)
 
         (baseMiddle._1, baseMiddle._2 - offset)
     }

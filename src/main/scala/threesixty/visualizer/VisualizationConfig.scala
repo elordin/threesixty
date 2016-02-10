@@ -180,7 +180,7 @@ abstract class VisualizationConfig(
       * @return the y-axis
       */
     def yAxis: AxisParam = {
-        if(_xAxis.isDefined) {
+        if(_yAxis.isDefined) {
             AxisParam(
                 _yAxis.get.label.getOrElse(Y_AXIS_LABEL_DEFAULT),
                 _yAxis.get.labelSize.getOrElse(Y_AXIS_LABEL_SIZE_DEFAULT),
@@ -218,7 +218,7 @@ abstract class VisualizationConfig(
      * @return the legend position
      */
     private def legendPosition: Option[PositionType.Position] = {
-        if(_legend.isDefined) {
+        if(_legend.isDefined && _legend.get.position.isDefined) {
             PositionType.getPosition(_legend.get.position.get)
         } else {
             LEGEND_POSITION_DEFAULT

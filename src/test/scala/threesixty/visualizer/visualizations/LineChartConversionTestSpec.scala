@@ -3,7 +3,7 @@ package threesixty.visualizer.visualizations.LineChart
 import threesixty.data.Data._
 import org.scalatest._
 import threesixty.data.DataJsonProtocol.TimestampJsonFormat
-import threesixty.visualizer.util.param.Border
+import threesixty.visualizer.util.param.{OptValueAxisParam, OptTimeAxisParam, OptTitleParam, Border}
 import threesixty.visualizer.util.{DefaultColorScheme, GreenColorScheme}
 import threesixty.visualizer.visualizations.lineChart.LineChartConfig
 import threesixty.visualizer.visualizations.scatterChart.ScatterChartConfig
@@ -18,21 +18,9 @@ class LineChartConversionTestSpec extends FunSpec {
                 "width": 768,
                 "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
                 "colorScheme": "green",
-                "title": "Title",
-                "titleVerticalOffset": 50,
-                "titleFontSize": 18,
-                "xlabel": "X-Label",
-                "ylabel": "Y-Label",
-                "minDistanceX": 30,
-                "minDistanceY": 40,
-                "fontSize": 10,
-                "fontFamily": "FontFamily",
-                "xMin": 1000,
-                "xMax": 2000,
-                "yMin": -10,
-                "yMax": 50.5,
-                "xUnit": "one month",
-                "yUnit": 20.5,
+                "title": {"title": "Title", "position": "bottom", "verticalOffset": 15, "horizontalOffset": 25, "size": 22, "fontFamily": "fontFamily", "alignment": "end"},
+                "xAxis": {"label": "X-Label", "labelSize": 10, "labelFontFamily": "fontFamily", "min": 1000, "max": 2000, "minDistance": 30, "unit": "one month", "unitLabelSize": 10, "unitLabelFontFamily": "fontFamily", "showGrid": true, "showLabels": false, "arrowSize": 5, "arrowFilled": true},
+                "yAxis": {"label": "Y-Label", "labelSize": 10, "labelFontFamily": "fontFamily", "min": -10, "max": 50.5, "minDistance": 40, "unit": 20.5, "unitLabelSize": 10, "unitLabelFontFamily": "fontFamily", "showGrid": false, "showLabels": true, "arrowSize": 7, "arrowFilled": false},
                 "radius": 4,
                 "lineStrokeWidth": 3
             }"""
@@ -44,21 +32,42 @@ class LineChartConversionTestSpec extends FunSpec {
                 width = 768,
                 _border = Some(Border(200,100,150,25)),
                 _colorScheme = Some(GreenColorScheme),
-                /*_title = Some("Title"),
-                _titleVerticalOffset = Some(50),
-                _titleFontSize = Some(18),
-                _xLabel = Some("X-Label"),
-                _yLabel = Some("Y-Label"),
-                _minPxBetweenXGridPoints = Some(30),
-                _minPxBetweenYGridPoints = Some(40),
-                _labelFontSize = Some(10),
-                _labelFontFamily = Some("FontFamily"),
-                _xMin = Some(new Timestamp(1000)),
-                _xMax = Some(new Timestamp(2000)),
-                _yMin = Some(-10),
-                _yMax = Some(50.5),
-                _xUnit = Some("one month"),
-                _yUnit = Some(20.5),*/
+                _title = Some(OptTitleParam(
+                    title = Some("Title"),
+                    position = Some("bottom"),
+                    verticalOffset = Some(15),
+                    horizontalOffset = Some(25),
+                    size = Some(22),
+                    fontFamily = Some("fontFamily"),
+                    alignment = Some("end"))),
+                _xAxis = Some(OptTimeAxisParam(
+                    label = Some("X-Label"),
+                    labelSize = Some(10),
+                    labelFontFamily = Some("fontFamily"),
+                    min = Some(new Timestamp(1000)),
+                    max = Some(new Timestamp(2000)),
+                    minPxBetweenGridPoints = Some(30),
+                    unit = Some("one month"),
+                    unitLabelSize = Some(10),
+                    unitLabelFontFamily = Some("fontFamily"),
+                    showGrid = Some(true),
+                    showLabels = Some(false),
+                    arrowSize = Some(5),
+                    arrowFilled = Some(true))),
+                _yAxis = Some(OptValueAxisParam(
+                    label = Some("Y-Label"),
+                    labelSize = Some(10),
+                    labelFontFamily = Some("fontFamily"),
+                    min = Some(-10),
+                    max = Some(50.5),
+                    minPxBetweenGridPoints = Some(40),
+                    unit = Some(20.5),
+                    unitLabelSize = Some(10),
+                    unitLabelFontFamily = Some("fontFamily"),
+                    showGrid = Some(false),
+                    showLabels = Some(true),
+                    arrowSize = Some(7),
+                    arrowFilled = Some(false))),
                 _radius = Some(4),
                 _lineStrokeWidth = Some(3)
             )
@@ -74,32 +83,27 @@ class LineChartConversionTestSpec extends FunSpec {
                 "ids": ["abc", "123"],
                 "height": 1024,
                 "width": 768,
-                "title": "Title",
-                "titleVerticalOffset": 50,
-                "ylabel": "Y-Label",
-                "minDistanceX": 30,
-                "fontSize": 10,
-                "fontFamily": "FontFamily",
-                "xMin": 1000,
-                "yMax": 50.5,
-                "xUnit": "one month",
-                "radius": 4,
+                "border": {"top": 200, "bottom": 100, "left": 150, "right": 25},
+                "title": {"title": "Title", "position": "bottom", "verticalOffset": 15, "size": 22, "alignment": "end"},
+                "xAxis": {"label": "X-Label", "labelFontFamily": "fontFamily", "min": 1000, "max": 2000, "unit": "one month", "unitLabelSize": 10, "showGrid": true, "arrowSize": 5, "arrowFilled": true},
+                "yAxis": {"label": "Y-Label", "labelSize": 10, "min": -10, "max": 50.5, "minDistance": 40, "unit": 20.5, "unitLabelSize": 10, "unitLabelFontFamily": "fontFamily", "showLabels": true},
+                "lineStrokeWidth": 3
             }"""
 
         it("should have the default values where none were given") {
             val convertedConfig = LineChartConfig(jsonString)
-            assert(convertedConfig.border.top == 50)
-            assert(convertedConfig.border.bottom == 50)
-            assert(convertedConfig.border.left == 50)
-            assert(convertedConfig.border.right == 50)
             assert(convertedConfig.colorScheme == DefaultColorScheme)
-            //assert(convertedConfig.titleFontSize == 20)
-            assert(convertedConfig.xLabel == "")
-            assert(convertedConfig.minPxBetweenXGridPoints == 20)
-            //assert(convertedConfig._xMax == None)
-            //assert(convertedConfig._yMin == None)
-            //assert(convertedConfig._yUnit == None)
-            assert(convertedConfig.lineStrokeWidth == 2)
+            assert(convertedConfig.title.fontFamily == "Roboto, Segoe UI")
+            assert(convertedConfig.title.horizontalOffset == 0)
+            assert(convertedConfig.xAxis.labelSize == 12)
+            assert(convertedConfig.xAxis.minPxBetweenGridPoints == 20)
+            assert(convertedConfig.xAxis.unitLabelFontFamily == "fontFamily")
+            assert(convertedConfig.xAxis.showLabels == true)
+            assert(convertedConfig.yAxis.labelFontFamily == "Roboto, Segoe UI")
+            assert(convertedConfig.yAxis.showGrid == true)
+            assert(convertedConfig.yAxis.arrowSize == 10)
+            assert(convertedConfig.yAxis.arrowFilled == false)
+            assert(convertedConfig.radius == 2)
         }
 
         it("should have all values set correctly") {
@@ -107,16 +111,34 @@ class LineChartConversionTestSpec extends FunSpec {
                 ids = Seq("abc", "123"),
                 height = 1024,
                 width = 768,
-                /*_title = Some("Title"),
-                _titleVerticalOffset = Some(50),
-                _yLabel = Some("Y-Label"),
-                _minPxBetweenYGridPoints = Some(40),
-                _labelFontSize = Some(10),
-                _labelFontFamily = Some("FontFamily"),
-                _xMin = Some(new Timestamp(1000)),
-                _yMax = Some(50.5),
-                _xUnit = Some("one month"),*/
-                _radius = Some(4)
+                _border = Some(Border(200,100,150,25)),
+                _title = Some(OptTitleParam(
+                    title = Some("Title"),
+                    position = Some("bottom"),
+                    verticalOffset = Some(15),
+                    size = Some(22),
+                    alignment = Some("end"))),
+                _xAxis = Some(OptTimeAxisParam(
+                    label = Some("X-Label"),
+                    labelFontFamily = Some("fontFamily"),
+                    min = Some(new Timestamp(1000)),
+                    max = Some(new Timestamp(2000)),
+                    unit = Some("one month"),
+                    unitLabelSize = Some(10),
+                    showGrid = Some(true),
+                    arrowSize = Some(5),
+                    arrowFilled = Some(true))),
+                _yAxis = Some(OptValueAxisParam(
+                    label = Some("Y-Label"),
+                    labelSize = Some(10),
+                    min = Some(-10),
+                    max = Some(50.5),
+                    minPxBetweenGridPoints = Some(40),
+                    unit = Some(20.5),
+                    unitLabelSize = Some(10),
+                    unitLabelFontFamily = Some("fontFamily"),
+                    showLabels = Some(true))),
+                _lineStrokeWidth = Some(3)
             )
             assertResult(expectedResult) {
                 LineChartConfig(jsonString)
