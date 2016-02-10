@@ -59,7 +59,7 @@ object Aggregation extends ProcessingMethodCompanion {
         val meta = inputData.metadata
 
         if (meta.scaling == Scaling.Ordinal) {
-            temp += 0.4
+            temp += 1.0
         }
         if (meta.size >= 5) {
             temp += 1.0
@@ -74,7 +74,7 @@ object Aggregation extends ProcessingMethodCompanion {
             temp += 0.6
         }
 
-        temp
+        temp/4.0 //scale to intervall[0;1]
     }
 
     def computeDegreeOfFit(targetVisualization: VisualizationConfig, inputData: InputDataSkeleton): Double = {

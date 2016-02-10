@@ -42,6 +42,7 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
     def default(idMapping: Map[Identifier, Identifier]): ProcessingStep =
         LinearInterpolation(1000, idMapping).asProcessingStep
 
+
     def computeDegreeOfFit(inputData: InputDataSkeleton): Double = {
 
         var temp = 0.0
@@ -51,16 +52,16 @@ object LinearInterpolation extends ProcessingMethodCompanion with ProcessingMixi
             temp += 0.4
         }
         if (meta.size >= 5) {
-            temp += 1.0
+            temp += 0.2
         }
         if (meta.size >= 50) {
-            temp += 0.6 //overall 0.4 because >= 50 includes >= 5
+            temp += 0.2 //overall 0.4 because >= 50 includes >= 5
         }
         if (meta.resolution == Resolution.High) {
-            temp += 0.0
+            temp += 0.1
         }
         if (meta.resolution == Resolution.Middle) {
-            temp += 1.0
+            temp += 0.2
         }
 
         temp
