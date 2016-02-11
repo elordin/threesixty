@@ -1,11 +1,12 @@
 $(function () {
     loadStepsBarChart();
-    loadRecentWeight();
+    loadHeartRate();
 })
 
 var stepsId = "23551219-404e-42a7-bc95-95accb8affe5";
-var bodyWeightId = "52694b3b-ad1c-4656-99a7-8846fe7d8b4e";
-
+var heartRateId = "8313587b-8c79-45fd-b244-913dc8e5dfb9";
+// var yesterdayHeartRateId = "12c8615b-44eb-473c-a38d-bcb4bca3c221";
+var yesterdayHeartRateId = "141abea1-9abf-415d-870a-39bff608e0c5";
 
 
 function loadStepsBarChart() {
@@ -85,4 +86,16 @@ function loadRecentWeight() {
     var request = makeVisualizationRequest(visualization, [], [data]);
     
     sendRequest(request, '#body-weight');
+}
+
+function loadHeartRate() {
+    var firstDay = new Date(1451602800000).getTime;
+    var lastDay = new Date(1451602800000).getTime;
+    
+    var visualization = makeLineChartVisualization([heartRateId, yesterdayHeartRateId], "Heartbeats per min", 30);
+    var data1 = makeData(heartRateId, firstDay, lastDay);
+    var data2 = makeData(yesterdayHeartRateId, firstDay, lastDay);
+    var request = makeVisualizationRequest(visualization, [], [data1, data2]);
+    
+    sendRequest(request, '#heart-rate');
 }

@@ -83,8 +83,8 @@ class ExampleDataGenerator {
 
         val identifier = UUID.randomUUID()
         val measurement = "Heart Rate"
-        val activityType = ActivityType("nothing special")
-        activityType.setDescription("everyday tracking heartrate")
+        val activityType = ActivityType("University Life")
+        activityType.setDescription("Everyday Tracking Heartrate")
         val resolution = Resolution.High
         val reliability = Reliability.Device
         val scaling = Scaling.Ordinal
@@ -120,6 +120,9 @@ class ExampleDataGenerator {
             CassandraAdapter.insertData(inputData)
         }
     }
+
+
+
 
 
     def exampleCalories(min: Int = 2000, max: Int = 4000, steps: Int,

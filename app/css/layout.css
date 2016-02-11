@@ -31,8 +31,14 @@ aside {
 }
 
 aside.extended {
-    position: relative;
+    // position: relative;
     height: 100%;
+}
+
+aside.extended + header + main,
+aside.extended + header + nav,
+aside.extended + header + nav + main {
+    margin-left: 264px;
 }
 
 nav {
@@ -44,7 +50,12 @@ nav {
 main {
     overflow: hidden;
     margin-left: 64px;
+    margin-top: 96px;
     padding-left: 28px;
+}
+
+nav + main {
+    margin-top: 0;
 }
 
 
@@ -180,13 +191,19 @@ svg .bar {
 }
 
 svg .data path {
-    stroke: #4DAF50;
+    stroke: red;
 }
 
 svg .data circle {
     stroke: #4DAF50;
     fill: #4DAF50;
 }
+
+svg .data g:first-child path {
+    stroke: #4DAF50;
+}
+
+
 
 
 .error {

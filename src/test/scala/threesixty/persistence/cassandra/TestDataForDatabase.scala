@@ -28,30 +28,11 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
             // val date = new DateTime(2016, 1, 1, 0, 0)
             // generator.exampleHeartRate(48, 225, 2678400, new Timestamp(date.getMillis))
 
-             val date = new DateTime(2015, 1, 1, 0, 0)
+            val date = new DateTime(1451602800000L)
              generator.exampleHeartRate(48, 225, 86400, new Timestamp(date.getMillis))
         }
     }
     */
-    /*
-    describe("generating weight data for one month") {
-        it ("should generate weight data and store it into the database") {
-
-            val date = new Timestamp(new DateTime(2016, 2, 1, 9, 0).getMillis)
-            generator.exampleWeight(70, 77, 20, date)
-        }
-    }
-    */
-
-
-    describe("generating calories data for one month") {
-        it ("should generate calories data and store it into the database") {
-
-            val date = new Timestamp(new DateTime(2016, 1, 1, 0, 0).getMillis)
-            generator.exampleCalories(2000, 4000, 31, date)
-        }
-    }
-
 
     def dataPointsToJson(dataPoints: List[DataPoint]): JsValue = {
         Json.toJson(dataPoints.map { dataPoint =>
@@ -102,17 +83,17 @@ class TestDataForDatabase extends FunSpec with BeforeAndAfterAll with CassandraC
         )
     }
 
-    /*
+
     describe("generating test data for the presentation day") {
         it ("should just create a sample data set for one day, that can be loaded by the app") {
 
-            val date = new DateTime(2015, 12, 21, 1, 1)
+            val date = new DateTime(2015, 12, 19, 1, 1)
             val inputData = generator.generateStepsForDay(date,"23551219-404e-42a7-bc95-95accb8affe5")
 
             println(inputDataToJson(inputData))
         }
     }
-    */
+
 
 
 

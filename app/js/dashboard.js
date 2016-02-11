@@ -1,6 +1,7 @@
 $(function() {
     loadRecentSteps();
     loadRecentDistance();
+    loadHeartRate();
 });
 
 
@@ -45,4 +46,18 @@ function loadRecentDistance() {
     var request = makeVisualizationRequest(visualization, [processor], [data]);
 
     sendRequest(request, '#recent-distance');
+}
+
+
+var yesterdayHeartRateId = "141abea1-9abf-415d-870a-39bff608e0c5";
+
+function loadHeartRate() {
+    var start = new Date(1451602800000).getTime;
+    var end = new Date(1451602800000).getTime;
+    
+    var visualization = makeLineChartVisualization([yesterdayHeartRateId], "Heartbeats per min");
+    var data = makeData(yesterdayHeartRateId, start, end);
+    var request = makeVisualizationRequest(visualization, [], [data]);
+    
+    sendRequest(request, '#heart-rate');
 }
