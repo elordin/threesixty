@@ -8,6 +8,10 @@ body {
 }
 
 header {
+    position: fixed;
+    top: 0;
+    width: calc(100% - 85px);
+    left: 0;
     background: #4DAF50;
     border-top: 32px solid #323232;
     height: 64px;
@@ -21,22 +25,37 @@ aside {
     background: #323232;
     width: 64px;
     height: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
 }
 
 aside.extended {
-    position: relative;
+    // position: relative;
     height: 100%;
+}
+
+aside.extended + header + main,
+aside.extended + header + nav,
+aside.extended + header + nav + main {
+    margin-left: 264px;
 }
 
 nav {
     overflow: hidden;
     margin-left: 64px;
+    margin-top: 96px;
 }
 
 main {
     overflow: hidden;
     margin-left: 64px;
+    margin-top: 96px;
     padding-left: 28px;
+}
+
+nav + main {
+    margin-top: 0;
 }
 
 
@@ -172,13 +191,19 @@ svg .bar {
 }
 
 svg .data path {
-    stroke: #4DAF50;
+    stroke: red;
 }
 
 svg .data circle {
     stroke: #4DAF50;
     fill: #4DAF50;
 }
+
+svg .data g:first-child path {
+    stroke: #4DAF50;
+}
+
+
 
 
 .error {

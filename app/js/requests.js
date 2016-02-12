@@ -3,13 +3,13 @@
 /*   JSON Requests    */
 /* ****************** */
 
-function makeLineChartVisualization(ids, title) {
+function makeLineChartVisualization(ids, title, stepSize) {
     return {
         "type": "linechart",
         "args": {
         "ids": ids,
             "width": 512,
-            "height": 350,
+            "height": 256,
             "border": {"top": 10, "bottom": 50, "left": 70, "right": 20},
             "title": {
                 "title": title,
@@ -23,6 +23,7 @@ function makeLineChartVisualization(ids, title) {
                 "showGrid": false  
             },
             "yAxis": {
+                "unit": stepSize,
                 "arrowSize": 5,
                 "arrowFilled": true,
                 "unitFontFamily": "Calibri"
